@@ -1,6 +1,6 @@
 # GCP Cert Prep — Public Pages
 
-Public GitHub Pages site for CGP-style GCP certification study guides.
+Public GitHub Pages site for GCP certification study guides.
 
 This repository is a **git submodule** of the private [certs-prep](https://github.com/caiharry/certs-prep) workspace. It is the **canonical home for all published HTML** — coach notes, AGENTS.md, and markdown sources stay in the parent repo.
 
