@@ -9,7 +9,7 @@ This repository is a **git submodule** of the private [certs-prep](https://githu
 From the parent `certs-prep` repo:
 
 ```bash
-./scripts/sync-pages.sh
+./tools/sync-pages.sh
 cd certs_prep_pages
 git add -A && git commit -m "Sync study guides"
 git push
