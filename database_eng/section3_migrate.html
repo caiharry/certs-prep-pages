@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 3 Revision Guide - Migrating Data Solutions</title>
+  <style>
+    :root {
+      --bg-light: #f0fdfa;
+      --ink: #1e293b;
+      --cgp-teal: #0d9488;
+      --cgp-teal-light: #ccfbf1;
+      --cgp-teal-border: #14b8a6;
+      --cgp-yellow: #fef08a;
+      --cgp-yellow-dark: #eab308;
+      --cgp-orange: #ea580c;
+      --cgp-red: #ef4444;
+      --cgp-green: #16a34a;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23e2fcf9' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover {
+      background: var(--cgp-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #2dd4bf 0%, var(--cgp-teal) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--cgp-teal);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .cgp-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .cgp-card.tip {
+      background: #f0fdfa;
+      border-color: var(--cgp-teal-border);
+      box-shadow: 4px 4px 0px var(--cgp-teal-border);
+    }
+
+    .cgp-card.tip h3 {
+      color: var(--cgp-teal);
+      margin-top: 0;
+    }
+
+    .cgp-card.warn {
+      background: #fef2f2;
+      border-color: var(--cgp-red);
+      box-shadow: 4px 4px 0px var(--cgp-red);
+    }
+
+    .cgp-card.warn h3 {
+      color: var(--cgp-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--cgp-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--cgp-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* CSS Diagram Flow */
+    .flow-diagram {
+      background: white;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 4px 4px 0px #000;
+      margin: 25px 0;
+    }
+
+    .flow-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flow-step {
+      background: var(--cgp-teal-light);
+      border: 2px solid #000;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+      box-shadow: 2px 2px 0px #000;
+      font-size: 0.85rem;
+    }
+
+    .flow-step small {
+      display: block;
+      margin-top: 4px;
+      color: #4b5563;
+    }
+
+    .flow-arrow {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--cgp-teal);
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--cgp-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--cgp-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--cgp-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--cgp-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--cgp-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--cgp-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-btn {
+      background: var(--cgp-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .explanation-btn:hover {
+      background: #dd5209;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--cgp-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #ccfbf1;
+      border-color: var(--cgp-teal);
+      box-shadow: 2px 2px 0px var(--cgp-teal);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--cgp-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--cgp-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--cgp-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="section2_manage.html" class="nav-link">&larr; Back to Section 2 Guide</a>
+      <a href="index.html" class="nav-link">Main Revision Hub</a>
+      <a href="section4_deploy.html" class="nav-link">Go to Section 4 Guide &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 3: Migrating Data Solutions</h1>
+      <p>Continuous replication pipelines, zero-downtime homogeneous moves, heterogeneous schema mappings, and fallback loops!</p>
+      <div class="section-badge">~23% of the Exam! 🎯</div>
+    </header>
+
+    <!-- 3.1 Migration Strategies -->
+    <h2>3.1 Shifting the Data &mdash; Migration &amp; Replication</h2>
+    <p>Let's face it: packing up a physical server database and moving it to the cloud is not like moving house. You can't just throw your data tables into cardboard boxes, load them into a rusty transit van, and hope none of the primary keys fall out on the motorway! 🚛</p>
+
+    <div class="cgp-card tip">
+      <h3>🚀 Homogeneous vs. Heterogeneous &mdash; Choose Your Battle!</h3>
+      <p>The type of migration you perform determines exactly how much hair your engineering team will pull out during the process:</p>
+      <ul>
+        <li><strong>Homogeneous (Same engine, same vibes):</strong> MySQL to Cloud SQL MySQL, or PostgreSQL to AlloyDB. Since the database engine is the same, this is usually an "easy peasy" job. You still need to validate extension compatibilities, matching version numbers, engine flags, database drivers, and run performance baselines, but the schema mapping is a breeze! 🍃</li>
+        <li><strong>Heterogeneous (Different engine, absolute chaos):</strong> Oracle to AlloyDB, or SQL Server to AlloyDB. Because the database dialects and feature sets are completely different, you have to convert DDL (table schemas), custom data types, stored procedures, triggers, and operational habits. This is a massive job that requires proper tools and plenty of tea! ☕</li>
+      </ul>
+    </div>
+
+    <div class="flow-diagram">
+      <h3>🛣️ The Near-Zero Downtime Migration Lifecycle</h3>
+      <div class="flow-grid">
+        <div class="flow-step"><strong>1. Schema Convert</strong><br><small>Convert source DDL dialect to target SQL</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><strong>2. Dump &amp; Load</strong><br><small>DMS copies all historical records</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><strong>3. Continuous CDC</strong><br><small>Stream live writes so target stays in sync</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><strong>4. Sane Cutover</strong><br><small>Redirect app traffic with seconds of downtime</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><strong>5. Fallback Loop</strong><br><small>Sync updates back in case you need to revert!</small></div>
+      </div>
+    </div>
+
+    <div class="mnemonic">
+      <strong>🧠 Memory Tip: Reverse Replication is Your Parachute!</strong>
+      <p>If you cut over to your brand new cloud database and it suddenly crashes or behaves weirdly under load, you'll need to fail back to your old on-premises system. Always set up <strong>reverse replication</strong> so all new writes in GCP are synced back to the on-prem source! BUT watch out: CDC is asynchronous, so always check replica lag and document the RPO risk before promising the business absolute zero data loss!</p>
+    </div>
+
+    <h3>⚙️ The Big Serverless Players: DMS vs. Datastream</h3>
+    <p>GCP has two primary serverless change capture tools. They sound similar, but their exam jobs are completely different. Don't mix them up!</p>
+    <ul>
+      <li><strong>Database Migration Service (DMS):</strong> This is your primary <strong>database relocator</strong>. It handles initial loading and continuous CDC for migrating databases into Cloud SQL, AlloyDB, and Spanner. If you are moving a database lock-stock-and-barrel to GCP with near-zero downtime, DMS is your weapon of choice! 🛠️</li>
+      <li><strong>Datastream:</strong> This is an <strong>ongoing live data stream</strong>. It captures changes from databases (MySQL, PostgreSQL, Oracle, SQL Server, Spanner, etc.) and streams them in near-real-time to <strong>BigQuery</strong> (for analytics) or <strong>Cloud Storage</strong> (for data lakes). If you want ongoing data pipelines, reach for Datastream!</li>
+    </ul>
+
+    <div class="exam-trap">
+      <strong>DMS Conversion Workspaces!</strong> When doing a heterogeneous migration (e.g., Oracle to AlloyDB), DMS provides built-in <strong>Conversion Workspaces</strong>. They give you automated schema translations, highlight code compatibility errors, and even offer Gemini-assisted code fixes! But remember: the tool is clever, not clairvoyant &mdash; human review and testing of stored procedures are still absolutely mandatory! 🕵️
+    </div>
+
+    <div class="cgp-card">
+      <h3>🐌 Extended-Outage Migration: Simple, If You Can Stand It!</h3>
+      <p>Not every exam scenario demands near-zero downtime. If the business can tolerate a planned weekend outage, keep it simple and skip the complex live CDC pipelines:</p>
+      <ul class="bullet-chk">
+        <li><strong>Freeze Writes:</strong> Put the source on-prem application into maintenance/read-only mode so no new data is written. 🛑</li>
+        <li><strong>Export &amp; Import:</strong> Perform a native dump (like `pg_dump` or `mysqldump`), upload the file to Cloud Storage, and restore it directly into your target GCP instance.</li>
+        <li><strong>Validate:</strong> Verify row counts, check table checksums, run app smoke tests, and double-check user permissions.</li>
+        <li><strong>Go Live:</strong> Point your applications to the new GCP database and celebrate! It's low-risk, low-stress, and highly reliable when RTO allows.</li>
+      </ul>
+    </div>
+
+
+    <!-- Data Movement & Migration Decision Matrix -->
+    <h2>🗺️ Data Movement &amp; Migration Tools Matrix</h2>
+    <p>This handy knowledge organiser separates dedicated database migration tools from basic bulk file transfers. Learn this table and score some easy exam points!</p>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool Name</th>
+            <th>Primary Function</th>
+            <th>Reach for it when... (Exam Cues)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Database Migration Service (DMS)</strong></td>
+            <td>Managed DB Migration with CDC</td>
+            <td>Migrating MySQL, Postgres, or Oracle/SQL Server databases to Cloud SQL/AlloyDB with minimal downtime.</td>
+          </tr>
+          <tr>
+            <td><strong>Datastream</strong></td>
+            <td>Serverless Change Data Capture (CDC)</td>
+            <td>Streaming ongoing operational changes directly to BigQuery/Cloud Storage for real-time analytics.</td>
+          </tr>
+          <tr>
+            <td><strong>Storage Transfer Service (STS)</strong></td>
+            <td>Bulk file/object transfer to GCS</td>
+            <td>Scheduled, automated file/backup ingestion from AWS S3, Azure Blob, HTTP, or on-prem file systems into GCS.</td>
+          </tr>
+          <tr>
+            <td><strong>Transfer Appliance</strong></td>
+            <td>Physical shippable storage device</td>
+            <td>Very large (&gt;10 TB) database backup files on-prem where your local internet speed is too slow to upload them.</td>
+          </tr>
+          <tr>
+            <td><strong>BigQuery Federated Queries</strong></td>
+            <td>Live analytics without copying</td>
+            <td>Running real-time analytical queries directly over operational Cloud SQL / Spanner databases without moving the data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="joke-box">
+      "Why did the database engineer carry a physical map? Because they were planning a heterogeneous route!" 🗺️ (Ugh... don't quit the day job!)
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading from Google Docs</h3>
+      <div class="doc-grid">
+        <a class="doc-link" href="https://cloud.google.com/database-migration/docs" target="_blank" rel="noopener"><strong>Database Migration Service</strong><span>Supported migrations and DMS concepts.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/database-migration/docs/oracle-to-alloydb/about-conversion-workspaces" target="_blank" rel="noopener"><strong>Conversion Workspaces</strong><span>Oracle/SQL conversion workflow.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/database-migration/docs/sqlserver-to-alloydb/scenario-overview" target="_blank" rel="noopener"><strong>SQL Server Failback</strong><span>Documented heterogeneous failback scenario.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/datastream/docs/overview" target="_blank" rel="noopener"><strong>Datastream Overview</strong><span>CDC sources, destinations, and use cases.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/datastream/docs/create-a-stream" target="_blank" rel="noopener"><strong>Create a Stream</strong><span>Backfill plus ongoing changes.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/sql/docs/mysql/import-export" target="_blank" rel="noopener"><strong>Export / Import</strong><span>Useful for planned outage migrations.</span></a>
+      </div>
+    </div>
+
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before taking on the practice questions. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> What is the main difference between Database Migration Service (DMS) and Datastream?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>DMS migrates instances</strong> (brings databases into Cloud SQL/AlloyDB/Spanner). <strong>Datastream streams CDC</strong> continuously to BigQuery/GCS for real-time analytical pipelines.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> Why is continuous Change Data Capture (CDC) essential for near-zero downtime migrations?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          It captures transactions happening on the source database *while* the historical data is being copied, ensuring the new target is perfectly up-to-date at cutover time.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> Why should you enable reverse replication back to your source system after cutover?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>As a fallback safety net!</strong> But only promise what the tooling supports, and always watch replication lag. Reverse replication is a parachute, not a time machine.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Section 3 Practice Exam Questions</h2>
+      <p>Test your migration logic with these exam-style questions!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> Your team is planning to migrate a business-critical 8 TB PostgreSQL database hosted on-premises to AlloyDB in Google Cloud. The business cannot tolerate more than 5 minutes of total downtime during cutover. What is the most appropriate migration strategy and toolset?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Perform a pg_dump on-premises, compress and upload the dump to Cloud Storage, and restore it on AlloyDB during a weekend window.</li>
+          <li data-option="B">B) Configure Google Cloud Database Migration Service (DMS) to perform an initial load followed by continuous replication (CDC), and cut over during a low-traffic window.</li>
+          <li data-option="C">C) Establish an ongoing Datastream pipeline to stream tables directly from PostgreSQL to AlloyDB.</li>
+          <li data-option="D">D) Backup PostgreSQL directly to Google Cloud Storage using Storage Transfer Service, and mount Cloud Storage on the AlloyDB instance.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> An 8 TB database is far too large to migrate using offline export/import (like pg_dump), which would cause hours of downtime. Database Migration Service (DMS) solves this by taking a baseline snapshot (initial load) and then continuously streaming live transactions (CDC) from on-prem to GCP. When you are ready to cut over, replication lag is near-zero, enabling you to point your apps to AlloyDB in seconds.</p>
+          <ul>
+            <li><strong>A:</strong> Offline dump/restore is fine when the outage window allows it, but 5 minutes is not that window.</li>
+            <li><strong>C:</strong> Datastream is CDC for analytics/custom pipelines, not the primary managed AlloyDB migration workflow.</li>
+            <li><strong>D:</strong> Storage Transfer Service moves files and objects; it does not replay live database transactions into AlloyDB.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> You are tasked with migrating a mission-critical legacy Oracle database to AlloyDB for PostgreSQL. The schema includes packages, triggers, and stored procedures. What should you do to prepare the heterogeneous migration properly?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Use DMS Conversion Workspaces, review/fix converted objects, apply the schema to AlloyDB, then run a migration job with validation and a documented rollback plan.</li>
+          <li data-option="B">B) Assume DMS automatically translates every PL/SQL object perfectly and cut over without manual review.</li>
+          <li data-option="C">C) Set up a Bare Metal Solution instance running Oracle to bypass schema conversion entirely.</li>
+          <li data-option="D">D) Use Storage Transfer Service to copy Oracle data files into Cloud Storage and point AlloyDB at the bucket.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> Oracle to AlloyDB is heterogeneous, so you need conversion workspaces, human review, testing, data migration, validation, and rollback planning. This is the sensible grown-up answer with a clipboard and a cup of tea.</p>
+          <ul>
+            <li><strong>B:</strong> Conversion Workspaces help, but they do not guarantee every object converts perfectly without review.</li>
+            <li><strong>C:</strong> Bare Metal Solution keeps Oracle as Oracle; it does not meet the PostgreSQL-compatible target requirement.</li>
+            <li><strong>D:</strong> Storage Transfer Service moves files, not a live compatible AlloyDB database state.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A small internal application can be offline for a whole weekend. Its 200 GB MySQL database is simple, low-write, and the team wants the least complex migration path. What strategy is most appropriate?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Use an offline export/import during the planned outage, validate the target, then cut over.</li>
+          <li data-option="B">B) Build a complex multi-week CDC pipeline because every migration must be near-zero downtime.</li>
+          <li data-option="C">C) Use Datastream directly into the Cloud SQL primary as the only migration mechanism.</li>
+          <li data-option="D">D) Manually dual-write from the application to both databases during the weekend.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> If the outage window is generous and the database is modest, offline export/import is simpler, cheaper, and easier to validate. The exam rewards matching the strategy to requirements, not always choosing the fanciest tool.</p>
+          <ul>
+            <li><strong>B:</strong> CDC is great for tight downtime windows, but it adds unnecessary complexity here.</li>
+            <li><strong>C:</strong> Datastream is not the default direct Cloud SQL primary migration path.</li>
+            <li><strong>D:</strong> Manual dual writes are risky and unnecessary during an approved outage.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> Your analytics team wants to build a real-time data warehouse in BigQuery that mirrors active operational transactions occurring in a production Oracle database on-premises. The synchronization must capture insert, update, and delete actions continuously, and the database operations team mandates that the extraction process must not perform heavy periodic queries or full-table scans. Which tool and pattern should you use?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Write a custom Dataflow python script that polls the Oracle tables using <code>SELECT *</code> statements every 10 seconds and writes them directly into BigQuery.</li>
+          <li data-option="B">B) Use Database Migration Service (DMS) to continuously sync Oracle to a Cloud SQL MySQL database.</li>
+          <li data-option="C">C) Deploy Datastream to capture Change Data Capture (CDC) events serverlessly from the Oracle transaction logs, and stream them directly into BigQuery.</li>
+          <li data-option="D">D) Set up Storage Transfer Service (STS) to export Oracle daily dumps to Cloud Storage, and set up a scheduled load job into BigQuery.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> This is Datastream's core use case!
+          <ul>
+            <li><strong>Ongoing CDC Pipeline:</strong> Datastream is an ongoing serverless CDC engine that reads changes directly from the database's transaction/redo logs (low overhead, no heavy SQL polls!).</li>
+            <li><strong>Direct Integration:</strong> It streams those operational inserts, updates, and deletes directly into BigQuery or Cloud Storage in real time, making it the perfect and most cost-effective choice for real-time analytics. 🚀</li>
+          </ul>
+          </p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> Polling tables using SELECT statements consumes massive database CPU, misses intermediate changes, and violates the "no heavy queries" requirement.</li>
+            <li><strong>B:</strong> Database Migration Service (DMS) is for migrating databases into Cloud SQL or AlloyDB, not for streaming ongoing analytics directly to BigQuery.</li>
+            <li><strong>D:</strong> Daily exports are batch-oriented, not real-time, resulting in up to 24 hours of data latency.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="q-box">
+        <p><strong>Question 5:</strong> Your team is performing a near-zero downtime homogeneous migration of a critical 12 TB MySQL database to Cloud SQL MySQL using DMS. As part of a robust cutover playbook, the business demands an immediate rollback path: if the application encounters any unresolvable bugs on Cloud SQL during the first 48 hours of live traffic, you must be able to redirect traffic back to the on-premises database with less than 5 minutes of downtime and absolutely no data loss for writes made in the cloud. How should you design this fallback path?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Run logical manual database exports on Cloud SQL every 10 minutes, and keep them ready to be manually imported on-premises.</li>
+          <li data-option="B">B) After initial migration, configure and enable **reverse replication** (syncing write changes from the Cloud SQL primary back to the on-premises database) using CDC. Monitor replication lag closely before cutting back if needed.</li>
+          <li data-option="C">C) Re-platform the database to Cloud Spanner since it supports native global fallback triggers.</li>
+          <li data-option="D">D) Rely on daily automated backups and Point-In-Time Recovery (PITR) on the on-premises server to reconstruct missing writes manually.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> Reverse replication is your migration parachute! By setting up a continuous CDC replication loop from the newly promoted Cloud SQL instance *back* to the on-premises database, you ensure the legacy system remains perfectly synchronized with any writes made in the cloud. If you need to roll back, you can redirect traffic back to on-prem with near-zero RPO and RTO! 🪂</p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> Exporting and importing a 12 TB database takes hours, violating the 5-minute RTO constraint, and 10-minute exports would still cause up to 10 minutes of data loss (RPO).</li>
+            <li><strong>C:</strong> Moving to Spanner is a heterogeneous migration that requires extensive schema design and code rewrites, which is out of scope for a MySQL homogeneous rollback plan.</li>
+            <li><strong>D:</strong> Backups and PITR on-premises can reconstruct the legacy state before migration, but they cannot magically fetch new write transactions that occurred *in* the cloud after cutover!</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>Written in the classic CGP Style &bull; Grounded in current GCP documentation &bull; Today's Date: Monday, June 8, 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

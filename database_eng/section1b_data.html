@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 1B Revision Guide - Database Selection & Schema Design</title>
+  <style>
+    :root {
+      --bg-light: #f7fee7;
+      --ink: #1e293b;
+      --cgp-blue: #0d9488;
+      --cgp-blue-light: #f0fdfa;
+      --cgp-blue-border: #14b8a6;
+      --cgp-yellow: #fef08a;
+      --cgp-yellow-dark: #eab308;
+      --cgp-orange: #ea580c;
+      --cgp-red: #ef4444;
+      --cgp-green: #16a34a;
+      --cgp-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ecfccb' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover {
+      background: var(--cgp-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #2dd4bf 0%, var(--cgp-blue) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--cgp-blue);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .cgp-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .cgp-card.tip {
+      background: #f0fdfa;
+      border-color: var(--cgp-blue);
+      box-shadow: 4px 4px 0px var(--cgp-blue);
+    }
+
+    .cgp-card.tip h3 {
+      color: var(--cgp-blue);
+      margin-top: 0;
+    }
+
+    .cgp-card.warn {
+      background: #fef2f2;
+      border-color: var(--cgp-red);
+      box-shadow: 4px 4px 0px var(--cgp-red);
+    }
+
+    .cgp-card.warn h3 {
+      color: var(--cgp-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--cgp-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--cgp-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--cgp-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--cgp-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--cgp-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--cgp-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--cgp-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--cgp-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--cgp-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--cgp-blue);
+      box-shadow: 2px 2px 0px var(--cgp-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--cgp-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--cgp-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--cgp-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="section1a_infra.html" class="nav-link">&larr; Back to Section 1A: Infrastructure</a>
+      <a href="index.html" class="nav-link">Back to Revision Hub</a>
+    </div>
+
+    <header>
+      <h1>Section 1B: Database Selection &amp; Schema Design</h1>
+      <p>Master the Database Decision Matrix, conquer the Firestore mode trap, and unlock Spanner schema and index tuning secrets!</p>
+      <div class="section-badge">Section 1 Part B 🎯</div>
+    </header>
+
+    <!-- 1.4 Evaluating the right DB -->
+    <h2>1.4 Pick a Card, Any Card &mdash; Choosing the Right Database!</h2>
+    <p>This is the absolute <strong>meat and potatoes</strong> of the exam. The examiners will throw weird business scenarios at you, and you must pick the perfect database engine. Get it wrong, and you'll fail the exam <em>and</em> bankrupt the company! No pressure then! 😉</p>
+
+    <div class="mnemonic">
+      <strong>🧠 The Legendary NoSQL Mnemonic: B.I.T., F.M.R., and M.S.C.!</strong>
+      <p>If you're sweating under exam pressure, use these quick memory hooks to distinguish Google's NoSQL offerings:</p>
+      <ul>
+        <li><strong>Bigtable (B.I.T.):</strong> <strong>B</strong>ig Data, <strong>I</strong>oT, <strong>T</strong>ime-series! Think petabyte-scale, high-throughput, HBase API, and streaming metrics. 📈</li>
+        <li><strong>Firestore (F.M.R.):</strong> <strong>F</strong>lexible document, <strong>M</strong>obile, <strong>R</strong>eal-time sync! Great for gaming profiles, offline modes, and hierarchical documents. 📱</li>
+        <li><strong>Memorystore (M.S.C.):</strong> <strong>M</strong>illisecond, <strong>S</strong>ession, <strong>C</strong>ache! Lightning-fast, in-memory Redis/Valkey for temporary speed. ⚡</li>
+      </ul>
+    </div>
+
+    <!-- DB Decision Matrix Organizer -->
+    <h3>🗺️ The Ultimate DB Decision Matrix (Knowledge Organiser)</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Database Engine</th>
+            <th>Type</th>
+            <th>Horizontal Scale?</th>
+            <th>Consistency</th>
+            <th>Reach for it when... (Exam Cues)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Cloud SQL</strong></td>
+            <td>Relational (MySQL/Postgres)</td>
+            <td>❌ No (Vertical only)</td>
+            <td>Strong</td>
+            <td>Standard transactional web apps, lift-and-shift of legacy DBs. Max 64 TB.</td>
+          </tr>
+          <tr>
+            <td><strong>AlloyDB</strong></td>
+            <td>Relational (PostgreSQL-compatible)</td>
+            <td>Read pool scale-out, not global write scale</td>
+            <td>Strong</td>
+            <td>Heavy enterprise Postgres, HTAP (hybrid transactional &amp; analytical workloads), vector search.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud Spanner</strong></td>
+            <td>Relational (Enterprise)</td>
+            <td>✔️ <strong>Yes! (Global transactional scale)</strong></td>
+            <td>Strong (TrueTime)</td>
+            <td>Global transactional scale, strict consistency, and carefully designed keys to avoid hotspots.</td>
+          </tr>
+          <tr>
+            <td><strong>Bigtable</strong></td>
+            <td>NoSQL (Wide-column)</td>
+            <td>✔️ Yes (Petabytes)</td>
+            <td>Strong in single-cluster; eventual across replicated clusters</td>
+            <td>IoT sensors, time-series, financial tick data, AdTech, streaming ingestion. Low latency key-value.</td>
+          </tr>
+          <tr>
+            <td><strong>Firestore</strong></td>
+            <td>NoSQL (Document)</td>
+            <td>✔️ Yes (Auto)</td>
+            <td>Strong</td>
+            <td>Mobile/web backends, user profiles, gaming states, <strong>real-time sync &amp; offline mode</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Memorystore</strong></td>
+            <td>In-Memory (Redis/Valkey)</td>
+            <td>Basic/Standard: vertical; Redis Cluster: sharded scale-out</td>
+            <td>N/A (Ephemeral)</td>
+            <td>Sub-millisecond cache, session stores, leaderboards, rapid rate-limiting.</td>
+          </tr>
+          <tr>
+            <td><strong>Bare Metal Solution</strong></td>
+            <td>Unmanaged Hardware</td>
+            <td>❌ No</td>
+            <td>Strong</td>
+            <td>Existing <strong>Oracle</strong> databases that must remain Oracle (licensing / custom hardware reasons).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FIRESTORE TWO MODES -->
+    <div class="cgp-card warn">
+      <h3>🔥 The Irreversible Firestore Mode Trap! (Native vs. Datastore)</h3>
+      <p>When you spin up a **Firestore** database, you must make a critical choice: **Native Mode** or **Datastore Mode**. Listen carefully: **This choice is permanent and irreversible!**</p>
+      <p>If you choose the wrong mode, there is no "convert" button. The only fix is to spin up a brand new database (or new GCP project) and manually migrate all your data using Dataflow or GCS import/export! Google examiners <em>love</em> to test whether you know this before launching a system. 💀</p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature / Spec</th>
+              <th>Firestore Native Mode</th>
+              <th>Firestore Datastore Mode</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Primary Target</strong></td>
+              <td>Client-facing mobile, web, and IoT apps 📱</td>
+              <td>High-throughput, server-side backends 🖥️</td>
+              </tr>
+            <tr>
+              <td><strong>Data Model</strong></td>
+              <td>Document database (Collections &amp; Documents)</td>
+              <td>Legacy Datastore model (Kinds &amp; Entities)</td>
+            </tr>
+            <tr>
+              <td><strong>Real-Time Sync</strong></td>
+              <td>✔️ **Supported** (Listeners via <code>onSnapshot</code>)</td>
+              <td>❌ **Not Supported** (Must poll)</td>
+            </tr>
+            <tr>
+              <td><strong>Offline Caching</strong></td>
+              <td>✔️ **Supported** natively in Web/Mobile SDKs</td>
+              <td>❌ **Not Supported** (Server environment assumed)</td>
+            </tr>
+            <tr>
+              <td><strong>Security Rules</strong></td>
+              <td>✔️ **Supported** (Enforces client-side security)</td>
+              <td>❌ **Not Supported** (Security handled by backend server)</td>
+            </tr>
+            <tr>
+              <td><strong>Write Throughput</strong></td>
+              <td>Unbounded, but limited to **~1 write/sec per document**</td>
+              <td>Natively scales to **millions of writes/sec** easily</td>
+            </tr>
+            <tr>
+              <td><strong>Client SDKs</strong></td>
+              <td>Firestore Client SDKs (Direct mobile/web access)</td>
+              <td>Datastore Client SDKs (Server-to-server only)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mnemonic" style="background: #fdf2f8; border-color: #db2777; box-shadow: 4px 4px 0px #db2777;">
+        <strong>🧠 Super-Sticky Firestore Mnemonics:</strong>
+        <ul>
+          <li><strong>N.O.R.S. (Firestore Native):</strong> <strong>N</strong>ative mode has <strong>O</strong>ffline caching, <strong>R</strong>eal-time listeners, and <strong>S</strong>ecurity rules! (Your mobile champion!) 📱</li>
+          <li><strong>D.S.H. (Firestore Datastore):</strong> <strong>D</strong>atastore mode is <strong>S</strong>erver-side only, and excels at <strong>H</strong>igh-volume write throughput! (Your backend heavy-lifter!) 🖥️</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- GenAI / Vector Databases -->
+    <div class="cgp-card tip">
+      <h3>🤖 GenAI &amp; Vector Databases &mdash; The New Kid on the Block</h3>
+      <p>Modern applications love vectors and embeddings for LLM context retrieval (RAG). Rather than spinning up a completely separate search engine, Google lets you store vectors right inside your transactional databases:</p>
+      <ul>
+        <li><strong>AlloyDB for PostgreSQL:</strong> Uses <code>pgvector</code> plus AlloyDB's high-performance ScaNN index for spicy vector search.</li>
+        <li><strong>Cloud SQL for PostgreSQL:</strong> Supports <code>pgvector</code> and HNSW, but not AlloyDB's PostgreSQL ScaNN extension.</li>
+        <li><strong>Cloud SQL for MySQL:</strong> Can use ScaNN vector indexes for MySQL workloads.</li>
+        <li><strong>Spanner:</strong> Supports vector search and built-in ML integrations natively.</li>
+        <li><strong>Firestore:</strong> Offers vector similarity search directly on document collections.</li>
+      </ul>
+    </div>
+
+    <div class="cgp-card">
+      <h3>🧾 The Boring-Sounding Design Checks That Win Marks</h3>
+      <p>Before you shout "Spanner!" and run off heroically, make sure you double-check these grown-up enterprise constraints:</p>
+      <ul class="bullet-chk">
+        <li><strong>Application Dependencies:</strong> Watch out for specific database drivers, SQL dialects, legacy extensions, stored procedures, network latency, and batch jobs.</li>
+        <li><strong>Compliance &amp; Residency:</strong> Region choices, data residency regulations, CMEK (Customer-Managed Encryption Keys), audit logs, and strict retention/deletion controls.</li>
+        <li><strong>Org Policies:</strong> Google organization policies can block specific regions, restrict public IPs, enforce CMEK, or mandate VPC Service Controls. If an org policy blocks public IPs, don't even dream of requesting one!</li>
+        <li><strong>Non-Native Workloads:</strong> If Oracle or SQL Server licensing/custom hardware requirements prevent a native migration, reach for partner marketplace options or a **Bare Metal Solution**.</li>
+        <li><strong>The Money Talk (Cost):</strong> Don't just budget for the main database instance. You must account for storage, backups, read replicas, networking egress, licenses, and Committed Use Discounts (CUDs). *Remember: the cheapest database option is never cheap if it makes your DBA team cry every Tuesday!* 😭</li>
+      </ul>
+    </div>
+
+    <!-- 1.5 Schema Design Secrets -->
+    <h2>1.5 Schema Design Secrets &mdash; Hotspotting, Indexes, and Hops!</h2>
+    <p>Alright, down to the nitty-gritty of horizontal scale! When you use a massive horizontally-scalable engine like <strong>Cloud Spanner</strong> or <strong>Cloud Bigtable</strong>, you cannot design tables like a standard single-node database. There are some massive, high-yield exam topics hidden here that examiners <em>love</em> to test. Learn these and you'll slide through with full marks! 🎓</p>
+
+    <div class="cgp-card warn">
+      <h3>🔥 The Fire-Breathing Monster: Hotspotting</h3>
+      <p>By default, both Spanner and Bigtable partition your data across multiple servers (called splits or tablets) based on the sorting of your **Primary Key**. If your primary key is sequential (like auto-incrementing integers, database sequences, or timestamps), every single new write will have a value higher than the last one.</p>
+      <p>This means **every single write will be sent to the exact same partition/server (the hot split)** while all your other expensive servers sit around doing absolutely nothing! This is called <strong>hotspotting</strong>, and it will choke your database's performance to death! 💀</p>
+      <p>To kill the hotspotting monster, you must **randomize your primary keys** using these expert tricks:</p>
+      <ul class="bullet-chk">
+        <li><strong>Use Cryptographic Hash values (e.g. SHA-256):</strong> Hash your sequential ID and use that as the primary key.</li>
+        <li><strong>Prepend a Shard ID (Prefix Sharding):</strong> Calculate a hash of some value, modulo it by a small number of shards (e.g. 0 to 9), and prepend it to your sequential ID (e.g. <code>4_2026-06-09_12-30-00</code>). Writes are now beautifully spread across different servers! 🌟</li>
+        <li><strong>Reverse the Bits/Sequential values:</strong> Reverse the digits of your auto-incrementing ID so they don't sort sequentially (e.g. <code>10001</code> becomes <code>10001</code>, but <code>10002</code> becomes <code>20001</code>, completely randomizing the physical sort order!).</li>
+        <li><strong>Use UUIDv4:</strong> Universally Unique Identifiers (v4 is pseudo-random) distribute writes perfectly across your entire key space!</li>
+      </ul>
+
+      <h3>🚨 Index-Level Hotspotting &amp; Null-Filtered Indexes!</h3>
+      <p>Did you think hotspotting only happens on your base tables? Think again! This is an advanced trap! If you create a secondary index on a **sequential/monotonic column** (like <code>CreatedTimestamp</code>) or a **low-cardinality column** (like a boolean <code>IsProcessed</code> or status column where 99% of values are NULL or 'PENDING'), you will trigger **index hotspotting**! 😱</p>
+      <p>Since Spanner treats secondary indexes like separate sorted tables, writes to those indexes will pile into a single index split!</p>
+      <p><strong>🛠️ The Fix: Null-Filtered Indexes!</strong></p>
+      <p>If you are indexing a column where only a tiny fraction of rows have non-null values that you actually care about, create a **Null-Filtered Index**:
+        <pre><code>CREATE NULL_FILTERED INDEX idx_unprocessed_orders 
+ON Orders(UnprocessedTimestamp);</code></pre>
+      By filtering out NULLs, Spanner completely excludes those rows from the index splits. This avoids massive index bloat, dramatically reduces storage costs, and prevents index split hotspotting during high-volume base table writes! Brilliant! ✨</p>
+    </div>
+
+    <div class="cgp-card tip">
+      <h3>🔍 Secondary Indexes: Double the Power, Double the Traps!</h3>
+      <p>Sometimes you need to query non-primary-key columns quickly. For example, if your primary key is <code>CustomerID</code>, but you constantly query users by <code>EmailAddress</code>. In Cloud Spanner, you solve this by creating a <strong>Secondary Index</strong> (e.g., <code>CREATE INDEX idx_email ON Customers(EmailAddress)</code>).</p>
+      <p>But watch out! Under the hood, Spanner treats secondary indexes like a completely separate table. If your query asks for columns that aren't inside the secondary index, Spanner has to look up the rows in the index, and then do a slow, expensive <strong>"back-join"</strong> to the base table to fetch the missing columns. This requires an extra <strong>network hop</strong> to another server! 🐌</p>
+      <p>How do we bypass this back-join traffic jam? Use the **`STORING` clause**! 🪂</p>
+      <pre><code>-- The Ultimate Performance Weapon!
+CREATE INDEX idx_email 
+ON Customers(EmailAddress) 
+STORING (DisplayName, PhoneNumber);</code></pre>
+      <p>This clones the stored columns directly into the index. If your query only asks for <code>EmailAddress</code>, <code>DisplayName</code>, and <code>PhoneNumber</code>, Spanner can answer the query entirely from the secondary index, saving you a slow and painful network hop back to the main table! Outstanding!</p>
+      
+      <h4>💸 The Index Write Overhead Penalty (MVCC locking)</h4>
+      <p>Remember: index speed isn't free! Every secondary index you add acts as a physical separate table. Under the hood, Spanner uses Multiversion Concurrency Control (MVCC). When you write or update a row in the base table, Spanner must execute a **distributed transaction** to synchronously write to both the base table split and the secondary index split. This causes locking, burns CPU, and adds write latency. **So only add secondary indexes when you absolutely need them!**</p>
+    </div>
+
+    <div class="mnemonic" style="border-color: #db2777; box-shadow: 4px 4px 0px #db2777;">
+      <strong>🧠 Spanner Table Interleaving Specifications &amp; Limits</strong>
+      <p>If you have a Parent-Child relationship (like <code>Customers</code> and <code>Orders</code>) and you frequently query them together in a SQL JOIN, you'll burn through your network budget doing hops between splits.</p>
+      <p>The solution? **Table Interleaving**! This physically nests the child rows (orders) inside the parent row's storage split. Spanner co-locates them on the exact same physical disk, allowing you to run joins with **zero network hops**! Absolute speed perfection! ⚡</p>
+      
+      <p><strong>⚠️ Crucial Specifications to Memorize for the Exam:</strong></p>
+      <ul>
+        <li><strong>Primary Key Requirement:</strong> To interleave a child table, the parent's primary key must be the **prefix** of the child's primary key (e.g., Parent PK is <code>CustomerID</code>; Child PK must be <code>(CustomerID, OrderID)</code>).</li>
+        <li><strong>Cascading Deletes:</strong> You can configure how child rows are handled when a parent is deleted:
+          <ul>
+            <li><code>ON DELETE CASCADE</code>: Deletes all child rows automatically when the parent is deleted.</li>
+            <li><code>ON DELETE PREVENT</code>: Rejects the delete statement if child rows exist (default).</li>
+          </ul>
+        </li>
+        <li><strong>The Hard Platform Limit:</strong> Spanner supports up to **7 levels of nested table interleaving** (Parent &rarr; Child &rarr; Grandchild, etc.). Don't let examiners trick you into designing a 10-level deep interleaving chain!</li>
+      </ul>
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading from Google Docs</h3>
+      <div class="doc-grid">
+        <a class="doc-link" href="https://cloud.google.com/spanner/docs/whitepapers/optimizing-schema-design" target="_blank" rel="noopener"><strong>Spanner Schema Design</strong><span>Spanner schema best practices and anti-patterns.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/firestore/docs/firestore-or-datastore" target="_blank" rel="noopener"><strong>Firestore Modes Guide</strong><span>How to choose between Firestore Native and Datastore.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/bigtable/docs/schema-design" target="_blank" rel="noopener"><strong>Bigtable Schema Design</strong><span>Row key design and performance considerations.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/alloydb/docs/ai/vector-search-overview" target="_blank" rel="noopener"><strong>AlloyDB Vector Search</strong><span>pgvector, HNSW, and ScaNN.</span></a>
+      </div>
+    </div>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Which database should you choose for global transactional scale with strong consistency?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Cloud Spanner!</strong> Global TrueTime-powered horizontally scalable relational DB. Lift-and-shift goes to Cloud SQL, but Spanner wins for global horizontal scale.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> True or False: You can switch a Firestore database from Datastore mode to Native mode in-place after creation.</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>False!</strong> Firestore database mode is irreversible once set at database creation. To switch, you must spin up a new database/project and migrate the data!
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What is the best way to prevent a secondary index in Spanner from bottlenecking when indexing a monotonic column where 95% of the values are null?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          Create a **Null-Filtered Index** (`CREATE NULL_FILTERED INDEX`). This filters out null values, preventing them from bloating the index and hotspotting on the latest monotonic value.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> What is the hard platform limit for nested levels of table interleaving in Cloud Spanner?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          **Up to 7 levels!** Anything deeper is rejected by the Spanner parser.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Section 1B Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style database selection and schema tuning brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> Your company is migrating an on-premises PostgreSQL database to Google Cloud. The database handles intense transactional traffic, and the data engineers also want to run real-time analytics reports over the same fresh data without hammering the primary write path. Which database service is the most appropriate and cost-effective choice?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Cloud Spanner with standard nodes.</li>
+          <li data-option="B">B) AlloyDB for PostgreSQL with a columnar engine and dedicated read pools.</li>
+          <li data-option="C">C) Cloud SQL for PostgreSQL with a high-memory instance and a standard read replica.</li>
+          <li data-option="D">D) BigQuery federated with a Cloud SQL read replica.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why AlloyDB is correct:</strong> AlloyDB is specifically designed for high-performance PostgreSQL workloads that have mixed transactional and analytical needs (HTAP). It includes a columnar engine that speeds up analytical queries, and you can spin up dedicated read pools that offload the reporting queries entirely without touching the write capacity. This is PostgreSQL-compatible, so application changes are usually much smaller than a full re-platform.</p>
+          <p><strong>Why the others are wrong:</strong></p>
+          <ul>
+            <li><strong>A (Spanner):</strong> Spanner is incredible for global scale but requires custom architecture and query/schema validation, making it too big a hammer for a PostgreSQL-compatible HTAP migration.</li>
+            <li><strong>C (Cloud SQL):</strong> Cloud SQL can handle standard operational Postgres, but heavy real-time reporting is not its party trick compared with AlloyDB's columnar engine and read pools.</li>
+            <li><strong>D (BigQuery):</strong> BigQuery is excellent for analytics, but federated queries are not a replacement for a transactional serving database.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> You are designing a global database on Cloud Spanner for a high-traffic e-commerce application. The primary key for the <code>Users</code> table is currently a sequential integer, which is causing severe write bottlenecks. Additionally, a critical query searches for users by <code>EmailAddress</code> and returns their <code>DisplayName</code> and <code>PhoneNumber</code>; this query is experiencing high read latency due to back-joins to the base table. Which schema changes will resolve both performance issues?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Keep sequential keys but configure a connection pooler to throttle writes. Create a standard secondary index on EmailAddress.</li>
+          <li data-option="B">B) Interleave the Users table within a new parent table. Create a secondary index on EmailAddress and rewrite the query using a LEFT JOIN.</li>
+          <li data-option="C">C) Prepend a hash-based shard ID (Prefix Sharding) to UserIDs to randomize writes. Create a secondary index on EmailAddress with a STORING clause that includes DisplayName and PhoneNumber.</li>
+          <li data-option="D">D) Change the primary key to a sequential timestamp to randomize writes. Create a secondary index on EmailAddress, and use force index hints in SQL.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> This is a double-whammy database design win!
+          <ul>
+            <li><strong>Fixing Writes (Hotspotting):</strong> Prepended shard IDs (or bit-reversing, or using random UUIDv4s) randomizes the primary keys physically, distributing incoming writes across all Spanner splits instead of pounding a single server node.</li>
+            <li><strong>Fixing Reads (Network Hops):</strong> Creating a secondary index on <code>EmailAddress</code> and adding the <code>STORING (DisplayName, PhoneNumber)</code> clause duplicates those two columns inside the index structure. When the query executes, Spanner can read all needed fields entirely from the index and completely bypasses the expensive **back-join** lookup to the base table &mdash; eliminating a slow network hop! ⚡</li>
+          </ul>
+          </p>
+          <p><strong>Why the others are wrong:</strong></p>
+          <ul>
+            <li><strong>A:</strong> Throttling writes is not a solution, it's a speed limit on your business! A standard index without STORING still suffers from back-joins and high latency.</li>
+            <li><strong>B:</strong> Table Interleaving is for Parent-Child relationships (like Customer &rarr; Orders), not for single-table indexing. It doesn't help hotspotting on the parent, nor does it solve the back-join read bottleneck.</li>
+            <li><strong>D:</strong> Timestamps are strictly sequential and will actually *cause* massive hotspotting as time marches forward!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A gaming company is building a massive global multiplayer mobile game on Google Cloud. They need to choose the right databases for three separate workloads: (1) real-time player game-state sync with robust offline support for mobile users, (2) a sub-millisecond global leaderboard and user session store, and (3) a high-throughput, petabyte-scale ingestion pipeline for continuous game telemetry and sensor event data. Which combination of NoSQL databases is the most cost-effective and performant?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Cloud Bigtable for player game-states, Memorystore for the telemetry pipeline, and Firestore for the session store.</li>
+          <li data-option="B">B) Firestore (Native mode) for player game-states and offline sync; Memorystore (Redis) for sub-millisecond session stores and leaderboards; Cloud Bigtable for high-throughput petabyte-scale telemetry ingestion.</li>
+          <li data-option="C">C) Cloud Spanner for player game-states, Firestore for the session store, and Memorystore for the telemetry pipeline.</li>
+          <li data-option="D">D) Cloud Bigtable for all three workloads to consolidate technology stacks and reduce licensing fees.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This perfectly aligns with our legendary NoSQL mnemonics:
+          <ul>
+            <li><strong>Firestore (F.M.R. &mdash; Flexible Document, Mobile, Real-Time):</strong> Native mode offers built-in real-time listener pushes and local offline client data sync, making it the perfect back-end database for mobile game state. 📱</li>
+            <li><strong>Memorystore (M.S.C. &mdash; Millisecond, Session, Cache):</strong> In-memory speed is ideal for sub-millisecond session stores, rate-limiting, and sorting leaderboards. ⚡</li>
+            <li><strong>Cloud Bigtable (B.I.T. &mdash; Big Data, IoT, Time-Series):</strong> Horizontally scalable wide-column engine that easily absorbs petabytes of continuous high-throughput ingestion with ultra-low write latency. 📈</li>
+          </ul>
+          </p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> Bigtable does not have built-in mobile offline sync, and Memorystore is too expensive to act as a petabyte-scale long-term telemetry database.</li>
+            <li><strong>C:</strong> Spanner is a relational database and over-provisioned for telemetry; Memorystore is not suited for petabyte-scale storage.</li>
+            <li><strong>D:</strong> Consolidating everything into Bigtable would make mobile offline synchronization extremely complex and increase leaderboard query latencies.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> An enterprise retail company is migrating its legacy core ERP application to Google Cloud. The application currently runs on a massive on-premises Oracle 19c database. Several proprietary PL/SQL packages, custom stored procedures, and triggers are tightly integrated with the app, and the company has complex Oracle licensing agreements that cannot be modified. Due to tight business deadlines, they cannot re-architect or rewrite any database code within the next 24 months. What is the recommended migration and hosting architecture?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Migrate the Oracle database to Cloud Spanner using DMS Conversion Workspaces, and force the developers to rewrite the PL/SQL packages during the migration.</li>
+          <li data-option="B">B) Migrate the database to Google Cloud Bare Metal Solution (BMS) to run Oracle on certified, dedicated physical servers. Connect BMS to your GCP VPC networks via high-speed, low-latency Partner Interconnect, and migrate application tiers to GCE/GKE.</li>
+          <li data-option="C">C) Deploy a PostgreSQL-compatible AlloyDB database, and use a third-party migration wrapper to translate Oracle PL/SQL calls on the fly.</li>
+          <li data-option="D">D) Run Oracle inside standard Google Compute Engine (GCE) VM instances using standard persistent disks for storage.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> Bare Metal Solution (BMS) is Google's dedicated escape hatch for workloads like Oracle that cannot be modernized easily! It provides dedicated hardware running in Google-adjacent colocation centers with direct, low-latency Interconnect links back to GCP. This allows you to run Oracle as Oracle, preserving your existing licenses, support agreements, and complex PL/SQL logic, while allowing you to modernize your app server tiers on GKE or Compute Engine! 🏢🚀</p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A &amp; C:</strong> Modernizing Oracle to Spanner or PostgreSQL-compatible AlloyDB is heterogeneous, extremely complex, and requires rewriting thousands of lines of PL/SQL, which is explicitly ruled out by the 24-month timeline constraint.</li>
+            <li><strong>D:</strong> Running Oracle on standard multi-tenant GCE VMs violates strict Oracle licensing rules (which require licensing every physical core on the hypervisor host), leading to exorbitant and punitive licensing fees.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+      <!-- Question 5 (New Firestore Mode Mistake Trap) -->
+      <div class="q-box">
+        <p><strong>Question 5 (New Firestore Trap!):</strong> A lead developer created a Firestore database for a new mobile chat application. A few weeks into development, the team realizes they cannot bind real-time listeners (`onSnapshot`) to document collections in their mobile client apps, and they are forced to constantly poll the database. Upon investigation, you discover the database was mistakenly created in Datastore Mode instead of Native Mode. How must you resolve this issue?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Run a gcloud command to switch the Firestore database mode in-place from Datastore to Native.</li>
+          <li data-option="B">B) Create a new Firestore database in Native Mode (or create a new GCP project and provision Firestore in Native Mode), set up a Dataflow pipeline or run an export/import job to migrate existing data to the new database, and update the mobile application client configuration to target the new instance.</li>
+          <li data-option="C">C) Keep Datastore Mode but deploy a Cloud SQL Auth Proxy to translate real-time listener requests on the fly.</li>
+          <li data-option="D">D) Write custom SOCKS5 tunneling scripts inside the mobile client applications to simulate a real-time event pipeline over standard Datastore entities.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This is an classic, painful GCP database trap! The choice between Firestore Native Mode and Datastore Mode is **set at database creation time and is completely irreversible in-place**. 
+          Because Datastore Mode does not support real-time pushes, client-side offline caching, or mobile client Security Rules, the team has no way to support direct mobile client sync in this database. 
+          The only remediation path is:
+          <ol>
+            <li>Spin up a brand new database in **Native Mode** (which may require a new GCP project as each project supports exactly one Firestore database, or using Firestore multi-database support if available in your configuration).</li>
+            <li>Export the existing Datastore entities to Google Cloud Storage (GCS) and import them into the new Native database (converting kinds/entities to collections/documents where necessary), or run a custom **Dataflow** migration pipeline.</li>
+            <li>Update your mobile applications' configurations to reference the new Native Mode database.</li>
+          </ol>
+          </p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> There is absolutely no gcloud command, API call, or console setting that can change Firestore mode in-place. The choice is permanent.</li>
+            <li><strong>C:</strong> Cloud SQL Auth Proxy is for secure database tunneling to Cloud SQL/AlloyDB. It has nothing to do with Firestore or Firestore's protocol differences.</li>
+            <li><strong>D:</strong> SOCKS5 tunnels do not add real-time features to an engine that does not support them natively. Attempting to build application-level polling and syncing on mobile client apps drains device batteries and is highly inefficient.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+      <!-- Question 6 (New Spanner Null-Filtered Index Trap) -->
+      <div class="q-box">
+        <p><strong>Question 6 (New Spanner Index Trap!):</strong> You are managing a massive Cloud Spanner database for an international logistics platform. The <code>Shipments</code> table handles intense write traffic. A column named <code>ActiveIssuesTimestamp</code> is set to NULL for 99.5% of rows, and is set to a monotonic, increasing timestamp when a shipment encounters an active delay. To support a customer service dashboard, you created a secondary index on <code>ActiveIssuesTimestamp</code>. However, the database team reports severe write latency and CPU spikes concentrated on a single Spanner node. How should you resolve this issue?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Re-provision Spanner with SSDs instead of HDDs to absorb the high IOPS.</li>
+          <li data-option="B">B) Drop the secondary index and recreate it as a NULL-FILTERED index (`CREATE NULL_FILTERED INDEX`). Additionally, ensure that the base table primary key is completely randomized (using UUIDs or bit-reversal) to prevent base-level hotspotting.</li>
+          <li data-option="C">C) Interleave the secondary index inside the Shipments base table using the INTERLEAVE IN clause.</li>
+          <li data-option="D">D) Throttling the dashboard queries to run once every 24 hours so Spanner has time to rebuild its index splits.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This is a sophisticated index hotspotting scenario!
+          <ol>
+            <li><strong>The Index Hotspotting Cause:</strong> Since 99.5% of shipment rows have a NULL value for <code>ActiveIssuesTimestamp</code>, a standard secondary index will store index entries for *every single row*, including those with NULL values. Piling millions of identical NULL entries into the sorted index structure concentrates write load into a single physical index split. Furthermore, for the 0.5% that do have values, the timestamp is monotonic (strictly increasing), causing all new delay entries to hit the tail end of the index split, compounding the hot-spotting bottleneck on a single Spanner node!</li>
+            <li><strong>The Null-Filtered Index Fix:</strong> Creating a **Null-Filtered Index** (`CREATE NULL_FILTERED INDEX`) tells Spanner to ignore any row where the indexed column is NULL. Since 99.5% of rows are NULL, this eliminates 99.5% of write updates to the secondary index! The index size shrinks dramatically, base table writes no longer suffer from MVCC write lock overhead, and the hotspotting on the index split is eradicated!</li>
+          </ol>
+          </p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> Spanner is a platform-managed service and always runs on high-performance storage. You cannot manually select HDDs or SSDs for Spanner compute nodes.</li>
+            <li><strong>C:</strong> You cannot interleave a secondary index. Interleaving is strictly a base table-to-table physical co-location mechanism.</li>
+            <li><strong>D:</strong> Throttling queries does not solve **write** latency. The write latency is caused by base table row inserts triggering synchronous updates to a hot secondary index split.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>Written in the classic CGP Style &bull; Grounded in current GCP documentation &bull; Today's Date: Monday, June 9, 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

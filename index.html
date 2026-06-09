@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Professional Cert Prep — Study Portal</title>
+  <style>
+    :root {
+      --bg-light: #fefcf4;
+      --ink: #1e293b;
+      --cgp-yellow: #fef08a;
+      --cgp-blue: #3b82f6;
+      --cgp-violet: #8b5cf6;
+      --cgp-teal: #0d9488;
+      --cgp-orange: #ea580c;
+      --cgp-green: #16a34a;
+      --cgp-red: #ef4444;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fef9c3' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 15px 60px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "CGP STYLE!";
+      position: absolute;
+      top: 15px;
+      right: -35px;
+      background: var(--cgp-red);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 6px 40px;
+      transform: rotate(45deg);
+      border: 2px solid #000;
+    }
+
+    .badge-cgp {
+      background: var(--cgp-red);
+      color: white;
+      display: inline-block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 2px solid #000;
+      transform: rotate(-2deg);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin: 10px 0;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 3px 3px 0px #fff;
+    }
+
+    .tagline {
+      font-size: 1.15rem;
+      margin: 10px auto;
+      max-width: 700px;
+      font-style: italic;
+    }
+
+    .intro-section {
+      background: white;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 25px;
+      margin-bottom: 40px;
+    }
+
+    .intro-title {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: var(--cgp-orange);
+    }
+
+    .grid-certs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-certs { grid-template-columns: 1fr; }
+    }
+
+    .cert-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cert-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000;
+    }
+
+    .cert-card.db { border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); }
+    .cert-card.db:hover { box-shadow: 6px 6px 0px var(--cgp-blue); }
+    .cert-card.sec { border-color: var(--cgp-violet); box-shadow: 4px 4px 0px var(--cgp-violet); }
+    .cert-card.sec:hover { box-shadow: 6px 6px 0px var(--cgp-violet); }
+    .cert-card.devops { border-color: var(--cgp-teal); box-shadow: 4px 4px 0px var(--cgp-teal); }
+    .cert-card.devops:hover { box-shadow: 6px 6px 0px var(--cgp-teal); }
+    .cert-card.data { border-color: var(--cgp-orange); box-shadow: 4px 4px 0px var(--cgp-orange); }
+    .cert-card.data:hover { box-shadow: 6px 6px 0px var(--cgp-orange); }
+
+    .cert-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      align-self: start;
+    }
+
+    .db .cert-badge { background: var(--cgp-blue); }
+    .sec .cert-badge { background: var(--cgp-violet); }
+    .devops .cert-badge { background: var(--cgp-teal); }
+    .data .cert-badge { background: var(--cgp-orange); }
+
+    .cert-title {
+      font-size: 1.25rem;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .cert-desc {
+      font-size: 0.95rem;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .btn-cgp {
+      display: inline-block;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 16px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      text-align: center;
+      transition: background 0.15s;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .btn-cgp:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px #000;
+    }
+
+    .btn-primary { background: var(--cgp-yellow); }
+    .btn-primary:hover { background: #fde047; }
+    .btn-secondary { background: #f1f5f9; font-size: 0.85rem; padding: 8px 12px; }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-cgp">Revision Guides</div>
+      <h1>GCP Cert Prep Portal</h1>
+      <p class="tagline">Interactive CGP-style study guides for Google Cloud Professional certifications. Pick your exam, dodge the traps, pass with style.</p>
+    </header>
+
+    <section class="intro-section">
+      <h2 class="intro-title">How to use this portal</h2>
+      <p>Each certification has its own folder of HTML study guides — section walkthroughs, cheatsheets, and practice quizzes. <strong>Database Engineer</strong> is the most complete (full section guides + cheatsheet). The others have cheatsheets and practice material.</p>
+    </section>
+
+    <div class="grid-certs">
+      <article class="cert-card db">
+        <span class="cert-badge">STUDY GUIDE</span>
+        <h3 class="cert-title">Professional Cloud Database Engineer</h3>
+        <p class="cert-desc">Full CGP revision portal with 4 exam sections, decision matrix, hybrid networking traps, and interactive quizzes.</p>
+        <div class="btn-group">
+          <a href="database_eng/index.html" class="btn-cgp btn-primary">Open Study Portal &rarr;</a>
+          <a href="database_eng/cheatsheet.html" class="btn-cgp btn-secondary">Quick Cheatsheet</a>
+        </div>
+      </article>
+
+      <article class="cert-card sec">
+        <span class="cert-badge">CHEATSHEET</span>
+        <h3 class="cert-title">Professional Cloud Security Engineer</h3>
+        <p class="cert-desc">Cheatsheet and compiled practice questions for revision refreshers.</p>
+        <div class="btn-group">
+          <a href="security_eng/cheatsheet.html" class="btn-cgp btn-primary">Cheatsheet &rarr;</a>
+          <a href="security_eng/practice_questions.html" class="btn-cgp btn-secondary">Practice Questions</a>
+        </div>
+      </article>
+
+      <article class="cert-card devops">
+        <span class="cert-badge">CHEATSHEET</span>
+        <h3 class="cert-title">Professional Cloud DevOps Engineer</h3>
+        <p class="cert-desc">Cheatsheet covering CI/CD, SRE, monitoring, and deployment pipelines on GCP.</p>
+        <div class="btn-group">
+          <a href="devops_eng/cheatsheet.html" class="btn-cgp btn-primary">Cheatsheet &rarr;</a>
+        </div>
+      </article>
+
+      <article class="cert-card data">
+        <span class="cert-badge">CHEATSHEET</span>
+        <h3 class="cert-title">Professional Data Engineer</h3>
+        <p class="cert-desc">Cheatsheet and sample questions for data pipelines, BigQuery, and streaming architectures.</p>
+        <div class="btn-group">
+          <a href="data_eng/cheatsheet.html" class="btn-cgp btn-primary">Cheatsheet &rarr;</a>
+          <a href="data_eng/Professional%20Data%20Engineer%20Sample%20Questions.html" class="btn-cgp btn-secondary">Sample Questions</a>
+        </div>
+      </article>
+    </div>
+
+    <footer>
+      <p>CGP-style GCP certification study guides.</p>
+    </footer>
+  </div>
+</body>
+</html>

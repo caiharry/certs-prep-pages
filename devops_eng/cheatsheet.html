@@ -1,0 +1,1961 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDEng (DevOps) Exam Guide Cheat Sheet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fc;
+      --ink: #142033;
+      --muted: #64748b;
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-solid: #ffffff;
+      --surface-soft: #f8fafc;
+      --line: #dbe3ef;
+      --blue: #2563eb;
+      --blue-dark: #1e40af;
+      --teal: #0f766e;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --green: #15803d;
+      --violet: #7c3aed;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.06);
+      --radius: 24px;
+      --slide-min: min(860px, calc(100svh - 32px));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 18px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.16), transparent 32rem),
+        radial-gradient(circle at 95% 10%, rgba(20, 184, 166, 0.16), transparent 28rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 44%, #eef4ff 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #eef2ff;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      color: #1e3a8a;
+      font-size: 0.92em;
+      padding: 0.08rem 0.32rem;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - clamp(20px, 5vw, 56px)));
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 38px) 0 72px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.24), transparent 22rem),
+        linear-gradient(135deg, #0f172a 0%, #1d4ed8 58%, #0f766e 100%);
+      border-radius: clamp(22px, 4vw, 34px);
+      box-shadow: var(--shadow);
+      color: #fff;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding: clamp(26px, 7vw, 58px);
+      position: relative;
+    }
+
+    .eyebrow {
+      color: #bfdbfe;
+      font-size: clamp(0.75rem, 1.8vw, 0.86rem);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 5.6rem);
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+      margin-bottom: 20px;
+      max-width: 940px;
+    }
+
+    .subtitle {
+      color: #e0f2fe;
+      font-size: clamp(1rem, 2.1vw, 1.22rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .weight-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      padding: 14px;
+      border-top: 4px solid var(--card-accent, rgba(255, 255, 255, 0.5));
+    }
+
+    .weight-card span {
+      color: #bfdbfe;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .weight-card strong {
+      display: block;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1;
+      margin: 8px 0 6px;
+    }
+
+    .weight-card p {
+      color: #dbeafe;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .deck-layout {
+      align-items: start;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .nav-panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      max-height: calc(100svh - 32px);
+      overflow: auto;
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .nav-panel h2 {
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .nav-group:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .nav-group strong {
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .nav-panel a {
+      border-radius: 10px;
+      color: #475569;
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      padding: 7px 9px;
+    }
+
+    .nav-panel a:hover {
+      background: #eff6ff;
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    .mobile-jump {
+      display: none;
+    }
+
+    .slides {
+      display: grid;
+      gap: 22px;
+      scroll-snap-type: y proximity;
+    }
+
+    .slide {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      min-height: var(--slide-min);
+      overflow: hidden;
+      padding: clamp(22px, 4vw, 36px);
+      scroll-snap-align: start;
+      /* default accent; overridden per section below */
+      --accent: var(--blue);
+      --accent-soft: #eff6ff;
+      --accent-line: #bfdbfe;
+      border-top: 5px solid var(--accent);
+    }
+
+    /* ── Per-section colour coding ─────────────────────────── */
+    .slide.sec1 { --accent: #2563eb; --accent-soft: #eff6ff; --accent-line: #bfdbfe; }
+    .slide.sec2 { --accent: #7c3aed; --accent-soft: #f5f3ff; --accent-line: #ddd6fe; }
+    .slide.sec3 { --accent: #0f766e; --accent-soft: #ecfdf5; --accent-line: #99f6e4; }
+    .slide.sec4 { --accent: #c2410c; --accent-soft: #fff7ed; --accent-line: #fed7aa; }
+    .slide.sec5 { --accent: #15803d; --accent-soft: #f0fdf4; --accent-line: #bbf7d0; }
+
+    .slide-header {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      margin-bottom: 22px;
+    }
+
+    .slide-kicker {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .slide h2 {
+      font-size: clamp(1.7rem, 4.8vw, 3rem);
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+      margin-bottom: 10px;
+    }
+
+    .objective {
+      color: var(--muted);
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .weight {
+      align-self: start;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      border-radius: 18px;
+      color: var(--accent);
+      font-weight: 850;
+      min-width: 112px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .weight span {
+      color: var(--muted);
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .section-pill {
+      background: #f1f5f9;
+      border: 1px solid var(--accent-line);
+      border-radius: 999px;
+      color: #334155;
+      display: inline-flex;
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin: 0 7px 8px 0;
+      padding: 6px 10px;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 0.88fr 1.12fr;
+    }
+
+    .guide-card,
+    .know-card,
+    .callout,
+    .matrix,
+    .quick-grid > div {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .guide-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-left: 4px solid var(--accent-line);
+    }
+
+    .guide-card h3,
+    .know-card h3,
+    .matrix h3 {
+      color: #334155;
+      font-size: 0.84rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.18rem;
+    }
+
+    li + li {
+      margin-top: 0.42rem;
+    }
+
+    .guide-card li {
+      color: #475569;
+    }
+
+    .know-card ul {
+      padding-left: 1rem;
+    }
+
+    .know-card li::marker {
+      color: var(--accent);
+    }
+
+    .quick-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+
+    .quick-grid strong {
+      display: block;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .quick-grid p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+      margin: 0;
+    }
+
+    .callout {
+      margin-top: 14px;
+      position: relative;
+      padding-left: 46px;
+    }
+
+    .callout::before {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .callout.exam {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #7c2d12;
+    }
+
+    .callout.exam::before { content: "\26A0\FE0F"; }
+
+    .callout.rule {
+      background: #ecfeff;
+      border-color: #a5f3fc;
+      color: #164e63;
+    }
+
+    .callout.rule::before { content: "\1F9ED"; }
+
+    .callout.warn {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #7f1d1d;
+    }
+
+    .callout.warn::before { content: "\1F6AB"; }
+
+    /* ── Reference / further-reading chips ─────────────────── */
+    .refs {
+      margin-top: 16px;
+      background: var(--surface-soft);
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 13px 15px;
+    }
+
+    .refs h4 {
+      margin: 0 0 9px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .refs h4::before { content: "\1F4DA"; }
+
+    .refs ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .refs li { margin: 0; }
+
+    .refs a {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.79rem;
+      font-weight: 650;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 11px;
+      color: var(--blue-dark);
+    }
+
+    .refs a::after {
+      content: "\2197";
+      font-size: 0.7rem;
+      opacity: 0.55;
+    }
+
+    .refs a:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── "Updated" inline flag ─────────────────────────────── */
+    .upd {
+      display: inline-block;
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      color: #155e75;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      vertical-align: middle;
+    }
+
+    /* ── Tables ────────────────────────────────────────────── */
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-top: 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 560px;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 11px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: #334155;
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(even) td { background: #fbfcfe; }
+    tr:last-child td { border-bottom: 0; }
+    td strong { color: var(--ink); }
+
+    td.yes { color: var(--green); font-weight: 800; }
+    td.no { color: var(--red); font-weight: 800; }
+    td.partial { color: var(--amber); font-weight: 800; }
+
+    /* ── Coloured strategy / category badges ───────────────── */
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.canary   { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .badge.bluegreen{ background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge.rolling  { background: #ecfdf5; color: #0f766e; border: 1px solid #99f6e4; }
+    .badge.split    { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .badge.flag     { background: #fefce8; color: #a16207; border: 1px solid #fde68a; }
+
+    /* ── Lightweight CSS diagrams ──────────────────────────── */
+    .diagram {
+      margin-top: 16px;
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .diagram .cap {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    /* horizontal flow of steps */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .flow .step {
+      flex: 1 1 0;
+      min-width: 120px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      color: var(--accent);
+      font-weight: 800;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .flow .step small {
+      display: block;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 3px;
+    }
+
+    .flow .arrow {
+      align-self: center;
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .flow .gate {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #c2410c;
+      flex: 0 0 auto;
+      min-width: auto;
+    }
+
+    /* nested resource hierarchy */
+    .hier { font-size: 0.86rem; }
+
+    .hier .lvl {
+      border-left: 2px solid var(--accent-line);
+      margin-left: 12px;
+      padding-left: 16px;
+      padding-top: 4px;
+    }
+
+    .hier .lvl:first-child {
+      border-left: 0;
+      margin-left: 0;
+      padding-left: 0;
+    }
+
+    .hier .box {
+      display: inline-block;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      border-radius: 10px;
+      padding: 5px 11px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 4px 0;
+    }
+
+    .hier .box small {
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .hier .inherit {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* trace waterfall */
+    .waterfall {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 0.82rem;
+    }
+
+    .waterfall .span {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .waterfall .lbl { color: #334155; font-weight: 700; }
+
+    .waterfall .track {
+      background: #f1f5f9;
+      border-radius: 7px;
+      height: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waterfall .bar {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 7px;
+      opacity: 0.85;
+    }
+
+    .waterfall .span.slow .bar { background: var(--red); opacity: 0.9; }
+    .waterfall .span.slow .lbl { color: var(--red); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 24px 0 0;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 24px, 860px);
+      }
+
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel {
+        display: none;
+      }
+
+      .mobile-jump {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        gap: 8px;
+        margin: 0 0 16px;
+        overflow-x: auto;
+        padding: 10px;
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .mobile-jump a {
+        background: #f1f5f9;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #334155;
+        flex: 0 0 auto;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 8px 11px;
+      }
+
+      .content-grid,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: auto;
+        scroll-snap-align: none;
+      }
+
+      .slides {
+        scroll-snap-type: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 18px;
+      }
+
+      .slide-header {
+        grid-template-columns: 1fr;
+      }
+
+      .weight {
+        justify-self: start;
+        min-width: auto;
+        text-align: left;
+      }
+
+      table {
+        min-width: 480px;
+      }
+
+      .waterfall .span { grid-template-columns: 100px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero,
+      .slide,
+      .nav-panel {
+        box-shadow: none;
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel,
+      .mobile-jump {
+        display: none;
+      }
+
+      .slide {
+        break-inside: avoid;
+        min-height: auto;
+        margin-bottom: 16px;
+      }
+
+      .refs a { border-color: #cbd5e1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Google Cloud Professional Cloud DevOps Engineer</p>
+      <h1>Exam Guide Cheat Sheet</h1>
+      <p class="subtitle">A scroll-through final-prep deck. Each slide opens with the official exam guide, then compresses the practical Google Cloud decisions and traps worth memorising. Trap callouts are grounded in the official sample questions, and every claim was fact-checked against current Google Cloud documentation &mdash; the source links sit on each slide.</p>
+      <div class="hero-grid" aria-label="Exam section weights">
+        <div class="weight-card" style="--card-accent:#60a5fa"><span>Section 1</span><strong>~20%</strong><p>Bootstrapping &amp; maintaining the org</p></div>
+        <div class="weight-card" style="--card-accent:#a78bfa"><span>Section 2</span><strong>~25%</strong><p>Building &amp; implementing CI/CD</p></div>
+        <div class="weight-card" style="--card-accent:#2dd4bf"><span>Section 3</span><strong>~18%</strong><p>Applying SRE practices</p></div>
+        <div class="weight-card" style="--card-accent:#fb923c"><span>Section 4</span><strong>~25%</strong><p>Observability &amp; troubleshooting</p></div>
+        <div class="weight-card" style="--card-accent:#4ade80"><span>Section 5</span><strong>~12%</strong><p>Optimizing performance &amp; cost</p></div>
+      </div>
+    </header>
+
+    <nav class="mobile-jump" aria-label="Mobile section jump list">
+      <a href="#s1-1">1.1</a>
+      <a href="#s1-2">1.2</a>
+      <a href="#s1-3">1.3</a>
+      <a href="#s1-4">1.4</a>
+      <a href="#s1-5">1.5</a>
+      <a href="#s2-1">2.1</a>
+      <a href="#s2-2">2.2</a>
+      <a href="#s2-3">2.3</a>
+      <a href="#s2-4">2.4</a>
+      <a href="#s3-1">3.1</a>
+      <a href="#s3-2">3.2</a>
+      <a href="#s3-3">3.3</a>
+      <a href="#s4-1">4.1</a>
+      <a href="#s4-2">4.2</a>
+      <a href="#s4-3">4.3</a>
+      <a href="#s4-4">4.4</a>
+      <a href="#s4-5">4.5</a>
+      <a href="#s5-1">5.1</a>
+      <a href="#s5-2">5.2</a>
+    </nav>
+
+    <div class="deck-layout">
+      <nav class="nav-panel" aria-label="Exam guide table of contents">
+        <h2>Exam Guide</h2>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#2563eb"></span>1. Bootstrapping the org</strong>
+          <a href="#s1-1">1.1 Resource hierarchy</a>
+          <a href="#s1-2">1.2 Managing infrastructure (IaC)</a>
+          <a href="#s1-3">1.3 CI/CD architecture stack</a>
+          <a href="#s1-4">1.4 Multiple environments</a>
+          <a href="#s1-5">1.5 Secure dev environments</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#7c3aed"></span>2. CI/CD pipelines</strong>
+          <a href="#s2-1">2.1 Designing pipelines</a>
+          <a href="#s2-2">2.2 Implementing &amp; managing</a>
+          <a href="#s2-3">2.3 Config &amp; secrets</a>
+          <a href="#s2-4">2.4 Securing the pipeline</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#0f766e"></span>3. SRE practices</strong>
+          <a href="#s3-1">3.1 Change, velocity, reliability</a>
+          <a href="#s3-2">3.2 Service lifecycle</a>
+          <a href="#s3-3">3.3 Mitigating incident impact</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#c2410c"></span>4. Observability</strong>
+          <a href="#s4-1">4.1 Collecting telemetry</a>
+          <a href="#s4-2">4.2 Managing &amp; analyzing logs</a>
+          <a href="#s4-3">4.3 Metrics, dashboards, alerts</a>
+          <a href="#s4-4">4.4 Distributed traces</a>
+          <a href="#s4-5">4.5 Troubleshooting issues</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#15803d"></span>5. Performance &amp; cost</strong>
+          <a href="#s5-1">5.1 Collecting performance info</a>
+          <a href="#s5-2">5.2 FinOps &amp; optimization</a>
+        </div>
+      </nav>
+
+      <article class="slides">
+        <section class="slide sec1" id="s1-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.1</p>
+              <h2>Designing the resource hierarchy</h2>
+              <p class="objective">The exam wants policy inheritance done right: organize resources, centralize networking, and enforce guardrails that <em>prevent</em> bad resources rather than detecting them after the fact.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~20%</div>
+          </div>
+          <span class="section-pill">Org / folders / projects</span>
+          <span class="section-pill">Shared VPC &amp; PSC</span>
+          <span class="section-pill">IAM &amp; org policies</span>
+          <span class="section-pill">Service accounts</span>
+          <span class="section-pill">Multi-project observability</span>
+          <span class="section-pill">Data residency</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Organizing resources (application-centric, projects, folders).</li>
+                <li>Shared networking (Shared VPC, VPC Network Peering, Private Service Connect).</li>
+                <li>Multi-project monitoring and logging.</li>
+                <li>IAM roles and organization-level policies.</li>
+                <li>Creating and managing service accounts.</li>
+                <li>Data residency.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Hierarchy</strong>: Org &rarr; Folders &rarr; Projects &rarr; resources. IAM and org policies <strong>inherit downward</strong>, so apply them at the highest level that avoids repetition.</li>
+                <li><strong>Organization Policy Service</strong>: constraints such as <strong>Resource Location Restriction</strong> (residency), domain-restricted sharing, and disabling SA key creation. They <strong>block non-compliant creation</strong> up front.</li>
+                <li><strong>Shared VPC</strong>: a central host project owns the network; service projects attach to it &mdash; the answer when one team owns networking.</li>
+                <li>Prefer <strong>Workload Identity Federation</strong> or attached service accounts over downloaded SA keys.</li>
+                <li><strong>Multi-project observability</strong>: use a metrics scope to view metrics across projects, and route logs with aggregated sinks when teams need centralized retention or analysis.</li>
+                <li>Use a <strong>separate (sandbox) organization</strong> to trial policy changes before touching prod.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Inheritance flows down the hierarchy</div>
+            <div class="hier">
+              <div class="lvl"><span class="box">Organization <small>example.com</small></span><span class="inherit">&larr; set residency &amp; baseline IAM here</span>
+                <div class="lvl"><span class="box">Folder <small>Prod</small></span><span class="inherit">&larr; environment-level guardrails</span>
+                  <div class="lvl"><span class="box">Project <small>shop-prod</small></span>
+                    <div class="lvl"><span class="box">Resources <small>GKE, buckets, VMs</small></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Need</th><th>Use</th><th>Key trait</th></tr></thead>
+              <tbody>
+                <tr><td>One team owns networking for many projects</td><td><strong>Shared VPC</strong></td><td>Host project shares subnets with service projects</td></tr>
+                <tr><td>Connect two existing VPCs</td><td><strong>VPC Network Peering</strong></td><td>Private RFC 1918 routing; <strong>non-transitive</strong></td></tr>
+                <tr><td>Private consumer access to a service / API</td><td><strong>Private Service Connect</strong></td><td>Private endpoint to producer service, no peering</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam traps:</strong> &ldquo;ensure all projects only use EU regions&rdquo; &rarr; <strong>Resource Location Restriction org policy</strong>, not log-based alerts or Asset Inventory scans (those allow the resource first, then delete it &mdash; already a breach). Roll out policy changes by testing in a <strong>separate org</strong>, never by editing the prod hierarchy live.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy">Resource hierarchy</a></li>
+              <li><a href="https://cloud.google.com/resource-manager/docs/organization-policy/overview">Org Policy Service</a></li>
+              <li><a href="https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations">Resource Location Restriction</a></li>
+              <li><a href="https://cloud.google.com/vpc/docs/shared-vpc">Shared VPC</a></li>
+              <li><a href="https://cloud.google.com/vpc/docs/private-service-connect">Private Service Connect</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec1" id="s1-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.2</p>
+              <h2>Managing infrastructure as code</h2>
+              <p class="objective">Repeatable, identical environments come from declarative IaC &mdash; not console clicks, snapshots, or bash scripts. Terraform is the Google-recommended default.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~20%</div>
+          </div>
+          <span class="section-pill">Terraform</span>
+          <span class="section-pill">Infrastructure Manager</span>
+          <span class="section-pill">Config Connector</span>
+          <span class="section-pill">Cloud Foundation Toolkit</span>
+          <span class="section-pill">GitOps &amp; Helm</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>IaC tooling and managed services (Infrastructure Manager, Cloud Foundation Toolkit, Config Connector, GitOps, Terraform, Helm).</li>
+                <li>Making infrastructure changes using Google-recommended practices and blueprints.</li>
+                <li>Automation with scripting (Python, Go).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Terraform</strong> is the Google-recommended IaC: declarative, idempotent, repeatable &mdash; the answer for identical dev/UAT/prod. Keep state remote (GCS backend); never hand-edit or recreate via the console.</li>
+                <li><strong>GitOps</strong>: Git is the source of truth; reconcilers (Config Sync, Argo CD) continuously drive actual state to match.</li>
+                <li><strong>Infrastructure Manager</strong> runs Terraform as a managed Google Cloud service. <strong>Config Connector</strong> makes Google Cloud resources Kubernetes objects. <strong>Cloud Foundation Toolkit</strong> gives opinionated bootstrap blueprints.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tool</th><th>What it is</th><th>Use it when</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Terraform</strong></td><td>Declarative IaC, Google's default</td><td>Define any GCP infra as code</td></tr>
+                <tr><td><strong>Infrastructure Manager</strong></td><td>Managed service that runs your Terraform <em>for you</em> (via Cloud Build)</td><td>You want Google to actuate Terraform, no separate toolchain</td></tr>
+                <tr><td><strong>Config Connector</strong></td><td>Manage GCP resources as Kubernetes objects</td><td>GitOps the cloud from inside a cluster</td></tr>
+                <tr><td><strong>Cloud Foundation Toolkit</strong></td><td>Blessed Terraform / blueprint modules</td><td>Org bootstrap with opinionated best practice</td></tr>
+                <tr><td><strong>Helm</strong></td><td>Package manager for Kubernetes manifests</td><td>Templating and releasing K8s apps</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> &ldquo;keep dev/UAT/prod as identical as possible, Google-recommended&rdquo; &rarr; <strong>Terraform</strong>. Recreating via console, Asset Inventory + manual rebuild, a Security Command Center listing, or bash scripts are all explicitly <em>not</em> recommended.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/docs/terraform/iac-overview">IaC on Google Cloud (tool picker)</a></li>
+              <li><a href="https://cloud.google.com/infrastructure-manager/docs/overview">Infrastructure Manager overview</a></li>
+              <li><a href="https://cloud.google.com/config-connector/docs/overview">Config Connector</a></li>
+              <li><a href="https://cloud.google.com/docs/terraform/blueprints/terraform-blueprints">Cloud Foundation Toolkit blueprints</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec1" id="s1-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.3</p>
+              <h2>Designing the CI/CD architecture stack</h2>
+              <p class="objective">Know the managed building blocks &mdash; Cloud Build for CI, Cloud Deploy for CD, Artifact Registry for artifacts &mdash; and where third-party tools slot in.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~20%</div>
+          </div>
+          <span class="section-pill">Cloud Build (CI)</span>
+          <span class="section-pill">Cloud Deploy (CD)</span>
+          <span class="section-pill">Artifact Registry</span>
+          <span class="section-pill">Skaffold &amp; Kustomize</span>
+          <span class="section-pill">Jenkins / Argo CD / kpt / Packer</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Continuous integration with Cloud Build.</li>
+                <li>Continuous delivery with Cloud Deploy, including Kustomize and Skaffold.</li>
+                <li>Artifact Registry configuration.</li>
+                <li>Widely used third-party tooling (Git, Jenkins, Argo CD, Packer, kpt).</li>
+                <li>Security of CI/CD tooling.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Build</strong>: serverless CI; steps live in <code>cloudbuild.yaml</code>; triggers fire from repos and webhooks. Use <strong>private pools + VPC Service Controls</strong> for builds with no public IP and exfiltration protection.</li>
+                <li><strong>Cloud Deploy</strong>: managed CD. A delivery pipeline has <strong>ordered targets</strong> (test &rarr; staging &rarr; prod); you <strong>promote one release</strong> through them. It uses Skaffold under the hood for render and deploy.</li>
+                <li><strong>Artifact Registry</strong>: stores container images and language packages &mdash; the successor to the now-shut-down Container Registry. <span class="upd">Container Registry shut down Mar 2025</span></li>
+                <li><strong>Skaffold</strong>: build/test/deploy workflow for Kubernetes. <strong>Kustomize</strong>: template-free manifest overlays per environment. <strong>Packer</strong>: build VM images. <strong>kpt</strong>: package and transform Kubernetes config.</li>
+                <li><strong>Cloud Deploy vs GitOps</strong>: Cloud Deploy is the managed promotion workflow; Argo CD / Config Sync are reconcilers that keep cluster state aligned with Git.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">The managed CI/CD path</div>
+            <div class="flow">
+              <div class="step">Git push<small>source change</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Cloud Build<small>CI: build + test</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Artifact Registry<small>store image by digest</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Cloud Deploy<small>CD: promote release</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">GKE / Cloud Run<small>targets</small></div>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> &ldquo;deploy through test/staging/prod with Cloud Deploy&rdquo; &rarr; <strong>promote a single release</strong> through the predefined targets. Not a pipeline per stage, and not a separate image per stage.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/build/docs/overview">Cloud Build overview</a></li>
+              <li><a href="https://cloud.google.com/deploy/docs/overview">Cloud Deploy overview</a></li>
+              <li><a href="https://cloud.google.com/artifact-registry/docs/overview">Artifact Registry overview</a></li>
+              <li><a href="https://cloud.google.com/artifact-registry/docs/transition/transition-from-gcr">GCR &rarr; Artifact Registry transition</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec1" id="s1-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.4</p>
+              <h2>Managing multiple environments</h2>
+              <p class="objective">Fleets manage GKE at scale; release channels and maintenance controls govern <em>when</em> upgrades happen; canary the risky patches.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~20%</div>
+          </div>
+          <span class="section-pill">GKE fleets</span>
+          <span class="section-pill">Release channels</span>
+          <span class="section-pill">Maintenance windows / exclusions</span>
+          <span class="section-pill">Ephemeral environments</span>
+          <span class="section-pill">Safe patching</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Managing ephemeral environments.</li>
+                <li>Managing configuration and policy.</li>
+                <li>Managing GKE clusters across an enterprise (fleets).</li>
+                <li>Safe and secure patching and upgrading practices.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Fleets</strong>: group GKE clusters for unified config, policy, mesh, and identity (namespace sameness).</li>
+                <li><strong>Connect gateway</strong>: lets Google Cloud users and services reach registered fleet clusters, including hybrid and multi-cloud GKE, without exposing the Kubernetes API publicly.</li>
+                <li><strong>Release channels</strong> (Rapid / Regular / Stable) trade newness for stability &mdash; but the channel alone does not stop node upgrades.</li>
+                <li><strong>Upgrade strategies</strong>: surge vs blue/green node-pool upgrades; protect Pods with <strong>PodDisruptionBudgets</strong>.</li>
+                <li><strong>VM Manager</strong> patches fleets of VMs; for a critical patch, <strong>canary to a small group with a short duration</strong> first.</li>
+                <li><strong>Ephemeral environments</strong>: spin up per-PR via IaC, validate, then tear down.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Maintenance exclusion scope</th><th>Blocks node upgrades?</th><th>Use for</th></tr></thead>
+              <tbody>
+                <tr><td><strong>No upgrades</strong> (default)</td><td class="yes">Yes (all)</td><td>Freeze everything briefly (e.g. holiday peak)</td></tr>
+                <tr><td><strong>No minor upgrades</strong></td><td class="no">No (patches still apply)</td><td>Pin the minor version, still get patches</td></tr>
+                <tr><td><strong>No minor or node upgrades</strong></td><td class="yes">Yes (no node evictions)</td><td>Protect disruption-sensitive workloads from Pod eviction</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam traps:</strong> a legacy GKE workload that can't tolerate evictions &rarr; <strong>maintenance exclusion (&ldquo;No minor or node upgrades&rdquo;)</strong>. Stable channel alone, <code>max-surge=0</code>, or a 100% PDB do <em>not</em> reliably prevent upgrade-driven evictions. (Note: scopes other than &ldquo;No upgrades&rdquo; require the cluster to be enrolled in a release channel.) A critical VM patch that must be fast and cheap &rarr; <strong>canary rollout, short duration</strong> &mdash; not all-at-once, not a full A/B copy.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions">Maintenance windows &amp; exclusions</a></li>
+              <li><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels">GKE release channels</a></li>
+              <li><a href="https://cloud.google.com/kubernetes-engine/fleet-management/docs/fleet-concepts">Fleet management</a></li>
+              <li><a href="https://cloud.google.com/compute/docs/vm-manager">VM Manager (patch)</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec1" id="s1-5">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.5</p>
+              <h2>Enabling secure dev environments</h2>
+              <p class="objective">Keeping developer environments consistent and centrally patched is a managed-service problem &mdash; not a &ldquo;trust everyone to update their laptop&rdquo; problem.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~20%</div>
+          </div>
+          <span class="section-pill">Cloud Workstations</span>
+          <span class="section-pill">Cloud Shell</span>
+          <span class="section-pill">Custom images / IDE / SDK</span>
+          <span class="section-pill">Gemini Code &amp; Cloud Assist</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring and managing cloud dev environments (Cloud Workstations, Cloud Shell).</li>
+                <li>Bootstrapping environments with required tooling (custom images, IDE, Cloud SDK).</li>
+                <li>Leveraging AI for development and operations (Gemini Code Assist, Gemini Cloud Assist, Gemini CLI).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Workstations</strong>: managed, templated dev environments. A <strong>configuration</strong> defines the machine type, disk, container image, and tools; changes take effect on the <strong>next workstation start</strong> &mdash; central patching for a whole team.</li>
+                <li><strong>Cloud Shell</strong>: an ephemeral browser shell with the SDK preinstalled; great for ad-hoc work, not for standardized team environments.</li>
+                <li><strong>Gemini Code Assist</strong>: in-IDE coding help. <strong>Gemini Cloud Assist</strong>: ops and troubleshooting across Google Cloud (logs, metrics, traces).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> &ldquo;consistent templated dev env + keep security patches current across a team&rdquo; &rarr; <strong>Cloud Workstations configurations</strong>. Golden snapshots, laptop images, and update checklists all drift because they depend on developers patching themselves.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/workstations/docs/overview">Cloud Workstations overview</a></li>
+              <li><a href="https://cloud.google.com/shell/docs">Cloud Shell</a></li>
+              <li><a href="https://cloud.google.com/gemini/docs/codeassist/overview">Gemini Code Assist</a></li>
+              <li><a href="https://cloud.google.com/gemini/docs/cloud-assist/overview">Gemini Cloud Assist</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec2" id="s2-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.1</p>
+              <h2>Designing pipelines</h2>
+              <p class="objective">Define triggers, artifact flow, deployment targets, and approval gates before building. Approvals are a Cloud Deploy feature; security gating is separate.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Pipeline triggers</span>
+          <span class="section-pill">Artifact Registry</span>
+          <span class="section-pill">Hybrid / multi-cloud (GKE)</span>
+          <span class="section-pill">Approval flows</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>CI/CD of applications and infrastructure.</li>
+                <li>Artifact management with Artifact Registry.</li>
+                <li>Deployment to hybrid and multi-cloud environments (GKE).</li>
+                <li>CI/CD pipeline triggers.</li>
+                <li>Configuring deployment processes (approval flows).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Triggers</strong>: push, pull-request, tag, webhook, manual, Pub/Sub, and scheduled events all drive builds and releases.</li>
+                <li><strong>Cloud Deploy approvals</strong>: require a human to approve promotion into a sensitive target (e.g. prod). Approval emits a Pub/Sub message ticketing systems can subscribe to.</li>
+                <li><strong>Artifact Registry</strong>: one source of truth for images and packages; pin by <strong>digest</strong>, not the floating <code>latest</code> tag.</li>
+                <li><strong>Hybrid / multi-cloud</strong>: deploy to GKE anywhere via fleets and the Connect gateway; use GitOps controllers when the requirement is continuous reconciliation from Git.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> &ldquo;require human approval before production&rdquo; &rarr; <strong>Cloud Deploy approval gate</strong>. Binary Authorization is a <em>security</em> policy check (what's allowed to run), not the approval/deployment mechanism itself.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/build/docs/triggers">Build triggers</a></li>
+              <li><a href="https://cloud.google.com/deploy/docs/promote-release#require_approval">Cloud Deploy approvals</a></li>
+              <li><a href="https://cloud.google.com/kubernetes-engine/fleet-management/docs/connect-gateway">Connect gateway (multi-cloud)</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec2" id="s2-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.2</p>
+              <h2>Implementing &amp; managing pipelines</h2>
+              <p class="objective">Pick the rollout strategy that matches the risk, prove it in production safely, and keep an audit trail. This is a high-yield drilling area.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Canary</span>
+          <span class="section-pill">Blue/green</span>
+          <span class="section-pill">Rolling</span>
+          <span class="section-pill">Traffic splitting</span>
+          <span class="section-pill">Feature flags</span>
+          <span class="section-pill">Cloud Audit Logs</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Auditing and tracking deployments (Artifact Registry, Cloud Build, Cloud Deploy, Cloud Audit Logs).</li>
+                <li>Deployment strategies (canary, blue/green, rolling, traffic splitting, feature flags) and defining success metrics from telemetry.</li>
+                <li>Troubleshooting and mitigating deployment issues.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Run revision tag + <code>--no-traffic</code></strong>: deploy a revision that serves at a tagged URL but receives <strong>0% of user traffic</strong> &mdash; the clean way to let beta testers hit prod.</li>
+                <li>Tie promotion and rollback to <strong>SLO / telemetry success metrics</strong>, not gut feel.</li>
+                <li><strong>Cloud Audit Logs</strong> are your record of who deployed what, and when.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Strategy</th><th>How it rolls</th><th>Best for</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge canary">Canary</span></td><td>Small % first, validate against telemetry, then expand</td><td>Catching regressions on a slice of real traffic</td></tr>
+                <tr><td><span class="badge bluegreen">Blue/green</span></td><td>Two full environments, switch all traffic at once</td><td>Instant cutover with instant rollback</td></tr>
+                <tr><td><span class="badge rolling">Rolling</span></td><td>Replace instances gradually, in place</td><td>Default low-cost rollout, no double capacity</td></tr>
+                <tr><td><span class="badge split">Traffic split</span></td><td>Weighted % across revisions</td><td>Fine-grained, controlled migration / A&nbsp;/&nbsp;B</td></tr>
+                <tr><td><span class="badge flag">Feature flag</span></td><td>Ship code dark, toggle at runtime</td><td>Decoupling deploy from release</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> &ldquo;beta testers test in production before users see it&rdquo; &rarr; <strong>Cloud Run revision tag + <code>--no-traffic</code></strong>, then share the tagged URL. Routing even 1% of traffic risks real users landing on the beta; IP allowlists are brittle; a separate VM isn't the real prod environment.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/deploy/docs/deployment-strategies">Cloud Deploy strategies</a></li>
+              <li><a href="https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration">Cloud Run tags &amp; traffic</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/audit">Cloud Audit Logs</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec2" id="s2-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.3</p>
+              <h2>Managing config and secrets</h2>
+              <p class="objective">Secrets never live in the repo. Secret Manager + IAM is the answer; Workload Identity Federation kills long-lived keys.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Secret Manager</span>
+          <span class="section-pill">Cloud KMS</span>
+          <span class="section-pill">Workload Identity Federation</span>
+          <span class="section-pill">Certificate / Parameter Manager</span>
+          <span class="section-pill">Build vs runtime injection</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Key management (Cloud Key Management Service).</li>
+                <li>Configuration and secret management (Secret Manager, Certificate Manager, Parameter Manager, Workload Identity Federation).</li>
+                <li>Build versus runtime secret injection.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Secret Manager</strong>: versioned secrets, IAM-scoped for least privilege. Cloud Build references them via <strong>parameter substitution</strong> in build steps.</li>
+                <li><strong>Cloud KMS</strong>: manage encryption keys (CMEK, rotation).</li>
+                <li><strong>Workload Identity Federation</strong>: let external identities (GitHub Actions, GitLab, Azure DevOps, Terraform Cloud, other clouds, on-prem) impersonate a service account <strong>without downloaded keys</strong>.</li>
+                <li><strong>Certificate Manager</strong> manages TLS certificates; <strong>Parameter Manager</strong> stores non-secret runtime configuration. Use Secret Manager for credentials and sensitive values.</li>
+                <li><strong>Build vs runtime</strong>: prefer injecting secrets at <strong>runtime</strong> so they aren't baked into image layers.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> builds triggered both manually <em>and</em> by webhook need confidential data &rarr; <strong>Secret Manager + IAM</strong>, referenced in the build. Encrypted files in the repo break least privilege; CLI parameters don't work for webhook-triggered builds.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/secret-manager/docs/overview">Secret Manager</a></li>
+              <li><a href="https://cloud.google.com/build/docs/securing-builds/use-secrets">Secrets in Cloud Build</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/workload-identity-federation">Workload Identity Federation</a></li>
+              <li><a href="https://cloud.google.com/kms/docs">Cloud KMS</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec2" id="s2-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.4</p>
+              <h2>Securing the deployment pipeline</h2>
+              <p class="objective">Scan artifacts, gate deploys to only trusted and attested images, and use Google-curated dependencies instead of scanning the whole world yourself.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Artifact Analysis</span>
+          <span class="section-pill">Binary Authorization</span>
+          <span class="section-pill">SLSA</span>
+          <span class="section-pill">Assured OSS</span>
+          <span class="section-pill">Per-environment IAM</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Artifact Analysis and vulnerability scanning.</li>
+                <li>Software supply chain security (Binary Authorization, SLSA framework).</li>
+                <li>IAM policies based on environment.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Artifact Analysis</strong>: automatic vulnerability scanning of images in Artifact Registry.</li>
+                <li><strong>Binary Authorization</strong>: a deploy-time policy &mdash; only images with the required <strong>attestations</strong> (signed and verified) may run. Supports GKE, Cloud Run, Cloud Service Mesh, and GDC. Use <strong>dry-run</strong> to audit policy impact before enforcing blocks.</li>
+                <li><strong>SLSA</strong>: supply-chain integrity levels backed by build provenance.</li>
+                <li><strong>Private pool nuance</strong>: Cloud Build private pools need provenance/verification explicitly enabled when you rely on generated attestations for Binary Authorization.</li>
+                <li><strong>Assured OSS</strong>: open-source packages built in Google's secured pipelines and continuously scanned and fuzzed (SLSA-3) &mdash; the <strong>cost-effective</strong> way to trust dependencies. <span class="upd">Free tier available</span></li>
+                <li>Tighten <strong>IAM per environment</strong>; prod is stricter than dev.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Deploy-time gate</div>
+            <div class="flow">
+              <div class="step">Build image<small>Cloud Build</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Artifact Analysis<small>scan for CVEs</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Attestation<small>sign verified image</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step gate">Binary Authorization<small>verify or block</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Run on GKE / Cloud Run</div>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> &ldquo;ensure prod open-source dependencies are secure, cost-effectively&rdquo; &rarr; pull from <strong>Assured OSS</strong>. Pulling <code>latest</code> may carry undiscovered CVEs; scanning and deleting every package on each build isn't cost-effective and breaks builds.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/artifact-analysis/docs/artifact-analysis">Artifact Analysis</a></li>
+              <li><a href="https://cloud.google.com/binary-authorization/docs/overview">Binary Authorization</a></li>
+              <li><a href="https://slsa.dev/">SLSA framework</a></li>
+              <li><a href="https://cloud.google.com/assured-open-source-software/docs/overview">Assured OSS</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec3" id="s3-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.1</p>
+              <h2>Balancing change, velocity &amp; reliability</h2>
+              <p class="objective">SLIs, SLOs, SLAs and the error budget decide whether you ship. No budget left means reliability wins &mdash; you don't renegotiate the contract to ship.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~18%</div>
+          </div>
+          <span class="section-pill">SLI</span>
+          <span class="section-pill">SLO</span>
+          <span class="section-pill">SLA</span>
+          <span class="section-pill">Error budget</span>
+          <span class="section-pill">Nines &amp; opportunity cost</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Defining SLIs (availability, latency), SLOs, and SLAs.</li>
+                <li>Error budgets (Cloud Service Mesh definitions).</li>
+                <li>Opportunity cost of risk and reliability (number of &ldquo;nines&rdquo;).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Error budget = 100% &minus; SLO</strong>. Budget remaining &rarr; ship features. Budget exhausted &rarr; <strong>freeze features, focus on reliability</strong>.</li>
+                <li><strong>Burn-rate alerts</strong>: alert on how quickly the service is spending error budget, not just whether an SLI crossed one raw threshold.</li>
+                <li><strong>Cloud Service Mesh</strong>: can define service-level telemetry and SLO views for mesh traffic, useful when reliability is measured across service-to-service calls.</li>
+                <li>Don't move the SLA or SLO just to unblock a release.</li>
+                <li>Each extra &ldquo;nine&rdquo; costs exponentially more &mdash; choose the target by business need, not by instinct.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Term</th><th>What it is</th><th>Audience</th><th>Rule of thumb</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SLI</strong></td><td>The measured metric (e.g. % successful requests)</td><td>Internal</td><td>What you actually measure</td></tr>
+                <tr><td><strong>SLO</strong></td><td>The internal target (e.g. 99.9%)</td><td>Internal</td><td>Set <em>stricter</em> than the SLA</td></tr>
+                <tr><td><strong>SLA</strong></td><td>The external contract, with consequences</td><td>Customer</td><td>Set <em>looser</em> than the SLO</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> a 99% SLA already at exactly 99.00% (budget gone) &rarr; <strong>defer the release to the next period</strong>. Never lower the SLA to ship, and remember SLOs are <em>internal</em> &mdash; they aren't the customer agreement.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://sre.google/sre-book/service-level-objectives/">SRE Book: SLOs</a></li>
+              <li><a href="https://cloud.google.com/service-mesh/docs/observability/design-slo">Designing SLOs &amp; error budgets</a></li>
+              <li><a href="https://sre.google/workbook/implementing-slos/">SRE Workbook: implementing SLOs</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec3" id="s3-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.2</p>
+              <h2>Managing service lifecycle</h2>
+              <p class="objective">Plan capacity with quotas and reservations, autoscale per platform, and pick the cheapest compute that fits the workload's fault tolerance.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~18%</div>
+          </div>
+          <span class="section-pill">Capacity planning</span>
+          <span class="section-pill">Quotas / reservations</span>
+          <span class="section-pill">Dynamic Workload Scheduler</span>
+          <span class="section-pill">Autoscaling</span>
+          <span class="section-pill">Spot VMs</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Service management (planning, deployment, maintenance, retirement).</li>
+                <li>Capacity planning (quotas, limits, reservations, Dynamic Workload Scheduler).</li>
+                <li>Autoscaling (managed instance groups, Cloud Run, GKE).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Quotas</strong> cap usage; <strong>reservations</strong> guarantee capacity; <strong>CUDs</strong> commit for discounts; <strong>Dynamic Workload Scheduler</strong> obtains scarce GPUs/TPUs for flexible, calendar-aware workloads.</li>
+                <li><strong>Autoscaling</strong>: MIG autoscaler (CPU/LB/metric), Cloud Run (per-request, scale-to-zero), GKE (HPA/VPA + cluster autoscaler + node auto-provisioning).</li>
+                <li><strong>MIG autohealing</strong> repairs unhealthy VMs &mdash; a reliability feature, <em>not</em> a cost optimization.</li>
+                <li><strong>Spot VMs</strong>: deeply discounted (up to ~91% off) and preemptible &mdash; ideal for fault-tolerant, parallel batch.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> fault-tolerant, large-scale parallel batch, cheapest &rarr; <strong>Spot VMs</strong>. Sole-tenant nodes, accelerator-optimized + autoscaling, and autohealing MIGs are all more expensive and miss the &ldquo;cost-effective + fault-tolerant&rdquo; cue.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/compute/docs/instances/spot">Spot VMs</a></li>
+              <li><a href="https://cloud.google.com/compute/docs/instances/reservations-overview">Reservations</a></li>
+              <li><a href="https://cloud.google.com/blog/products/compute/introducing-dynamic-workload-scheduler">Dynamic Workload Scheduler</a></li>
+              <li><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler">GKE autoscaling</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec3" id="s3-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.3</p>
+              <h2>Mitigating incident impact</h2>
+              <p class="objective">During an incident: drain or redirect, add capacity, roll back. Afterwards: a blameless postmortem that fixes the system, never the person.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~18%</div>
+          </div>
+          <span class="section-pill">Drain / redirect traffic</span>
+          <span class="section-pill">Add capacity</span>
+          <span class="section-pill">Rollback</span>
+          <span class="section-pill">Blameless postmortem</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Draining/redirecting traffic.</li>
+                <li>Adding capacity.</li>
+                <li>Rollback strategies.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Drain</strong>: stop new traffic to a bad backend at the load balancer and let in-flight requests finish; <strong>redirect</strong> to a healthy region.</li>
+                <li><strong>Add capacity</strong>: scale out the MIG, raise a quota, or shift traffic to spare regions.</li>
+                <li><strong>Rollback</strong>: revert to the last known-good revision (Cloud Deploy rollback, or Cloud Run traffic to a prior revision).</li>
+                <li><strong>Blameless postmortem</strong>: objectively find the technical root cause and document learnings for everyone.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> after an on-call change caused customer impact &rarr; <strong>blameless postmortem</strong> documenting the technical root cause. Policies that blame the individual, add a personal second-reviewer, or ban night-time changes are anti-patterns.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://sre.google/sre-book/postmortem-culture/">SRE Book: blameless postmortems</a></li>
+              <li><a href="https://sre.google/workbook/incident-response/">SRE Workbook: incident response</a></li>
+              <li><a href="https://cloud.google.com/deploy/docs/roll-back">Cloud Deploy rollback</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec4" id="s4-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.1</p>
+              <h2>Instrumenting &amp; collecting telemetry</h2>
+              <p class="objective">Collect with the Ops Agent and OpenTelemetry; control cost with filters and exclusions; create custom and log-based metrics; probe proactively with synthetic monitors.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~25%</div>
+          </div>
+          <span class="section-pill">Ops Agent</span>
+          <span class="section-pill">OpenTelemetry</span>
+          <span class="section-pill">Managed Service for Prometheus</span>
+          <span class="section-pill">Log-based metrics</span>
+          <span class="section-pill">Synthetic monitors</span>
+          <span class="section-pill">Log cost controls</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Collecting/importing logs (Ops Agent, OpenTelemetry, Cloud Audit Logs, VPC Flow Logs, Cloud Service Mesh).</li>
+                <li>Optimizing logs (filtering, sampling, exclusions, cost management).</li>
+                <li>Collecting metrics (apps, platform, Managed Service for Prometheus, hybrid/multi-cloud).</li>
+                <li>Creating synthetic monitors to probe endpoints/workflows.</li>
+                <li>Creating custom metrics, including log-based metrics.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Ops Agent</strong>: a single agent collecting logs + metrics (and OTLP traces) from Compute Engine &mdash; the replacement for the legacy Logging/Monitoring agents.</li>
+                <li><strong>Managed Service for Prometheus</strong>: Prometheus metrics at scale, queried with PromQL.</li>
+                <li><strong>OpenTelemetry</strong>: vendor-neutral instrumentation for traces, metrics, and logs; use it when you need portable application telemetry rather than VM-level agent collection only.</li>
+                <li><strong>VPC Flow Logs</strong>: network telemetry for flows, useful for traffic analysis and security investigations; they are not application logs.</li>
+                <li><strong>Log-based metrics</strong>: counter or distribution metrics derived from log entries.</li>
+                <li><strong>Exclusion / sampling filters</strong>: cut Logging ingestion cost while still routing what you keep.</li>
+                <li><strong>Synthetic monitors</strong>: proactively probe endpoints and user journeys, and can collect log/trace evidence for the probe path.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> &ldquo;reduce Logging cost&rdquo; &rarr; <strong>exclusion / sampling filters</strong>, not disabling logging. Need to alert on a specific event &rarr; log-based metric or alert (see 4.2).</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent">Ops Agent</a></li>
+              <li><a href="https://cloud.google.com/stackdriver/docs/managed-prometheus">Managed Service for Prometheus</a></li>
+              <li><a href="https://cloud.google.com/monitoring/uptime-checks/synthetic-monitors">Synthetic monitors</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/routing/overview#exclusions">Log exclusions</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec4" id="s4-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.2</p>
+              <h2>Managing &amp; analyzing logs</h2>
+              <p class="objective">Logs Explorer for ad-hoc queries, Log Analytics for SQL, sinks for export and retention, and log-based alerts for fast, event-driven notifications.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~25%</div>
+          </div>
+          <span class="section-pill">Logs Explorer</span>
+          <span class="section-pill">Log Analytics</span>
+          <span class="section-pill">Log sinks (BQ / GCS / Pub/Sub)</span>
+          <span class="section-pill">Log-based alerts</span>
+          <span class="section-pill">PII / PHI redaction</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Analyzing logs using Logs Explorer and the Logging query language.</li>
+                <li>Exporting and retaining logs (routing to BigQuery, Pub/Sub, Cloud Storage).</li>
+                <li>Handling sensitive data (log processors to redact PII/PHI).</li>
+                <li>Using Gemini Cloud Assist for AI-powered log analysis.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Log Analytics</strong> <span class="upd">now branded Observability Analytics</span>: upgrade a log bucket, then run <strong>SQL</strong> over your logs in-place. <strong>Link a BigQuery dataset</strong> when you need to join with other BQ data or alert on SQL results &mdash; the linked dataset gives read access with no extra ingestion cost.</li>
+                <li><strong>Log-based alerts</strong>: alert directly off a log entry (e.g. a <code>v1.compute.instances.stop</code> event) for fast notification.</li>
+                <li>Redact PII/PHI with log processors or Sensitive Data Protection before logs become broadly queryable.</li>
+                <li><strong>Gemini Cloud Assist</strong> helps summarize and interpret log evidence; it does not replace retention, routing, access control, or alerting design.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Sink destination</th><th>Use for</th></tr></thead>
+              <tbody>
+                <tr><td><strong>BigQuery</strong></td><td>Analytics &amp; SQL over exported logs</td></tr>
+                <tr><td><strong>Cloud Storage</strong></td><td>Cheap long-term archive / compliance retention</td></tr>
+                <tr><td><strong>Pub/Sub</strong></td><td>Stream to a third party or SIEM</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam traps:</strong> &ldquo;let teams run SQL on logs quickly &amp; cheaply&rdquo; &rarr; <strong>upgrade the bucket to Log Analytics</strong> (link a BigQuery dataset if they need BigQuery-side joins) &mdash; not copy-to-BQ or export-to-CSV. &ldquo;Notify me fast when a VM stops&rdquo; &rarr; <strong>log-based alert</strong>, not hourly BigQuery scheduled queries (too slow).</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/logging/docs/log-analytics">Log Analytics (Observability Analytics)</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/analyze/query-linked-dataset">Linked BigQuery dataset</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/alerting/log-based-alerts">Log-based alerts</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/export/configure_export_v2">Log sinks / routing</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec4" id="s4-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.3</p>
+              <h2>Metrics, dashboards &amp; alerts</h2>
+              <p class="objective">Build alerting policies on SLIs/SLOs, route notifications to the right channel, and watch error-budget burn rate rather than raw single-point thresholds.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~25%</div>
+          </div>
+          <span class="section-pill">Metrics Explorer</span>
+          <span class="section-pill">Dashboards &amp; PromQL</span>
+          <span class="section-pill">Alerting policies</span>
+          <span class="section-pill">Notification channels</span>
+          <span class="section-pill">PagerDuty / webhooks</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Analyzing metrics using Metrics Explorer.</li>
+                <li>Managing dashboards (creating, filtering, sharing, playbooks, PromQL).</li>
+                <li>Configuring alerting and alerting policies (SLIs, SLOs, cost control).</li>
+                <li>Integrating with third-party alerting tools (webhooks, PagerDuty, Rootly).</li>
+                <li>Leveraging Gemini Cloud Assist for metrics interpretation.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Alerting policy</strong> = condition (threshold / metric absence / forecast) + notification channels.</li>
+                <li><strong>Notification channels</strong>: email, SMS, Pub/Sub, webhook, Slack, PagerDuty, and incident tools such as Rootly via webhook/integration paths.</li>
+                <li><strong>SLO monitoring</strong>: define SLOs in Cloud Monitoring and alert on <strong>burn rate</strong> to catch budget spend early. Pair a <strong>fast-burn</strong> alert (short lookback, high threshold, e.g. 10&times; baseline) with a <strong>slow-burn</strong> alert (24h lookback, ~2&times; baseline).</li>
+                <li><strong>Dashboards</strong>: PromQL/MQL, filters, sharing, and <strong>playbooks</strong> attached to alerts for responders.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> &ldquo;page the on-call team in PagerDuty/Slack&rdquo; &rarr; configure a <strong>notification channel / webhook</strong> on the alerting policy. &ldquo;Catch budget exhaustion early&rdquo; &rarr; <strong>burn-rate alert</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/monitoring/alerts">Alerting policies</a></li>
+              <li><a href="https://cloud.google.com/stackdriver/docs/solutions/slo-monitoring/alerting-on-budget-burn-rate">Burn-rate alerting</a></li>
+              <li><a href="https://cloud.google.com/monitoring/support/notification-options">Notification channels</a></li>
+              <li><a href="https://cloud.google.com/monitoring/dashboards">Dashboards</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec4" id="s4-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.4</p>
+              <h2>Capturing &amp; analyzing distributed traces</h2>
+              <p class="objective">Trace tells you <em>where</em> time goes across services; the waterfall finds the slow hop; trace IDs link straight back to structured logs.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~25%</div>
+          </div>
+          <span class="section-pill">Cloud Trace</span>
+          <span class="section-pill">OpenTelemetry</span>
+          <span class="section-pill">Spans &amp; waterfalls</span>
+          <span class="section-pill">Trace &harr; log correlation</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Utilizing tracing frameworks (OpenTelemetry).</li>
+                <li>Analyzing trace waterfalls and spans.</li>
+                <li>Correlating trace IDs with structured logs.</li>
+                <li>Employing Gemini Cloud Assist for trace analysis.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Trace</strong>: distributed latency across services; each <strong>span</strong> is one hop, and the <strong>waterfall</strong> exposes the slow segment.</li>
+                <li><strong>Trace &ne; Profiler</strong>: Trace = cross-service latency; <strong>Profiler</strong> = CPU/heap hotspots <em>within</em> a process.</li>
+                <li>Put <code>trace_id</code> in structured logs to jump between a span and its logs.</li>
+                <li><strong>OpenTelemetry</strong> is the recommended instrumentation framework.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Reading a trace waterfall &mdash; the red span is the bottleneck</div>
+            <div class="waterfall">
+              <div class="span"><span class="lbl">frontend</span><span class="track"><span class="bar" style="left:0;width:98%"></span></span></div>
+              <div class="span"><span class="lbl">auth-service</span><span class="track"><span class="bar" style="left:4%;width:12%"></span></span></div>
+              <div class="span slow"><span class="lbl">db query</span><span class="track"><span class="bar" style="left:16%;width:64%"></span></span></div>
+              <div class="span"><span class="lbl">render</span><span class="track"><span class="bar" style="left:82%;width:14%"></span></span></div>
+            </div>
+            <div class="legend">
+              <span><i style="background:#c2410c"></i> Slow span &rarr; open its correlated logs</span>
+              <span><i style="background:#f1f5f9;border:1px solid #cbd5e1"></i> Total request time</span>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> benchmarking an algorithm's CPU hotspots in one service &rarr; <strong>Cloud Profiler flame graphs</strong>, not Cloud Trace. Trace is for latency <em>across</em> services, not code-level benchmarking.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/trace/docs/overview">Cloud Trace overview</a></li>
+              <li><a href="https://cloud.google.com/trace/docs/trace-log-integration">Trace &harr; log correlation</a></li>
+              <li><a href="https://cloud.google.com/profiler/docs">Cloud Profiler</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec4" id="s4-5">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.5</p>
+              <h2>Troubleshooting issues</h2>
+              <p class="objective">The skill is matching the symptom to the right signal &mdash; and avoiding tools that distort what they measure (e.g. log statements for timing).</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~25%</div>
+          </div>
+          <span class="section-pill">Infrastructure</span>
+          <span class="section-pill">CI/CD pipeline</span>
+          <span class="section-pill">Application</span>
+          <span class="section-pill">Observability</span>
+          <span class="section-pill">Performance &amp; latency</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Infrastructure issues.</li>
+                <li>CI/CD pipeline issues.</li>
+                <li>Application issues.</li>
+                <li>Observability issues.</li>
+                <li>Performance and latency issues.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Build failures</strong> &rarr; Cloud Build logs. <strong>Deploy failures</strong> &rarr; Cloud Deploy rollout details + Cloud Audit Logs.</li>
+                <li><strong>Latency hunt</strong>: trace waterfall &rarr; slow span &rarr; correlated logs at that span.</li>
+                <li>Match the tool to the symptom &mdash; see the table below.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Symptom</th><th>Right signal / tool</th></tr></thead>
+              <tbody>
+                <tr><td>Cross-service latency</td><td><strong>Cloud Trace</strong></td></tr>
+                <tr><td>CPU / memory hotspots in code</td><td><strong>Cloud Profiler</strong></td></tr>
+                <tr><td>Errors &amp; discrete events</td><td><strong>Cloud Logging</strong></td></tr>
+                <tr><td>Trends &amp; thresholds over time</td><td><strong>Cloud Monitoring metrics</strong></td></tr>
+                <tr><td>Grouped, deduplicated exceptions</td><td><strong>Error Reporting</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> adding log statements to measure timing <em>distorts</em> the timing and is hard to visualize &rarr; use <strong>Profiler</strong> (hotspots) or <strong>Trace</strong> (latency) instead. Match the tool to the question's symptom.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/error-reporting/docs">Error Reporting</a></li>
+              <li><a href="https://cloud.google.com/profiler/docs/concepts-profiling">Profiler concepts</a></li>
+              <li><a href="https://cloud.google.com/trace/docs/finding-traces">Finding slow traces</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec5" id="s5-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.1</p>
+              <h2>Collecting performance information</h2>
+              <p class="objective">Use Profiler for code hotspots and Trace for latency; lean on Active Assist recommenders to surface what to fix without manual analysis.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~12%</div>
+          </div>
+          <span class="section-pill">Cloud Profiler</span>
+          <span class="section-pill">Cloud Trace</span>
+          <span class="section-pill">Active Assist</span>
+          <span class="section-pill">Recommenders</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Application performance monitoring.</li>
+                <li>Active Assist insights and recommendations.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Profiler</strong>: continuous, low-overhead CPU/heap profiling; <strong>flame graphs</strong> visualize the call stack to find bottlenecks &mdash; ideal for comparing algorithms in staging <em>and</em> prod.</li>
+                <li><strong>Cloud Trace</strong>: request latency across services.</li>
+                <li><strong>Active Assist</strong>: insights and recommenders &mdash; idle VM, rightsizing, idle IP/disk, CUD recommender, IAM recommender.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam trap:</strong> &ldquo;experiment with algorithms and gather detailed performance data, find bottlenecks&rdquo; &rarr; <strong>Cloud Profiler flame graphs</strong>. Trace lacks code-level benchmarking detail; log statements skew timings.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/profiler/docs">Cloud Profiler</a></li>
+              <li><a href="https://cloud.google.com/recommender/docs/overview">Active Assist / Recommenders</a></li>
+              <li><a href="https://cloud.google.com/trace/docs/overview">Cloud Trace</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide sec5" id="s5-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.2</p>
+              <h2>FinOps &amp; cost optimization</h2>
+              <p class="objective">Match the discount or compute model to the workload: Spot for fault-tolerant batch, CUDs for steady baseline, recommenders for waste, exclusion filters for logging spend.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~12%</div>
+          </div>
+          <span class="section-pill">Spot VMs</span>
+          <span class="section-pill">CUDs &amp; SUDs</span>
+          <span class="section-pill">Network tiers</span>
+          <span class="section-pill">Recommenders</span>
+          <span class="section-pill">Observability cost</span>
+          <span class="section-pill">Per-workload (GKE/Run/CE)</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Observability costs.</li>
+                <li>Spot virtual machines.</li>
+                <li>Optimizing resource usage for cost and efficiency.</li>
+                <li>Infrastructure cost planning (committed-use discounts, sustained-use discounts, network tiers).</li>
+                <li>Leveraging Google Cloud recommenders (cost, security, performance, manageability, reliability).</li>
+                <li>Optimizing individual workload costs (GKE, Cloud Run, Compute Engine).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Network tiers</strong>: Standard (cheaper, regional egress) vs Premium (Google's global backbone, lower latency).</li>
+                <li><strong>Recommenders / Active Assist</strong>: rightsizing, idle-resource cleanup, CUD recommendations.</li>
+                <li><strong>Reservations vs CUDs</strong>: reservations reserve capacity; CUDs buy committed spend/usage discounts. You might need both for predictable high-demand workloads.</li>
+                <li><strong>Logging cost</strong>: exclusion / sampling filters.</li>
+                <li><strong>Per-workload</strong>: GKE cluster autoscaler + Spot node pools + bin-packing; Cloud Run scale-to-zero and concurrency tuning; Compute Engine rightsizing and idle-resource cleanup.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Goal / cue</th><th>Lever</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td>Fault-tolerant parallel batch</td><td><strong>Spot VMs</strong></td><td>Up to ~91% off; preemptible, no expiry</td></tr>
+                <tr><td>Steady, predictable baseline</td><td><strong>CUDs</strong> (1/3-yr)</td><td>Commit for a deep discount</td></tr>
+                <tr><td>Ongoing Compute Engine usage</td><td><strong>SUDs</strong></td><td>Automatic discount, no commitment</td></tr>
+                <tr><td>Reduce observability spend</td><td><strong>Log exclusion filters</strong></td><td>Cut ingestion without losing key logs</td></tr>
+                <tr><td>Find waste automatically</td><td><strong>Recommenders</strong></td><td>Idle / rightsizing / CUD insights</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam signal:</strong> fault-tolerant parallel batch &rarr; <strong>Spot VMs</strong>. Steady predictable baseline &rarr; <strong>CUDs</strong>. Reduce observability spend &rarr; <strong>log exclusion filters</strong>. Find waste automatically &rarr; <strong>recommenders</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/compute/docs/instances/spot">Spot VMs</a></li>
+              <li><a href="https://cloud.google.com/docs/cuds">Committed use discounts</a></li>
+              <li><a href="https://cloud.google.com/compute/docs/sustained-use-discounts">Sustained use discounts</a></li>
+              <li><a href="https://cloud.google.com/network-tiers/docs/overview">Network Service Tiers</a></li>
+              <li><a href="https://cloud.google.com/recommender/docs/overview">Recommenders</a></li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+
+    <p class="footer">Built from the official Professional Cloud DevOps Engineer exam guide, with trap callouts grounded in the official sample questions and every claim fact-checked against current Google Cloud documentation (sources linked per slide). Use it as a scroll deck on desktop or a compact objective index on mobile.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDE Exam Guide Cheat Sheet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fc;
+      --ink: #142033;
+      --muted: #64748b;
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-solid: #ffffff;
+      --surface-soft: #f8fafc;
+      --line: #dbe3ef;
+      --blue: #2563eb;
+      --blue-dark: #1e40af;
+      --teal: #0f766e;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --green: #15803d;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.06);
+      --radius: 24px;
+      --slide-min: min(860px, calc(100svh - 32px));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 18px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.16), transparent 32rem),
+        radial-gradient(circle at 95% 10%, rgba(20, 184, 166, 0.16), transparent 28rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 44%, #eef4ff 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #eef2ff;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      color: #1e3a8a;
+      font-size: 0.92em;
+      padding: 0.08rem 0.32rem;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - clamp(20px, 5vw, 56px)));
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 38px) 0 72px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.24), transparent 22rem),
+        linear-gradient(135deg, #0f172a 0%, #1d4ed8 58%, #0f766e 100%);
+      border-radius: clamp(22px, 4vw, 34px);
+      box-shadow: var(--shadow);
+      color: #fff;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding: clamp(26px, 7vw, 58px);
+      position: relative;
+    }
+
+    .eyebrow {
+      color: #bfdbfe;
+      font-size: clamp(0.75rem, 1.8vw, 0.86rem);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 5.6rem);
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+      margin-bottom: 20px;
+      max-width: 940px;
+    }
+
+    .subtitle {
+      color: #e0f2fe;
+      font-size: clamp(1rem, 2.1vw, 1.22rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .weight-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .weight-card span {
+      color: #bfdbfe;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .weight-card strong {
+      display: block;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1;
+      margin: 8px 0 6px;
+    }
+
+    .weight-card p {
+      color: #dbeafe;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .deck-layout {
+      align-items: start;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .nav-panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      max-height: calc(100svh - 32px);
+      overflow: auto;
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .nav-panel h2 {
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .nav-group:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .nav-group strong {
+      color: #0f172a;
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .nav-panel a {
+      border-radius: 10px;
+      color: #475569;
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      padding: 7px 9px;
+    }
+
+    .nav-panel a:hover {
+      background: #eff6ff;
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    .mobile-jump {
+      display: none;
+    }
+
+    .slides {
+      display: grid;
+      gap: 22px;
+      scroll-snap-type: y proximity;
+    }
+
+    .slide {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      min-height: var(--slide-min);
+      overflow: hidden;
+      padding: clamp(22px, 4vw, 36px);
+      scroll-snap-align: start;
+    }
+
+    .slide-header {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      margin-bottom: 22px;
+    }
+
+    .slide-kicker {
+      color: var(--teal);
+      font-size: 0.8rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .slide h2 {
+      font-size: clamp(1.7rem, 4.8vw, 3rem);
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+      margin-bottom: 10px;
+    }
+
+    .objective {
+      color: var(--muted);
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .weight {
+      align-self: start;
+      background: linear-gradient(135deg, #eff6ff, #ecfeff);
+      border: 1px solid #bfdbfe;
+      border-radius: 18px;
+      color: var(--blue-dark);
+      font-weight: 850;
+      min-width: 112px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .weight span {
+      color: var(--muted);
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .section-pill {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #334155;
+      display: inline-flex;
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin: 0 7px 8px 0;
+      padding: 6px 10px;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 0.88fr 1.12fr;
+    }
+
+    .guide-card,
+    .know-card,
+    .callout,
+    .matrix,
+    .quick-grid > div {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .guide-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .guide-card h3,
+    .know-card h3,
+    .matrix h3 {
+      color: #334155;
+      font-size: 0.84rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.18rem;
+    }
+
+    li + li {
+      margin-top: 0.42rem;
+    }
+
+    .guide-card li {
+      color: #475569;
+    }
+
+    .know-card ul {
+      padding-left: 1rem;
+    }
+
+    .know-card li::marker {
+      color: var(--blue);
+    }
+
+    .quick-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+
+    .quick-grid strong {
+      display: block;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .quick-grid p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+      margin: 0;
+    }
+
+    .callout {
+      margin-top: 14px;
+    }
+
+    .callout.exam {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #7c2d12;
+    }
+
+    .callout.rule {
+      background: #ecfeff;
+      border-color: #a5f3fc;
+      color: #164e63;
+    }
+
+    .callout.warn {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #7f1d1d;
+    }
+
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-top: 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 640px;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 24px 0 0;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 24px, 860px);
+      }
+
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel {
+        display: none;
+      }
+
+      .mobile-jump {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        gap: 8px;
+        margin: 0 0 16px;
+        overflow-x: auto;
+        padding: 10px;
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .mobile-jump a {
+        background: #f1f5f9;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #334155;
+        flex: 0 0 auto;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 8px 11px;
+      }
+
+      .content-grid,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: auto;
+        scroll-snap-align: none;
+      }
+
+      .slides {
+        scroll-snap-type: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 18px;
+      }
+
+      .slide-header {
+        grid-template-columns: 1fr;
+      }
+
+      .weight {
+        justify-self: start;
+        min-width: auto;
+        text-align: left;
+      }
+
+      table {
+        min-width: 560px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero,
+      .slide,
+      .nav-panel {
+        box-shadow: none;
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel,
+      .mobile-jump {
+        display: none;
+      }
+
+      .slide {
+        break-inside: avoid;
+        min-height: auto;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Google Cloud Professional Data Engineer</p>
+      <h1>Exam Guide Cheat Sheet</h1>
+      <p class="subtitle">A scroll-through final-prep deck: each slide starts from the official exam guide, then compresses the practical Google Cloud decisions and traps worth memorising.</p>
+      <div class="hero-grid" aria-label="Exam section weights">
+        <div class="weight-card"><span>Section 1</span><strong>22%</strong><p>Designing data processing systems</p></div>
+        <div class="weight-card"><span>Section 2</span><strong>25%</strong><p>Ingesting and processing data</p></div>
+        <div class="weight-card"><span>Section 3</span><strong>20%</strong><p>Storing the data</p></div>
+        <div class="weight-card"><span>Section 4</span><strong>15%</strong><p>Preparing data for analysis</p></div>
+        <div class="weight-card"><span>Section 5</span><strong>18%</strong><p>Maintaining workloads</p></div>
+      </div>
+    </header>
+
+    <nav class="mobile-jump" aria-label="Mobile section jump list">
+      <a href="#s1-1">1.1</a>
+      <a href="#s1-2">1.2</a>
+      <a href="#s1-3">1.3</a>
+      <a href="#s1-4">1.4</a>
+      <a href="#s2-1">2.1</a>
+      <a href="#s2-2">2.2</a>
+      <a href="#s2-3">2.3</a>
+      <a href="#s3-1">3.1</a>
+      <a href="#s3-2">3.2</a>
+      <a href="#s3-3">3.3</a>
+      <a href="#s3-4">3.4</a>
+      <a href="#s4-1">4.1</a>
+      <a href="#s4-2">4.2</a>
+      <a href="#s4-3">4.3</a>
+      <a href="#s5-1">5.1</a>
+      <a href="#s5-2">5.2</a>
+      <a href="#s5-3">5.3</a>
+      <a href="#s5-4">5.4</a>
+      <a href="#s5-5">5.5</a>
+    </nav>
+
+    <div class="deck-layout">
+      <nav class="nav-panel" aria-label="Exam guide table of contents">
+        <h2>Exam Guide</h2>
+        <div class="nav-group">
+          <strong>1. Designing systems</strong>
+          <a href="#s1-1">1.1 Security and compliance</a>
+          <a href="#s1-2">1.2 Reliability and fidelity</a>
+          <a href="#s1-3">1.3 Flexibility and portability</a>
+          <a href="#s1-4">1.4 Data migrations</a>
+        </div>
+        <div class="nav-group">
+          <strong>2. Ingesting and processing</strong>
+          <a href="#s2-1">2.1 Planning pipelines</a>
+          <a href="#s2-2">2.2 Building pipelines</a>
+          <a href="#s2-3">2.3 Operationalising pipelines</a>
+        </div>
+        <div class="nav-group">
+          <strong>3. Storing data</strong>
+          <a href="#s3-1">3.1 Selecting storage</a>
+          <a href="#s3-2">3.2 Data warehouse</a>
+          <a href="#s3-3">3.3 Data lake</a>
+          <a href="#s3-4">3.4 Data platform</a>
+        </div>
+        <div class="nav-group">
+          <strong>4. Analysis</strong>
+          <a href="#s4-1">4.1 Visualisation</a>
+          <a href="#s4-2">4.2 AI and ML</a>
+          <a href="#s4-3">4.3 Sharing data</a>
+        </div>
+        <div class="nav-group">
+          <strong>5. Maintaining workloads</strong>
+          <a href="#s5-1">5.1 Optimising resources</a>
+          <a href="#s5-2">5.2 Automation</a>
+          <a href="#s5-3">5.3 Workload organisation</a>
+          <a href="#s5-4">5.4 Monitoring</a>
+          <a href="#s5-5">5.5 Failure impact</a>
+        </div>
+      </nav>
+
+      <article class="slides">
+        <section class="slide" id="s1-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.1</p>
+              <h2>Designing for security and compliance</h2>
+              <p class="objective">The exam wants least privilege, key-control nuance, sensitive-data handling, sovereignty, governance structure, and clean dev/prod separation.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~22%</div>
+          </div>
+          <span class="section-pill">IAM and org policies</span>
+          <span class="section-pill">Encryption and key management</span>
+          <span class="section-pill">Privacy and PII</span>
+          <span class="section-pill">Regional compliance</span>
+          <span class="section-pill">Governance architecture</span>
+          <span class="section-pill">Dev vs prod</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Cloud IAM and organization policies.</li>
+                <li>Data security, encryption, and key management.</li>
+                <li>Privacy strategies for personally identifiable information.</li>
+                <li>Regional/data sovereignty and legal compliance.</li>
+                <li>Project, dataset, and table architecture for governance.</li>
+                <li>Multi-environment use cases.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>CMEK</strong>: customer controls Cloud KMS keys; supported by BigQuery. Good default for auditability and control.</li>
+                <li><strong>CSEK</strong>: customer supplies raw key material per request; not supported by BigQuery. Mainly Cloud Storage and Compute Engine.</li>
+                <li><strong>EKM</strong>: key material stays in external HSM/KMS; choose when regulations require keys never leave your infrastructure.</li>
+                <li><strong>Cloud DLP / Sensitive Data Protection</strong>: discover, classify, mask, tokenize, or de-identify sensitive data.</li>
+                <li><strong>VPC Service Controls</strong>: service perimeter for supported Google-managed APIs such as BigQuery, Cloud Storage, and Pub/Sub.</li>
+                <li>Separate dev/test/prod with projects, datasets, service accounts, IAM, and environment-specific CMEK/config.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam traps:</strong> CSEK sounds strongest but is too limited for BigQuery. For a compromised CMEK on Cloud Storage, rotation only affects new encryption operations; rewrite objects with a new key/bucket to re-encrypt existing data.</div>
+        </section>
+
+        <section class="slide" id="s1-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.2</p>
+              <h2>Designing for reliability and fidelity</h2>
+              <p class="objective">Pick the data-quality, orchestration, recovery, and consistency patterns that keep pipelines correct, restartable, and observable.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~22%</div>
+          </div>
+          <span class="section-pill">Data cleaning</span>
+          <span class="section-pill">Pipeline monitoring</span>
+          <span class="section-pill">Orchestration</span>
+          <span class="section-pill">DR and fault tolerance</span>
+          <span class="section-pill">ACID and availability</span>
+          <span class="section-pill">Validation</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Preparing and cleaning data with Dataform, Dataflow, Cloud Data Fusion, and LLM-assisted query generation.</li>
+                <li>Monitoring and orchestration of data pipelines.</li>
+                <li>Disaster recovery and fault tolerance.</li>
+                <li>ACID compliance and availability decisions.</li>
+                <li>Data validation.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Dataform</strong>: SQL ELT in BigQuery with dependencies, versioned workflow logic, and assertions for data quality.</li>
+                <li><strong>Dataflow</strong>: custom Beam pipelines for unified batch/stream, cleansing, windowing, enrichment, and late data handling.</li>
+                <li><strong>Cloud Data Fusion</strong>: low-code visual ETL when non-engineers need to build pipelines.</li>
+                <li>Validate with row counts, uniqueness, null checks, reconciliation queries, schema checks, and business-report samples.</li>
+                <li>Make loads idempotent and replayable; use retries and alerts for transient failures.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> "ELT in BigQuery plus data quality checks inside the workflow" -> Dataform assertions. "Complex scheduled data pipeline" -> Cloud Composer.</div>
+        </section>
+
+        <section class="slide" id="s1-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.3</p>
+              <h2>Designing for flexibility and portability</h2>
+              <p class="objective">Map business constraints to architecture without locking data into a shape that blocks future residency, multi-cloud, discovery, or governance needs.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~22%</div>
+          </div>
+          <span class="section-pill">Future requirements</span>
+          <span class="section-pill">Portability</span>
+          <span class="section-pill">Residency</span>
+          <span class="section-pill">Staging</span>
+          <span class="section-pill">Cataloging</span>
+          <span class="section-pill">Profiling</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Map current and future business requirements to the architecture.</li>
+                <li>Design for data and application portability, including multi-cloud and data residency requirements.</li>
+                <li>Plan data staging, cataloging, profiling, and discovery.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>BigLake</strong>: query Cloud Storage, S3, or Azure data with BigQuery and centralized governance without loading every file into BigQuery.</li>
+                <li><strong>Dataplex</strong>: govern lakes and warehouses with discovery, catalog, lineage, quality, and access management.</li>
+                <li><strong>Dataplex Catalog</strong>: search and understand data assets.</li>
+                <li><strong>Cloud Storage</strong> is the raw landing zone; BigQuery is the curated warehouse; Dataplex ties distributed data domains together.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam heuristic:</strong> if the question says governed lake files or cross-cloud lake access, think BigLake. If it says enterprise governance across lakes and warehouses, think Dataplex.</div>
+        </section>
+
+        <section class="slide" id="s1-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.4</p>
+              <h2>Designing data migrations</h2>
+              <p class="objective">Choose migration tooling from source, volume, downtime tolerance, and whether the need is one-time transfer, scheduled ingest, database migration, or CDC.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~22%</div>
+          </div>
+          <span class="section-pill">Stakeholder analysis</span>
+          <span class="section-pill">Migration plan</span>
+          <span class="section-pill">Validation</span>
+          <span class="section-pill">BQDTS</span>
+          <span class="section-pill">DMS</span>
+          <span class="section-pill">Transfer Appliance</span>
+          <span class="section-pill">Datastream</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Analyze current stakeholder needs, users, processes, and technologies.</li>
+                <li>Plan migration and validation to Google Cloud using BigQuery Data Transfer Service, Database Migration Service, Transfer Appliance, networking, and Datastream.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Storage Transfer Service</strong>: network transfer from S3, Azure Blob, GCS, or on-prem HTTP/HTTPS sources.</li>
+                <li><strong>Transfer Appliance</strong>: physical device for hundreds of TB to PB when bandwidth is limited.</li>
+                <li><strong>Datastream</strong>: ongoing CDC replication from operational databases to BigQuery or Cloud Storage.</li>
+                <li><strong>BigQuery Data Transfer Service</strong>: scheduled transfers from Google SaaS and supported external sources into BigQuery.</li>
+                <li><strong>Database Migration Service</strong>: lift-and-shift relational DB migration to Cloud SQL or AlloyDB.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam signal:</strong> "large data + slow/shared link" -> Transfer Appliance. "Live replication / CDC" -> Datastream. "Google SaaS to BigQuery" -> BigQuery Data Transfer Service.</div>
+        </section>
+
+        <section class="slide" id="s2-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.1</p>
+              <h2>Planning the data pipelines</h2>
+              <p class="objective">Before building, define sources, sinks, transformation logic, orchestration, network boundaries, and encryption requirements.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Sources and sinks</span>
+          <span class="section-pill">Transformations</span>
+          <span class="section-pill">Orchestration</span>
+          <span class="section-pill">Networking</span>
+          <span class="section-pill">Encryption</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Define data sources and sinks.</li>
+                <li>Define transformation and orchestration logic.</li>
+                <li>Apply networking fundamentals.</li>
+                <li>Plan data encryption.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li>Use Pub/Sub for spiky native event ingestion before processing.</li>
+                <li>Use Dataflow when you need one Beam model for batch and streaming.</li>
+                <li>Use BigQuery as the analytics sink; use Bigtable for low-latency key/range serving; use Cloud Storage for raw landing.</li>
+                <li>Use VPC Service Controls for managed-service exfiltration boundaries, not broad firewall/CIDR thinking.</li>
+                <li>Use CMEK/EKM when key-control requirements are explicit.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Planning shortcut:</strong> source -> buffer -> processor -> sink -> orchestrator -> observability -> IAM/CMEK/perimeter.</div>
+        </section>
+
+        <section class="slide" id="s2-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.2</p>
+              <h2>Building the pipelines</h2>
+              <p class="objective">This is the highest-value drilling area: service selection, Beam windowing, late data, Pub/Sub semantics, batch/streaming transforms, and enrichment.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Data cleansing</span>
+          <span class="section-pill">Dataflow / Beam</span>
+          <span class="section-pill">Dataproc / Spark</span>
+          <span class="section-pill">Cloud Data Fusion</span>
+          <span class="section-pill">BigQuery</span>
+          <span class="section-pill">Pub/Sub</span>
+          <span class="section-pill">Kafka</span>
+          <span class="section-pill">Windowing</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Data cleansing and transformations.</li>
+                <li>Identify services: Dataflow, Apache Beam, Dataproc, Cloud Data Fusion, BigQuery, Pub/Sub, Spark, Hadoop, Kafka.</li>
+                <li>Batch, streaming, windowing, late-arriving data, processing logic, and AI enrichment.</li>
+                <li>Data acquisition, import, and new data-source integration.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Dataflow / Beam</strong>: new unified batch/stream pipeline, especially streaming.</li>
+                <li><strong>Dataproc</strong>: existing Spark, Hadoop, Hive, or Pig workloads. Serverless is Spark-only with no cluster management.</li>
+                <li><strong>Cloud Data Fusion</strong>: low-code visual ETL.</li>
+                <li><strong>Pub/Sub</strong>: at-least-once delivery; duplicates are possible; ordering is per ordering key.</li>
+                <li><strong>Windowing</strong>: fixed/tumbling for non-overlapping buckets, sliding/hopping for rolling windows, session for inactivity gaps.</li>
+                <li><strong>Allowed lateness</strong>: keeps windows open after watermark; accumulating panes include previous results, discarding panes include only new records.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="quick-grid">
+            <div><strong>Watermark</strong><p>Dataflow's estimate that events up to event-time T have probably arrived. It is not a guarantee.</p></div>
+            <div><strong>Trigger</strong><p><code>AfterWatermark</code> is the standard on-time trigger. Processing-time triggers are for speculative early output.</p></div>
+            <div><strong>Debugging</strong><p>Use <strong>Reshuffle</strong> to break fusion and isolate bottlenecks; do not add noisy logging inside <code>ParDo</code>.</p></div>
+          </div>
+          <div class="callout exam"><strong>Exam patterns:</strong> "5-minute windows + late data + emit at watermark" -> FixedWindows + AfterWatermark + allowed lateness. "Rolling average" -> sliding. "Per-user activity bursts" -> session.</div>
+        </section>
+
+        <section class="slide" id="s2-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.3</p>
+              <h2>Deploying and operationalising pipelines</h2>
+              <p class="objective">Make pipelines repeatable: schedule them, deploy them through CI/CD, and pick Composer vs Workflows correctly.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~25%</div>
+          </div>
+          <span class="section-pill">Cloud Composer</span>
+          <span class="section-pill">Workflows</span>
+          <span class="section-pill">CI/CD</span>
+          <span class="section-pill">Job automation</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Job automation and orchestration with Cloud Composer and Workflows.</li>
+                <li>Continuous Integration and Continuous Deployment.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Composer</strong>: managed Airflow for complex scheduled data DAGs with operators for BigQuery, Dataproc, GCS, and notifications.</li>
+                <li><strong>Workflows</strong>: lightweight serverless API/microservice orchestration.</li>
+                <li><strong>Eventarc</strong>: event trigger source, not a full data pipeline orchestrator.</li>
+                <li>Version Composer DAGs, Dataflow code/templates, Dataform workflows, SQL, and schemas.</li>
+                <li>Use dedicated service accounts, least privilege IAM, and environment-specific config.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Composer trap:</strong> SQL transformation/query job -> <code>BigQueryInsertJobOperator</code>. <code>BigQueryUpsertTableOperator</code> is for table metadata/properties, not transformations.</div>
+        </section>
+
+        <section class="slide" id="s3-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.1</p>
+              <h2>Selecting storage systems</h2>
+              <p class="objective">Storage questions are access-pattern questions. Choose from query shape, consistency, scale, latency, cost, lifecycle, and operational model.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~20%</div>
+          </div>
+          <span class="section-pill">Access patterns</span>
+          <span class="section-pill">Managed services</span>
+          <span class="section-pill">Cost and performance</span>
+          <span class="section-pill">Lifecycle management</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Analyze data access patterns.</li>
+                <li>Choose managed services: BigQuery, BigLake, AlloyDB, Bigtable, Spanner, Cloud SQL, Cloud Storage, Firestore, Memorystore.</li>
+                <li>Plan for storage costs, performance, and lifecycle management.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>BigQuery</strong>: OLAP, analytics, SQL scans, joins, aggregations.</li>
+                <li><strong>Bigtable</strong>: massive low-latency key/range reads; row-key design controls performance.</li>
+                <li><strong>Spanner</strong>: global ACID SQL, horizontal relational scale, strong consistency.</li>
+                <li><strong>Cloud SQL</strong>: standard managed relational app workloads.</li>
+                <li><strong>AlloyDB</strong>: high-performance PostgreSQL-compatible workloads.</li>
+                <li><strong>Firestore</strong>: document/mobile/serverless app data.</li>
+                <li><strong>Cloud Storage</strong>: object/blob storage, raw lake, backups.</li>
+                <li><strong>Memorystore</strong>: in-memory cache/session store.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam traps:</strong> Bigtable is not for joins or ad hoc analytics. Do not pick Spanner just because HA is mentioned; look for global relational scale and strict consistency.</div>
+        </section>
+
+        <section class="slide" id="s3-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.2</p>
+              <h2>Planning for a data warehouse</h2>
+              <p class="objective">BigQuery depth: model shape, partitioning, clustering, BI Engine, materialized views, pricing model, and query diagnosis.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~20%</div>
+          </div>
+          <span class="section-pill">Data model</span>
+          <span class="section-pill">Normalization</span>
+          <span class="section-pill">Business requirements</span>
+          <span class="section-pill">Access patterns</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Design the data model.</li>
+                <li>Decide the degree of data normalization.</li>
+                <li>Map business requirements.</li>
+                <li>Define architecture to support data access patterns.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li>BigQuery often favors denormalized or star-schema models for analytics performance.</li>
+                <li><strong>Partitioning</strong>: split by column, usually date; filter on partition column to scan less data.</li>
+                <li><strong>Clustering</strong>: sort within partitions by common high-cardinality filters such as <code>user_id</code> or <code>device_id</code>.</li>
+                <li><strong>Materialized views</strong>: repeated expensive aggregations used by many users.</li>
+                <li><strong>BI Engine</strong>: in-memory acceleration for dashboard latency; not a pricing model.</li>
+                <li><strong>Slots</strong>: BigQuery compute units; Editions/reservations provide predictable capacity.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam heuristic:</strong> partition by time/date, cluster by high-cardinality columns frequently used in filters. Use both when queries filter on date and another selective column.</div>
+        </section>
+
+        <section class="slide" id="s3-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.3</p>
+              <h2>Using a data lake</h2>
+              <p class="objective">Know how raw object storage becomes useful: discovery, governance, cost controls, lake query, processing, and monitoring.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~20%</div>
+          </div>
+          <span class="section-pill">Discovery</span>
+          <span class="section-pill">Access controls</span>
+          <span class="section-pill">Cost controls</span>
+          <span class="section-pill">Processing</span>
+          <span class="section-pill">Monitoring</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Manage the lake with data discovery, access, and cost controls.</li>
+                <li>Process data in the lake.</li>
+                <li>Monitor the data lake.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Storage</strong>: raw lake storage and lifecycle policies.</li>
+                <li><strong>BigLake</strong>: BigQuery engine and governance over lake files without loading all data into BigQuery.</li>
+                <li><strong>Dataplex</strong>: discovery, cataloging, lineage, data quality, and governance across lake/warehouse assets.</li>
+                <li><strong>Autoclass</strong>: automatically moves objects to colder classes based on access; useful for unpredictable access patterns.</li>
+                <li><strong>Dual-region + Turbo Replication</strong>: 15-minute replication RPO target for Cloud Storage.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Autoclass trap:</strong> lifecycle rules are time-based and normal retrieval fees apply. Autoclass is the answer for unpredictable access plus no retrieval/early deletion charges after movement.</div>
+        </section>
+
+        <section class="slide" id="s3-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.4</p>
+              <h2>Designing for a data platform</h2>
+              <p class="objective">The data-platform answer is about governed self-service across distributed assets, not just one lake or one warehouse.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~20%</div>
+          </div>
+          <span class="section-pill">Dataplex</span>
+          <span class="section-pill">Dataplex Catalog</span>
+          <span class="section-pill">BigQuery</span>
+          <span class="section-pill">Cloud Storage</span>
+          <span class="section-pill">Federated governance</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Build a data platform with Google Cloud tools such as Dataplex, Dataplex Catalog, BigQuery, and Cloud Storage.</li>
+                <li>Build a federated governance model for distributed data systems.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Data lake</strong>: raw data in native formats, usually Cloud Storage plus BigLake.</li>
+                <li><strong>Data warehouse</strong>: curated structured data, usually BigQuery.</li>
+                <li><strong>Data platform</strong>: governed operating model across lakes, warehouses, teams, and domains.</li>
+                <li><strong>Federated governance</strong>: teams own domains while central controls define policy, discovery, access, and quality expectations.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> "catalog, lineage, data quality, access management across distributed lakes and warehouses" -> Dataplex.</div>
+        </section>
+
+        <section class="slide" id="s4-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.1</p>
+              <h2>Preparing data for visualization</h2>
+              <p class="objective">Prepare BigQuery for BI users: precalculate where useful, accelerate dashboards, troubleshoot slow queries, and protect sensitive columns.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~15%</div>
+          </div>
+          <span class="section-pill">Connecting tools</span>
+          <span class="section-pill">Precalculated fields</span>
+          <span class="section-pill">BI Engine</span>
+          <span class="section-pill">Materialized views</span>
+          <span class="section-pill">Query troubleshooting</span>
+          <span class="section-pill">Data masking / DLP</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Connect to visualization tools.</li>
+                <li>Precalculate fields.</li>
+                <li>Use BigQuery BI features such as BI Engine and materialized views.</li>
+                <li>Troubleshoot poor-performing queries.</li>
+                <li>Apply security, data masking, IAM, and Cloud DLP.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>BI Engine</strong>: in-memory acceleration for dashboards and repeated queries; reduces latency.</li>
+                <li><strong>Materialized views</strong>: precompute repeated expensive aggregations.</li>
+                <li>Query tuning: avoid <code>SELECT *</code>, prune partitions, cluster on common high-cardinality filters, inspect execution details/shuffle/slots.</li>
+                <li>Protect sensitive data with IAM, policy tags/masking patterns, and Sensitive Data Protection when discovery/de-identification is needed.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Fast recognition:</strong> repeated dashboard aggregation -> materialized view. Low-latency dashboard acceleration -> BI Engine. High scan cost -> partition pruning and column selection.</div>
+        </section>
+
+        <section class="slide" id="s4-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.2</p>
+              <h2>Preparing data for AI and ML</h2>
+              <p class="objective">For this exam, AI/ML prep is mostly data readiness, BigQuery ML, feature engineering, and unstructured-data preparation for embeddings/RAG.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~15%</div>
+          </div>
+          <span class="section-pill">Feature engineering</span>
+          <span class="section-pill">Training and serving</span>
+          <span class="section-pill">BigQuery ML</span>
+          <span class="section-pill">Embeddings</span>
+          <span class="section-pill">RAG</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Prepare data for feature engineering, training, and serving ML models.</li>
+                <li>Use BigQuery ML where appropriate.</li>
+                <li>Prepare unstructured data for embeddings and retrieval-augmented generation.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>BigQuery ML</strong>: train and run ML models in BigQuery using SQL.</li>
+                <li>For features: validate labels, handle nulls/outliers, avoid leakage, keep training/serving transformations consistent.</li>
+                <li>For embeddings/RAG: clean documents, chunk them, generate/store embeddings, retrieve relevant chunks, and ground model output.</li>
+                <li>For LLM-generated SQL: validate generated SQL, constrain accessible datasets, and keep IAM/governance boundaries in place.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam angle:</strong> you already know the ML concepts; look for the Google Cloud data-prep service choice and governance boundary.</div>
+        </section>
+
+        <section class="slide" id="s4-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.3</p>
+              <h2>Sharing data</h2>
+              <p class="objective">Know the BigQuery-native sharing path and the governance controls around published datasets, reports, and visualizations.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~15%</div>
+          </div>
+          <span class="section-pill">Sharing rules</span>
+          <span class="section-pill">Publishing datasets</span>
+          <span class="section-pill">Reports and visualizations</span>
+          <span class="section-pill">Analytics Hub</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Define rules to share data.</li>
+                <li>Publish datasets.</li>
+                <li>Publish reports and visualizations.</li>
+                <li>Use BigQuery sharing with Analytics Hub.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Analytics Hub</strong>: publish and subscribe to shared BigQuery datasets.</li>
+                <li>Use IAM/governance controls to define who can discover, subscribe, query, or administer shared assets.</li>
+                <li>For sensitive data, pair sharing with masking/de-identification/policy controls rather than copying raw PII everywhere.</li>
+                <li>Dataplex helps users discover governed assets; Analytics Hub is the BigQuery sharing marketplace pattern.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam signal:</strong> "share curated BigQuery datasets with consumers" -> Analytics Hub.</div>
+        </section>
+
+        <section class="slide" id="s5-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.1</p>
+              <h2>Optimizing resources</h2>
+              <p class="objective">Balance cost and capacity: BigQuery pricing, slots, cluster lifecycle, storage tiering, and only paying for what the business needs.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~18%</div>
+          </div>
+          <span class="section-pill">Cost minimization</span>
+          <span class="section-pill">Critical capacity</span>
+          <span class="section-pill">Persistent vs job-based clusters</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Minimize costs per required business need for data.</li>
+                <li>Ensure enough resources for business-critical data processes.</li>
+                <li>Choose persistent or job-based clusters, such as Dataproc.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>BigQuery on-demand</strong>: pay by bytes scanned; best for irregular/low query volume.</li>
+                <li><strong>Editions + reservations</strong>: predictable slot capacity for high, consistent volume or critical workloads.</li>
+                <li><strong>Dataproc Serverless</strong>: Spark only, no cluster management.</li>
+                <li><strong>Ephemeral Dataproc cluster</strong>: custom config or non-Spark Hadoop ecosystem jobs; delete after use.</li>
+                <li><strong>Autoclass</strong>: use when Cloud Storage access patterns are unpredictable.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Dataproc signal:</strong> "Spark only + no special config" -> Serverless. "Hive/custom config/non-Spark" -> ephemeral cluster.</div>
+        </section>
+
+        <section class="slide" id="s5-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.2</p>
+              <h2>Designing automation and repeatability</h2>
+              <p class="objective">Airflow fundamentals matter: DAGs, operators, sensors, retries, catchup, and passing only small metadata between tasks.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~18%</div>
+          </div>
+          <span class="section-pill">DAGs</span>
+          <span class="section-pill">Scheduling</span>
+          <span class="section-pill">Repeatable jobs</span>
+          <span class="section-pill">Cloud Composer</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Create directed acyclic graphs for Cloud Composer.</li>
+                <li>Schedule and orchestrate jobs in a repeatable way.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>DAG</strong>: Python workflow with tasks, dependencies, and schedule.</li>
+                <li><strong>Operator</strong>: task type such as BigQuery job, Dataproc job, Python function, or GCS copy.</li>
+                <li><strong>Sensor</strong>: waits for a condition such as a file in GCS; deferrable sensors/operators avoid tying up workers.</li>
+                <li><strong>XCom</strong>: small cross-task metadata only, not datasets.</li>
+                <li><strong><code>catchup=False</code></strong>: prevents backfilling every missed schedule since <code>start_date</code>.</li>
+                <li>Use retries, retry delays, and failure callbacks for recoverable failures and alerting.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> complex BigQuery/Dataproc/GCS pipeline with branching and schedules -> Composer, not Workflows.</div>
+        </section>
+
+        <section class="slide" id="s5-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.3</p>
+              <h2>Organizing workloads based on business requirements</h2>
+              <p class="objective">Separate interactive and batch needs, reserve capacity for critical workloads, and diagnose slot contention.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~18%</div>
+          </div>
+          <span class="section-pill">BigQuery Editions</span>
+          <span class="section-pill">Reservations</span>
+          <span class="section-pill">Interactive queries</span>
+          <span class="section-pill">Batch jobs</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Capacity management with BigQuery Editions and reservations.</li>
+                <li>Interactive or batch query jobs.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Slots</strong>: BigQuery compute units.</li>
+                <li><strong>Reservations</strong>: assign projects/folders/orgs to a slot pool so workloads share predictable capacity.</li>
+                <li><strong>On-demand</strong>: cost varies with bytes scanned; simple but less predictable.</li>
+                <li><strong>Reservations/Editions</strong>: better when usage is high, steady, business-critical, or needs isolation from noisy neighbours.</li>
+                <li>Use BigQuery admin panel/job history, slot utilization, and execution details for capacity diagnosis.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam signal:</strong> slot utilization near 100% plus slow jobs -> capacity constrained. Use reservations/slot management, not BI Engine.</div>
+        </section>
+
+        <section class="slide" id="s5-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.4</p>
+              <h2>Monitoring and troubleshooting processes</h2>
+              <p class="objective">Know which signal belongs where: Monitoring, Logging, BigQuery job history, Dataflow lag/watermarks, Pub/Sub backlog, quotas, and billing.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~18%</div>
+          </div>
+          <span class="section-pill">Cloud Monitoring</span>
+          <span class="section-pill">Cloud Logging</span>
+          <span class="section-pill">BigQuery admin panel</span>
+          <span class="section-pill">Billing</span>
+          <span class="section-pill">Quotas</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Observability of data processes with Cloud Monitoring, Cloud Logging, and the BigQuery admin panel.</li>
+                <li>Monitor planned usage.</li>
+                <li>Troubleshoot error messages, billing issues, and quotas.</li>
+                <li>Manage jobs, queries, compute capacity, and reservations.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Monitoring</strong>: metrics, alerts, dashboards.</li>
+                <li><strong>Cloud Logging</strong>: error details and audit trails.</li>
+                <li><strong>BigQuery admin panel / job history</strong>: jobs, active queries, slots, reservations.</li>
+                <li><strong>Dataflow falling behind</strong>: check system lag, watermark progress, worker autoscaling, and fused stages.</li>
+                <li><strong>Pub/Sub consumer lag</strong>: backlog size and oldest unacked message age.</li>
+                <li><strong>BigQuery capacity issue</strong>: slot utilization near 100%.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Dataflow debugging trap:</strong> to isolate bottlenecks between fused stages, insert Reshuffle. Heavy logging inside <code>ParDo</code> adds noise and overhead.</div>
+        </section>
+
+        <section class="slide" id="s5-5">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.5</p>
+              <h2>Maintaining awareness of failures and mitigating impact</h2>
+              <p class="objective">Design for replay, restart, regional resilience, backup/restore, corruption handling, and service-specific replication/failover.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~18%</div>
+          </div>
+          <span class="section-pill">Fault tolerance</span>
+          <span class="section-pill">Restarts</span>
+          <span class="section-pill">Multi-region / zones</span>
+          <span class="section-pill">Corruption and missing data</span>
+          <span class="section-pill">Replication and failover</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Design systems for fault tolerance and manage restarts.</li>
+                <li>Run jobs in multiple regions or zones where needed.</li>
+                <li>Prepare for data corruption and missing data.</li>
+                <li>Plan data replication and failover such as Cloud SQL and Redis clusters.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li>Make pipelines idempotent so retries and replays do not duplicate outputs.</li>
+                <li>For corruption/missing data: validate, stop bad publishes, replay from source where possible, and restore from backups where necessary.</li>
+                <li>Cloud Storage strict 15-minute replication RPO -> dual-region bucket with Turbo Replication.</li>
+                <li>Cloud SQL uses HA/failover replicas and read replicas depending on requirement.</li>
+                <li>Memorystore/Redis cluster patterns provide replication/failover for cache/session workloads.</li>
+                <li>BigQuery multi-region datasets replicate within the multi-region; capacity is handled separately with reservations/editions.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>RPO trap:</strong> "strict 15-minute Cloud Storage replication RPO" is not generic multi-region. It is dual-region plus Turbo Replication.</div>
+        </section>
+      </article>
+    </div>
+
+    <p class="footer">Built from the official PDE exam guide and the local <code>cheatsheet.md</code>. Use it as a scroll deck on desktop or a compact objective index on mobile.</p>
+  </main>
+</body>
+</html>
