@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 4 Revision Guide - GKE Networking</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --cgp-green: #16a34a; /* Primary CGP Green */
+      --cgp-green-light: #dcfce7;
+      --cgp-green-border: #15803d;
+      --cgp-yellow: #fef08a;
+      --cgp-yellow-dark: #eab308;
+      --cgp-orange: #ea580c;
+      --cgp-red: #ef4444;
+      --cgp-blue: #2563eb;
+      --cgp-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover {
+      background: var(--cgp-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--cgp-green-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .cgp-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .cgp-card.tip {
+      background: #f0fdf4;
+      border-color: var(--cgp-green);
+      box-shadow: 4px 4px 0px var(--cgp-green);
+    }
+
+    .cgp-card.tip h3 {
+      color: var(--cgp-green-border);
+      margin-top: 0;
+    }
+
+    .cgp-card.warn {
+      background: #fef2f2;
+      border-color: var(--cgp-red);
+      box-shadow: 4px 4px 0px var(--cgp-red);
+    }
+
+    .cgp-card.warn h3 {
+      color: var(--cgp-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--cgp-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--cgp-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--cgp-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--cgp-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--cgp-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--cgp-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--cgp-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--cgp-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--cgp-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--cgp-blue);
+      box-shadow: 2px 2px 0px var(--cgp-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--cgp-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--cgp-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--cgp-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="theme3_hybrid.html" class="nav-link">&larr; Back to Theme 3</a>
+      <a href="theme5_lb_dns_cdn.html" class="nav-link">Go to Theme 5: Load Balancing &amp; DNS &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 4: GKE Networking</h1>
+      <p>VPC-native clusters, Dataplane V2, network policies, and GKE load balancing</p>
+      <div class="section-badge">Theme 4 🟢</div>
+    </header>
+
+    <!-- 4.1 VPC-Native vs. Route-Based Clusters -->
+    <h2>4.1 VPC-Native vs. Route-Based Clusters</h2>
+    <p>When you deploy Google Kubernetes Engine (GKE), you are faced with an immediate fork in the road: <strong>VPC-Native</strong> or <strong>Route-Based</strong> networking. For the exam, there is only one correct answer: <strong>always choose VPC-Native!</strong> 🚢</p>
+
+    <div class="cgp-card tip">
+      <h3>🐳 VPC-Native (Alias IP) Networking</h3>
+      <p>VPC-Native clusters use <strong>Alias IP ranges</strong> allocated from your VPC subnets. Pod IP addresses are native, fully routable IPs inside your VPC. This has massive benefits:</p>
+      <ul>
+        <li><strong>No Route Table Limits:</strong> Route-based clusters rely on static routes in your VPC route table to locate Pods. This hits a hard limit of 100 routes (meaning your cluster can never scale beyond 100 nodes!). VPC-Native bypasses this entirely.</li>
+        <li><strong>Direct Routing:</strong> Traffic to Pods is routed natively by the VPC control plane, avoiding extra hops.</li>
+        <li><strong>Security Integration:</strong> You can apply VPC firewall rules directly to Pod IP ranges!</li>
+      </ul>
+      <p>When planning a VPC-Native cluster, you must allocate three IP ranges:</p>
+      <ol>
+        <li><strong>Primary Subnet Range:</strong> Used for GKE Nodes (the VMs themselves).</li>
+        <li><strong>Secondary Range A (Pods):</strong> A large block used for Kubernetes Pods (e.g., <code>/14</code> or <code>/16</code>).</li>
+        <li><strong>Secondary Range B (Services):</strong> A block used for Kubernetes ClusterIP Services (e.g., <code>/20</code>).</li>
+      </ol>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The GKE IP Exhaustion Trap!</strong> If you configure your Pod secondary range too small, your GKE cluster will fail to scale up node pools even if you have plenty of Compute Engine quota! GKE allocates a fixed <code>/24</code> block (256 IPs) per node for Pods by default. If your secondary range runs out of IPs, GKE cannot provision new nodes. Plan your IPAM space carefully!
+    </div>
+
+    <!-- 4.2 Control Plane Isolation & DNS-Based Endpoints -->
+    <h2>4.2 Control Plane Isolation &amp; DNS-Based Endpoints</h2>
+    <p>Securing access to your Kubernetes API server (the control plane) is critical. GKE offers several layers of isolation:</p>
+
+    <div class="cgp-card warn">
+      <h3>🔒 Public vs. Private Clusters &amp; DNS-Based Endpoints</h3>
+      <ul>
+        <li><strong>Private Cluster:</strong> Nodes only have private IPs. The control plane endpoint can be configured as <strong>Private</strong> (only accessible inside the VPC or via hybrid connections) or <strong>Public</strong> (accessible over the internet but locked down using Master Authorized Networks).</li>
+        <li><strong>Master Authorized Networks:</strong> A static list of CIDR blocks (like your corporate office IP) allowed to talk to the control plane. Useful, but rigid and hard to manage dynamically.</li>
+        <li><strong>✨ DNS-Based Endpoint (The Modern Game-Changer!):</strong> Enabled via <code>--enable-dns-access</code>. Instead of accessing the control plane via a direct IP address, GKE creates a unique <strong>fully qualified domain name (FQDN)</strong> (e.g., <code><em>.gke.goog</code>) for your cluster.
+          <ul>
+            <li><strong>How it works:</strong> The FQDN resolves to a secure Google Cloud API frontend, not the cluster's direct internal IP!</li>
+            <li><strong>The Bastion-Free Advantage:</strong> Because it's a standard Google Cloud API, authorized users can connect to a private cluster's control plane <strong>from anywhere</strong> (including home or other clouds) without needing a bastion host or VPN, as long as they have <strong>GCP IAM permissions</strong> (<code>roles/container.developer</code>)!</li>
+            <li><strong>Force DNS Only:</strong> You can completely disable IP-based endpoints using <code>--no-enable-ip-access</code> to force all traffic through the identity-gated DNS endpoint.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="joke-box">
+      "Why did the GKE cluster throw away its bastion host? Because it got a DNS-based endpoint and realized it didn't need a middleman to manage its relations!" 🤾‍♂️
+    </div>
+
+    <!-- 4.3 Dataplane V2 -->
+    <h2>4.3 Dataplane V2: eBPF to the Rescue!</h2>
+    <p>By default, older GKE clusters used standard Linux <code>iptables</code> to manage routing and Kubernetes Network Policies. However, <code>iptables</code> scales terribly—as you add hundreds of services and network policies, the kernel has to evaluate thousands of sequential rules, causing CPU spikes and latency! 🐌</p>
+
+    <div class="cgp-card tip">
+      <h3>🐝 GKE Dataplane V2 (eBPF / Cilium)</h3>
+      <p>Modern GKE clusters use <strong>Dataplane V2</strong> (enabled by default in Autopilot and newer Standard clusters). It replaces <code>iptables</code> with <strong>eBPF (Extended Berkeley Packet Filter)</strong>, running Cilium under the hood:</p>
+      <ul>
+        <li><strong>Blistering Performance:</strong> eBPF executes sandboxed code directly inside the Linux kernel, bypassing the slow <code>iptables</code> evaluation chain. Routing and packet filtering happen at hardware-like speeds!</li>
+        <li><strong>Native Network Policies:</strong> Kubernetes Network Policies are enforced natively in the kernel, scaling effortlessly to thousands of rules without performance degradation.</li>
+        <li><strong>Enhanced Observability:</strong> Provides deep, real-time logging of container-level network flows (VPC Flow Logs for GKE).</li>
+      </ul>
+    </div>
+
+    <!-- 4.4 GKE Load Balancing & DNS -->
+    <h2>4.4 GKE Load Balancing &amp; DNS</h2>
+    <p>How does external traffic reach your Pods, and how do Pods resolve domain names?</p>
+
+    <div class="cgp-card tip">
+      <h3>🌐 GKE Gateway vs. Ingress Controller</h3>
+      <ul>
+        <li><strong>GKE Ingress Controller:</strong> The classic way. It automatically provisions a Google Cloud Application Load Balancer (L7) based on Kubernetes <code>Ingress</code> resources. It routes traffic to your nodes, which then route it to Pods.</li>
+        <li><strong>GKE Gateway Controller:</strong> The modern, multi-tenant standard (conforming to the Kubernetes Gateway API). It splits responsibilities between the <strong>Platform Admin</strong> (who manages the physical Load Balancer infrastructure) and the <strong>Application Developer</strong> (who manages the routing rules). Much more flexible!</li>
+        <li><strong>Container-Native Load Balancing (NEGs):</strong> Whether using Ingress or Gateway, always use <strong>Network Endpoint Groups (NEGs)</strong>! Instead of routing traffic to GKE </em>Nodes* (which then use <code>kube-proxy</code> to hop to a Pod, causing extra latency), the Load Balancer routes traffic <strong>directly to the Pod IP addresses</strong>. This eliminates extra network hops and ensures perfect load distribution! 🎯</li>
+      </ul>
+    </div>
+
+    <div class="mnemonic" style="border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); background: #f0fdf4;">
+      <strong>🕵️ GKE DNS Performance Trio:</strong>
+      <p>To keep DNS resolution fast and prevent overloading Cloud DNS, GKE uses three layers:</p>
+      <ul>
+        <li><strong>kube-dns:</strong> The standard cluster-internal DNS service running as Pods.</li>
+        <li><strong>NodeLocal DNSCache:</strong> Runs a tiny DNS caching agent as a DaemonSet on <strong>every single node</strong>. Pods query their local node cache first, reducing DNS latency by up to 90% and preventing <code>kube-dns</code> bottlenecks! ⚡</li>
+        <li><strong>Cloud DNS for GKE:</strong> Replaces <code>kube-dns</code> entirely with Google's fully-managed Cloud DNS, offering massive scale and seamless cross-VPC resolution.</li>
+      </ul>
+    </div>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Why does a route-based GKE cluster fail to scale beyond 100 nodes?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          Because route-based clusters rely on static routes in the VPC route table to locate Pods. GCP VPC route tables have a <strong>hard quota limit of 100 custom routes</strong>, capping the cluster at 100 nodes. VPC-Native uses Alias IPs and has no such limit!
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> True or False: GKE DNS-based endpoints require a VPN or Interconnect connection to access a private cluster externally.</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>False!</strong> DNS-based endpoints resolve to a global Google Cloud API frontend. As long as you have internet access and the correct <strong>GCP IAM permissions</strong>, you can securely connect to a private cluster externally without any VPN, Interconnect, or bastions!
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What underlying technology does GKE Dataplane V2 use to bypass the slow <code>iptables</code> packet evaluation chain?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>eBPF</strong> (Extended Berkeley Packet Filter), running Cilium. It executes routing and network policy rules directly inside the Linux kernel for blistering speed.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> What GKE feature enables Google Cloud Load Balancers to bypass GKE nodes and route traffic directly to Pod IP addresses?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>Container-Native Load Balancing via NEGs</strong> (Network Endpoint Groups). This eliminates the extra <code>kube-proxy</code> hop on the node, reducing latency.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 4 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style GKE networking brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> You are designing a private GKE Standard cluster that will host a highly secure banking API. The security team demands that the cluster's control plane must never expose a public IP address, and no bastion hosts or jump boxes are allowed in the VPC. However, developers working from home must be able to deploy resources to the cluster securely. What is the recommended architecture?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Create a public GKE cluster and lock down access using Master Authorized Networks.</li>
+          <li data-option="B">B) Create a private GKE cluster. Enable the <strong>DNS-based endpoint</strong> (<code>--enable-dns-access</code>) and disable IP-based endpoints (<code>--no-enable-ip-access</code>). Instruct developers to authenticate using <code>gcloud</code> and connect securely via the cluster's FQDN.</li>
+          <li data-option="C">C) Create a private GKE cluster and configure a public-facing Internal Load Balancer to proxy traffic to the control plane.</li>
+          <li data-option="D">D) Create a route-based GKE cluster and use static passwords for authentication.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> GKE's modern <strong>DNS-based endpoint</strong> is the perfect solution here! By enabling DNS access and disabling IP access, the cluster's control plane is completely isolated from direct IP-based scanning. Developers can securely connect to the FQDN externally because requests are routed through Google's secure API frontend, which enforces <strong>GCP IAM authorization</strong> dynamically, removing the need for bastions entirely! 🛡️</p>
+          <ul>
+            <li><strong>A:</strong> Public clusters expose a public IP, violating the core security constraint.</li>
+            <li><strong>C:</strong> You cannot configure an ILB to proxy traffic directly to GKE's managed control plane network in this manner.</li>
+            <li><strong>D:</strong> Route-based clusters are legacy, insecure, and static passwords violate modern security best practices.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> You are deploying a high-volume microservices application on GKE. The application consists of 500 pods that frequently query an external database. You notice that the cluster's <code>kube-dns</code> pods are experiencing extreme CPU utilization, and application pods are reporting intermittent "DNS lookup timeout" errors. How should you resolve this with the lowest latency?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Scale up the number of <code>kube-dns</code> replicas to 100.</li>
+          <li data-option="B">B) Enable <strong>NodeLocal DNSCache</strong> on your GKE cluster.</li>
+          <li data-option="C">C) Switch to a route-based cluster architecture.</li>
+          <li data-option="D">D) Configure your application pods to use public DNS servers like <code>8.8.8.8</code> directly.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> <strong>NodeLocal DNSCache</strong> runs a caching agent as a DaemonSet on every node. Pods query their local node's cache directly over a local loopback IP, bypassing the network hop to <code>kube-dns</code> for cached records. This reduces DNS lookup latency, eliminates the <code>kube-dns</code> bottleneck, and resolves timeout errors instantly! ⚡</p>
+          <ul>
+            <li><strong>A:</strong> Scaling <code>kube-dns</code> replicas consumes massive cluster resources and does not solve the underlying network latency of cross-node DNS queries.</li>
+            <li><strong>C:</strong> Route-based networking has no effect on internal Kubernetes DNS resolution bottlenecks.</li>
+            <li><strong>D:</strong> Querying public DNS directly prevents pods from resolving internal cluster services (like <code>my-service.default.svc.cluster.local</code>), breaking microservice communication.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> You are deploying GKE in a Shared VPC environment. The central network team has allocated specific subnets for your GKE cluster in the Host Project. When you attempt to create the VPC-Native cluster in your Service Project, the deployment fails with a "Permission denied on subnet secondary ranges" error. What is the most likely cause?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Your developer account lacks the Owner role in the Host Project.</li>
+          <li data-option="B">B) The <strong>GKE Service Agent</strong> service account of your Service Project has not been granted the <strong><code>compute.networkUser</code></strong> role on the Shared VPC subnets in the Host Project.</li>
+          <li data-option="C">C) GKE does not support Shared VPCs.</li>
+          <li data-option="D">D) The subnets in the Host Project do not have Private Google Access enabled.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This is the classic Shared VPC GKE deployment trap! When GKE provisions a VPC-Native cluster, the <strong>GKE Service Agent</strong> (a Google-managed service account in your service project, usually named <code>service-PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com</code>) must have the <strong><code>roles/compute.networkUser</code></strong> role in the Host Project. This allows GKE to allocate and manage the subnet's secondary IP ranges for Pods and Services. 🤖</p>
+          <ul>
+            <li><strong>A:</strong> The developer's personal permissions are not used by GKE's background robot to provision the network resources.</li>
+            <li><strong>C:</strong> GKE fully supports Shared VPCs and represents the standard enterprise deployment model.</li>
+            <li><strong>D:</strong> While PGA is a best practice, missing it does not cause IAM permission failures during cluster creation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> You are running a GKE cluster with 200 microservices. You have applied Kubernetes Network Policies to isolate namespaces. However, you notice that GKE nodes are experiencing high CPU overhead, and network latency between pods has increased significantly. You discover that the nodes are spending massive amounts of CPU cycles evaluating standard Linux <code>iptables</code> rules. How should you optimize this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Delete all Network Policies to save CPU.</li>
+          <li data-option="B">B) Enable <strong>GKE Dataplane V2</strong> on your cluster.</li>
+          <li data-option="C">C) Switch from VPC-Native to Route-Based networking.</li>
+          <li data-option="D">D) Increase the VM machine size of your GKE nodes to handle the iptables overhead.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> <strong>GKE Dataplane V2</strong> replaces standard <code>iptables</code> with <strong>eBPF</strong> (Cilium). eBPF executes network routing and policy enforcement directly inside the Linux kernel, bypassing the slow, sequential <code>iptables</code> chain. This scales effortlessly to hundreds of network policies with near-zero CPU overhead and minimal latency! 🐝</p>
+          <ul>
+            <li><strong>A:</strong> Deleting network policies compromises security and violates compliance mandates.</li>
+            <li><strong>C:</strong> Route-based networking still relies on <code>iptables</code> for network policy enforcement, so it does not solve the CPU bottleneck.</li>
+            <li><strong>D:</strong> Throwing larger VMs at the problem is an expensive, inefficient workaround that does not fix the underlying architectural scaling limit of <code>iptables</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips" class="doc-link" target="_blank">
+          <strong>VPC-Native Clusters (Alias IP)</strong>
+          <span>How GKE allocates IP addresses natively from VPC subnets.</span>
+        </a>
+        <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/latest/network-isolation" class="doc-link" target="_blank">
+          <strong>GKE Network Isolation &amp; DNS Endpoints</strong>
+          <span>Configuring private clusters and DNS-based control plane access.</span>
+        </a>
+        <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2" class="doc-link" target="_blank">
+          <strong>GKE Dataplane V2 Overview</strong>
+          <span>Under the hood of eBPF, Cilium, and high-performance container networking.</span>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <p>Grounded in current GCP documentation &bull; Today's Date: Wednesday, June 10, 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

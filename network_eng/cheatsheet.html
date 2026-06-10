@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCNE (Network Engineer) Exam Guide Cheat Sheet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4fbf7; /* Soft green-tinted background */
+      --ink: #0f172a;
+      --muted: #475569;
+      --surface: rgba(255, 255, 255, 0.95);
+      --surface-solid: #ffffff;
+      --surface-soft: #f0fdf4; /* Light green surface */
+      --line: #cbd5e1;
+      --green: #16a34a; /* Primary Green */
+      --green-dark: #15803d;
+      --teal: #0d9488;
+      --amber: #d97706;
+      --red: #dc2626;
+      --blue: #2563eb;
+      --violet: #7c3aed;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.06);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 18px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(22, 163, 74, 0.12), transparent 32rem),
+        radial-gradient(circle at 95% 10%, rgba(124, 58, 237, 0.12), transparent 28rem),
+        linear-gradient(180deg, #f0fdf4 0%, var(--bg) 44%, #ecfdf5 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--green-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 6px;
+      color: #14532d;
+      font-size: 0.9em;
+      padding: 0.08rem 0.25rem;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - clamp(20px, 5vw, 56px)));
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 38px) 0 72px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at top right, rgba(187, 247, 208, 0.25), transparent 22rem),
+        linear-gradient(135deg, #0f172a 0%, var(--green) 55%, var(--green-dark) 100%);
+      border-radius: clamp(22px, 4vw, 34px);
+      box-shadow: var(--shadow);
+      color: #fff;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding: clamp(26px, 7vw, 58px);
+      position: relative;
+    }
+
+    .eyebrow {
+      color: #bbf7d0;
+      font-size: clamp(0.75rem, 1.8vw, 0.86rem);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 4.5rem);
+      letter-spacing: -0.05em;
+      line-height: 0.96;
+      margin-bottom: 20px;
+      max-width: 940px;
+    }
+
+    .subtitle {
+      color: #d1fae5;
+      font-size: clamp(1rem, 2.1vw, 1.22rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .weight-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 12px;
+      border-top: 4px solid var(--card-accent, rgba(255, 255, 255, 0.5));
+    }
+
+    .weight-card span {
+      color: #bbf7d0;
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .weight-card strong {
+      display: block;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      line-height: 1;
+      margin: 6px 0 4px;
+    }
+
+    .weight-card p {
+      color: #a7f3d0;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .deck-layout {
+      align-items: start;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .nav-panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      max-height: calc(100svh - 32px);
+      overflow: auto;
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .nav-panel h2 {
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      border-top: 1px solid var(--line);
+      padding: 10px 0;
+    }
+
+    .nav-group:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .nav-group strong {
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      padding: 6px 10px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      background: var(--surface-soft);
+      color: var(--green-dark);
+      text-decoration: none;
+    }
+
+    .slide {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      padding: clamp(20px, 4vw, 36px);
+      scroll-margin-top: 16px;
+    }
+
+    .slide-header {
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+    }
+
+    .slide-header h2 {
+      color: #0f172a;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .slide-badge {
+      background: var(--surface-soft);
+      border: 1px solid var(--green);
+      border-radius: 999px;
+      color: var(--green-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      text-transform: uppercase;
+    }
+
+    .guide-card {
+      background: #f8fafc;
+      border-left: 4px solid var(--muted);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+      padding: 14px 18px;
+    }
+
+    .guide-card h3 {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .guide-card ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .know-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      padding: 20px;
+    }
+
+    .know-card h3 {
+      color: var(--green-dark);
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .know-card ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .know-card li {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .exam-trap {
+      background: #fffbeb;
+      border: 1px dashed var(--amber);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      padding: 18px;
+    }
+
+    .exam-trap h3 {
+      color: var(--amber);
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .exam-trap p {
+      font-size: 0.92rem;
+      margin: 0;
+      color: #451a03;
+    }
+
+    /* Synthesis Matrix Tables */
+    .matrix-table-container {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 0.88rem;
+    }
+
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .matrix-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .matrix-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .matrix-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 35px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 6px;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .doc-link {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .doc-link:hover {
+      border-color: var(--green);
+      background: var(--surface-soft);
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: var(--green-dark);
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 900px) {
+      .deck-layout {
+        grid-template-columns: 1fr;
+      }
+      .nav-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div class="eyebrow">Professional Cloud Network Engineer</div>
+      <h1>PCNE Exam Guide Cheat Sheet</h1>
+      <p class="subtitle">A faithful, exam-guide-ordered coverage checklist complete with high-yield technical facts, sneaky exam traps, and comprehensive synthesis matrices.</p>
+      
+      <div class="hero-grid">
+        <div class="weight-card" style="--card-accent: var(--green)">
+          <span>Section 1</span>
+          <strong>21%</strong>
+          <p>Designing &amp; planning VPC networks</p>
+        </div>
+        <div class="weight-card" style="--card-accent: var(--teal)">
+          <span>Section 2</span>
+          <strong>20%</strong>
+          <p>Implementing a VPC network</p>
+        </div>
+        <div class="weight-card" style="--card-accent: var(--blue)">
+          <span>Section 3</span>
+          <strong>16%</strong>
+          <p>Configuring managed network services</p>
+        </div>
+        <div class="weight-card" style="--card-accent: var(--violet)">
+          <span>Section 4</span>
+          <strong>16%</strong>
+          <p>Hybrid &amp; multicloud interconnectivity</p>
+        </div>
+        <div class="weight-card" style="--card-accent: var(--amber)">
+          <span>Section 5</span>
+          <strong>13%</strong>
+          <p>Managing &amp; monitoring operations</p>
+        </div>
+        <div class="weight-card" style="--card-accent: var(--red)">
+          <span>Section 6</span>
+          <strong>14%</strong>
+          <p>Configuring network security</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deck-layout">
+      <!-- Sticky Navigation Panel -->
+      <div class="nav-panel">
+        <h2>Exam Sections</h2>
+        
+        <div class="nav-group">
+          <strong>🟢 Section 1: Design</strong>
+          <div class="nav-links">
+            <a href="#sec1" class="nav-link">1. VPC Design &amp; Planning</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>🔵 Section 2: Implement</strong>
+          <div class="nav-links">
+            <a href="#sec2" class="nav-link">2. VPC Implementation</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>🟡 Section 3: Services</strong>
+          <div class="nav-links">
+            <a href="#sec3" class="nav-link">3. Managed Services</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>🟣 Section 4: Hybrid</strong>
+          <div class="nav-links">
+            <a href="#sec4" class="nav-link">4. Hybrid &amp; Multicloud</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>🟠 Section 5: Operations</strong>
+          <div class="nav-links">
+            <a href="#sec5" class="nav-link">5. Operations &amp; Ops</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>🔴 Section 6: Security</strong>
+          <div class="nav-links">
+            <a href="#sec6" class="nav-link">6. Network Security</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <strong>📊 Synthesis Matrices</strong>
+          <div class="nav-links">
+            <a href="#matrices" class="nav-link">High-Yield Choosers</a>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px;">
+          <a href="index.html" style="font-weight: bold; font-size: 0.8rem; display: block; text-align: center; background: var(--green); color: white; padding: 8px; border-radius: 8px;">&larr; Back to Portal Hub</a>
+        </div>
+      </div>
+
+      <!-- Main Slides Content -->
+      <div class="slides-container">
+        
+        <!-- Slide 1 -->
+        <div id="sec1" class="slide">
+          <div class="slide-header">
+            <h2>Section 1: Designing &amp; Planning a Google Cloud VPC Network</h2>
+            <span class="slide-badge">Weight: ~21%</span>
+          </div>
+          
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Differentiating between Premium and Standard network service tiers.</li>
+              <li>Designing for high availability, failover, disaster recovery, and scale.</li>
+              <li>Designing DNS topologies and choosing appropriate load balancers.</li>
+              <li>Planning GKE networking (secondary ranges, scale potential, control plane access).</li>
+              <li>Planning connectivity to managed services (PSA, PSC, Serverless VPC Access).</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>Network Tiers:</strong> Premium Tier uses Google's global fiber network with cold-potato routing. Standard Tier uses the public internet with regional hot-potato routing. Global load balancing is strictly Premium Tier only!</li>
+              <li><strong>VPC MTU:</strong> VPC MTU can be configured from 1300 to 8896 bytes (Jumbo frames). Default is 1460 (legacy) or 1500 (standard). Every subnet inherits the VPC-level MTU.</li>
+              <li><strong>GKE IPAM:</strong> GKE VPC-Native clusters require three IP ranges: Primary (Nodes), Secondary A (Pods), and Secondary B (Services). GKE allocates a fixed <code>/24</code> block (256 IPs) per node for Pods by default.</li>
+              <li><strong>Shared VPC IAM:</strong> Grant <code>roles/compute.networkUser</code> to the GKE Service Agent or VM deployment service accounts in the <strong>Host Project</strong> (either at the project level or bound to specific shared subnets).</li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ The GKE IP Exhaustion Trap</h3>
+            <p>If you configure your Pod secondary range too small, your GKE cluster will fail to scale up node pools even if you have plenty of Compute Engine VM quota! Always calculate your Pod range based on the maximum anticipated nodes × 256 IPs per node.</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/vpc/docs/mtu" class="doc-link" target="_blank">
+              <strong>VPC MTU Overview</strong>
+              <span>Official limits, Jumbo frames, and VM configurations.</span>
+            </a>
+            <a href="https://cloud.google.com/vpc/docs/shared-vpc" class="doc-link" target="_blank">
+              <strong>Shared VPC Overview</strong>
+              <span>Host projects, service projects, and subnet sharing.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div id="sec2" class="slide">
+          <div class="slide-header">
+            <h2>Section 2: Implementing a VPC Network</h2>
+            <span class="slide-badge">Weight: ~20%</span>
+          </div>
+
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Creating VPC resources, subnets, and configuring VPC Network Peering.</li>
+              <li>Configuring Private Google Access (PGA) and VPC Service Controls (VPC-SC).</li>
+              <li>Setting up static, dynamic, and policy-based routing (PBR).</li>
+              <li>Configuring Network Connectivity Center (NCC) spokes and topologies.</li>
+              <li>Enabling GKE Dataplane V2, network policies, and DNS-based endpoints.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>VPC Peering:</strong> Peerings are strictly <strong>non-transitive</strong>. To share hybrid routes (VPN/Interconnect) across peerings, you must explicitly enable "Export Custom Routes" on the hosting peering link and "Import Custom Routes" on the peer.</li>
+              <li><strong>DNS-Based Endpoint:</strong> Enabled via <code>--enable-dns-access</code>. Creates a unique FQDN (<code><em>.gke.goog</code>) resolving to Google's secure global API frontend. Allows secure, bastion-free control plane access to private GKE clusters from anywhere, gated strictly by <strong>GCP IAM</strong>!</li>
+              <li><strong>Dataplane V2:</strong> eBPF-based (Cilium). Enforces Kubernetes Network Policies natively in the Linux kernel, bypassing slow, sequential <code>iptables</code> rules for blistering speed and massive scale.</li>
+              <li><strong>Policy-Based Routing:</strong> Routes traffic based on source IP, destination IP, protocol, and network tags. Can target an <strong>Internal Load Balancer (ILB)</strong> as the next hop to distribute traffic across a pool of NVA firewalls.</li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ The Non-Transitive Peering Wall</h3>
+            <p>Traffic coming from on-premises via VPN or Interconnect cannot automatically cross a VPC Peering boundary to talk to a peered VPC or a PSA-provisioned database. You must configure the peering to export/import custom routes and advertise the peer ranges via BGP on your Cloud Router!</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/vpc/docs/vpc-peering" class="doc-link" target="_blank">
+              <strong>VPC Peering Routing</strong>
+              <span>Exchanging custom routes across peered VPC boundaries.</span>
+            </a>
+            <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/latest/network-isolation" class="doc-link" target="_blank">
+              <strong>GKE DNS-Based Endpoints</strong>
+              <span>Secure, bastion-free control plane access for private GKE clusters.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div id="sec3" class="slide">
+          <div class="slide-header">
+            <h2>Section 3: Configuring Managed Network Services</h2>
+            <span class="slide-badge">Weight: ~16%</span>
+          </div>
+
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Determining the correct load balancing solution (L4 vs L7, proxy vs passthrough, internal vs external).</li>
+              <li>Configuring backend services, health checks, session affinity, and NEGs.</li>
+              <li>Setting up traffic management (traffic splitting, mirroring, URL rewrites).</li>
+              <li>Configuring Cloud CDN origins, external backends, and cache invalidation.</li>
+              <li>Managing Cloud DNS zones, records, and routing policies (geolocation, failover, weighted).</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>Load Balancer Taxonomy:</strong>
+                <ul>
+                  <li><strong>Application Load Balancers (L7):</strong> HTTP/S only. Supports URL maps, traffic splitting, mirroring, and CDN.</li>
+                  <li><strong>Proxy Network Load Balancers (L4):</strong> TCP/SSL. Terminates connections. Supports single global IP and SSL offloading.</li>
+                  <li><strong>Passthrough Network Load Balancers (L4):</strong> TCP/UDP. Does not terminate connections. <strong>Preserves client source IP address</strong> natively.</li>
+                </ul>
+              </li>
+              <li><strong>Cloud DNS Failover Policy:</strong> Supports primary/backup IPs. Backup must use GEO. Use <strong><code>--backup-data-trickle-ratio</code></strong> (0 to 1) to continuously route a tiny percentage of live traffic to the DR site to ensure it is warm and functioning!</li>
+              <li><strong>Cloud DNS Geofencing:</strong> Enabling <code>--enable-geo-fencing</code> on a Geolocation policy restricts traffic to that region even if all endpoints there are unhealthy (guarantees data residency compliance like GDPR).</li>
+              <li><strong>Container-Native LB:</strong> Always use <strong>Network Endpoint Groups (NEGs)</strong> in GKE to route traffic from the load balancer directly to Pod IPs, bypassing the slow <code>kube-proxy</code> node hop.</li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ The Client IP Preservation Trap</h3>
+            <p>If backend servers must see the original public IP address of the client natively in the packet header, you cannot use proxy-based load balancers (ALB or Proxy NLB). You must deploy a <strong>Passthrough Network Load Balancer</strong>!</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/load-balancing/docs/choosing-load-balancer" class="doc-link" target="_blank">
+              <strong>LB Choosing Guide</strong>
+              <span>Official comparison of Application, Proxy, and Passthrough load balancers.</span>
+            </a>
+            <a href="https://cloud.google.com/dns/docs/configure-routing-policies" class="doc-link" target="_blank">
+              <strong>DNS Routing Policies</strong>
+              <span>Weighted, Geolocation, and Failover policies with trickle ratios.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div id="sec4" class="slide">
+          <div class="slide-header">
+            <h2>Section 4: Configuring Hybrid &amp; Multicloud Network Interconnectivity</h2>
+            <span class="slide-badge">Weight: ~16%</span>
+          </div>
+
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Configuring Dedicated, Partner, and Cross-Cloud Interconnect.</li>
+              <li>Implementing 99.9% and 99.99% SLAs for Interconnect topologies.</li>
+              <li>Configuring HA VPN toward on-premises gateways and other VPCs.</li>
+              <li>Implementing BGP attributes (ASN, MED, AS-path prepend, link-local, authentication).</li>
+              <li>Configuring Bidirectional Forwarding Detection (BFD) and custom routes.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>99.99% Interconnect SLA:</strong> Requires a multi-metro topology (two physical connections in Metro A, and two physical connections in Metro B) with four VLAN attachments routed to two separate Cloud Routers in your VPC.</li>
+              <li><strong>HA VPN:</strong> Provides a 99.99% SLA by default using a single gateway with two external interfaces. Requires dynamic routing (BGP). Has a strict <strong>MTU ceiling of 1460 bytes</strong> due to IPSec overhead!</li>
+              <li><strong>MACsec:</strong> Media Access Control Security. Provides Layer 2 hardware-level encryption directly over physical Dedicated Interconnect links.</li>
+              <li><strong>BGP Path Selection:</strong>
+                <ul>
+                  <li><strong>Legacy Mode (Default):</strong> Compares AS-path lengths only within a single BGP task, leading to potential routing inconsistencies across separate routers.</li>
+                  <li><strong>Standard Mode:</strong> Adheres strictly to <strong>RFC 4271</strong>, consistently comparing AS-path lengths network-wide. Supports advanced features like <code>bgpAlwaysCompareMed</code>.</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ The HA VPN UDP Black-Hole Trap</h3>
+            <p>If your VPC MTU is configured for 1500 or 8896 bytes and you route traffic over HA VPN (MTU 1460), TCP traffic will survive due to MSS clamping. However, UDP traffic (like DNS or Syslog) will be silently black-holed if PMTUD fails! Always set the VPC MTU to match the lowest common denominator on the hybrid path, or clamp MSS.</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/network-connectivity/docs/router/concepts/learned-routes" class="doc-link" target="_blank">
+              <strong>Cloud Router Best Path</strong>
+              <span>Comparing Legacy and Standard best path selection modes.</span>
+            </a>
+            <a href="https://cloud.google.com/network-connectivity/docs/vpn" class="doc-link" target="_blank">
+              <strong>HA VPN Overview</strong>
+              <span>Dynamic routing, SLAs, and MTU considerations.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div id="sec5" class="slide">
+          <div class="slide-header">
+            <h2>Section 5: Managing, Monitoring, &amp; Troubleshooting Network Operations</h2>
+            <span class="slide-badge">Weight: ~13%</span>
+          </div>
+
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Analyzing network traffic using VPC Flow Logs, Firewall Logs, and Cloud Logging.</li>
+              <li>Using Network Intelligence Center (NIC) modules for network diagnostics.</li>
+              <li>Troubleshooting VPN, Interconnect, and Cloud Router BGP peering issues.</li>
+              <li>Implementing connection draining (deregistration delay) on load balancers.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>Connectivity Tests:</strong> Performs a <strong>logical configuration simulation</strong> of the packet path (evaluating routes, firewalls, and perimeters in the control plane) to check if two endpoints can communicate. Does not send live traffic!</li>
+              <li><strong>Network Analyzer:</strong> <strong>Continuously and automatically</strong> scans VPC configurations in the background to detect misconfigurations, shadowed routes, invalid next hops, and IP address exhaustion.</li>
+              <li><strong>Firewall Insights:</strong> Analyzes firewall logs and configuration metrics to identify shadowed, redundant, or unused firewall rules that can be safely deleted.</li>
+              <li><strong>BGP Troubleshooting:</strong> BGP session stuck in <code>Active</code> or <code>Idle</code> indicates a physical link or IPSec tunnel failure preventing TCP communication on port 179. Check link-local IP configurations, ASNs, pre-shared keys, and local firewalls.</li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ Proactive vs. Reactive Troubleshooting</h3>
+            <p>If an exam question asks how to <strong>automatically detect</strong> that a route's next-hop VM has been deleted, the answer is <strong>Network Analyzer</strong>. If a question asks how to <strong>verify</strong> if a specific VM can talk to an external database, the answer is <strong>Connectivity Tests</strong>.</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/network-intelligence-center/docs/network-analyzer/overview" class="doc-link" target="_blank">
+              <strong>Network Analyzer</strong>
+              <span>Automated VPC configuration monitoring and failure detection.</span>
+            </a>
+            <a href="https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview" class="doc-link" target="_blank">
+              <strong>Connectivity Tests</strong>
+              <span>Simulating packet paths to diagnose firewalls, routes, and perimeters.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div id="sec6" class="slide">
+          <div class="slide-header">
+            <h2>Section 6: Configuring Network Security</h2>
+            <span class="slide-badge">Weight: ~14%</span>
+          </div>
+
+          <div class="guide-card">
+            <h3>Official Guide Objectives</h3>
+            <ul>
+              <li>Configuring Cloud Armor WAF rules, rate limiting, bot management, and Adaptive Protection.</li>
+              <li>Configuring Cloud NGFW Essentials, Standard, and Enterprise tiers.</li>
+              <li>Implementing hierarchical firewall policies and effective rules evaluation.</li>
+              <li>Configuring Public Cloud NAT, Private NAT, and Dynamic Port Allocation (DPA).</li>
+              <li>Deploying Secure Web Proxy (SWP) for egress filtering.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>High-Yield Facts to Memorize</h3>
+            <ul>
+              <li><strong>Cloud Armor Adaptive Protection:</strong> Uses machine learning to continuously analyze traffic patterns, automatically drafting custom blocking rules to mitigate Layer 7 HTTP flood DDoS attacks in real-time.</li>
+              <li><strong>Cloud NGFW Enterprise:</strong> The only tier that supports <strong>Layer 7 Packet Inspection</strong> (Intrusion Prevention System - IPS) to detect malware and spyware, which it enforces via managed </em>Firewall Endpoints*.</li>
+              <li><strong>Dynamic Port Allocation (DPA):</strong> Automatically doubles a VM's NAT port allocation (e.g., 32 -> 64 -> 128 -> 256) up to a configured maximum based on demand, preventing SNAT port exhaustion while maximizing NAT IP efficiency. <strong>Min and Max ports must be powers of 2!</strong></li>
+              <li><strong>Secure Web Proxy (SWP):</strong> Fully managed, serverless egress proxy that filters outbound HTTP/S traffic based on FQDNs, URLs, and web categories without needing a NAT gateway or proxy VMs.</li>
+            </ul>
+          </div>
+
+          <div class="exam-trap">
+            <h3>⚠️ Secure Tags vs. Network Tags</h3>
+            <p>Avoid network tags for critical security boundaries! Network tags are easily modified by VM administrators. Instead, use <strong>Secure Tags</strong> (governed by IAM) or <strong>Service Accounts</strong> to define secure micro-segments that cannot be bypassed.</p>
+          </div>
+
+          <div class="doc-grid">
+            <a href="https://cloud.google.com/armor/docs/armor-overview" class="doc-link" target="_blank">
+              <strong>Google Cloud Armor</strong>
+              <span>WAF rules, DDoS protection, and Adaptive Protection.</span>
+            </a>
+            <a href="https://cloud.google.com/nat/docs/ports-and-addresses" class="doc-link" target="_blank">
+              <strong>Cloud NAT Port Allocation</strong>
+              <span>Static vs. Dynamic Port Allocation and preventing SNAT exhaustion.</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Synthesis Matrices Slide -->
+        <div id="matrices" class="slide">
+          <div class="slide-header">
+            <h2>High-Yield Synthesis Matrices</h2>
+            <span class="slide-badge">Exam Cheat Code 🎯</span>
+          </div>
+
+          <!-- Matrix 1 -->
+          <div class="matrix-title">1. Which Load Balancer?</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Load Balancer</th>
+                  <th>Layer</th>
+                  <th>Proxy vs. Passthrough</th>
+                  <th>Scope</th>
+                  <th>Preserves Client IP?</th>
+                  <th>Key Features</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Application LB</strong></td>
+                  <td>L7 (HTTP/S)</td>
+                  <td>Proxy (Terminates)</td>
+                  <td>Global or Regional</td>
+                  <td>No (Adds <code>X-Forwarded-For</code>)</td>
+                  <td>URL maps, traffic splitting, mirroring, CDN, Cloud Armor.</td>
+                </tr>
+                <tr>
+                  <td><strong>Proxy Network LB</strong></td>
+                  <td>L4 (TCP/SSL)</td>
+                  <td>Proxy (Terminates)</td>
+                  <td>Global or Regional</td>
+                  <td>No (Supports Proxy Protocol)</td>
+                  <td>SSL offloading, non-HTTP TCP traffic, single global IP.</td>
+                </tr>
+                <tr>
+                  <td><strong>Passthrough Network LB</strong></td>
+                  <td>L4 (TCP/UDP)</td>
+                  <td>Passthrough</td>
+                  <td>Regional</td>
+                  <td><strong>Yes (Direct Server Return)</strong></td>
+                  <td>Blistering speed, UDP support, preserves client source IP.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matrix 2 -->
+          <div class="matrix-title">2. Hybrid Connectivity Chooser</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Option</th>
+                  <th>Bandwidth</th>
+                  <th>Encryption</th>
+                  <th>SLA</th>
+                  <th>Best Use Case</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Dedicated Interconnect</strong></td>
+                  <td>10G or 100G physical pipes</td>
+                  <td>MACsec (Layer 2) or HA VPN over Interconnect</td>
+                  <td>99.9% (Single Metro) or 99.99% (Multi-Metro)</td>
+                  <td>Massive, enterprise-grade, reliable bandwidth.</td>
+                </tr>
+                <tr>
+                  <td><strong>Partner Interconnect</strong></td>
+                  <td>50M to 50G via provider</td>
+                  <td>HA VPN over Interconnect</td>
+                  <td>99.9% (Single Metro) or 99.99% (Multi-Metro)</td>
+                  <td>Enterprise bandwidth when co-location is not available.</td>
+                </tr>
+                <tr>
+                  <td><strong>HA VPN</strong></td>
+                  <td>Up to 3G per tunnel (scaled)</td>
+                  <td>IPSec (Layer 3)</td>
+                  <td>99.99% (Two tunnels)</td>
+                  <td>Cost-effective, fast setup, encrypted over public internet.</td>
+                </tr>
+                <tr>
+                  <td><strong>Cross-Cloud Interconnect</strong></td>
+                  <td>10G or 100G direct links</td>
+                  <td>MACsec or HA VPN</td>
+                  <td>99.9% or 99.99%</td>
+                  <td>Direct, high-speed connection to AWS, Azure, OCI.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matrix 3 -->
+          <div class="matrix-title">3. Private Access Comparison</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Mechanism</th>
+                  <th>Under the Hood</th>
+                  <th>Transitive Routing?</th>
+                  <th>IPAM Impact</th>
+                  <th>Best For</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Private Google Access (PGA)</strong></td>
+                  <td>Subnet checkbox</td>
+                  <td>No (On-prem requires VIPs)</td>
+                  <td>None</td>
+                  <td>Private VMs accessing standard Google APIs.</td>
+                </tr>
+                <tr>
+                  <td><strong>Private Services Access (PSA)</strong></td>
+                  <td>VPC Peering</td>
+                  <td><strong>No</strong> (Non-transitive peering)</td>
+                  <td>Requires allocating an IP block</td>
+                  <td>Classic Cloud SQL, AlloyDB, Memorystore.</td>
+                </tr>
+                <tr>
+                  <td><strong>Private Service Connect (PSC)</strong></td>
+                  <td>Local Endpoint (Private IP)</td>
+                  <td><strong>Yes</strong> (Transitive-friendly)</td>
+                  <td>Uses a single IP in local subnet</td>
+                  <td>Modern Cloud SQL, third-party SaaS, publishing services.</td>
+                </tr>
+                <tr>
+                  <td><strong>Serverless VPC Access</strong></td>
+                  <td>Managed connector VM pool</td>
+                  <td>N/A (Outbound only)</td>
+                  <td>Requires a <code>/28</code> subnet range</td>
+                  <td>Cloud Run/Functions accessing private VPC resources.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matrix 4 -->
+          <div class="matrix-title">4. Cloud NGFW Tiers</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Essentials (Free)</th>
+                  <th>Standard</th>
+                  <th>Enterprise</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Layer 4 Rules (IP/Port)</strong></td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><strong>FQDN &amp; Geo-IP Filtering</strong></td>
+                  <td>No</td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><strong>Google Threat Intelligence</strong></td>
+                  <td>No</td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><strong>Layer 7 Packet Inspection (IPS)</strong></td>
+                  <td>No</td>
+                  <td>No</td>
+                  <td><strong>Yes (via Firewall Endpoints)</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matrix 5 -->
+          <div class="matrix-title">5. BGP Attribute Traffic Control</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>BGP Attribute</th>
+                  <th>Direction Controlled</th>
+                  <th>How It Works</th>
+                  <th>GCP Preference</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>MED (Multi-Exit Discriminator)</strong></td>
+                  <td>Outbound (GCP to On-Prem)</td>
+                  <td>On-prem routers attach a metric to advertised routes.</td>
+                  <td>GCP prefers the <strong>lowest</strong> MED value.</td>
+                </tr>
+                <tr>
+                  <td><strong>AS-Path Prepending</strong></td>
+                  <td>Inbound (On-Prem to GCP)</td>
+                  <td>Cloud Router prepends its own ASN multiple times.</td>
+                  <td>On-prem prefers the <strong>shortest</strong> AS-Path.</td>
+                </tr>
+                <tr>
+                  <td><strong>Custom Advertised Routes</strong></td>
+                  <td>Inbound (On-Prem to GCP)</td>
+                  <td>Cloud Router advertises specific CIDR blocks to on-prem.</td>
+                  <td>On-prem routes traffic strictly to those advertised blocks.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matrix 6 -->
+          <div class="matrix-title">6. NCC Spoke Groups &amp; Topologies</div>
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Topology</th>
+                  <th>Spoke Groups Supported</th>
+                  <th>Inter-Spoke Communication</th>
+                  <th>Best Use Case</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Mesh (Default)</strong></td>
+                  <td>Single <code>default</code> group</td>
+                  <td>Full connectivity between all spokes automatically.</td>
+                  <td>Enterprise-wide multi-VPC and hybrid consolidation.</td>
+                </tr>
+                <tr>
+                  <td><strong>Star</strong></td>
+                  <td><code>Center</code> and <code>Edge</code> groups</td>
+                  <td>Edge spokes talk to Center, but <strong>Edge spokes cannot talk to other Edge spokes!</strong></td>
+                  <td>Multi-tenant isolation, retail branch networks, hub-and-spoke.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

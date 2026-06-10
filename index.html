@@ -140,6 +140,8 @@
     .cert-card.devops:hover { box-shadow: 6px 6px 0px var(--cgp-teal); }
     .cert-card.data { border-color: var(--cgp-orange); box-shadow: 4px 4px 0px var(--cgp-orange); }
     .cert-card.data:hover { box-shadow: 6px 6px 0px var(--cgp-orange); }
+    .cert-card.net { border-color: var(--cgp-green); box-shadow: 4px 4px 0px var(--cgp-green); }
+    .cert-card.net:hover { box-shadow: 6px 6px 0px var(--cgp-green); }
 
     .cert-badge {
       display: inline-block;
@@ -156,6 +158,7 @@
     .sec .cert-badge { background: var(--cgp-violet); }
     .devops .cert-badge { background: var(--cgp-teal); }
     .data .cert-badge { background: var(--cgp-orange); }
+    .net .cert-badge { background: var(--cgp-green); }
 
     .cert-title {
       font-size: 1.25rem;
@@ -215,10 +218,20 @@
 
     <section class="intro-section">
       <h2 class="intro-title">How to use this portal</h2>
-      <p>Each certification has its own folder of HTML study guides — section walkthroughs, cheatsheets, and practice quizzes. <strong>Database Engineer</strong> is the most complete (full section guides + cheatsheet). The others have cheatsheets and practice material.</p>
+      <p>Each certification has its own folder of HTML study guides — section walkthroughs, cheatsheets, and practice quizzes. <strong>Network Engineer</strong> and <strong>Database Engineer</strong> have full revision portals (section/theme guides + cheatsheets). The others have cheatsheets and practice material.</p>
     </section>
 
     <div class="grid-certs">
+      <article class="cert-card net">
+        <span class="cert-badge">STUDY GUIDE</span>
+        <h3 class="cert-title">Professional Cloud Network Engineer</h3>
+        <p class="cert-desc">Full revision portal with 7 theme guides, cheatsheet, hybrid connectivity traps, and interactive quizzes.</p>
+        <div class="btn-group">
+          <a href="network_eng/index.html" class="btn-cgp btn-primary">Open Study Portal &rarr;</a>
+          <a href="network_eng/cheatsheet.html" class="btn-cgp btn-secondary">Quick Cheatsheet</a>
+        </div>
+      </article>
+
       <article class="cert-card db">
         <span class="cert-badge">STUDY GUIDE</span>
         <h3 class="cert-title">Professional Cloud Database Engineer</h3>
