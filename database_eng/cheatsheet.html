@@ -1064,11 +1064,11 @@
                 <li><strong>Private connectivity</strong>: keep the DB off the public internet. Use <strong>Private Services Access (PSA)</strong> (VPC peering range for Google services) or <strong>Private Service Connect (PSC)</strong> endpoints.</li>
                 <li><strong>Hybrid networking routing traps (On-Premises)</strong>:
                   <ul>
-                    <li><strong>PSA Peering Trap</strong>: VPC Peering is **non-transitive**. On-prem VPN/Interconnect traffic cannot automatically reach a PSA-provisioned database. **The Fix**: Update the peering connection config to **"Export Custom Routes"** (and import on Google's side), and configure Cloud Router to add a **Custom Route Advertisement** for the private allocated database CIDR range via BGP.</li>
-                    <li><strong>PSC Routing Advantage</strong>: PSC places a **local endpoint Private IP** directly inside your consumer VPC subnet. It is natively routable over VPN or Interconnect. To propagate, simply advertise its subnet.</li>
+                    <li><strong>PSA Peering Trap</strong>: VPC Peering is <strong>non-transitive</strong>. On-prem VPN/Interconnect traffic cannot automatically reach a PSA-provisioned database. <strong>The Fix</strong>: Update the peering connection config to <strong>"Export Custom Routes"</strong> (and import on Google's side), and configure Cloud Router to add a <strong>Custom Route Advertisement</strong> for the private allocated database CIDR range via BGP.</li>
+                    <li><strong>PSC Routing Advantage</strong>: PSC places a <strong>local endpoint Private IP</strong> directly inside your consumer VPC subnet. It is natively routable over VPN or Interconnect. To propagate, simply advertise its subnet.</li>
                   </ul>
                 </li>
-                <li><strong>Global Dynamic Routing</strong>: Must be set to **Global** (not Regional) to allow resources in Region A (e.g., VMs or Cloud Run VPC connectors) to route traffic to a private database in Region B.</li>
+                <li><strong>Global Dynamic Routing</strong>: Must be set to <strong>Global</strong> (not Regional) to allow resources in Region A (e.g., VMs or Cloud Run VPC connectors) to route traffic to a private database in Region B.</li>
                 <li><strong>Cloud SQL Auth Proxy / connectors</strong>: give encrypted, IAM-authorised connections without managing SSL certs or allow-lists. Combine with <strong>IAM database authentication</strong> so users/SAs log in with IAM identities, not stored DB passwords. Supports SOCKS5 proxy chaining (<code>ALL_PROXY=socks5://...</code>) to bypass strict boundary network blocks.</li>
                 <li><strong>Encryption</strong>: data is encrypted at rest by default; use <strong>CMEK</strong> (Cloud KMS) when you must own the key lifecycle/rotation.</li>
                 <li><strong>Session poolers</strong>: <strong>Managed Connection Pooling</strong> (transaction mode by default, session mode available) reuses server connections, absorbs connection spikes, stays under connection limits, and keeps app&harr;pooler connections alive across backend blips. <span class="upd">Managed Connection Pooling</span></li>
@@ -1138,9 +1138,9 @@
                 <li><strong>Relational</strong> <span class="badge relational">SQL</span>: Cloud SQL (regional OLTP), AlloyDB (Postgres, HTAP + AI), Spanner (global, horizontal scale, strong consistency).</li>
                 <li><strong>Non-relational &amp; Firestore Modes</strong>:
                   <ul>
-                    <li>Firestore mode choice is **irreversible at creation**. Fixing requires new DB/project and data migration (Dataflow / GCS export/import).</li>
-                    <li><strong>Native Mode (N.O.R.S.)</strong>: Web/Mobile client direct access, **O**ffline client cache, **R**eal-time listeners (<code>onSnapshot</code>), and client **S**ecurity rules. Document model (Collections/Documents). Max ~1 write/sec per document.</li>
-                    <li><strong>Datastore Mode (D.S.H.)</strong>: Legacy Datastore API, **S**erver-side backend access only (no client SDKs, real-time, or offline caching), **H**igh-volume write throughput (millions/sec). Entity data model (Kinds/Entities).</li>
+                    <li>Firestore mode choice is <strong>irreversible at creation</strong>. Fixing requires new DB/project and data migration (Dataflow / GCS export/import).</li>
+                    <li><strong>Native Mode (N.O.R.S.)</strong>: Web/Mobile client direct access, <strong>O</strong>ffline client cache, <strong>R</strong>eal-time listeners (<code>onSnapshot</code>), and client <strong>S</strong>ecurity rules. Document model (Collections/Documents). Max ~1 write/sec per document.</li>
+                    <li><strong>Datastore Mode (D.S.H.)</strong>: Legacy Datastore API, <strong>S</strong>erver-side backend access only (no client SDKs, real-time, or offline caching), <strong>H</strong>igh-volume write throughput (millions/sec). Entity data model (Kinds/Entities).</li>
                   </ul>
                 </li>
                 <li><strong>Compliance / org policy</strong>: data-residency needs &rarr; pick regional configs and <strong>Resource Location Restriction</strong> org policy; CMEK/EKM for key control.</li>
@@ -1347,9 +1347,9 @@
                 <li><strong>Read replicas</strong> offload reads and analytics from the primary; route users to the <strong>nearest</strong> replica for low latency. Cross-region replicas double as DR.</li>
                 <li><strong>Query &amp; Schema Optimization (Spanner &amp; Bigtable)</strong>:
                   <ul>
-                    <li><strong>Key Randomization</strong>: Eliminate sequential/monotonic keys to avoid **hotspotting** using UUIDv4, prefix sharding, or bit-reversal.</li>
-                    <li><strong>Index Hotspotting</strong>: Monotonic/low-cardinality index columns cause split hotspotting. Fix with **Null-Filtered Indexes** (<code>CREATE NULL_FILTERED INDEX</code>) to ignore nulls.</li>
-                    <li><strong>Table Interleaving</strong>: Co-locates parent and child rows physically for **zero-network-hop SQL joins**. *Specs*: Child PK must start with Parent PK. Supports up to **7 levels of nested interleaving**. Configurable cascading deletes (<code>ON DELETE CASCADE</code> / <code>ON DELETE PREVENT</code>).</li>
+                    <li><strong>Key Randomization</strong>: Eliminate sequential/monotonic keys to avoid <strong>hotspotting</strong> using UUIDv4, prefix sharding, or bit-reversal.</li>
+                    <li><strong>Index Hotspotting</strong>: Monotonic/low-cardinality index columns cause split hotspotting. Fix with <strong>Null-Filtered Indexes</strong> (<code>CREATE NULL_FILTERED INDEX</code>) to ignore nulls.</li>
+                    <li><strong>Table Interleaving</strong>: Co-locates parent and child rows physically for <strong>zero-network-hop SQL joins</strong>. <em>Specs</em>: Child PK must start with Parent PK. Supports up to <strong>7 levels of nested interleaving</strong>. Configurable cascading deletes (<code>ON DELETE CASCADE</code> / <code>ON DELETE PREVENT</code>).</li>
                     <li><strong>Secondary Index Write Overhead</strong>: treated as a separate table under the hood (MVCC); each write requires a distributed transaction across splits, adding latency. Avoid back-joins (network hops) using the <code>STORING</code> clause to duplicate frequently queried columns.</li>
                   </ul>
                 </li>

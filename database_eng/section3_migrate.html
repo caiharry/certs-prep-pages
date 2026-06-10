@@ -556,7 +556,7 @@
       <p>Not every exam scenario demands near-zero downtime. If the business can tolerate a planned weekend outage, keep it simple and skip the complex live CDC pipelines:</p>
       <ul class="bullet-chk">
         <li><strong>Freeze Writes:</strong> Put the source on-prem application into maintenance/read-only mode so no new data is written. 🛑</li>
-        <li><strong>Export &amp; Import:</strong> Perform a native dump (like `pg_dump` or `mysqldump`), upload the file to Cloud Storage, and restore it directly into your target GCP instance.</li>
+        <li><strong>Export &amp; Import:</strong> Perform a native dump (like <code>pg_dump</code> or <code>mysqldump</code>), upload the file to Cloud Storage, and restore it directly into your target GCP instance.</li>
         <li><strong>Validate:</strong> Verify row counts, check table checksums, run app smoke tests, and double-check user permissions.</li>
         <li><strong>Go Live:</strong> Point your applications to the new GCP database and celebrate! It's low-risk, low-stress, and highly reliable when RTO allows.</li>
       </ul>
@@ -640,7 +640,7 @@
         <p><strong>Q2:</strong> Why is continuous Change Data Capture (CDC) essential for near-zero downtime migrations?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
         <div id="ans2" class="answer-panel">
-          It captures transactions happening on the source database *while* the historical data is being copied, ensuring the new target is perfectly up-to-date at cutover time.
+          It captures transactions happening on the source database <em>while</em> the historical data is being copied, ensuring the new target is perfectly up-to-date at cutover time.
         </div>
       </div>
 
@@ -726,7 +726,7 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> Your analytics team wants to build a real-time data warehouse in BigQuery that mirrors active operational transactions occurring in a production Oracle database on-premises. The synchronization must capture insert, update, and delete actions continuously, and the database operations team mandates that the extraction process must not perform heavy periodic queries or full-table scans. Which tool and pattern should you use?</p>
         <ul class="option-list">
-          <li data-option="A">A) Write a custom Dataflow python script that polls the Oracle tables using <code>SELECT *</code> statements every 10 seconds and writes them directly into BigQuery.</li>
+          <li data-option="A">A) Write a custom Dataflow python script that polls the Oracle tables using <code>SELECT <em></code> statements every 10 seconds and writes them directly into BigQuery.</li>
           <li data-option="B">B) Use Database Migration Service (DMS) to continuously sync Oracle to a Cloud SQL MySQL database.</li>
           <li data-option="C">C) Deploy Datastream to capture Change Data Capture (CDC) events serverlessly from the Oracle transaction logs, and stream them directly into BigQuery.</li>
           <li data-option="D">D) Set up Storage Transfer Service (STS) to export Oracle daily dumps to Cloud Storage, and set up a scheduled load job into BigQuery.</li>
@@ -755,19 +755,19 @@
         <p><strong>Question 5:</strong> Your team is performing a near-zero downtime homogeneous migration of a critical 12 TB MySQL database to Cloud SQL MySQL using DMS. As part of a robust cutover playbook, the business demands an immediate rollback path: if the application encounters any unresolvable bugs on Cloud SQL during the first 48 hours of live traffic, you must be able to redirect traffic back to the on-premises database with less than 5 minutes of downtime and absolutely no data loss for writes made in the cloud. How should you design this fallback path?</p>
         <ul class="option-list">
           <li data-option="A">A) Run logical manual database exports on Cloud SQL every 10 minutes, and keep them ready to be manually imported on-premises.</li>
-          <li data-option="B">B) After initial migration, configure and enable **reverse replication** (syncing write changes from the Cloud SQL primary back to the on-premises database) using CDC. Monitor replication lag closely before cutting back if needed.</li>
+          <li data-option="B">B) After initial migration, configure and enable <strong>reverse replication</strong> (syncing write changes from the Cloud SQL primary back to the on-premises database) using CDC. Monitor replication lag closely before cutting back if needed.</li>
           <li data-option="C">C) Re-platform the database to Cloud Spanner since it supports native global fallback triggers.</li>
           <li data-option="D">D) Rely on daily automated backups and Point-In-Time Recovery (PITR) on the on-premises server to reconstruct missing writes manually.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> Reverse replication is your migration parachute! By setting up a continuous CDC replication loop from the newly promoted Cloud SQL instance *back* to the on-premises database, you ensure the legacy system remains perfectly synchronized with any writes made in the cloud. If you need to roll back, you can redirect traffic back to on-prem with near-zero RPO and RTO! 🪂</p>
+          <p><strong>Why Option B is correct:</strong> Reverse replication is your migration parachute! By setting up a continuous CDC replication loop from the newly promoted Cloud SQL instance </em>back<em> to the on-premises database, you ensure the legacy system remains perfectly synchronized with any writes made in the cloud. If you need to roll back, you can redirect traffic back to on-prem with near-zero RPO and RTO! 🪂</p>
           <p><strong>Why the others are wrong:</strong>
           <ul>
             <li><strong>A:</strong> Exporting and importing a 12 TB database takes hours, violating the 5-minute RTO constraint, and 10-minute exports would still cause up to 10 minutes of data loss (RPO).</li>
             <li><strong>C:</strong> Moving to Spanner is a heterogeneous migration that requires extensive schema design and code rewrites, which is out of scope for a MySQL homogeneous rollback plan.</li>
-            <li><strong>D:</strong> Backups and PITR on-premises can reconstruct the legacy state before migration, but they cannot magically fetch new write transactions that occurred *in* the cloud after cutover!</li>
+            <li><strong>D:</strong> Backups and PITR on-premises can reconstruct the legacy state before migration, but they cannot magically fetch new write transactions that occurred </em>in* the cloud after cutover!</li>
           </ul>
           </p>
         </div>

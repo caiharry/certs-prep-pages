@@ -559,18 +559,18 @@
       <p>Examiners love testing your understanding of hybrid routing. If your database is fully private (no public IP), how do developers or apps located <strong>on-premises</strong> (connected via Cloud VPN or Interconnect) reach it? Let's break down the rules of the road:</p>
       
       <h4>🚨 The Non-Transitive Peering Wall (PSA Routing Trap)</h4>
-      <p>If you connect to your database using <strong>Private Services Access (PSA)</strong>, Google sets up a **VPC Peering** connection between your consumer VPC and a Google-managed tenant VPC. Here is the giant, neon-flashing catch:</p>
+      <p>If you connect to your database using <strong>Private Services Access (PSA)</strong>, Google sets up a <strong>VPC Peering</strong> connection between your consumer VPC and a Google-managed tenant VPC. Here is the giant, neon-flashing catch:</p>
       <p><strong>VPC Peering is non-transitive!</strong> This means traffic cannot hop from one peered network to another. So, your on-premises network (Network 1) can talk to your VPC (Network 2) via VPN/Interconnect, but it <em>cannot</em> automatically hop through your VPC peering connection to talk to the Google-managed tenant VPC (Network 3)! Traffic simply hits a physical wall and dies. 🧱</p>
       
       <p><strong>🛠️ How to smash the wall (The PSA Fix):</strong></p>
       <ol>
         <li>Go to your VPC Network Peering connection config (specifically the peering connection named <code>servicenetworking-googleapis-com</code>).</li>
-        <li>Update it to explicitly **"Export Custom Routes"** so your VPC tells the Google-managed VPC about your on-premises subnet ranges. (You must also ensure Google-managed network is configured to import them).</li>
-        <li>Go to your **Cloud Router** that manages your VPN/Interconnect. Add a **Custom Route Advertisement** to advertise the allocated IP range of your PSA database (e.g., <code>10.0.0.0/24</code>) back to your on-premises routers via BGP. This tells your on-premises network how to reach the database! 📡</li>
+        <li>Update it to explicitly <strong>"Export Custom Routes"</strong> so your VPC tells the Google-managed VPC about your on-premises subnet ranges. (You must also ensure Google-managed network is configured to import them).</li>
+        <li>Go to your <strong>Cloud Router</strong> that manages your VPN/Interconnect. Add a <strong>Custom Route Advertisement</strong> to advertise the allocated IP range of your PSA database (e.g., <code>10.0.0.0/24</code>) back to your on-premises routers via BGP. This tells your on-premises network how to reach the database! 📡</li>
       </ol>
 
       <h4>✨ The PSC Native Routing Advantage</h4>
-      <p>Now contrast this with **Private Service Connect (PSC)**. Because PSC creates a **local endpoint (Private IP)** directly inside one of your VPC subnets, it is treated like a standard local VM IP inside your network. There is no non-transitive peering relationship involved!</p>
+      <p>Now contrast this with <strong>Private Service Connect (PSC)</strong>. Because PSC creates a <strong>local endpoint (Private IP)</strong> directly inside one of your VPC subnets, it is treated like a standard local VM IP inside your network. There is no non-transitive peering relationship involved!</p>
       <p>Because it's a local subnet IP, your on-premises networks can route traffic to it natively over VPN or Interconnect without any peering updates! All you need to do is advertise the PSC endpoint IP or its subnet through your standard Cloud Router BGP configuration. It's clean, simple, and avoids all routing head-scratchers. 🌟</p>
     </div>
 
@@ -578,21 +578,21 @@
       <h3>🌍 Global Dynamic Routing &amp; SOCKS5 Tunneling Secrets</h3>
       <p>Here are two more advanced connectivity tricks that might save your bacon under pressure:</p>
       <ul>
-        <li><strong>Global Dynamic Routing for Cross-Region Access:</strong> By default, if your VPC dynamic routing mode is set to **Regional**, resources in Region A (like a VM or a Serverless VPC Access connector for Cloud Run) cannot route traffic to a private database in Region B. To allow cross-region routing over VPN/Interconnect or between subnets, you must set your VPC's dynamic routing mode to **Global**.</li>
-        <li><strong>Auth Proxy with SOCKS5 Proxy Chaining:</strong> What if a developer is working from home and their machine has no direct network reachability to your VPC? The **Cloud SQL Auth Proxy** can chain through a SOCKS5 proxy! You set up a tiny proxy VM inside your VPC, and run the Auth Proxy on the developer's laptop with the <code>ALL_PROXY</code> environment variable pointing to that VM. It safely tunnels the encrypted SQL traffic through!
+        <li><strong>Global Dynamic Routing for Cross-Region Access:</strong> By default, if your VPC dynamic routing mode is set to <strong>Regional</strong>, resources in Region A (like a VM or a Serverless VPC Access connector for Cloud Run) cannot route traffic to a private database in Region B. To allow cross-region routing over VPN/Interconnect or between subnets, you must set your VPC's dynamic routing mode to <strong>Global</strong>.</li>
+        <li><strong>Auth Proxy with SOCKS5 Proxy Chaining:</strong> What if a developer is working from home and their machine has no direct network reachability to your VPC? The <strong>Cloud SQL Auth Proxy</strong> can chain through a SOCKS5 proxy! You set up a tiny proxy VM inside your VPC, and run the Auth Proxy on the developer's laptop with the <code>ALL_PROXY</code> environment variable pointing to that VM. It safely tunnels the encrypted SQL traffic through!
           <pre><code>ALL_PROXY=socks5://my-proxy-bastion:8000 cloud-sql-proxy my-instance</code></pre>
         </li>
-        <li><strong>VPC Service Controls (VPC-SC):</strong> If you are dealing with ultra-secure government or banking data, you will place your databases inside a **VPC Service Controls** perimeter. This isolates your database APIs from the public internet, completely preventing data exfiltration (where an attacker tries to copy or export your tables to an external, unauthorized GCP project).</li>
+        <li><strong>VPC Service Controls (VPC-SC):</strong> If you are dealing with ultra-secure government or banking data, you will place your databases inside a <strong>VPC Service Controls</strong> perimeter. This isolates your database APIs from the public internet, completely preventing data exfiltration (where an attacker tries to copy or export your tables to an external, unauthorized GCP project).</li>
       </ul>
     </div>
 
     <div class="exam-trap">
       <strong>Cloud SQL Auth Proxy is your golden ticket!</strong> If your apps on GKE or Compute Engine need to connect securely, use the <strong>Cloud SQL Auth Proxy</strong> (or language-specific Cloud SQL Connectors). It automatically handles SSL/TLS encryption and authorizes connections using <strong>IAM Roles</strong>! That means <strong>zero SQL passwords or SSL keys</strong> for your developers to rotate, leak, or lose! Absolute bliss!
-      <p>Make sure you memorize these **three high-yield operational details** for the exam:</p>
+      <p>Make sure you memorize these <strong>three high-yield operational details</strong> for the exam:</p>
       <ul class="bullet-chk">
-        <li><strong>IAM Client Authentication:</strong> The Auth Proxy uses GCP IAM service accounts or user identities to establish the secure tunnel. The identity running the proxy must have the **`Cloud SQL Client`** (`roles/cloudsql.client`) IAM role on the database instance. *Note:* The proxy only validates the *network tunnel*; you still log into the actual database using database-level users/passwords (or IAM database users) *inside* that secure tunnel.</li>
-        <li><strong>GKE Sidecar Pattern:</strong> On Google Kubernetes Engine (GKE), deploy the proxy as a **Sidecar container** inside the same Kubernetes Pod as your application. Because containers in the same Pod share the `localhost` network namespace, your app can simply connect to `127.0.0.1:5432` (Postgres) or `127.0.0.1:3306` (MySQL) to connect securely and instantly!</li>
-        <li><strong>Private-IP Routing Flag:</strong> You do NOT need a public IP to use the Auth Proxy! By passing the **`-private-ip`** flag (or `ip_type = "PRIVATE"` in modern connectors), you force the proxy to route connections strictly over Private Services Access (PSA) or Private Service Connect (PSC). This keeps your data completely off the public internet! 🔒</li>
+        <li><strong>IAM Client Authentication:</strong> The Auth Proxy uses GCP IAM service accounts or user identities to establish the secure tunnel. The identity running the proxy must have the <strong><code>Cloud SQL Client</code></strong> (<code>roles/cloudsql.client</code>) IAM role on the database instance. <em>Note:</em> The proxy only validates the <em>network tunnel</em>; you still log into the actual database using database-level users/passwords (or IAM database users) <em>inside</em> that secure tunnel.</li>
+        <li><strong>GKE Sidecar Pattern:</strong> On Google Kubernetes Engine (GKE), deploy the proxy as a <strong>Sidecar container</strong> inside the same Kubernetes Pod as your application. Because containers in the same Pod share the <code>localhost</code> network namespace, your app can simply connect to <code>127.0.0.1:5432</code> (Postgres) or <code>127.0.0.1:3306</code> (MySQL) to connect securely and instantly!</li>
+        <li><strong>Private-IP Routing Flag:</strong> You do NOT need a public IP to use the Auth Proxy! By passing the <strong><code>-private-ip</code></strong> flag (or <code>ip_type = "PRIVATE"</code> in modern connectors), you force the proxy to route connections strictly over Private Services Access (PSA) or Private Service Connect (PSC). This keeps your data completely off the public internet! 🔒</li>
       </ul>
     </div>
 
@@ -634,7 +634,7 @@
         <p><strong>Q3:</strong> Why can't an on-premises network natively talk to a PSA-provisioned Cloud SQL database over a VPN connection?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
         <div id="ans3" class="answer-panel">
-          Because **VPC Peering is non-transitive!** The traffic from on-premises cannot automatically route across the peered network boundary. You must configure the peering connection to "Export Custom Routes" and configure Cloud Router to advertise the database range.
+          Because <strong>VPC Peering is non-transitive!</strong> The traffic from on-premises cannot automatically route across the peered network boundary. You must configure the peering connection to "Export Custom Routes" and configure Cloud Router to advertise the database range.
         </div>
       </div>
 
@@ -642,7 +642,7 @@
         <p><strong>Q4:</strong> To allow resources in Region A to route private traffic to a private database located in Region B, what VPC configuration is required?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
         <div id="ans4" class="answer-panel">
-          You must set the VPC's dynamic routing mode to **Global**. If left as Regional, cross-region subnet routes will not propagate dynamically!
+          You must set the VPC's dynamic routing mode to <strong>Global</strong>. If left as Regional, cross-region subnet routes will not propagate dynamically!
         </div>
       </div>
     </div>
@@ -688,7 +688,7 @@
           <p><strong>Why Option B is correct:</strong> Private Service Connect (PSC) is the modern, flexible way to bridge networks! Unlike PSA (which relies on VPC Peering), PSC uses local endpoints (Private IPs) in each consumer spoke VPC directly. This completely bypasses the limitations of non-transitive VPC Peering routing and allows multi-tenant spoke networks to safely access a shared central database service without peering with each other or the hub. 🌟</p>
           <p><strong>Why the others are wrong:</strong>
           <ul>
-            <li><strong>A:</strong> Private Services Access (PSA) uses VPC Peering, which does *not* support transitive routing. Spoke VPCs would not be able to reach Cloud SQL via the Hub peering connection.</li>
+            <li><strong>A:</strong> Private Services Access (PSA) uses VPC Peering, which does <em>not</em> support transitive routing. Spoke VPCs would not be able to reach Cloud SQL via the Hub peering connection.</li>
             <li><strong>C:</strong> Public IPs with Authorized Networks are less secure and violate the private-network design constraint.</li>
             <li><strong>D:</strong> Cloud VPN is a complex, high-overhead way to bridge networks, and Google Cloud SQL does not allow you to terminate customer VPN tunnels inside its managed tenant project network.</li>
           </ul>
@@ -712,7 +712,7 @@
           <ul>
             <li><strong>Workload Identity:</strong> Eliminates static credentials. The application pod assumes a secure IAM role dynamically.</li>
             <li><strong>Sidecar Pattern:</strong> Running the proxy inside the same Pod allows the application to communicate with it securely over <code>localhost</code> (127.0.0.1) with zero complex network routing.</li>
-            <li><strong>`-private-ip` Flag:</strong> Forces the proxy to route connections over your private network, ensuring database traffic never touches the public internet. 🔒</li>
+            <li><strong><code>-private-ip</code> Flag:</strong> Forces the proxy to route connections over your private network, ensuring database traffic never touches the public internet. 🔒</li>
           </ul>
           </p>
           <p><strong>Why the others are wrong:</strong>
@@ -737,17 +737,17 @@
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is a massive, high-yield networking trap! Under the hood, Private Services Access (PSA) uses VPC Peering. Because VPC Peering is **non-transitive**, traffic coming from on-premises via VPN or Interconnect cannot automatically cross the peered boundary into the Google-managed tenant network where Cloud SQL sits. 
+          <p><strong>Why Option B is correct:</strong> This is a massive, high-yield networking trap! Under the hood, Private Services Access (PSA) uses VPC Peering. Because VPC Peering is <strong>non-transitive</strong>, traffic coming from on-premises via VPN or Interconnect cannot automatically cross the peered boundary into the Google-managed tenant network where Cloud SQL sits. 
           To solve this:
           <ol>
-            <li>You must explicitly tell the peering to **Export Custom Routes** so on-premises routes known to your VPC are shared across the peering link.</li>
-            <li>You must configure your **Cloud Router** (which runs the BGP session with your on-premises routers) to add a **Custom Route Advertisement** that advertises the database's private allocated CIDR block (not your local subnets, but the range allocated to Google services) back to your on-premises routers. Without this BGP advertisement, on-premises has no idea how to route packets to the database's IP address!</li>
+            <li>You must explicitly tell the peering to <strong>Export Custom Routes</strong> so on-premises routes known to your VPC are shared across the peering link.</li>
+            <li>You must configure your <strong>Cloud Router</strong> (which runs the BGP session with your on-premises routers) to add a <strong>Custom Route Advertisement</strong> that advertises the database's private allocated CIDR block (not your local subnets, but the range allocated to Google services) back to your on-premises routers. Without this BGP advertisement, on-premises has no idea how to route packets to the database's IP address!</li>
           </ol>
           </p>
           <p><strong>Why the others are wrong:</strong>
           <ul>
             <li><strong>A:</strong> Cloud SQL fully supports on-premises private connectivity, provided the routing is correctly configured. Enabling public IP violates standard security best practices.</li>
-            <li><strong>C:</strong> Setting routing to regional actually *prevents* cross-region routing! Global routing is needed if resources are cross-region. It would not fix the non-transitive peering block.</li>
+            <li><strong>C:</strong> Setting routing to regional actually <em>prevents</em> cross-region routing! Global routing is needed if resources are cross-region. It would not fix the non-transitive peering block.</li>
             <li><strong>D:</strong> Cloud SQL does not support running on-premises instances inside standard master-slave managed replication setups, and this is completely over-engineered.</li>
           </ul>
           </p>

@@ -499,9 +499,9 @@
       <h3>📚 Scaling Reads Without Melting the Primary</h3>
       <p>Read scaling is the classic "same data, too many eyeballs" problem. Make sure you pick the replica type that matches the engine:</p>
       <ul class="bullet-chk">
-        <li><strong>Cloud SQL:</strong> Add **Read Replicas** to offload read-heavy traffic, run reports, provide regional locality, or act as DR building blocks. Note: Enterprise Plus read pools can raise availability when configured with enough nodes.</li>
-        <li><strong>AlloyDB:</strong> Use **Read Pools** to scale read and analytical traffic away from the primary, and combine with the columnar engine for HTAP reporting.</li>
-        <li><strong>Spanner:</strong> Choose your instance configuration carefully. Use **read-only replicas** or multi-region configurations to scale reads globally, but ensure your schema is designed well to avoid hot spots!</li>
+        <li><strong>Cloud SQL:</strong> Add <strong>Read Replicas</strong> to offload read-heavy traffic, run reports, provide regional locality, or act as DR building blocks. Note: Enterprise Plus read pools can raise availability when configured with enough nodes.</li>
+        <li><strong>AlloyDB:</strong> Use <strong>Read Pools</strong> to scale read and analytical traffic away from the primary, and combine with the columnar engine for HTAP reporting.</li>
+        <li><strong>Spanner:</strong> Choose your instance configuration carefully. Use <strong>read-only replicas</strong> or multi-region configurations to scale reads globally, but ensure your schema is designed well to avoid hot spots!</li>
       </ul>
     </div>
 
@@ -511,7 +511,7 @@
     <ol>
       <li><strong>Trigger a Manual Failover:</strong> In the Cloud SQL or AlloyDB console (or via the <code>gcloud</code> CLI), trigger a manual failover event to verify that the standby instance takes over successfully, and that your application connection pools survive the blip!</li>
       <li><strong>Drill Replica Promotion:</strong> Disconnect a Cross-Region Read Replica and <strong>promote</strong> it to be a standalone primary database. Verify your application config updates correctly to handle regional outages.</li>
-      <li><strong>Test Spanner Differently:</strong> Multi-region Spanner is platform-managed, so focus your drills on application retry logic, leader-region latency, monitoring, backup/restore runbooks, and simulated client failures. *Don't go looking for a generic regional failover button in Spanner &mdash; it doesn't exist!*</li>
+      <li><strong>Test Spanner Differently:</strong> Multi-region Spanner is platform-managed, so focus your drills on application retry logic, leader-region latency, monitoring, backup/restore runbooks, and simulated client failures. <em>Don't go looking for a generic regional failover button in Spanner &mdash; it doesn't exist!</em></li>
     </ol>
 
     <div class="mnemonic">
@@ -667,7 +667,7 @@
           <p><strong>Why the others are wrong:</strong>
           <ul>
             <li><strong>A:</strong> Terraform's core purpose is to enforce the declared state. It will not ignore changes made manually outside of Terraform.</li>
-            <li><strong>C:</strong> Modifying a network parameter like disabling a public IP is an in-place modification on Cloud SQL and does *not* trigger a destructive recreation of the entire instance.</li>
+            <li><strong>C:</strong> Modifying a network parameter like disabling a public IP is an in-place modification on Cloud SQL and does <em>not</em> trigger a destructive recreation of the entire instance.</li>
             <li><strong>D:</strong> Terraform does not freeze or lock you out of deployments because of configuration drift; it simply plans to undo the drift.</li>
           </ul>
           </p>

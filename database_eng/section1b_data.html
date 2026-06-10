@@ -534,7 +534,7 @@
     <!-- FIRESTORE TWO MODES -->
     <div class="cgp-card warn">
       <h3>🔥 The Irreversible Firestore Mode Trap! (Native vs. Datastore)</h3>
-      <p>When you spin up a **Firestore** database, you must make a critical choice: **Native Mode** or **Datastore Mode**. Listen carefully: **This choice is permanent and irreversible!**</p>
+      <p>When you spin up a <strong>Firestore</strong> database, you must make a critical choice: <strong>Native Mode</strong> or <strong>Datastore Mode</strong>. Listen carefully: <strong>This choice is permanent and irreversible!</strong></p>
       <p>If you choose the wrong mode, there is no "convert" button. The only fix is to spin up a brand new database (or new GCP project) and manually migrate all your data using Dataflow or GCS import/export! Google examiners <em>love</em> to test whether you know this before launching a system. 💀</p>
 
       <div class="table-container">
@@ -559,23 +559,23 @@
             </tr>
             <tr>
               <td><strong>Real-Time Sync</strong></td>
-              <td>✔️ **Supported** (Listeners via <code>onSnapshot</code>)</td>
-              <td>❌ **Not Supported** (Must poll)</td>
+              <td>✔️ <strong>Supported</strong> (Listeners via <code>onSnapshot</code>)</td>
+              <td>❌ <strong>Not Supported</strong> (Must poll)</td>
             </tr>
             <tr>
               <td><strong>Offline Caching</strong></td>
-              <td>✔️ **Supported** natively in Web/Mobile SDKs</td>
-              <td>❌ **Not Supported** (Server environment assumed)</td>
+              <td>✔️ <strong>Supported</strong> natively in Web/Mobile SDKs</td>
+              <td>❌ <strong>Not Supported</strong> (Server environment assumed)</td>
             </tr>
             <tr>
               <td><strong>Security Rules</strong></td>
-              <td>✔️ **Supported** (Enforces client-side security)</td>
-              <td>❌ **Not Supported** (Security handled by backend server)</td>
+              <td>✔️ <strong>Supported</strong> (Enforces client-side security)</td>
+              <td>❌ <strong>Not Supported</strong> (Security handled by backend server)</td>
             </tr>
             <tr>
               <td><strong>Write Throughput</strong></td>
-              <td>Unbounded, but limited to **~1 write/sec per document**</td>
-              <td>Natively scales to **millions of writes/sec** easily</td>
+              <td>Unbounded, but limited to <strong>~1 write/sec per document</strong></td>
+              <td>Natively scales to <strong>millions of writes/sec</strong> easily</td>
             </tr>
             <tr>
               <td><strong>Client SDKs</strong></td>
@@ -615,8 +615,8 @@
         <li><strong>Application Dependencies:</strong> Watch out for specific database drivers, SQL dialects, legacy extensions, stored procedures, network latency, and batch jobs.</li>
         <li><strong>Compliance &amp; Residency:</strong> Region choices, data residency regulations, CMEK (Customer-Managed Encryption Keys), audit logs, and strict retention/deletion controls.</li>
         <li><strong>Org Policies:</strong> Google organization policies can block specific regions, restrict public IPs, enforce CMEK, or mandate VPC Service Controls. If an org policy blocks public IPs, don't even dream of requesting one!</li>
-        <li><strong>Non-Native Workloads:</strong> If Oracle or SQL Server licensing/custom hardware requirements prevent a native migration, reach for partner marketplace options or a **Bare Metal Solution**.</li>
-        <li><strong>The Money Talk (Cost):</strong> Don't just budget for the main database instance. You must account for storage, backups, read replicas, networking egress, licenses, and Committed Use Discounts (CUDs). *Remember: the cheapest database option is never cheap if it makes your DBA team cry every Tuesday!* 😭</li>
+        <li><strong>Non-Native Workloads:</strong> If Oracle or SQL Server licensing/custom hardware requirements prevent a native migration, reach for partner marketplace options or a <strong>Bare Metal Solution</strong>.</li>
+        <li><strong>The Money Talk (Cost):</strong> Don't just budget for the main database instance. You must account for storage, backups, read replicas, networking egress, licenses, and Committed Use Discounts (CUDs). <em>Remember: the cheapest database option is never cheap if it makes your DBA team cry every Tuesday!</em> 😭</li>
       </ul>
     </div>
 
@@ -626,9 +626,9 @@
 
     <div class="cgp-card warn">
       <h3>🔥 The Fire-Breathing Monster: Hotspotting</h3>
-      <p>By default, both Spanner and Bigtable partition your data across multiple servers (called splits or tablets) based on the sorting of your **Primary Key**. If your primary key is sequential (like auto-incrementing integers, database sequences, or timestamps), every single new write will have a value higher than the last one.</p>
-      <p>This means **every single write will be sent to the exact same partition/server (the hot split)** while all your other expensive servers sit around doing absolutely nothing! This is called <strong>hotspotting</strong>, and it will choke your database's performance to death! 💀</p>
-      <p>To kill the hotspotting monster, you must **randomize your primary keys** using these expert tricks:</p>
+      <p>By default, both Spanner and Bigtable partition your data across multiple servers (called splits or tablets) based on the sorting of your <strong>Primary Key</strong>. If your primary key is sequential (like auto-incrementing integers, database sequences, or timestamps), every single new write will have a value higher than the last one.</p>
+      <p>This means <strong>every single write will be sent to the exact same partition/server (the hot split)</strong> while all your other expensive servers sit around doing absolutely nothing! This is called <strong>hotspotting</strong>, and it will choke your database's performance to death! 💀</p>
+      <p>To kill the hotspotting monster, you must <strong>randomize your primary keys</strong> using these expert tricks:</p>
       <ul class="bullet-chk">
         <li><strong>Use Cryptographic Hash values (e.g. SHA-256):</strong> Hash your sequential ID and use that as the primary key.</li>
         <li><strong>Prepend a Shard ID (Prefix Sharding):</strong> Calculate a hash of some value, modulo it by a small number of shards (e.g. 0 to 9), and prepend it to your sequential ID (e.g. <code>4_2026-06-09_12-30-00</code>). Writes are now beautifully spread across different servers! 🌟</li>
@@ -637,10 +637,10 @@
       </ul>
 
       <h3>🚨 Index-Level Hotspotting &amp; Null-Filtered Indexes!</h3>
-      <p>Did you think hotspotting only happens on your base tables? Think again! This is an advanced trap! If you create a secondary index on a **sequential/monotonic column** (like <code>CreatedTimestamp</code>) or a **low-cardinality column** (like a boolean <code>IsProcessed</code> or status column where 99% of values are NULL or 'PENDING'), you will trigger **index hotspotting**! 😱</p>
+      <p>Did you think hotspotting only happens on your base tables? Think again! This is an advanced trap! If you create a secondary index on a <strong>sequential/monotonic column</strong> (like <code>CreatedTimestamp</code>) or a <strong>low-cardinality column</strong> (like a boolean <code>IsProcessed</code> or status column where 99% of values are NULL or 'PENDING'), you will trigger <strong>index hotspotting</strong>! 😱</p>
       <p>Since Spanner treats secondary indexes like separate sorted tables, writes to those indexes will pile into a single index split!</p>
       <p><strong>🛠️ The Fix: Null-Filtered Indexes!</strong></p>
-      <p>If you are indexing a column where only a tiny fraction of rows have non-null values that you actually care about, create a **Null-Filtered Index**:
+      <p>If you are indexing a column where only a tiny fraction of rows have non-null values that you actually care about, create a <strong>Null-Filtered Index</strong>:
         <pre><code>CREATE NULL_FILTERED INDEX idx_unprocessed_orders 
 ON Orders(UnprocessedTimestamp);</code></pre>
       By filtering out NULLs, Spanner completely excludes those rows from the index splits. This avoids massive index bloat, dramatically reduces storage costs, and prevents index split hotspotting during high-volume base table writes! Brilliant! ✨</p>
@@ -650,7 +650,7 @@ ON Orders(UnprocessedTimestamp);</code></pre>
       <h3>🔍 Secondary Indexes: Double the Power, Double the Traps!</h3>
       <p>Sometimes you need to query non-primary-key columns quickly. For example, if your primary key is <code>CustomerID</code>, but you constantly query users by <code>EmailAddress</code>. In Cloud Spanner, you solve this by creating a <strong>Secondary Index</strong> (e.g., <code>CREATE INDEX idx_email ON Customers(EmailAddress)</code>).</p>
       <p>But watch out! Under the hood, Spanner treats secondary indexes like a completely separate table. If your query asks for columns that aren't inside the secondary index, Spanner has to look up the rows in the index, and then do a slow, expensive <strong>"back-join"</strong> to the base table to fetch the missing columns. This requires an extra <strong>network hop</strong> to another server! 🐌</p>
-      <p>How do we bypass this back-join traffic jam? Use the **`STORING` clause**! 🪂</p>
+      <p>How do we bypass this back-join traffic jam? Use the <strong><code>STORING</code> clause</strong>! 🪂</p>
       <pre><code>-- The Ultimate Performance Weapon!
 CREATE INDEX idx_email 
 ON Customers(EmailAddress) 
@@ -658,24 +658,24 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <p>This clones the stored columns directly into the index. If your query only asks for <code>EmailAddress</code>, <code>DisplayName</code>, and <code>PhoneNumber</code>, Spanner can answer the query entirely from the secondary index, saving you a slow and painful network hop back to the main table! Outstanding!</p>
       
       <h4>💸 The Index Write Overhead Penalty (MVCC locking)</h4>
-      <p>Remember: index speed isn't free! Every secondary index you add acts as a physical separate table. Under the hood, Spanner uses Multiversion Concurrency Control (MVCC). When you write or update a row in the base table, Spanner must execute a **distributed transaction** to synchronously write to both the base table split and the secondary index split. This causes locking, burns CPU, and adds write latency. **So only add secondary indexes when you absolutely need them!**</p>
+      <p>Remember: index speed isn't free! Every secondary index you add acts as a physical separate table. Under the hood, Spanner uses Multiversion Concurrency Control (MVCC). When you write or update a row in the base table, Spanner must execute a <strong>distributed transaction</strong> to synchronously write to both the base table split and the secondary index split. This causes locking, burns CPU, and adds write latency. <strong>So only add secondary indexes when you absolutely need them!</strong></p>
     </div>
 
     <div class="mnemonic" style="border-color: #db2777; box-shadow: 4px 4px 0px #db2777;">
       <strong>🧠 Spanner Table Interleaving Specifications &amp; Limits</strong>
       <p>If you have a Parent-Child relationship (like <code>Customers</code> and <code>Orders</code>) and you frequently query them together in a SQL JOIN, you'll burn through your network budget doing hops between splits.</p>
-      <p>The solution? **Table Interleaving**! This physically nests the child rows (orders) inside the parent row's storage split. Spanner co-locates them on the exact same physical disk, allowing you to run joins with **zero network hops**! Absolute speed perfection! ⚡</p>
+      <p>The solution? <strong>Table Interleaving</strong>! This physically nests the child rows (orders) inside the parent row's storage split. Spanner co-locates them on the exact same physical disk, allowing you to run joins with <strong>zero network hops</strong>! Absolute speed perfection! ⚡</p>
       
       <p><strong>⚠️ Crucial Specifications to Memorize for the Exam:</strong></p>
       <ul>
-        <li><strong>Primary Key Requirement:</strong> To interleave a child table, the parent's primary key must be the **prefix** of the child's primary key (e.g., Parent PK is <code>CustomerID</code>; Child PK must be <code>(CustomerID, OrderID)</code>).</li>
+        <li><strong>Primary Key Requirement:</strong> To interleave a child table, the parent's primary key must be the <strong>prefix</strong> of the child's primary key (e.g., Parent PK is <code>CustomerID</code>; Child PK must be <code>(CustomerID, OrderID)</code>).</li>
         <li><strong>Cascading Deletes:</strong> You can configure how child rows are handled when a parent is deleted:
           <ul>
             <li><code>ON DELETE CASCADE</code>: Deletes all child rows automatically when the parent is deleted.</li>
             <li><code>ON DELETE PREVENT</code>: Rejects the delete statement if child rows exist (default).</li>
           </ul>
         </li>
-        <li><strong>The Hard Platform Limit:</strong> Spanner supports up to **7 levels of nested table interleaving** (Parent &rarr; Child &rarr; Grandchild, etc.). Don't let examiners trick you into designing a 10-level deep interleaving chain!</li>
+        <li><strong>The Hard Platform Limit:</strong> Spanner supports up to <strong>7 levels of nested table interleaving</strong> (Parent &rarr; Child &rarr; Grandchild, etc.). Don't let examiners trick you into designing a 10-level deep interleaving chain!</li>
       </ul>
     </div>
 
@@ -714,7 +714,7 @@ STORING (DisplayName, PhoneNumber);</code></pre>
         <p><strong>Q3:</strong> What is the best way to prevent a secondary index in Spanner from bottlenecking when indexing a monotonic column where 95% of the values are null?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
         <div id="ans3" class="answer-panel">
-          Create a **Null-Filtered Index** (`CREATE NULL_FILTERED INDEX`). This filters out null values, preventing them from bloating the index and hotspotting on the latest monotonic value.
+          Create a <strong>Null-Filtered Index</strong> (<code>CREATE NULL_FILTERED INDEX</code>). This filters out null values, preventing them from bloating the index and hotspotting on the latest monotonic value.
         </div>
       </div>
 
@@ -722,7 +722,7 @@ STORING (DisplayName, PhoneNumber);</code></pre>
         <p><strong>Q4:</strong> What is the hard platform limit for nested levels of table interleaving in Cloud Spanner?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
         <div id="ans4" class="answer-panel">
-          **Up to 7 levels!** Anything deeper is rejected by the Spanner parser.
+          <strong>Up to 7 levels!</strong> Anything deeper is rejected by the Spanner parser.
         </div>
       </div>
     </div>
@@ -769,14 +769,14 @@ STORING (DisplayName, PhoneNumber);</code></pre>
           <p><strong>Why Option C is correct:</strong> This is a double-whammy database design win!
           <ul>
             <li><strong>Fixing Writes (Hotspotting):</strong> Prepended shard IDs (or bit-reversing, or using random UUIDv4s) randomizes the primary keys physically, distributing incoming writes across all Spanner splits instead of pounding a single server node.</li>
-            <li><strong>Fixing Reads (Network Hops):</strong> Creating a secondary index on <code>EmailAddress</code> and adding the <code>STORING (DisplayName, PhoneNumber)</code> clause duplicates those two columns inside the index structure. When the query executes, Spanner can read all needed fields entirely from the index and completely bypasses the expensive **back-join** lookup to the base table &mdash; eliminating a slow network hop! ⚡</li>
+            <li><strong>Fixing Reads (Network Hops):</strong> Creating a secondary index on <code>EmailAddress</code> and adding the <code>STORING (DisplayName, PhoneNumber)</code> clause duplicates those two columns inside the index structure. When the query executes, Spanner can read all needed fields entirely from the index and completely bypasses the expensive <strong>back-join</strong> lookup to the base table &mdash; eliminating a slow network hop! ⚡</li>
           </ul>
           </p>
           <p><strong>Why the others are wrong:</strong></p>
           <ul>
             <li><strong>A:</strong> Throttling writes is not a solution, it's a speed limit on your business! A standard index without STORING still suffers from back-joins and high latency.</li>
             <li><strong>B:</strong> Table Interleaving is for Parent-Child relationships (like Customer &rarr; Orders), not for single-table indexing. It doesn't help hotspotting on the parent, nor does it solve the back-join read bottleneck.</li>
-            <li><strong>D:</strong> Timestamps are strictly sequential and will actually *cause* massive hotspotting as time marches forward!</li>
+            <li><strong>D:</strong> Timestamps are strictly sequential and will actually <em>cause</em> massive hotspotting as time marches forward!</li>
           </ul>
         </div>
       </div>
@@ -834,7 +834,7 @@ STORING (DisplayName, PhoneNumber);</code></pre>
 
       <!-- Question 5 (New Firestore Mode Mistake Trap) -->
       <div class="q-box">
-        <p><strong>Question 5 (New Firestore Trap!):</strong> A lead developer created a Firestore database for a new mobile chat application. A few weeks into development, the team realizes they cannot bind real-time listeners (`onSnapshot`) to document collections in their mobile client apps, and they are forced to constantly poll the database. Upon investigation, you discover the database was mistakenly created in Datastore Mode instead of Native Mode. How must you resolve this issue?</p>
+        <p><strong>Question 5 (New Firestore Trap!):</strong> A lead developer created a Firestore database for a new mobile chat application. A few weeks into development, the team realizes they cannot bind real-time listeners (<code>onSnapshot</code>) to document collections in their mobile client apps, and they are forced to constantly poll the database. Upon investigation, you discover the database was mistakenly created in Datastore Mode instead of Native Mode. How must you resolve this issue?</p>
         <ul class="option-list">
           <li data-option="A">A) Run a gcloud command to switch the Firestore database mode in-place from Datastore to Native.</li>
           <li data-option="B">B) Create a new Firestore database in Native Mode (or create a new GCP project and provision Firestore in Native Mode), set up a Dataflow pipeline or run an export/import job to migrate existing data to the new database, and update the mobile application client configuration to target the new instance.</li>
@@ -844,12 +844,12 @@ STORING (DisplayName, PhoneNumber);</code></pre>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is an classic, painful GCP database trap! The choice between Firestore Native Mode and Datastore Mode is **set at database creation time and is completely irreversible in-place**. 
+          <p><strong>Why Option B is correct:</strong> This is an classic, painful GCP database trap! The choice between Firestore Native Mode and Datastore Mode is <strong>set at database creation time and is completely irreversible in-place</strong>. 
           Because Datastore Mode does not support real-time pushes, client-side offline caching, or mobile client Security Rules, the team has no way to support direct mobile client sync in this database. 
           The only remediation path is:
           <ol>
-            <li>Spin up a brand new database in **Native Mode** (which may require a new GCP project as each project supports exactly one Firestore database, or using Firestore multi-database support if available in your configuration).</li>
-            <li>Export the existing Datastore entities to Google Cloud Storage (GCS) and import them into the new Native database (converting kinds/entities to collections/documents where necessary), or run a custom **Dataflow** migration pipeline.</li>
+            <li>Spin up a brand new database in <strong>Native Mode</strong> (which may require a new GCP project as each project supports exactly one Firestore database, or using Firestore multi-database support if available in your configuration).</li>
+            <li>Export the existing Datastore entities to Google Cloud Storage (GCS) and import them into the new Native database (converting kinds/entities to collections/documents where necessary), or run a custom <strong>Dataflow</strong> migration pipeline.</li>
             <li>Update your mobile applications' configurations to reference the new Native Mode database.</li>
           </ol>
           </p>
@@ -868,7 +868,7 @@ STORING (DisplayName, PhoneNumber);</code></pre>
         <p><strong>Question 6 (New Spanner Index Trap!):</strong> You are managing a massive Cloud Spanner database for an international logistics platform. The <code>Shipments</code> table handles intense write traffic. A column named <code>ActiveIssuesTimestamp</code> is set to NULL for 99.5% of rows, and is set to a monotonic, increasing timestamp when a shipment encounters an active delay. To support a customer service dashboard, you created a secondary index on <code>ActiveIssuesTimestamp</code>. However, the database team reports severe write latency and CPU spikes concentrated on a single Spanner node. How should you resolve this issue?</p>
         <ul class="option-list">
           <li data-option="A">A) Re-provision Spanner with SSDs instead of HDDs to absorb the high IOPS.</li>
-          <li data-option="B">B) Drop the secondary index and recreate it as a NULL-FILTERED index (`CREATE NULL_FILTERED INDEX`). Additionally, ensure that the base table primary key is completely randomized (using UUIDs or bit-reversal) to prevent base-level hotspotting.</li>
+          <li data-option="B">B) Drop the secondary index and recreate it as a NULL-FILTERED index (<code>CREATE NULL_FILTERED INDEX</code>). Additionally, ensure that the base table primary key is completely randomized (using UUIDs or bit-reversal) to prevent base-level hotspotting.</li>
           <li data-option="C">C) Interleave the secondary index inside the Shipments base table using the INTERLEAVE IN clause.</li>
           <li data-option="D">D) Throttling the dashboard queries to run once every 24 hours so Spanner has time to rebuild its index splits.</li>
         </ul>
@@ -877,15 +877,15 @@ STORING (DisplayName, PhoneNumber);</code></pre>
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> This is a sophisticated index hotspotting scenario!
           <ol>
-            <li><strong>The Index Hotspotting Cause:</strong> Since 99.5% of shipment rows have a NULL value for <code>ActiveIssuesTimestamp</code>, a standard secondary index will store index entries for *every single row*, including those with NULL values. Piling millions of identical NULL entries into the sorted index structure concentrates write load into a single physical index split. Furthermore, for the 0.5% that do have values, the timestamp is monotonic (strictly increasing), causing all new delay entries to hit the tail end of the index split, compounding the hot-spotting bottleneck on a single Spanner node!</li>
-            <li><strong>The Null-Filtered Index Fix:</strong> Creating a **Null-Filtered Index** (`CREATE NULL_FILTERED INDEX`) tells Spanner to ignore any row where the indexed column is NULL. Since 99.5% of rows are NULL, this eliminates 99.5% of write updates to the secondary index! The index size shrinks dramatically, base table writes no longer suffer from MVCC write lock overhead, and the hotspotting on the index split is eradicated!</li>
+            <li><strong>The Index Hotspotting Cause:</strong> Since 99.5% of shipment rows have a NULL value for <code>ActiveIssuesTimestamp</code>, a standard secondary index will store index entries for <em>every single row</em>, including those with NULL values. Piling millions of identical NULL entries into the sorted index structure concentrates write load into a single physical index split. Furthermore, for the 0.5% that do have values, the timestamp is monotonic (strictly increasing), causing all new delay entries to hit the tail end of the index split, compounding the hot-spotting bottleneck on a single Spanner node!</li>
+            <li><strong>The Null-Filtered Index Fix:</strong> Creating a <strong>Null-Filtered Index</strong> (<code>CREATE NULL_FILTERED INDEX</code>) tells Spanner to ignore any row where the indexed column is NULL. Since 99.5% of rows are NULL, this eliminates 99.5% of write updates to the secondary index! The index size shrinks dramatically, base table writes no longer suffer from MVCC write lock overhead, and the hotspotting on the index split is eradicated!</li>
           </ol>
           </p>
           <p><strong>Why the others are wrong:</strong>
           <ul>
             <li><strong>A:</strong> Spanner is a platform-managed service and always runs on high-performance storage. You cannot manually select HDDs or SSDs for Spanner compute nodes.</li>
             <li><strong>C:</strong> You cannot interleave a secondary index. Interleaving is strictly a base table-to-table physical co-location mechanism.</li>
-            <li><strong>D:</strong> Throttling queries does not solve **write** latency. The write latency is caused by base table row inserts triggering synchronous updates to a hot secondary index split.</li>
+            <li><strong>D:</strong> Throttling queries does not solve <strong>write</strong> latency. The write latency is caused by base table row inserts triggering synchronous updates to a hot secondary index split.</li>
           </ul>
           </p>
         </div>
