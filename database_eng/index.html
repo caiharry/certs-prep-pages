@@ -112,15 +112,79 @@
       gap: 10px;
     }
 
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--cgp-yellow);
+    }
+
     .grid-sections {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 25px;
     }
 
+    .grid-sections > * {
+      min-width: 0;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--cgp-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
     @media (max-width: 768px) {
       .grid-sections {
         grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
       }
     }
 
@@ -134,6 +198,7 @@
       flex-direction: column;
       justify-content: space-between;
       transition: transform 0.2s, box-shadow 0.2s;
+      min-width: 0;
     }
 
     .section-card:hover {
@@ -192,6 +257,9 @@
       box-shadow: 3px 3px 0px #000;
       text-decoration: none;
       transition: background-color 0.2s, transform 0.1s;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 100%;
     }
 
     .btn-cgp:hover {
@@ -255,6 +323,10 @@
 </head>
 <body>
   <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Back to Main Certs Hub</a>
+    </div>
+
     <header>
       <div class="badge-cgp">No-Nonsense study guides</div>
       <h1>Google Cloud Platform</h1>
@@ -325,6 +397,16 @@
         </div>
         <a href="section4_deploy.html" class="btn-cgp">Enter Section 4 Study Guide &rarr;</a>
       </div>
+
+      <!-- Cheatsheet -->
+      <div class="section-card s1" style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
+        <div>
+          <span class="sec-badge" style="background: var(--cgp-yellow-dark); color: #000;">Exam Deck</span>
+          <h3 class="sec-title">Exam Guide Cheat Sheet</h3>
+          <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features high-yield fact cards, exam traps, and synthesis matrices.</p>
+        </div>
+        <a href="cheatsheet.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Open Exam Cheat Sheet &rarr;</a>
+      </div>
     </div>
 
     <div class="tips-block">
@@ -336,9 +418,8 @@
       </div>
     </div>
 
-    <footer>
-      <p>Grounded in current GCP documentation &bull; Today's Date: Monday, June 8, 2026</p>
-    </footer>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
   </div>
 </body>
 </html>

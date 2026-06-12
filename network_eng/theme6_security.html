@@ -42,6 +42,8 @@
     .nav-links {
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 25px;
     }
 
@@ -55,6 +57,11 @@
       border-radius: 8px;
       box-shadow: 3px 3px 0px #000;
       font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
     }
 
     .nav-link:hover {
@@ -435,12 +442,56 @@
       content: "✔️ ";
       margin-right: 8px;
     }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--cgp-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="nav-links">
       <a href="theme5_lb_dns_cdn.html" class="nav-link">&larr; Back to Theme 5</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
       <a href="theme7_ops.html" class="nav-link">Go to Theme 7: Operations &amp; Troubleshooting &rarr;</a>
     </div>
 
@@ -698,9 +749,8 @@
       </div>
     </div>
 
-    <footer>
-      <p>Grounded in current GCP documentation &bull; Today's Date: Wednesday, June 10, 2026</p>
-    </footer>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
   </div>
 
   <script>

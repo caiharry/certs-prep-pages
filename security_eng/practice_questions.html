@@ -709,6 +709,27 @@
             transform: translateX(-50%) translateY(0);
         }
 
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
         @media (max-width: 1024px) {
             main {
                 flex-direction: column;
@@ -821,6 +842,7 @@
             <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
         </div>
     </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
 
     <!-- Results Modal -->
     <div class="results-modal" id="results-modal">

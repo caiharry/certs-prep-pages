@@ -725,6 +725,28 @@
       text-align: center;
     }
 
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 24px auto 0;
+      background: var(--green, #16a34a);
+      color: white;
+      font-weight: 700;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft, 0 4px 12px rgba(0,0,0,0.1));
+    }
+
+    .scroll-top-btn:hover {
+      opacity: 0.9;
+    }
+
     @media (max-width: 980px) {
       .page {
         width: min(100% - 24px, 860px);
@@ -1955,7 +1977,7 @@
       </article>
     </div>
 
-    <p class="footer">Built from the official Professional Cloud DevOps Engineer exam guide, with trap callouts grounded in the official sample questions and every claim fact-checked against current Google Cloud documentation (sources linked per slide). Use it as a scroll deck on desktop or a compact objective index on mobile.</p>
+        <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
   </main>
 </body>
 </html>
