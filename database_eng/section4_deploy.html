@@ -587,10 +587,10 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> An infrastructure engineer wants to automate the provisioning of all company databases on GCP. They write a Terraform module to spin up five new Cloud SQL PostgreSQL instances. However, they discover that one database instance was already created manually in the console last month by a separate team. They need to manage this existing instance alongside the five new instances under Terraform, without causing database downtime or recreating the manual database. What should they do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Write the Terraform configuration for the existing instance and run terraform apply directly.</li>
+          <li data-option="A">A) Write the Terraform configuration for the existing instance, run terraform apply with the force-replace flag, and let Terraform overwrite the live database state.</li>
           <li data-option="B">B) Define the existing instance in code, run terraform import to bind the live resource, and execute terraform plan to confirm alignments.</li>
-          <li data-option="C">C) Delete the manually created database instance in the console, and let Terraform recreate it from scratch.</li>
-          <li data-option="D">D) Create a read replica of the manual database in Terraform, promote the replica, and delete the original database.</li>
+          <li data-option="C">C) Delete the manually created database instance in the console during off-hours, and let the scheduled Terraform pipeline recreate the database from scratch.</li>
+          <li data-option="D">D) Create a read replica of the manually created database in Terraform, promote the replica to primary, and delete the original database in the console.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -608,10 +608,10 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> You have deployed a multi-region Cloud Spanner instance to support a global mobile game backend. You want a quarterly disaster recovery drill that validates the application and operational runbook. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Only restore yesterday's backup to a temporary instance and call the DR drill complete.</li>
+          <li data-option="A">A) Deploy a script to only restore yesterday's backup to a temporary zonal instance, verify basic query connectivity, and call the DR drill complete.</li>
           <li data-option="B">B) Run a scheduled Game-Day that tests client retry/reconnection logic, leader-region latency assumptions, monitoring/alerts, and backup/restore runbooks without assuming a generic manual regional-failover command.</li>
-          <li data-option="C">C) Contact Google Cloud Support to physically disconnect the network fiber to one of your active regions for 30 minutes.</li>
-          <li data-option="D">D) Migrate the gaming backend database to Cloud SQL and enable Regional High Availability (HA).</li>
+          <li data-option="C">C) Contact Google Cloud Support to physically disconnect the network fiber to one of your active regions for 30 minutes to trigger automatic database failover.</li>
+          <li data-option="D">D) Migrate the gaming backend database to Cloud SQL, enable Regional High Availability (HA), and let the application automatically switch to the passive replica.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -630,9 +630,9 @@
         <p><strong>Question 3:</strong> Your Cloud SQL primary is healthy, but global reporting traffic is causing high read latency and CPU pressure. Writes are not the bottleneck. What should you deploy first?</p>
         <ul class="option-list">
           <li data-option="A">A) Add read replicas or read pools and route reporting/read traffic to them.</li>
-          <li data-option="B">B) Disable backups to free up resources.</li>
-          <li data-option="C">C) Replace the database with a single-zone instance.</li>
-          <li data-option="D">D) Increase application retry loops indefinitely and keep all reads on the primary.</li>
+          <li data-option="B">B) Disable all automated daily database backups and PITR binary logging to free up underlying VM CPU and I/O resources on the primary instance.</li>
+          <li data-option="C">C) Migrate the database to a single-zone instance to reduce cross-zone networking overhead and improve local reporting cache hits.</li>
+          <li data-option="D">D) Configure the application database client connection pooler to increase retry loops indefinitely and keep all analytical reads on the primary.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">

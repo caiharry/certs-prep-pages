@@ -609,10 +609,10 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are designing a Shared VPC architecture for a financial services company. The security team demands that the Payment Processing application in Service Project A must only be allowed to deploy VMs into <code>subnet-payment</code> in the Host Project, while the Analytics application in Service Project B must only use <code>subnet-analytics</code>. How should you configure the IAM permissions?</p>
         <ul class="option-list">
-          <li data-option="A">A) Grant the <code>roles/compute.networkUser</code> role to the Service Project A and B admins at the Host Project level.</li>
+          <li data-option="A">A) Grant the <code>roles/compute.networkUser</code> role to the Service Project A and Service Project B deployment identities at the Host Project level. This allows the central network team to manage subnet restrictions via folder-level organization policies instead of granular subnet IAM bindings.</li>
           <li data-option="B">B) Grant the <code>roles/compute.networkUser</code> role to the Service Project A deployment identity bound strictly to <code>subnet-payment</code>, and to the Service Project B deployment identity bound strictly to <code>subnet-analytics</code> in the Host Project.</li>
-          <li data-option="C">C) Grant the <code>roles/compute.networkAdmin</code> role to both service project admins in the Host Project.</li>
-          <li data-option="D">D) Enable VPC Peering between Service Project A and Service Project B, and manage access using firewall rules.</li>
+          <li data-option="C">C) Grant the <code>roles/compute.networkAdmin</code> role to both service project deployment identities in the Host Project, then configure Shared VPC subnet policies to restrict which regions are allowed for each specific project's Compute Engine API calls.</li>
+          <li data-option="D">D) Enable VPC Network Peering between Service Project A and Service Project B, and write hierarchical firewall policies in the Host Project that filter traffic based on source and destination subnet IPs.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -630,19 +630,19 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> You have a VPC network with an MTU of 8896 bytes (Jumbo frames) to optimize high-throughput database replication between VMs. You need to establish an HA VPN connection to your on-premises data center. On-premises developers report that they can establish SSH sessions to GCP VMs, but large file transfers and UDP-based monitoring metrics are failing. What is the root cause and the correct resolution?</p>
         <ul class="option-list">
-          <li data-option="A">A) HA VPN does not support Jumbo frames. You must delete the VPC and recreate it with an MTU of 1460 bytes.</li>
+          <li data-option="A">A) HA VPN does not support Jumbo frames for any traffic type. You must modify the dynamic routing MTU properties in Cloud Router to force a regional fallback to 1460 bytes, or recreate the VPC network with an MTU of 1460 bytes.</li>
           <li data-option="B">B) The HA VPN tunnel has an MTU of 1460. TCP traffic works due to MSS clamping, but UDP packets exceeding 1460 bytes are silently dropped because HA VPN does not support fragmentation and PMTUD is failing. You must configure on-premises routers to clamp MSS and ensure ICMP Type 3 Code 4 (Fragmentation Needed) is allowed through all firewalls, or lower the sending MTU.</li>
-          <li data-option="C">C) Standard Tier routing is active. You must switch to Premium Tier to enable UDP routing over VPN.</li>
-          <li data-option="D">D) Cloud Router does not support Jumbo frames. You must configure static routing instead of BGP.</li>
+          <li data-option="C">C) Standard Tier routing is active on the VPC network. You must switch the entire network to Premium Tier to enable Google's global routing plane to handle UDP packet fragmentation across inter-region HA VPN paths.</li>
+          <li data-option="D">D) Cloud Router does not support dynamic BGP routing over networks using Jumbo frames. You must delete the Cloud Router, configure static routes for the HA VPN tunnel, and set a custom metric on the on-premises peer.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is a classic real-world hybrid MTU failure mode! HA VPN has a hard MTU ceiling of 1460 bytes due to IPSec encapsulation overhead. While TCP connections survive by negotiating a lower segment size (MSS clamping), UDP has no connection negotiation. If PMTUD (Path MTU Discovery) is broken because firewalls block ICMP "Fragmentation Needed" packets, large UDP packets are silently dropped. Allowing ICMP or lowering the workload's MTU solves this.</p>
+          <p><strong>Why Option B is correct:</strong> This is a classic real-world hybrid MTU failure mode! HA VPN has a hard MTU ceiling of 1460 bytes due to IPSec encapsulation overhead. While TCP connections survive by negotiating a lower segment size (MSS Clamping), UDP has no connection negotiation. If PMTUD (Path MTU Discovery) is broken because firewalls block ICMP "Fragmentation Needed" packets, large UDP packets are silently dropped. Allowing ICMP or lowering the workload's MTU solves this.</p>
           <ul>
-            <li><strong>A:</strong> You do not need to delete the VPC; you can update the MTU dynamically, but lowering the entire VPC MTU unnecessarily affects internal VM-to-VM traffic.</li>
-            <li><strong>C:</strong> Network service tiers do not affect UDP routing capabilities over VPN.</li>
-            <li><strong>D:</strong> Cloud Router fully supports BGP regardless of MTU size; routing protocols are not the cause of packet drops.</li>
+            <li><strong>A:</strong> You do not need to delete the VPC or modify dynamic routing MTU properties; you can update the MTU dynamically, but lowering the entire VPC MTU unnecessarily affects internal VM-to-VM traffic.</li>
+            <li><strong>C:</strong> Network service tiers (Standard vs Premium) determine the routing paths over public internet vs Google private fiber, but do not affect UDP packet fragmentation or MTU constraints.</li>
+            <li><strong>D:</strong> Cloud Router fully supports BGP regardless of MTU size; dynamic routing is unaffected, and switching to static routing does not resolve physical packet drops.</li>
           </ul>
         </div>
       </div>
@@ -651,19 +651,19 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are designing a transit VPC architecture. You have a central Hub VPC containing a pool of third-party firewall appliances (NVAs) behind an Internal Load Balancer (ILB). You have multiple Spoke VPCs peered with the Hub VPC. You want to route all egress internet traffic from the Spoke VPCs through the firewall NVAs in the Hub VPC. How should you configure the routing?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create a default route (0.0.0.0/0) in each Spoke VPC with the next hop set to the Hub VPC's Internal Load Balancer IP.</li>
-          <li data-option="B">B) Configure Policy-Based Routing (PBR) in the Spoke VPCs to route traffic to the Hub ILB.</li>
+          <li data-option="A">A) Create a regional default route (0.0.0.0/0) in each Spoke VPC with the next hop set to the Hub VPC's Internal Load Balancer frontend IP, ensuring that transit routing over the peering link is enabled.</li>
+          <li data-option="B">B) Configure Policy-Based Routing (PBR) rules in each of the Spoke VPCs that match all outbound destination IPs and set the next-hop target directly to the Hub VPC's ILB VIP address.</li>
           <li data-option="C">C) In the Hub VPC, create a custom static route for 0.0.0.0/0 with the next hop set to the ILB. Configure the VPC peering links to export custom routes from the Hub VPC and import custom routes into the Spoke VPCs.</li>
-          <li data-option="D">D) Configure Network Connectivity Center (NCC) with dynamic route leaking across all peered networks.</li>
+          <li data-option="D">D) Configure a Network Connectivity Center (NCC) hub with VPC spoke attachments for the Hub and Spoke VPCs, and enable dynamic custom route leaking across all spokes using Cloud Router BGP sessions.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: C</span></p>
           <p><strong>Why Option C is correct:</strong> You cannot set the next hop of a route in a peered VPC directly to an ILB in another VPC (Option A is invalid). Instead, you must define the custom route (0.0.0.0/0 pointing to the ILB) locally in the Hub VPC, and then use the VPC Peering <strong>"Export/Import Custom Routes"</strong> feature to propagate that default route down into the Spoke VPCs! 🗺️</p>
           <ul>
-            <li><strong>A:</strong> Peered networks cannot target a peer's ILB directly as a next hop in their static route configurations.</li>
-            <li><strong>B:</strong> Policy-Based Routing cannot target next hops in peered VPCs.</li>
-            <li><strong>D:</strong> NCC is used for hybrid and multi-VPC hub-spoke dynamic routing, but simple peered transit routing is best solved via custom route export/import over peering.</li>
+            <li><strong>A:</strong> Peered networks cannot target a peer's ILB directly as a next hop in their static route configurations because peered hops are not transit-routable.</li>
+            <li><strong>B:</strong> Policy-Based Routing cannot target next-hop IP addresses or load balancers that reside in peered VPCs.</li>
+            <li><strong>D:</strong> NCC is used for hybrid and multi-VPC hub-spoke dynamic routing, but simple peered transit routing is best solved via custom route export/import over peering without BGP session complexity.</li>
           </ul>
         </div>
       </div>
@@ -672,10 +672,10 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> You need to connect an on-premises network to Google Cloud. You have configured a Cloud Router in <code>us-east1</code> with a dynamic routing mode set to <strong>Regional</strong>. You establish an HA VPN tunnel. On-premises servers can ping VMs in <code>us-east1</code>, but they cannot reach VMs in <code>us-west1</code> within the same VPC. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Establish a second HA VPN tunnel directly to <code>us-west1</code>.</li>
+          <li data-option="A">A) Establish a second redundant HA VPN tunnel directly from the on-premises gateway to a new Cloud Router located in <code>us-west1</code>, and configure BGP over both tunnels.</li>
           <li data-option="B">B) Change the VPC's dynamic routing mode from Regional to Global.</li>
-          <li data-option="C">C) Configure static routes in the VPC pointing to the <code>us-west1</code> subnets.</li>
-          <li data-option="D">D) Enable VPC Peering between <code>us-east1</code> and <code>us-west1</code> subnets.</li>
+          <li data-option="C">C) Configure custom static routes in the VPC network pointing to the <code>us-west1</code> subnets with the next-hop set to the <code>us-east1</code> HA VPN gateway interfaces.</li>
+          <li data-option="D">D) Enable VPC Network Peering between the <code>us-east1</code> and <code>us-west1</code> regional subnets, and configure custom route exchange properties on the peering link.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -684,7 +684,7 @@
           <ul>
             <li><strong>A:</strong> While this would work, it is highly inefficient, expensive, and increases operational complexity compared to a simple VPC configuration change.</li>
             <li><strong>C:</strong> Static routes override dynamic routing and are hard to maintain, violating best practices for hybrid scale.</li>
-            <li><strong>D:</strong> Subnets in the same VPC do not need peering; they are already connected natively.</li>
+            <li><strong>D:</strong> Regional subnets in the same VPC do not need peering; they are already connected natively and peering them is not possible.</li>
           </ul>
         </div>
       </div>

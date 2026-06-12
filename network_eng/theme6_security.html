@@ -594,19 +594,19 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are managing a high-traffic e-commerce website behind a Global External Application Load Balancer. During a major sales event, your backend servers experience a massive surge in CPU utilization. You inspect the logs and discover a distributed Layer 7 HTTP flood attack originating from thousands of rotating IP addresses. You need to mitigate this attack automatically without blocking legitimate shoppers. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create an Edge Security Policy in Cloud Armor to block the top 10 countries originating the traffic.</li>
+          <li data-option="A">A) Create an Edge Security Policy in Cloud Armor to block the top 10 countries originating the highest query volume, and configure a custom error redirect page for blocked customers.</li>
           <li data-option="B">B) Enable <strong>Cloud Armor Adaptive Protection</strong> on your backend security policy. Allow it to analyze the traffic anomaly, draft a custom blocking rule, and apply it to block the attack signature.</li>
-          <li data-option="C">C) Configure a rate-limiting rule in Cloud Armor to limit all users to 1 request per minute.</li>
-          <li data-option="D">D) Switch the load balancer to a Passthrough Network Load Balancer to bypass Layer 7 parsing.</li>
+          <li data-option="C">C) Configure a Rate-Limiting Rule in Cloud Armor with a threshold of 1 request per minute per IP address, and apply it globally to all backend services behind the load balancer.</li>
+          <li data-option="D">D) Switch the frontend load balancer to a Regional External Passthrough Network Load Balancer to bypass Layer 7 HTTP header parsing and absorb the surge at the network level.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> <strong>Cloud Armor Adaptive Protection</strong> uses machine learning to detect anomalous Layer 7 HTTP floods. It automatically identifies the unique signature of the attack traffic (across thousands of rotating IPs) and generates a precise blocking rule. This mitigates the attack instantly while allowing legitimate shoppers to continue browsing unaffected! 🛡️</p>
           <ul>
-            <li><strong>A:</strong> Blocking entire countries will block thousands of legitimate shoppers, causing massive revenue loss.</li>
-            <li><strong>C:</strong> A rate limit of 1 request per minute is far too restrictive and will break the website experience for legitimate users.</li>
-            <li><strong>D:</strong> Passthrough NLB does not support Cloud Armor or L7 security policies, leaving your backends completely unprotected from the HTTP flood.</li>
+            <li><strong>A:</strong> Blocking entire countries will block thousands of legitimate shoppers, causing massive revenue loss and violating SLA expectations.</li>
+            <li><strong>C:</strong> A rate limit of 1 request per minute is far too restrictive and will completely break the e-commerce shopping and checkout experience for all legitimate users.</li>
+            <li><strong>D:</strong> Passthrough NLB does not support Cloud Armor, WAF, or L7 security policies, leaving your backend servers completely unprotected and exposed to the Layer 7 HTTP flood.</li>
           </ul>
         </div>
       </div>
@@ -615,18 +615,18 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> Your company's security policy dictates that all outbound internet traffic from private Compute Engine VMs must be restricted. VMs must only be allowed to download software updates from <code><em>.ubuntu.com</code> and <code></em>.github.com</code>. You want to implement this egress filtering with minimal operational overhead and no VM-level proxy configurations. What should you deploy?</p>
         <ul class="option-list">
-          <li data-option="A">A) Deploy a Public Cloud NAT gateway and configure static routes.</li>
+          <li data-option="A">A) Deploy a Public Cloud NAT gateway in the subnet, write custom static routes pointing to the public IP blocks of Ubuntu and GitHub, and configure the route metrics to prefer local egress.</li>
           <li data-option="B">B) Deploy <strong>Secure Web Proxy (SWP)</strong> in your VPC, configure an egress policy allowing <code><em>.ubuntu.com</code> and <code></em>.github.com</code>, and route outbound HTTP/S traffic through it.</li>
-          <li data-option="C">C) Create VPC firewall rules blocking all egress traffic to <code>0.0.0.0/0</code>.</li>
-          <li data-option="D">D) Deploy a pool of squid proxy VMs in an auto-scaling group behind an Internal Load Balancer.</li>
+          <li data-option="C">C) Create regional VPC Firewall Rules with target tags assigned to the VMs, set the egress action to DENY for destination <code>0.0.0.0/0</code>, and configure source ranges matching the update repositories.</li>
+          <li data-option="D">D) Deploy an auto-scaling group of third-party Squid Proxy VMs behind an Internal Load Balancer, and write a startup script on all Compute Engine VMs to force curl and apt to use the proxy.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> <strong>Secure Web Proxy (SWP)</strong> is a fully managed, serverless egress proxy designed exactly for this! It allows you to write granular egress policies based on FQDNs (like <code><em>.ubuntu.com</code>) for HTTP/S traffic with zero infrastructure to manage, representing the lowest operational overhead. 🌐</p>
           <ul>
-            <li><strong>A:</strong> Cloud NAT only filters traffic at Layer 4 (IP/port). It cannot perform FQDN or wildcard domain filtering (like <code></em>.github.com</code>).</li>
-            <li><strong>C:</strong> Blocking <code>0.0.0.0/0</code> via standard firewall rules blocks <em>all</em> internet traffic, preventing VMs from downloading updates entirely.</li>
+            <li><strong>A:</strong> Cloud NAT only filters traffic at Layer 4 (IP/port). It cannot perform FQDN or wildcard domain filtering (like <code></em>.github.com</code>), and mapping public IPs for SaaS/updates is unsustainable.</li>
+            <li><strong>C:</strong> Blocking <code>0.0.0.0/0</code> via standard firewall rules blocks <em>all</em> egress internet traffic, and Layer 4 firewall rules cannot parse or match dynamic update domain URLs.</li>
             <li><strong>D:</strong> Managing a pool of squid proxy VMs introduces significant operational overhead (patching, scaling, configuration management) compared to the serverless Secure Web Proxy.</li>
           </ul>
         </div>
@@ -636,10 +636,10 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are managing a large GKE cluster with 1,000 microservice pods that frequently make outbound API calls to external payment gateways. During peak traffic hours, application logs report intermittent connection timeouts with <code>OUT_OF_RESOURCES</code> errors pointing to your Cloud NAT gateway. You inspect metrics and confirm SNAT port exhaustion. You want to resolve this immediately while minimizing the number of public IP addresses consumed by the gateway. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Allocate 50 additional static public IP addresses to the Cloud NAT gateway.</li>
+          <li data-option="A">A) Allocate 50 additional static public IP addresses to the Cloud NAT gateway pool, and set the static gateway behavior to round-robin address mapping.</li>
           <li data-option="B">B) Enable <strong>Dynamic Port Allocation (DPA)</strong> on the Cloud NAT gateway, setting <code>--min-ports-per-vm=64</code> and <code>--max-ports-per-vm=1024</code>.</li>
-          <li data-option="C">C) Increase the static minimum ports per VM to 4096.</li>
-          <li data-option="D">D) Disable Cloud NAT and assign public IPs to all GKE nodes.</li>
+          <li data-option="C">C) Increase the static minimum ports per VM property to 4096 on the existing Cloud NAT configuration, and set the dynamic port scaling flag to disabled.</li>
+          <li data-option="D">D) Disable the Cloud NAT gateway entirely, assign public IP addresses to all GKE node VM interfaces, and configure dynamic VPC egress firewall rules to restrict node ports.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -648,7 +648,7 @@
           <ul>
             <li><strong>A:</strong> Adding 50 static IPs is expensive, wastes public IP resources, and represents a brute-force approach compared to dynamic scaling.</li>
             <li><strong>C:</strong> Increasing the static minimum to 4096 forces Cloud NAT to allocate 4,096 ports to <em>every</em> VM, even idle ones, which will immediately exhaust your NAT IP pool and require buying dozens of additional public IPs.</li>
-            <li><strong>D:</strong> Assigning public IPs to GKE nodes exposes them directly to the internet, violating core security best practices.</li>
+            <li><strong>D:</strong> Assigning public IPs to GKE nodes exposes them directly to the internet, violating core security best practices and requiring massive IP address management overhead.</li>
           </ul>
         </div>
       </div>
@@ -657,19 +657,19 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> You are designing a secure VPC architecture for a government agency. The security team demands that all traffic entering or leaving your production VPC must undergo deep packet inspection to detect active malware exploits and spyware. The inspection must happen inline, and any detected threats must be blocked automatically. What is the recommended GCP native solution?</p>
         <ul class="option-list">
-          <li data-option="A">A) Enable Cloud Armor on all external load balancers.</li>
+          <li data-option="A">A) Enable Cloud Armor on all external load balancers and configure deep packet payload inspection using custom WAF rules with regex signatures.</li>
           <li data-option="B">B) Configure <strong>Cloud NGFW Enterprise</strong> and enable Layer 7 packet inspection with Intrusion Prevention System (IPS) security profiles.</li>
-          <li data-option="C">C) Deploy Packet Mirroring to clone traffic to an IDS VM.</li>
-          <li data-option="D">D) Enable Cloud NGFW Essentials and write hierarchical firewall rules.</li>
+          <li data-option="C">C) Deploy Packet Mirroring in the production VPC to mirror and clone bidirectional traffic, forwarding it to a pool of third-party Intrusion Detection System (IDS) VMs.</li>
+          <li data-option="D">D) Enable Cloud NGFW Essentials, configure hierarchical firewall policies at the folder level, and write rules with custom packet-filtering tags.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> <strong>Cloud NGFW Enterprise</strong> is Google's native solution for inline Layer 7 packet inspection. It integrates with an Intrusion Prevention System (IPS) powered by Palo Alto Networks threat signatures to detect and automatically block malware, spyware, and exploits inside packet payloads. 🔍</p>
           <ul>
-            <li><strong>A:</strong> Cloud Armor is a WAF that protects incoming web traffic at the load balancer; it does not perform inline bidirectional packet inspection for standard VPC VM traffic.</li>
-            <li><strong>C:</strong> Packet Mirroring is out-of-band (passive). It can detect threats but <strong>cannot block them inline</strong> because it only inspects a clone of the traffic.</li>
-            <li><strong>D:</strong> Cloud NGFW Essentials only supports basic Layer 4 port/protocol rules and does not have Layer 7 packet inspection capabilities.</li>
+            <li><strong>A:</strong> Cloud Armor is a Web Application Firewall (WAF) that protects incoming HTTP/S web traffic at the load balancer; it does not perform inline bidirectional packet inspection for standard VPC VM-to-VM or non-web internet traffic.</li>
+            <li><strong>C:</strong> Packet Mirroring is out-of-band (passive). It can detect threats but <strong>cannot block them inline</strong> because it only inspects a clone of the traffic after it has been routed.</li>
+            <li><strong>D:</strong> Cloud NGFW Essentials only supports basic Layer 4 port/protocol rules and does not have Layer 7 packet inspection or IPS capabilities.</li>
           </ul>
         </div>
       </div>

@@ -721,10 +721,10 @@ Execution Time: 142.345 ms</code></pre>
       <div class="q-box">
         <p><strong>Question 1:</strong> An enterprise e-commerce platform running PostgreSQL on Cloud SQL occasionally experiences database lock contention and performance degradation during flash sales. The lead developer wants to set up automated alerts to notify the team immediately whenever deadlocks are detected in the logs, without having to poll database state manually. What is the most effective approach?</p>
         <ul class="option-list">
-          <li data-option="A">A) Deploy an administrative VM to run a cron script that polls pg_catalog tables every minute and logs results.</li>
+          <li data-option="A">A) Deploy an administrative Compute Engine VM running a cron job script that queries pg_catalog tables every 60 seconds and writes deadlock traces to local syslog files.</li>
           <li data-option="B">B) Create a log-based metric in Cloud Logging that matches the deadlock pattern, and configure a Cloud Monitoring alerting policy on this metric.</li>
-          <li data-option="C">C) Rely on Query Insights wait events to send automated notifications to Slack.</li>
-          <li data-option="D">D) Enable Regional High Availability (HA) to prevent deadlocks from interrupting the primary instance.</li>
+          <li data-option="C">C) Rely on the Query Insights dashboard wait events to configure automatic Webhook notifications to a corporate Slack channel whenever a client lock is flagged.</li>
+          <li data-option="D">D) Enable Regional High Availability (HA) on the Cloud SQL instance to ensure the synchronous standby database automatically intercepts and resolves deadlock locks.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -742,10 +742,10 @@ Execution Time: 142.345 ms</code></pre>
       <div class="q-box">
         <p><strong>Question 2:</strong> You need to configure a daily backup and export strategy for a highly-active 5 TB Cloud SQL MySQL instance. The exports are in CSV format and are shipped to Cloud Storage for third-party processing. Crucially, executing the daily export must not impact transactional throughput or degrade production database latency. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Execute a standard database export directly from the production primary node.</li>
+          <li data-option="A">A) Execute a standard MySQL database export (mysqldump) directly from the production primary node with the lock-tables flag enabled to maintain write consistency.</li>
           <li data-option="B">B) Perform the database export using the Serverless Export option in Cloud SQL.</li>
-          <li data-option="C">C) Set up daily automated backups and increase the PITR log retention window.</li>
-          <li data-option="D">D) Spin up a secondary database, manually write code to replicate writes, and run exports from there.</li>
+          <li data-option="C">C) Set up daily automated backups and increase the point-in-time recovery (PITR) binlog retention window to 14 days to capture exports in raw format.</li>
+          <li data-option="D">D) Provision a secondary zonal Cloud SQL database, manually write application-level sync code to duplicate writes, and run the exports from this secondary instance.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -763,10 +763,10 @@ Execution Time: 142.345 ms</code></pre>
       <div class="q-box">
         <p><strong>Question 3:</strong> A team plans to launch a new SaaS product that will create many Cloud SQL instances and read replicas across projects. Two weeks before launch, what should the database engineer do to avoid a boring-but-deadly launch blocker?</p>
         <ul class="option-list">
-          <li data-option="A">A) Wait for instance creation to fail, then open an emergency support ticket.</li>
+          <li data-option="A">A) Wait for instance creation API calls to fail during launch, then open an emergency high-severity Google Support ticket to request dynamic CPU and disk quota adjustments.</li>
           <li data-option="B">B) Monitor current quotas, estimate launch demand, and request quota increases ahead of time.</li>
-          <li data-option="C">C) Disable audit logs to reduce control-plane API usage.</li>
-          <li data-option="D">D) Move all databases into one giant instance to avoid quota checks.</li>
+          <li data-option="C">C) Disable Cloud Audit logging and slow query logs across all projects to reduce control-plane API rate limits and avoid dynamic quota evaluation blocks.</li>
+          <li data-option="D">D) Consolidate all microservice databases into a single massive Cloud SQL instance to bypass regional and project-level database instance creation quota checks.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">

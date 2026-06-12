@@ -586,19 +586,19 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are troubleshooting a connectivity issue where VMs in a newly created GKE node pool cannot pull container images from an external registry. The GKE nodes are private and use Cloud NAT for internet access. You suspect SNAT port exhaustion. What is the most efficient way to verify this using Google Cloud Observability?</p>
         <ul class="option-list">
-          <li data-option="A">A) Enable VPC Flow Logs and write a custom SQL query in BigQuery to count packet drops.</li>
+          <li data-option="A">A) Configure VPC Flow Logs on the private GKE subnet and write a custom SQL query in BigQuery to parse packet payload sizes and count local MTU fragmentation drops.</li>
           <li data-option="B">B) Search Cloud Logging for the <strong><code>OUT_OF_RESOURCES</code></strong> error in the <code>dropped_sent_packets_count</code> metric or Cloud NAT gateway logs.</li>
-          <li data-option="C">C) Run a Connectivity Test from the GKE nodes to the external registry.</li>
-          <li data-option="D">D) Delete the Cloud NAT gateway and recreate it.</li>
+          <li data-option="C">C) Run a manual Connectivity Test in Network Intelligence Center from the GKE node interfaces to the external registry's public IP using dynamic protocol packet simulation.</li>
+          <li data-option="D">D) Delete and recreate the Cloud NAT gateway with the static port range mapping parameter changed to support dual-stack IPv4/IPv6 egress.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> Cloud NAT automatically logs <strong><code>OUT_OF_RESOURCES</code></strong> errors in Cloud Logging whenever a VM attempts to open an outbound connection but has exhausted its allocated SNAT ports. This is the fastest, most direct way to confirm port exhaustion! 🚨</p>
           <ul>
-            <li><strong>A:</strong> VPC Flow Logs capture traffic samples but do not explicitly flag Cloud NAT port allocation failures or resource exhaustion errors.</li>
-            <li><strong>C:</strong> Connectivity Tests check routing and firewall rules, but they do not simulate dynamic port allocation limits or SNAT port exhaustion under load.</li>
-            <li><strong>D:</strong> Recreating the gateway is a disruptive action that does not diagnose the root cause and will not prevent the issue from reoccurring under load.</li>
+            <li><strong>A:</strong> VPC Flow Logs capture traffic samples but do not explicitly flag Cloud NAT port allocation failures or resource exhaustion errors, nor do they help count MTU drops.</li>
+            <li><strong>C:</strong> Connectivity Tests check routing and firewall rules, but they do not simulate dynamic port allocation limits or SNAT port exhaustion under live load.</li>
+            <li><strong>D:</strong> Recreating the gateway is a highly disruptive action that does not diagnose the root cause and will not prevent the issue from reoccurring under load.</li>
           </ul>
         </div>
       </div>
@@ -607,10 +607,10 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> You have configured a custom static route in your VPC that routes traffic destined for a secure partner network through a specific third-party firewall VM (NVA). The partner reports that they are no longer receiving data. You suspect the firewall VM has crashed or been deleted. Which Network Intelligence Center module will automatically detect this suboptimal configuration and alert you?</p>
         <ul class="option-list">
-          <li data-option="A">A) Connectivity Tests</li>
-          <li data-option="B">B) Network Topology</li>
+          <li data-option="A">A) Connectivity Tests configured to run as a recurring scheduled task targeting the secure partner network's external endpoints.</li>
+          <li data-option="B">B) Network Topology dashboard set to alert on active traffic path changes and node latency anomalies across peered VPC networks.</li>
           <li data-option="C) Network Analyzer</li>
-          <li data-option="D">D) Performance Dashboard</li>
+          <li data-option="D">D) Performance Dashboard configured to monitor packet loss and round-trip times (RTT) for the specific firewall VM interface.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
@@ -628,10 +628,10 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You have established a Dedicated Interconnect connection to Google Cloud. The physical link is up, but your Cloud Router BGP session is stuck in the <code>Active</code> state, and no routes are being learned. You want to troubleshoot this. What is the most likely cause?</p>
         <ul class="option-list">
-          <li data-option="A">A) The VPC dynamic routing mode is set to Global.</li>
+          <li data-option="A">A) The VPC dynamic routing mode is set to Global, which prevents BGP sessions from establishing across regions unless a regional route reflector is configured.</li>
           <li data-option="B">B) A VPC firewall rule is blocking TCP port 179 (BGP) on the Cloud Router's link-local IP addresses, or there is an ASN/IP mismatch in the BGP peer configuration.</li>
-          <li data-option="C">C) The Interconnect is not using MACsec.</li>
-          <li data-option="D">D) Connection Draining is enabled on the Cloud Router.</li>
+          <li data-option="C">C) The physical Dedicated Interconnect port is not using MACsec encryption, causing Cloud Router to drop unencrypted packets at the physical Layer 1 layer.</li>
+          <li data-option="D">D) Connection Draining is enabled on the Cloud Router's dynamic routing protocol layer, which blocks new routes from being exchanged with the peer.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -649,10 +649,10 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> You need to perform a rolling upgrade on a pool of Compute Engine VMs behind an external Application Load Balancer. You want to ensure that active users currently in the middle of checking out do not experience any connection drops or error pages when their target VM is shut down. What should you configure?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a Geolocation DNS policy to route users away.</li>
+          <li data-option="A">A) Configure a Geolocation DNS routing policy in Cloud DNS to route all new traffic to a separate temporary regional load balancer while you upgrade the VMs.</li>
           <li data-option="B">B) Enable <strong>Connection Draining</strong> (Deregistration Delay) on the backend service, allowing active sessions to complete before VMs are terminated.</li>
-          <li data-option="C">C) Delete the VMs immediately; the load balancer will failover instantly.</li>
-          <li data-option="D">D) Enable Cloud Armor rate limiting to block new requests.</li>
+          <li data-option="C">C) Delete the VMs immediately during the maintenance window to force the Application Load Balancer to perform sub-second failover to the healthy instances.</li>
+          <li data-option="D">D) Enable Cloud Armor rate-limiting on the backend security policy to block new connection attempts, forcing active users to retry their checkouts.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">

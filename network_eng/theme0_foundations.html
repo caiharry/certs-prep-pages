@@ -701,19 +701,19 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> A junior developer is deploying a custom network virtual appliance (NVA) inside your GCP VPC. They notice that when VMs send UDP traffic larger than 1450 bytes across an HA VPN tunnel, the packets disappear completely. However, TCP traffic of any size transmits perfectly. Which explanation and solution should you provide to resolve this?</p>
         <ul class="option-list">
-          <li data-option="A">A) GCP Firewalls block UDP by default; they must create an ingress firewall rule for UDP Port 1460.</li>
+          <li data-option="A">A) GCP's distributed firewall applies strict rate-limiting on unfragmented UDP traffic exceeding 1400 bytes to prevent DNS amplification attacks unless a hierarchical firewall policy with a "bypass-udp" rule is applied. You must create an egress policy to explicitly allow high-throughput UDP packet fragmentation on the VPC.</li>
           <li data-option="B">B) UDP packets are being fragmented because HA VPN tunnels have an MTU limit of 1460 bytes. Unlike TCP (which uses MSS Clamping to dynamically shrink packets), UDP does not handle fragmentation or MSS negotiations, causing larger packets to be silently dropped. The solution is to configure the sending application or VM network interface MTU to 1430 or 1460.</li>
-          <li data-option="C">C) The project is using Standard Network Tier, which doesn't support UDP routing over VPN. They must upgrade to Premium Tier.</li>
-          <li data-option="D">D) Cloud Router has crashed because BGP cannot run on UDP. They must restart BGP peering on Port 179.</li>
+          <li data-option="C">C) Standard Tier routing does not support UDP encapsulation across inter-region HA VPN paths because it lacks the required Global Routing feature. The project must be migrated to Premium Tier and the VMs configured to use the Premium Tier's regional NAT gateways.</li>
+          <li data-option="D">D) Cloud Router dynamic routing has a regional MTU mismatch with on-premises routers. You must configure the BGP session on the Cloud Router to advertise a custom route for the HA VPN gateway with a specific BGP Med priority that forces the gateway to fragment UDP packets at the IPSec layer.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> HA VPN tunnels have a strict Maximum Transmission Unit (MTU) of <strong>1460 bytes</strong>. TCP packets survive because of a feature called <strong>MSS (Maximum Segment Size) Clamping</strong>, which automatically shrinks TCP segment headers at the tunnel gateway. UDP, however, is a dumb connectionless protocol with no MSS clamping support! Packet sizes exceeding 1460 bytes will be discarded without error feedback (silent black-holing). Configuring MTU size limits on the sending clients/applications directly prevents this issue.</p>
           <p><strong>Why other options are wrong:</strong><br>
-          * <strong>Option A</strong> is incorrect because GCP firewall rules do not have an MTU limit constraint that is resolved by a port rule.<br>
-          * <strong>Option C</strong> is incorrect because Standard Tier supports HA VPN routing, but standard transport principles and MTU constraints remain identical.<br>
-          * <strong>Option D</strong> is nonsense; BGP operates over TCP Port 179, and a BGP session crash does not selectively fail only UDP VM traffic.</p>
+          * <strong>Option A</strong> is incorrect because GCP firewall rules do not have an MTU limit or packet fragmentation rate-limiting constraint that is resolved by a port rule or hierarchical policy.<br>
+          * <strong>Option C</strong> is incorrect because Standard Tier fully supports HA VPN routing and UDP transport, but Standard Tier uses the public internet instead of Google's private network for routing; the MTU limit of 1460 remains identical.<br>
+          * <strong>Option D</strong> is incorrect because BGP operates over TCP Port 179 and does not configure packet-level IPSec fragmentation or negotiate MTUs for UDP VM traffic.</p>
         </div>
       </div>
 
@@ -721,10 +721,10 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are explaining Google Cloud VPC architecture to a team of AWS architects. They ask how much administrative overhead is required to maintain routing tables for cross-region communication between a subnet in <code>us-central1</code> and a subnet in <code>europe-west1</code> within the same VPC. How should you respond?</p>
         <ul class="option-list">
-          <li data-option="A">A) You must configure VPC Network Peering between the two regions and write static routes pointing to the peer region's gateway.</li>
-          <li data-option="B">B) You must deploy Cloud Routers in both regions and configure BGP peering over Google's public internet transit.</li>
+          <li data-option="A">A) You must configure VPC Network Peering between the two regional subnets and write static routes pointing to the peer region's gateway in order for the cross-region Andromeda controller to synchronize routing tables across the WAN.</li>
+          <li data-option="B">B) You must deploy Cloud Routers in both regions and configure BGP peering with the local BGP sessions enabled for global dynamic routing to establish dynamic routes across Google's public transit network.</li>
           <li data-option="C">C) Zero administrative overhead. In GCP, the VPC is naturally global, and system-generated routes are automatically created to connect all subnets in the same VPC regardless of region. Communication occurs seamlessly over Google's private global fiber network.</li>
-          <li data-option="D">D) GCP VPCs cannot span regions; you must interconnect them using an HA VPN gateway mesh.</li>
+          <li data-option="D">D) GCP VPCs are strictly regional boundaries; you must interconnect them using an HA VPN gateway mesh or a dedicated Network Connectivity Center (NCC) hub with custom route leaking enabled between regions.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">

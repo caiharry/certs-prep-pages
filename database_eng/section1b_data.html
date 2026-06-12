@@ -736,10 +736,10 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 1:</strong> Your company is migrating an on-premises PostgreSQL database to Google Cloud. The database handles intense transactional traffic, and the data engineers also want to run real-time analytics reports over the same fresh data without hammering the primary write path. Which database service is the most appropriate and cost-effective choice?</p>
         <ul class="option-list">
-          <li data-option="A">A) Cloud Spanner with standard nodes.</li>
+          <li data-option="A">A) Cloud Spanner configured with standard provisioning nodes to guarantee dynamic multi-region horizontal write scaling across global users.</li>
           <li data-option="B">B) AlloyDB for PostgreSQL with a columnar engine and dedicated read pools.</li>
-          <li data-option="C">C) Cloud SQL for PostgreSQL with a high-memory instance and a standard read replica.</li>
-          <li data-option="D">D) BigQuery federated with a Cloud SQL read replica.</li>
+          <li data-option="C">C) Cloud SQL for PostgreSQL configured with a high-memory custom instance type and a standard regional read replica to handle analytical queries.</li>
+          <li data-option="D">D) BigQuery federated queries pointing directly to a Cloud SQL PostgreSQL read replica via external table schema definitions.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -758,10 +758,10 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 2:</strong> You are designing a global database on Cloud Spanner for a high-traffic e-commerce application. The primary key for the <code>Users</code> table is currently a sequential integer, which is causing severe write bottlenecks. Additionally, a critical query searches for users by <code>EmailAddress</code> and returns their <code>DisplayName</code> and <code>PhoneNumber</code>; this query is experiencing high read latency due to back-joins to the base table. Which schema changes will resolve both performance issues?</p>
         <ul class="option-list">
-          <li data-option="A">A) Keep sequential keys but configure a connection pooler to throttle writes. Create a standard secondary index on EmailAddress.</li>
-          <li data-option="B">B) Interleave the Users table within a new parent table. Create a secondary index on EmailAddress and rewrite the query using a LEFT JOIN.</li>
+          <li data-option="A">A) Keep sequential integer keys in the Users table but configure a central connection pooler to throttle incoming writes. Create a standard secondary index on EmailAddress.</li>
+          <li data-option="B">B) Interleave the Users table within a new parent CustomerAccounts table. Create a secondary index on EmailAddress and rewrite the query using a LEFT JOIN with a FORCE INDEX hint.</li>
           <li data-option="C">C) Prepend a hash-based shard ID (Prefix Sharding) to UserIDs to randomize writes. Create a secondary index on EmailAddress with a STORING clause that includes DisplayName and PhoneNumber.</li>
-          <li data-option="D">D) Change the primary key to a sequential timestamp to randomize writes. Create a secondary index on EmailAddress, and use force index hints in SQL.</li>
+          <li data-option="D">D) Change the primary key to a sequential timestamp to randomize writes physically. Create a secondary index on EmailAddress, and use force index hints in SQL statements.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
@@ -785,10 +785,10 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 3:</strong> A gaming company is building a massive global multiplayer mobile game on Google Cloud. They need to choose the right databases for three separate workloads: (1) real-time player game-state sync with robust offline support for mobile users, (2) a sub-millisecond global leaderboard and user session store, and (3) a high-throughput, petabyte-scale ingestion pipeline for continuous game telemetry and sensor event data. Which combination of NoSQL databases is the most cost-effective and performant?</p>
         <ul class="option-list">
-          <li data-option="A">A) Cloud Bigtable for player game-states, Memorystore for the telemetry pipeline, and Firestore for the session store.</li>
+          <li data-option="A">A) Cloud Bigtable for player game-states to achieve low-latency updates, Memorystore for the telemetry pipeline caching layer, and Firestore (Datastore mode) for the session store.</li>
           <li data-option="B">B) Firestore (Native mode) for player game-states and offline sync; Memorystore (Redis) for sub-millisecond session stores and leaderboards; Cloud Bigtable for high-throughput petabyte-scale telemetry ingestion.</li>
-          <li data-option="C">C) Cloud Spanner for player game-states, Firestore for the session store, and Memorystore for the telemetry pipeline.</li>
-          <li data-option="D">D) Cloud Bigtable for all three workloads to consolidate technology stacks and reduce licensing fees.</li>
+          <li data-option="C">C) Cloud Spanner for player game-states to maintain strong consistency, Firestore for the session store, and Memorystore (Memcached) for the telemetry pipeline.</li>
+          <li data-option="D">D) Cloud Bigtable for all three workloads to consolidate the NoSQL technology stacks under a single API framework and minimize operational cluster overhead.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -814,10 +814,10 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 4:</strong> An enterprise retail company is migrating its legacy core ERP application to Google Cloud. The application currently runs on a massive on-premises Oracle 19c database. Several proprietary PL/SQL packages, custom stored procedures, and triggers are tightly integrated with the app, and the company has complex Oracle licensing agreements that cannot be modified. Due to tight business deadlines, they cannot re-architect or rewrite any database code within the next 24 months. What is the recommended migration and hosting architecture?</p>
         <ul class="option-list">
-          <li data-option="A">A) Migrate the Oracle database to Cloud Spanner using DMS Conversion Workspaces, and force the developers to rewrite the PL/SQL packages during the migration.</li>
+          <li data-option="A">A) Migrate the Oracle database to Cloud Spanner using DMS Conversion Workspaces, and configure a continuous migration pipeline with schema transformation rules to rewrite the PL/SQL packages on the fly.</li>
           <li data-option="B">B) Migrate the database to Google Cloud Bare Metal Solution (BMS) to run Oracle on certified, dedicated physical servers. Connect BMS to your GCP VPC networks via high-speed, low-latency Partner Interconnect, and migrate application tiers to GCE/GKE.</li>
-          <li data-option="C">C) Deploy a PostgreSQL-compatible AlloyDB database, and use a third-party migration wrapper to translate Oracle PL/SQL calls on the fly.</li>
-          <li data-option="D">D) Run Oracle inside standard Google Compute Engine (GCE) VM instances using standard persistent disks for storage.</li>
+          <li data-option="C">C) Deploy a PostgreSQL-compatible AlloyDB database, configure an external PL/SQL dynamic library translation layer, and deploy a third-party migration wrapper to intercept and translate Oracle calls.</li>
+          <li data-option="D">D) Run Oracle inside standard Google Compute Engine (GCE) VM instances using multi-writer SSD persistent disks and configure an auto-scaling group to manage licensing limits dynamically.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -836,9 +836,9 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 5 (New Firestore Trap!):</strong> A lead developer created a Firestore database for a new mobile chat application. A few weeks into development, the team realizes they cannot bind real-time listeners (<code>onSnapshot</code>) to document collections in their mobile client apps, and they are forced to constantly poll the database. Upon investigation, you discover the database was mistakenly created in Datastore Mode instead of Native Mode. How must you resolve this issue?</p>
         <ul class="option-list">
-          <li data-option="A">A) Run a gcloud command to switch the Firestore database mode in-place from Datastore to Native.</li>
+          <li data-option="A">A) Run a dynamic gcloud command to convert the Firestore database mode in-place from Datastore to Native, and configure an Access Context Manager policy to enable real-time listener pushes.</li>
           <li data-option="B">B) Create a new Firestore database in Native Mode (or create a new GCP project and provision Firestore in Native Mode), set up a Dataflow pipeline or run an export/import job to migrate existing data to the new database, and update the mobile application client configuration to target the new instance.</li>
-          <li data-option="C">C) Keep Datastore Mode but deploy a Cloud SQL Auth Proxy to translate real-time listener requests on the fly.</li>
+          <li data-option="C">C) Keep Datastore Mode but deploy a Cloud SQL Auth Proxy sidecar container in each client application to translate real-time listener requests into standard document REST API polling.</li>
           <li data-option="D">D) Write custom SOCKS5 tunneling scripts inside the mobile client applications to simulate a real-time event pipeline over standard Datastore entities.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
@@ -867,10 +867,10 @@ STORING (DisplayName, PhoneNumber);</code></pre>
       <div class="q-box">
         <p><strong>Question 6 (New Spanner Index Trap!):</strong> You are managing a massive Cloud Spanner database for an international logistics platform. The <code>Shipments</code> table handles intense write traffic. A column named <code>ActiveIssuesTimestamp</code> is set to NULL for 99.5% of rows, and is set to a monotonic, increasing timestamp when a shipment encounters an active delay. To support a customer service dashboard, you created a secondary index on <code>ActiveIssuesTimestamp</code>. However, the database team reports severe write latency and CPU spikes concentrated on a single Spanner node. How should you resolve this issue?</p>
         <ul class="option-list">
-          <li data-option="A">A) Re-provision Spanner with SSDs instead of HDDs to absorb the high IOPS.</li>
+          <li data-option="A">A) Re-provision the Cloud Spanner instance with local NVMe SSDs instead of persistent disk HDDs to absorb the high random write IOPS at the physical storage layer.</li>
           <li data-option="B">B) Drop the secondary index and recreate it as a NULL-FILTERED index (<code>CREATE NULL_FILTERED INDEX</code>). Additionally, ensure that the base table primary key is completely randomized (using UUIDs or bit-reversal) to prevent base-level hotspotting.</li>
-          <li data-option="C">C) Interleave the secondary index inside the Shipments base table using the INTERLEAVE IN clause.</li>
-          <li data-option="D">D) Throttling the dashboard queries to run once every 24 hours so Spanner has time to rebuild its index splits.</li>
+          <li data-option="C">C) Interleave the secondary index inside the Shipments base table using the INTERLEAVE IN clause, and write a Cloud Function to automatically split index tablets.</li>
+          <li data-option="D">D) Throttle the customer service dashboard queries to run once every 24 hours, and configure a Cloud Router dynamic metric to force Spanner to rebuild its index splits.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">

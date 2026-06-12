@@ -600,19 +600,19 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are architecting a global, high-performance web application. The application must support path-based routing (e.g., <code>/api</code> to backend pool A, <code>/static</code> to Cloud Storage), automatic SSL offloading, and traffic mirroring for background testing. Which load balancer should you deploy?</p>
         <ul class="option-list">
-          <li data-option="A">A) Global External Proxy Network Load Balancer</li>
+          <li data-option="A">A) Global External Proxy Network Load Balancer configured with TCP SSL offloading and a custom URL map header-routing rule.</li>
           <li data-option="B">B) Global External Application Load Balancer</li>
-          <li data-option="C">C) Regional External Passthrough Network Load Balancer</li>
-          <li data-option="D">D) Internal TCP/UDP Load Balancer</li>
+          <li data-option="C">C) Regional External Passthrough Network Load Balancer backed by an Internal Application Load Balancer transit layer in each regional subnet.</li>
+          <li data-option="D">D) Internal TCP/UDP Load Balancer integrated with an external Cloud NAT gateway running SNAT to handle traffic mirroring.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> The <strong>Global External Application Load Balancer (L7)</strong> is the only load balancer that supports advanced HTTP/S traffic management features like path-based routing (URL maps), SSL offloading, and traffic mirroring natively at the edge. 🌐</p>
           <ul>
-            <li><strong>A:</strong> Proxy NLB operates at Layer 4 (TCP) and does not understand HTTP paths or URLs, so it cannot perform path-based routing.</li>
-            <li><strong>C:</strong> Passthrough NLB is a Layer 4 regional load balancer with no L7 routing or SSL offloading capabilities.</li>
-            <li><strong>D:</strong> Internal load balancers are for private VPC traffic only, not public global web applications.</li>
+            <li><strong>A:</strong> Proxy NLB operates at Layer 4 (TCP) and does not understand HTTP paths or URLs, so it cannot perform path-based routing or URL mapping.</li>
+            <li><strong>C:</strong> Passthrough NLB is a Layer 4 regional load balancer with no L7 routing, SSL offloading, or native traffic mirroring capabilities; backing it with an internal load balancer is unnecessarily complex and breaks SSL offloading.</li>
+            <li><strong>D:</strong> Internal load balancers are for private VPC traffic only, and integrating them with Cloud NAT does not allow public-facing global routing, SSL termination, or native L7 traffic mirroring.</li>
           </ul>
         </div>
       </div>
@@ -621,18 +621,18 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> You are designing a multi-region active-passive disaster recovery architecture. You have a primary Application Load Balancer in <code>us-east1</code> and a standby Application Load Balancer in <code>europe-west1</code>. You want to configure Cloud DNS to automatically route users to the standby region if the primary region goes offline. However, you want to continuously send 1% of live production traffic to the standby region to ensure the standby servers are warm and functioning correctly. How should you configure this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a Geolocation DNS policy with geofencing enabled.</li>
-          <li data-option="B">B) Configure a Geolocation DNS policy and manually adjust weights every hour.</li>
+          <li data-option="A">A) Configure a standard Geolocation DNS policy with geofencing enabled, set the European load balancer target as a dynamic fallback, and write a Cloud Run script to ping and check the primary region's availability.</li>
+          <li data-option="B">B) Configure a Geolocation DNS policy, manually adjust the primary and passive target weights every hour using a Cloud Scheduler job, and route 1% of queries via a separate weighted CNAME record.</li>
           <li data-option="C">C) Configure a <strong>FAILOVER</strong> DNS routing policy with the primary set to the <code>us-east1</code> LB, the backup set to a <code>GEO</code> policy pointing to <code>europe-west1</code>, enable health checking, and set the <strong><code>--backup-data-trickle-ratio</code></strong> to <code>0.01</code>.</li>
-          <li data-option="D">D) Configure a Weighted Round Robin (WRR) policy with equal weights and disable health checks.</li>
+          <li data-option="D">D) Configure a Weighted Round Robin (WRR) routing policy with equal weights assigned to both load balancers, and disable DNS health checks on the passive region to prevent automatic traffic shifting.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: C</span></p>
           <p><strong>Why Option C is correct:</strong> This is the exact operational best practice for active-passive DR! The <strong>FAILOVER</strong> routing policy automatically switches traffic to the backup region if the primary fails health checks. Setting the <strong><code>--backup-data-trickle-ratio</code></strong> to <code>0.01</code> forces Cloud DNS to continuously route exactly 1% of queries to the standby region, keeping the standby environment warm and verified under live conditions! 💧</p>
           <ul>
-            <li><strong>A:</strong> Geolocation policies do not support active-passive failover with custom trickle ratios natively.</li>
-            <li><strong>B:</strong> Manual weight adjustment is operationally complex, slow, and does not support automatic health-check-based failover.</li>
+            <li><strong>A:</strong> Geolocation policies do not support active-passive failover with custom trickle ratios natively, and external Cloud Run scripts are not integrated with Cloud DNS automatic dynamic failover.</li>
+            <li><strong>B:</strong> Manual weight adjustment via Cloud Scheduler is slow, prone to delays, and does not support sub-minute automatic health-check-based failover.</li>
             <li><strong>D:</strong> Equal weights without health checks represents an active-active setup and will route 50% of traffic to the passive site constantly, violating the active-passive constraint and sending traffic to unhealthy nodes if they fail.</li>
           </ul>
         </div>
@@ -642,19 +642,19 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are deploying a high-performance multiplayer gaming backend on Compute Engine. The game client communicates over UDP and requires extremely low latency. The backend servers must be able to see the original public IP address of the players to perform geolocation-based matchmaking. Which load balancer should you choose?</p>
         <ul class="option-list">
-          <li data-option="A">A) Global External Application Load Balancer</li>
-          <li data-option="B">B) Global External Proxy Network Load Balancer</li>
+          <li data-option="A">A) Global External Application Load Balancer configured with a Proxy Protocol v2 header to carry the client IP down to the backend Instance Group.</li>
+          <li data-option="B">B) Global External Proxy Network Load Balancer with SSL Session Ticket Resumption enabled to handle low-latency UDP encapsulation.</li>
           <li data-option="C">C) Regional External Passthrough Network Load Balancer</li>
-          <li data-option="D) Regional Internal Application Load Balancer</li>
+          <li data-option="D">D) Regional Internal Application Load Balancer configured with Private Service Connect (PSC) endpoints in each regional subnet.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: C</span></p>
           <p><strong>Why Option C is correct:</strong> The <strong>Regional External Passthrough Network Load Balancer</strong> operates at Layer 4 and does not terminate the connection. Packets are forwarded directly to the backend VMs with their source IP addresses unchanged, allowing the game servers to see the players' original public IPs natively. It also supports UDP, which is critical for gaming! ⚡</p>
           <ul>
-            <li><strong>A:</strong> Application Load Balancers only support HTTP/S traffic, not raw UDP, and they terminate the connection (hiding the client IP).</li>
-            <li><strong>B:</strong> Proxy NLBs terminate the connection and do not support UDP traffic.</li>
-            <li><strong>D:</strong> Internal load balancers are not accessible from the public internet.</li>
+            <li><strong>A:</strong> Application Load Balancers only support HTTP/S traffic, not raw UDP, and they terminate the connection. Proxy Protocol v2 is only supported on certain Layer 4 proxies.</li>
+            <li><strong>B:</strong> Proxy NLBs terminate the connection, do not natively support UDP, and do not forward the original raw IP address natively without proxy headers.</li>
+            <li><strong>D:</strong> Internal load balancers are not accessible from the public internet, and PSC endpoints are for private consumption, not public game servers.</li>
           </ul>
         </div>
       </div>
@@ -663,19 +663,19 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> You have configured a Geolocation DNS routing policy to route users to the nearest of three regional Application Load Balancers. To comply with strict European data privacy regulations (GDPR), you want to ensure that users located in Europe are strictly routed to the European load balancer, and their queries must never failover to US-based load balancers even if the European load balancer experiences an outage. How should you configure this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a standard Geolocation policy with no extra flags.</li>
+          <li data-option="A">A) Configure a standard Geolocation policy with no extra flags, and use GCP IAM permissions to block US-based Compute Engine instances from resolving European IP ranges.</li>
           <li data-option="B">B) Configure a Geolocation policy and enable <strong>Geofencing</strong> (<code>--enable-geo-fencing</code>) on the European record set.</li>
-          <li data-option="C">C) Switch to a Weighted Round Robin policy with 100% weight on Europe.</li>
-          <li data-option="D">D) Disable health checking on the European load balancer.</li>
+          <li data-option="C">C) Switch the entire DNS record architecture to a Weighted Round Robin policy with 100% weight on Europe and 0% on the US, and configure a Cloud DNS forwarding zone.</li>
+          <li data-option="D">D) Disable health checking on the European load balancer and enable Cloud CDN caching globally to store European responses in US edge caches during local outages.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> Enabling <strong>Geofencing</strong> (<code>--enable-geo-fencing</code>) on a Geolocation routing policy forces Cloud DNS to always route queries from that geographic region to the designated regional endpoints, <strong>even if all endpoints in that region are unhealthy</strong>. This guarantees compliance with strict data residency mandates (like GDPR) by preventing automatic failover to other jurisdictions! 🌍</p>
           <ul>
-            <li><strong>A:</strong> Standard Geolocation policies (without geofencing) will automatically failover and route European users to US load balancers if the European load balancer goes offline, violating data residency constraints.</li>
+            <li><strong>A:</strong> Standard Geolocation policies (without geofencing) will automatically failover and route European users to US load balancers if the European load balancer goes offline. IAM permissions cannot block or control public DNS resolution behavior.</li>
             <li><strong>C:</strong> Weighted Round Robin does not evaluate the user's geographic location, so it cannot restrict US users from hitting Europe or vice versa.</li>
-            <li><strong>D:</strong> Disabling health checking prevents the system from detecting outages but does not guarantee geofenced routing boundaries.</li>
+            <li><strong>D:</strong> Disabling health checking prevents the system from detecting outages but does not guarantee geofenced routing boundaries, and caching in US edge locations violates the strict data residency requirements.</li>
           </ul>
         </div>
       </div>

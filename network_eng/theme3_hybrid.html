@@ -581,19 +581,19 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are designing a high-availability hybrid network for a retail giant. The business demands a 99.99% availability SLA for their connectivity to Google Cloud. They have co-location space in a single carrier hotel in Chicago. What is the most cost-effective and compliant design?</p>
         <ul class="option-list">
-          <li data-option="A">A) Deploy two Dedicated Interconnect connections in Chicago (Zone 1 and Zone 2) and configure four VLAN attachments.</li>
-          <li data-option="B">B) Deploy two Dedicated Interconnect connections in Chicago (Zone 1 and Zone 2), and configure an HA VPN connection as a backup path over the public internet.</li>
+          <li data-option="A">A) Deploy two Dedicated Interconnect connections in Chicago (Metro A) mapped to separate edge cages, and configure four VLAN attachments distributed across different availability domains in the same carrier hotel.</li>
+          <li data-option="B">B) Deploy two Dedicated Interconnect connections in Chicago (Metro A) to handle high-throughput transactional flows, and configure an active-active HA VPN connection over the public internet to act as a low-latency fallback path.</li>
           <li data-option="C">C) Deploy two Dedicated Interconnect connections in Chicago (Metro A) and two Dedicated Interconnect connections in Ashburn (Metro B), with VLAN attachments from each metro routed to separate Cloud Routers in your VPC.</li>
-          <li data-option="D">D) Deploy a single Dedicated Interconnect connection and configure Classic VPN as a backup.</li>
+          <li data-option="D">D) Deploy a single Dedicated Interconnect connection in Chicago with 100 Gbps of bandwidth, and establish a Classic VPN tunnel mesh to handle secondary egress routing during physical maintenance windows.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: C</span></p>
           <p><strong>Why Option C is correct:</strong> To achieve a <strong>99.99% SLA</strong> for Cloud Interconnect, Google strictly requires a multi-metro topology (two connections in Metro A and two connections in Metro B). A single metro topology (Option A or B) only qualifies for a 99.9% SLA, even if you have backup VPNs! 🔌</p>
           <ul>
-            <li><strong>A:</strong> Redundant connections in a single metro only qualify for a 99.9% SLA because they cannot survive a full metro-level disaster.</li>
+            <li><strong>A:</strong> Redundant connections in a single metro only qualify for a 99.9% SLA because they cannot survive a full metro-level disaster, regardless of cage or VLAN distribution.</li>
             <li><strong>B:</strong> While using HA VPN as a backup is a great hybrid design, it does not elevate the Interconnect topology itself to a 99.99% SLA.</li>
-            <li><strong>D:</strong> A single Interconnect connection has zero SLA and Classic VPN is deprecated, representing a highly fragile design.</li>
+            <li><strong>D:</strong> A single Interconnect connection has zero SLA, and Classic VPN is deprecated, representing a highly fragile design with no SLA guarantees.</li>
           </ul>
         </div>
       </div>
@@ -602,19 +602,19 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> You have established an HA VPN connection between your on-premises data center and your Google Cloud VPC. You have two tunnels active. You notice that egress traffic from GCP to on-premises is asymmetric, with packets randomly choosing either tunnel, resulting in out-of-order packet delivery and firewall drops on-premises. You want to force GCP to send all traffic over Tunnel A, using Tunnel B strictly as a standby. How should you configure this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure static routes in your VPC with different priorities pointing to the tunnels.</li>
+          <li data-option="A">A) Configure dynamic static routes in your VPC routing tables with a lower metric (priority 100) pointing to Tunnel A, and a higher metric (priority 1000) pointing to Tunnel B to manage dynamic failover paths.</li>
           <li data-option="B">B) On your on-premises VPN gateway, advertise your local subnets to Cloud Router over BGP, attaching a <strong>lower MED (metric)</strong> on the BGP session for Tunnel A, and a <strong>higher MED</strong> on the BGP session for Tunnel B.</li>
-          <li data-option="C">C) On your on-premises VPN gateway, prepend your ASN multiple times when advertising routes over Tunnel A.</li>
-          <li data-option="D">D) Set the VPC dynamic routing mode to Regional.</li>
+          <li data-option="C">C) On your on-premises VPN gateway, configure BGP path prepending to repeat your local Autonomous System Number (ASN) multiple times when advertising routes to Google Cloud over the Tunnel A BGP session.</li>
+          <li data-option="D">D) Configure the dynamic routing mode of the central VPC network to Regional, which automatically restricts learned routes to a single tunnel interface unless BGP graceful restart is triggered on Tunnel B.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> To control <strong>outbound traffic</strong> from GCP to on-premises, you must influence Cloud Router's path selection. Cloud Router evaluates the MED (metric) of learned BGP routes. By advertising a lower MED on Tunnel A, Cloud Router will prefer Tunnel A for all outbound routing, using Tunnel B only if Tunnel A's BGP session goes down. 🚦</p>
           <ul>
-            <li><strong>A:</strong> HA VPN strictly requires dynamic routing (BGP); static routes should not be used to manage failover.</li>
-            <li><strong>C:</strong> AS-Path prepending on Tunnel A would make GCP <em>avoid</em> Tunnel A, forcing traffic onto Tunnel B instead.</li>
-            <li><strong>D:</strong> Changing the dynamic routing mode to Regional does not solve asymmetric routing between two tunnels in the same region.</li>
+            <li><strong>A:</strong> HA VPN strictly requires dynamic routing (BGP); static routes should not be used to manage failover, and "dynamic static routes" do not exist in GCP.</li>
+            <li><strong>C:</strong> AS-Path prepending on Tunnel A would make GCP <em>avoid</em> Tunnel A, forcing traffic onto Tunnel B instead by making the path appear longer.</li>
+            <li><strong>D:</strong> Changing the dynamic routing mode to Regional does not solve asymmetric routing between two tunnels in the same region, as both tunnels are still in the same regional scope.</li>
           </ul>
         </div>
       </div>
@@ -623,19 +623,19 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are designing a global network for a multinational corporation with VPC subnets in <code>us-east1</code> and <code>europe-west1</code>. You have established a Dedicated Interconnect connection in Virginia (<code>us-east1</code>). You want VMs in <code>europe-west1</code> to be able to access your on-premises network dynamically over this Interconnect. What VPC configuration is required?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create a VPC Peering connection between <code>us-east1</code> and <code>europe-west1</code> subnets.</li>
+          <li data-option="A">A) Establish an internal VPC Network Peering link between the regional subnets in <code>us-east1</code> and <code>europe-west1</code>, and configure the peering settings to allow custom transit route sharing.</li>
           <li data-option="B">B) Configure the VPC's dynamic routing mode to <strong>Global</strong>.</li>
-          <li data-option="C">C) Deploy a second Interconnect connection in Europe.</li>
-          <li data-option="D">D) Configure static routes in Europe pointing to the Virginia Cloud Router.</li>
+          <li data-option="C">C) Deploy a second redundant Partner Interconnect connection in Europe (<code>europe-west1</code>) and configure the local Cloud Router to establish a BGP loopback interface to Virginia.</li>
+          <li data-option="D">D) Configure custom static routes in the European subnet pointing to the Virginia Cloud Router's IP address with the next-hop set to the private service connect (PSC) gateway.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> By setting the VPC's dynamic routing mode to <strong>Global</strong>, Cloud Routers in any region (like <code>us-east1</code>) will propagate their learned on-premises routes to all subnets network-wide, including those in <code>europe-west1</code>. This allows cross-region hybrid routing natively. 🌐</p>
           <ul>
-            <li><strong>A:</strong> Subnets in the same VPC do not need peering; they are already part of the same global network.</li>
-            <li><strong>C:</strong> While a second Interconnect in Europe is great for redundancy, it is not strictly required just to enable cross-region routing.</li>
-            <li><strong>D:</strong> Static routes are complex to maintain and do not support dynamic failover, violating cloud scale best practices.</li>
+            <li><strong>A:</strong> Subnets in the same VPC do not need peering; they are already part of the same global network, and peering regional subnets in the same VPC is impossible.</li>
+            <li><strong>C:</strong> While a second Interconnect in Europe is great for redundancy, it is not strictly required just to enable cross-region routing and dynamic BGP loopbacks across regions are not supported over Interconnect.</li>
+            <li><strong>D:</strong> Static routes are complex to maintain, do not support dynamic BGP failover, and PSC cannot be used as a next-hop gateway for raw VM-to-on-prem subnet routing.</li>
           </ul>
         </div>
       </div>
@@ -644,19 +644,19 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> You are designing a complex multi-region network with redundant Cloud Routers in <code>us-east1</code> and <code>us-west1</code>. You notice that during a simulated failover, Cloud Router occasionally routes traffic to a longer AS-path route instead of a shorter one because the BGP sessions are handled by different internal router tasks. How can you ensure consistent, RFC-compliant BGP path selection across your entire VPC?</p>
         <ul class="option-list">
-          <li data-option="A">A) Switch to static routing.</li>
+          <li data-option="A">A) Switch the entire hybrid infrastructure to static routes with configured route metrics on both Cloud Routers to bypass the BGP dynamic route convergence process.</li>
           <li data-option="B">B) Configure the VPC network's BGP best path selection mode to <strong>Standard</strong>.</li>
-          <li data-option="C">C) Enable BFD (Bidirectional Forwarding Detection) on all BGP sessions.</li>
-          <li data-option="D">D) Set the VPC dynamic routing mode to Regional.</li>
+          <li data-option="C">C) Enable Bidirectional Forwarding Detection (BFD) with a 100ms interval on all active BGP sessions to synchronize the internal router tasks during failover.</li>
+          <li data-option="D">D) Set the VPC dynamic routing mode of the central network to Regional, which prevents Cloud Router from propagating BGP dynamic routes across regional boundaries during a task restart.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
           <p><strong>Why Option B is correct:</strong> By default, GCP VPCs use <strong>Legacy</strong> best path selection, which evaluates AS-paths only within a single BGP task, leading to potential inconsistencies across separate routers. Changing the VPC's BGP best path selection mode to <strong>Standard</strong> forces Cloud Router to strictly comply with <strong>RFC 4271</strong>, ensuring consistent, predictable AS-path length comparison across all BGP sessions network-wide! 📈</p>
           <ul>
-            <li><strong>A:</strong> Static routing does not scale and lacks dynamic failover capabilities.</li>
-            <li><strong>C:</strong> BFD detects link failures faster (sub-second), but it does not alter the BGP path selection algorithm.</li>
-            <li><strong>D:</strong> Regional dynamic routing restricts route propagation to a single region, which does not solve multi-region path selection inconsistencies.</li>
+            <li><strong>A:</strong> Static routing does not scale, lacks dynamic failover capabilities, and is not a valid approach for large-scale enterprise hybrid networks.</li>
+            <li><strong>C:</strong> BFD detects link failures faster (sub-second), but it does not alter the BGP best path selection algorithm or task-level route evaluation.</li>
+            <li><strong>D:</strong> Regional dynamic routing restricts route propagation to a single region, which does not solve multi-region path selection inconsistencies and breaks global connectivity.</li>
           </ul>
         </div>
       </div>

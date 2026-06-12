@@ -663,10 +663,10 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> Your team is planning to migrate a business-critical 8 TB PostgreSQL database hosted on-premises to AlloyDB in Google Cloud. The business cannot tolerate more than 5 minutes of total downtime during cutover. What is the most appropriate migration strategy and toolset?</p>
         <ul class="option-list">
-          <li data-option="A">A) Perform a pg_dump on-premises, compress and upload the dump to Cloud Storage, and restore it on AlloyDB during a weekend window.</li>
+          <li data-option="A">A) Perform a logical pg_dump on-premises, compress and upload the dump to Cloud Storage, and restore it on AlloyDB during a weekend window using automated Cloud Data Flow pipelines.</li>
           <li data-option="B">B) Configure Google Cloud Database Migration Service (DMS) to perform an initial load followed by continuous replication (CDC), and cut over during a low-traffic window.</li>
-          <li data-option="C">C) Establish an ongoing Datastream pipeline to stream tables directly from PostgreSQL to AlloyDB.</li>
-          <li data-option="D">D) Backup PostgreSQL directly to Google Cloud Storage using Storage Transfer Service, and mount Cloud Storage on the AlloyDB instance.</li>
+          <li data-option="C">C) Establish an ongoing Datastream pipeline to stream database tables directly from PostgreSQL to AlloyDB with dynamic schema evolution enabled.</li>
+          <li data-option="D">D) Backup PostgreSQL directly to Google Cloud Storage using Storage Transfer Service, and mount Cloud Storage on the AlloyDB instance using gcsfuse.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -685,9 +685,9 @@
         <p><strong>Question 2:</strong> You are tasked with migrating a mission-critical legacy Oracle database to AlloyDB for PostgreSQL. The schema includes packages, triggers, and stored procedures. What should you do to prepare the heterogeneous migration properly?</p>
         <ul class="option-list">
           <li data-option="A">A) Use DMS Conversion Workspaces, review/fix converted objects, apply the schema to AlloyDB, then run a migration job with validation and a documented rollback plan.</li>
-          <li data-option="B">B) Assume DMS automatically translates every PL/SQL object perfectly and cut over without manual review.</li>
-          <li data-option="C">C) Set up a Bare Metal Solution instance running Oracle to bypass schema conversion entirely.</li>
-          <li data-option="D">D) Use Storage Transfer Service to copy Oracle data files into Cloud Storage and point AlloyDB at the bucket.</li>
+          <li data-option="B">B) Assume DMS Conversion Workspaces automatically translate every PL/SQL object perfectly and execute the heterogeneous schema migration in-place without human review.</li>
+          <li data-option="C">C) Set up a Bare Metal Solution (BMS) instance running Oracle to bypass schema conversion entirely, and configure a Cloud Router loopback BGP interface.</li>
+          <li data-option="D">D) Use Storage Transfer Service to copy Oracle raw data files directly into Cloud Storage and point AlloyDB at the bucket using external tables.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
@@ -706,9 +706,9 @@
         <p><strong>Question 3:</strong> A small internal application can be offline for a whole weekend. Its 200 GB MySQL database is simple, low-write, and the team wants the least complex migration path. What strategy is most appropriate?</p>
         <ul class="option-list">
           <li data-option="A">A) Use an offline export/import during the planned outage, validate the target, then cut over.</li>
-          <li data-option="B">B) Build a complex multi-week CDC pipeline because every migration must be near-zero downtime.</li>
-          <li data-option="C">C) Use Datastream directly into the Cloud SQL primary as the only migration mechanism.</li>
-          <li data-option="D">D) Manually dual-write from the application to both databases during the weekend.</li>
+          <li data-option="B">B) Build a complex multi-week CDC pipeline using Database Migration Service (DMS) because every database migration must prioritize near-zero downtime.</li>
+          <li data-option="C">C) Use Datastream directly into the Cloud SQL primary instance as the only migration and dynamic schema replication mechanism.</li>
+          <li data-option="D">D) Manually write application-level dual-write logic inside the client applications to sync writes to both databases during the weekend.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">

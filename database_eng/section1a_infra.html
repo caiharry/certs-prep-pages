@@ -656,10 +656,10 @@
       <div class="q-box">
         <p><strong>Question 1:</strong> You are designing HA and DR for a critical MySQL database on Cloud SQL. The business wants near-zero RPO and sub-minute RTO for zonal failures, plus a workable regional DR path with the lowest practical data loss. How should you configure this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a zonal Cloud SQL instance with daily automated backups.</li>
+          <li data-option="A">A) Configure a zonal Cloud SQL instance with daily automated backups shipped to a multi-regional Cloud Storage bucket, and configure a Cloud Run function to automatically deploy a replica upon zonal failure.</li>
           <li data-option="B">B) Enable High Availability (Regional HA), configure a cross-region read replica, enable PITR, and monitor replica lag.</li>
-          <li data-option="C">C) Deploy a multi-regional Cloud SQL instance across three regions.</li>
-          <li data-option="D">D) Spin up two zonal Cloud SQL instances in different regions and write a custom application script to execute dual-writes.</li>
+          <li data-option="C">C) Deploy a multi-regional Cloud SQL instance spanning three separate regions, and use Cloud DNS routing policies to split the write load among active instances.</li>
+          <li data-option="D">D) Provision two zonal Cloud SQL instances in separate regions, and write a custom Java-based middleware application with dynamic retry policies to perform synchronous dual-writes on both instances.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -677,10 +677,10 @@
       <div class="q-box">
         <p><strong>Question 2:</strong> Your company has adopted a complex hub-and-spoke VPC network topology on Google Cloud. You need to connect multiple consumer spoke VPC networks to a central managed Cloud SQL PostgreSQL database instance. The company's security policy strictly forbids direct VPC peering between the spoke networks, and the network team warns that transitive routing over VPC peering is not supported. How should you design this private database connectivity?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create a Private Services Access (PSA) connection in the Hub VPC, and rely on standard transitive peering to route spoke traffic to Cloud SQL.</li>
+          <li data-option="A">A) Create a Private Services Access (PSA) connection in the Hub VPC, configure dynamic BGP route leaking across all spokes, and rely on standard transitive peering to route spoke traffic to Cloud SQL.</li>
           <li data-option="B">B) Deploy Private Service Connect (PSC) in the Cloud SQL producer network, and create a local PSC endpoint (Private IP) directly in each consumer spoke VPC.</li>
-          <li data-option="C">C) Configure a public IP on Cloud SQL, lock it down with an Authorized Networks list, and route spoke traffic over the internet.</li>
-          <li data-option="D">D) Use Cloud VPN to connect each spoke VPC network directly to the Cloud SQL tenant VPC.</li>
+          <li data-option="C">C) Configure a public IP address on the Cloud SQL instance, lock it down with a hierarchical VPC firewall rule list, and route spoke traffic through public NAT gateways.</li>
+          <li data-option="D">D) Use Cloud VPN to establish direct IPSec tunnels between the Cloud SQL tenant project VPC network and each independent consumer spoke VPC subnet.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -700,10 +700,10 @@
       <div class="q-box">
         <p><strong>Question 3:</strong> You are deploying a high-volume microservices application on Google Kubernetes Engine (GKE) that must connect securely to a private Cloud SQL PostgreSQL instance over Private IP. The security team strictly prohibits the use of static database passwords or long-lived SSL certificates in your Kubernetes secret configurations. What is the recommended architecture and deployment pattern?</p>
         <ul class="option-list">
-          <li data-option="A">A) Enable a public IP on Cloud SQL, authorize your GKE cluster's NAT IPs, and connect using standard username/password strings.</li>
+          <li data-option="A">A) Enable a public IP address on the Cloud SQL instance, authorize your GKE cluster's dynamic external NAT IP pool in the firewall, and configure your microservices to connect using base64 encoded credentials.</li>
           <li data-option="B">B) Deploy the Cloud SQL Auth Proxy as a sidecar container in your application Pods. Configure GKE Workload Identity to bind your Kubernetes service account to a GCP IAM service account with the Cloud SQL Client (<code>roles/cloudsql.client</code>) role. Configure the proxy to connect over Private IP using the <code>-private-ip</code> flag, and configure your app to connect to <code>localhost</code>.</li>
-          <li data-option="C">C) Install the Cloud SQL Auth Proxy as a DaemonSet across all GKE nodes, and expose its port via an external GKE service.</li>
-          <li data-option="D">D) Put your Cloud SQL instance in a public subnet, generate self-signed client certificates, and mount them as persistent volumes in your application containers.</li>
+          <li data-option="C">C) Install the Cloud SQL Auth Proxy as a dynamic DaemonSet across all GKE nodes, and expose its port via an external GKE ingress controller configured with long-lived SSL certificates.</li>
+          <li data-option="D">D) Deploy your Cloud SQL instance with Private Services Access (PSA) enabled, generate self-signed SSL client certificates, and mount them as persistent secret volumes inside your application container specifications.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
@@ -729,10 +729,10 @@
       <div class="q-box">
         <p><strong>Question 4:</strong> Your corporate network is connected to Google Cloud via Partner Interconnect. Developers working on-premises need to connect directly to a private Cloud SQL instance that has been provisioned via Private Services Access (PSA). Although they can ping VMs inside the consumer VPC, they cannot reach the database's internal IP address. Subnet routing and local firewall rules allow traffic. What is the root cause and recommended solution?</p>
         <ul class="option-list">
-          <li data-option="A">A) Cloud SQL does not support private connections from on-premises networks; configure a public IP on Cloud SQL instead.</li>
+          <li data-option="A">A) Cloud SQL does not natively support private connections originating from on-premises networks; configure a public IP on Cloud SQL and manage connections via an IPsec VPN tunnel gateway.</li>
           <li data-option="B">B) VPC Peering is non-transitive. Update the VPC peering connection configuration to "Export Custom Routes", configure PSA to import custom routes, and add a custom route advertisement for the allocated Private Services Access IP range on the VPC's Cloud Router BGP configuration.</li>
-          <li data-option="C">C) The dynamic routing mode of the VPC is set to global. Change the dynamic routing mode to regional so local subnet advertisements reach the peer network.</li>
-          <li data-option="D">D) Create a secondary Cloud SQL instance inside on-premises and set up MySQL native replication over the Interconnect.</li>
+          <li data-option="C">C) The dynamic routing mode of the central VPC network is set to Global. Change the routing mode to Regional and recreate the dynamic Cloud Router configuration to force subnet advertisement convergence.</li>
+          <li data-option="D">D) Deploy a secondary passive Cloud SQL instance inside on-premises virtualized infrastructure, and set up MySQL native replication over a dedicated physical Interconnect port.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
