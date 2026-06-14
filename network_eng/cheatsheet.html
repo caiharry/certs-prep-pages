@@ -114,7 +114,7 @@
     .hero-grid {
       display: grid;
       gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
       margin-top: 28px;
       position: relative;
       z-index: 1;
@@ -156,6 +156,10 @@
       display: grid;
       gap: 22px;
       grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .slides-container {
+      min-width: 0;
     }
 
     .nav-panel {
@@ -224,14 +228,17 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       margin-bottom: 24px;
+      max-width: 100%;
+      overflow: hidden;
       padding: clamp(20px, 4vw, 36px);
       scroll-margin-top: 16px;
     }
 
     .slide-header {
       border-bottom: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: baseline;
       margin-bottom: 24px;
       padding-bottom: 14px;
@@ -332,14 +339,17 @@
     /* Synthesis Matrix Tables */
     .matrix-table-container {
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border: 1px solid var(--line);
       border-radius: 12px;
       margin-top: 20px;
       margin-bottom: 30px;
+      max-width: 100%;
     }
 
     .matrix-table {
       width: 100%;
+      min-width: 560px;
       border-collapse: collapse;
       background: white;
       font-size: 0.88rem;
@@ -375,7 +385,7 @@
 
     .doc-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
       gap: 10px;
       margin-top: 15px;
     }
@@ -424,12 +434,59 @@
       opacity: 0.9;
     }
 
-    @media (max-width: 900px) {
-      .deck-layout {
-        grid-template-columns: 1fr;
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 24px, 860px);
       }
+
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
       .nav-panel {
         display: none;
+      }
+
+      .doc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 18px;
+      }
+
+      .slide-header {
+        grid-template-columns: 1fr;
+      }
+
+      .slide-badge {
+        justify-self: start;
+      }
+
+      .guide-card,
+      .know-card,
+      .exam-trap {
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
     }
   </style>
@@ -604,7 +661,7 @@
             <h3>High-Yield Facts to Memorize</h3>
             <ul>
               <li><strong>VPC Peering:</strong> Peerings are strictly <strong>non-transitive</strong>. To share hybrid routes (VPN/Interconnect) across peerings, you must explicitly enable "Export Custom Routes" on the hosting peering link and "Import Custom Routes" on the peer.</li>
-              <li><strong>DNS-Based Endpoint:</strong> Enabled via <code>--enable-dns-access</code>. Creates a unique FQDN (<code><em>.gke.goog</code>) resolving to Google's secure global API frontend. Allows secure, bastion-free control plane access to private GKE clusters from anywhere, gated strictly by <strong>GCP IAM</strong>!</li>
+              <li><strong>DNS-Based Endpoint:</strong> Enabled via <code>--enable-dns-access</code>. Creates a unique FQDN (e.g. <code>HASH.gke.goog</code>) resolving to Google's secure global API frontend. Allows secure, bastion-free control plane access to private GKE clusters from anywhere, gated strictly by <strong>GCP IAM</strong>!</li>
               <li><strong>Dataplane V2:</strong> eBPF-based (Cilium). Enforces Kubernetes Network Policies natively in the Linux kernel, bypassing slow, sequential <code>iptables</code> rules for blistering speed and massive scale.</li>
               <li><strong>Policy-Based Routing:</strong> Routes traffic based on source IP, destination IP, protocol, and network tags. Can target an <strong>Internal Load Balancer (ILB)</strong> as the next hop to distribute traffic across a pool of NVA firewalls.</li>
             </ul>
@@ -794,7 +851,7 @@
             <h3>High-Yield Facts to Memorize</h3>
             <ul>
               <li><strong>Cloud Armor Adaptive Protection:</strong> Uses machine learning to continuously analyze traffic patterns, automatically drafting custom blocking rules to mitigate Layer 7 HTTP flood DDoS attacks in real-time.</li>
-              <li><strong>Cloud NGFW Enterprise:</strong> The only tier that supports <strong>Layer 7 Packet Inspection</strong> (Intrusion Prevention System - IPS) to detect malware and spyware, which it enforces via managed </em>Firewall Endpoints*.</li>
+              <li><strong>Cloud NGFW Enterprise:</strong> The only tier that supports <strong>Layer 7 Packet Inspection</strong> (Intrusion Prevention System - IPS) to detect malware and spyware, which it enforces via managed <strong>Firewall Endpoints</strong>.</li>
               <li><strong>Dynamic Port Allocation (DPA):</strong> Automatically doubles a VM's NAT port allocation (e.g., 32 -> 64 -> 128 -> 256) up to a configured maximum based on demand, preventing SNAT port exhaustion while maximizing NAT IP efficiency. <strong>Min and Max ports must be powers of 2!</strong></li>
               <li><strong>Secure Web Proxy (SWP):</strong> Fully managed, serverless egress proxy that filters outbound HTTP/S traffic based on FQDNs, URLs, and web categories without needing a NAT gateway or proxy VMs.</li>
             </ul>
