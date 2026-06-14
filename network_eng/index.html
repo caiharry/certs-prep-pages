@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GCP Network Engineer Revision Guide Portal</title>
   <style>
     :root {
-      --bg-light: #f0fdf4; /* Light green background */
+      --bg-light: #f0fdf4;
+      /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
+      --cgp-green: #16a34a;
+      /* Primary CGP Green */
       --cgp-green-dark: #15803d;
       --cgp-yellow: #fef08a;
       --cgp-yellow-dark: #eab308;
@@ -148,7 +151,7 @@
       gap: 25px;
     }
 
-    .grid-sections > * {
+    .grid-sections>* {
       min-width: 0;
     }
 
@@ -207,16 +210,50 @@
       box-shadow: 6px 6px 0px #000;
     }
 
-    .section-card.s1 { border-color: var(--cgp-green); box-shadow: 4px 4px 0px var(--cgp-green); }
-    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--cgp-green); }
-    .section-card.s2 { border-color: var(--cgp-violet); box-shadow: 4px 4px 0px var(--cgp-violet); }
-    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--cgp-violet); }
-    .section-card.s3 { border-color: var(--cgp-teal); box-shadow: 4px 4px 0px var(--cgp-teal); }
-    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--cgp-teal); }
-    .section-card.s4 { border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); }
-    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--cgp-blue); }
-    .section-card.s5 { border-color: var(--cgp-orange); box-shadow: 4px 4px 0px var(--cgp-orange); }
-    .section-card.s5:hover { box-shadow: 6px 6px 0px var(--cgp-orange); }
+    .section-card.s1 {
+      border-color: var(--cgp-green);
+      box-shadow: 4px 4px 0px var(--cgp-green);
+    }
+
+    .section-card.s1:hover {
+      box-shadow: 6px 6px 0px var(--cgp-green);
+    }
+
+    .section-card.s2 {
+      border-color: var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--cgp-violet);
+    }
+
+    .section-card.s2:hover {
+      box-shadow: 6px 6px 0px var(--cgp-violet);
+    }
+
+    .section-card.s3 {
+      border-color: var(--cgp-teal);
+      box-shadow: 4px 4px 0px var(--cgp-teal);
+    }
+
+    .section-card.s3:hover {
+      box-shadow: 6px 6px 0px var(--cgp-teal);
+    }
+
+    .section-card.s4 {
+      border-color: var(--cgp-blue);
+      box-shadow: 4px 4px 0px var(--cgp-blue);
+    }
+
+    .section-card.s4:hover {
+      box-shadow: 6px 6px 0px var(--cgp-blue);
+    }
+
+    .section-card.s5 {
+      border-color: var(--cgp-orange);
+      box-shadow: 4px 4px 0px var(--cgp-orange);
+    }
+
+    .section-card.s5:hover {
+      box-shadow: 6px 6px 0px var(--cgp-orange);
+    }
 
     .sec-badge {
       display: inline-block;
@@ -230,11 +267,25 @@
       align-self: start;
     }
 
-    .s1 .sec-badge { background: var(--cgp-green); }
-    .s2 .sec-badge { background: var(--cgp-violet); }
-    .s3 .sec-badge { background: var(--cgp-teal); }
-    .s4 .sec-badge { background: var(--cgp-blue); }
-    .s5 .sec-badge { background: var(--cgp-orange); }
+    .s1 .sec-badge {
+      background: var(--cgp-green);
+    }
+
+    .s2 .sec-badge {
+      background: var(--cgp-violet);
+    }
+
+    .s3 .sec-badge {
+      background: var(--cgp-teal);
+    }
+
+    .s4 .sec-badge {
+      background: var(--cgp-blue);
+    }
+
+    .s5 .sec-badge {
+      background: var(--cgp-orange);
+    }
 
     .sec-title {
       font-size: 1.4rem;
@@ -302,6 +353,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="nav-links">
@@ -311,24 +363,30 @@
     <header>
       <div class="badge-cgp">UK CGP Revision Style</div>
       <h1>Google Cloud Professional Network Engineer</h1>
-      <p class="tagline">The ultimate study portal to master VPC design, hybrid routing, GKE networking, load balancing, and network security without losing your marbles!</p>
+      <p class="tagline">The ultimate study portal to master VPC design, hybrid routing, GKE networking, load balancing,
+        and network security without losing your marbles!</p>
     </header>
 
     <div class="intro-section">
       <div class="intro-title">
         <span>🎯 Study Coach Welcome!</span>
       </div>
-      <p>Welcome to your personal study portal! This revision guide is custom-tailored to the <strong>Google Cloud Professional Cloud Network Engineer</strong> certification. It is organized <strong>by theme</strong> to group related concepts together logically, rather than strictly following the dry exam guide numbers. Each guide features clear, conversational explanations, corny jokes, memory-jogging mnemonics, sneaky exam traps, and original practice questions with full diagnostics to build your confidence!</p>
+      <p>Welcome to your personal study portal! This revision guide is custom-tailored to the <strong>Google Cloud
+          Professional Cloud Network Engineer</strong> certification. It is organized <strong>by theme</strong> to group
+        related concepts together logically, rather than strictly following the dry exam guide numbers. Each guide
+        features clear, conversational explanations, corny jokes, memory-jogging mnemonics, sneaky exam traps, and
+        original practice questions with full diagnostics to build your confidence!</p>
     </div>
 
     <div class="grid-sections">
-      
+
       <!-- Card 0 -->
       <div class="section-card s2" style="background: #faf5ff;">
         <div>
           <div class="sec-badge">Theme 0</div>
           <h2 class="sec-title">Network Foundations &amp; Jargon Buster</h2>
-          <p class="sec-desc">Demystify CIDR math, RFC 1918 private IP ranges, TCP vs. UDP port mappings, and the GCP-specific global SDN routing mindset.</p>
+          <p class="sec-desc">Demystify CIDR math, RFC 1918 private IP ranges, TCP vs. UDP port mappings, and the
+            GCP-specific global SDN routing mindset.</p>
         </div>
         <a href="theme0_foundations.html" class="btn-cgp">Open Theme 0 Guide &rarr;</a>
       </div>
@@ -338,7 +396,8 @@
         <div>
           <div class="sec-badge">Theme 1</div>
           <h2 class="sec-title">VPC Foundations, IPAM &amp; Routing</h2>
-          <p class="sec-desc">Master network service tiers (Premium vs Standard), Shared VPC permissions, subnet range expansion, MTU limits, and dynamic routing modes.</p>
+          <p class="sec-desc">Master network service tiers (Premium vs Standard), Shared VPC permissions, subnet range
+            expansion, MTU limits, and dynamic routing modes.</p>
         </div>
         <a href="theme1_vpc_design.html" class="btn-cgp">Open Theme 1 Guide &rarr;</a>
       </div>
@@ -348,7 +407,8 @@
         <div>
           <div class="sec-badge">Theme 2</div>
           <h2 class="sec-title">Private Connectivity, NCC &amp; VPC-SC</h2>
-          <p class="sec-desc">Explore Private Google Access, PSA vs PSC, Network Connectivity Center topologies (Mesh vs Star), and VPC Service Controls perimeters.</p>
+          <p class="sec-desc">Explore Private Google Access, PSA vs PSC, Network Connectivity Center topologies (Mesh vs
+            Star), and VPC Service Controls perimeters.</p>
         </div>
         <a href="theme2_private_access.html" class="btn-cgp">Open Theme 2 Guide &rarr;</a>
       </div>
@@ -358,7 +418,8 @@
         <div>
           <div class="sec-badge">Theme 3</div>
           <h2 class="sec-title">Hybrid &amp; Multicloud Connectivity</h2>
-          <p class="sec-desc">Deep dive into Dedicated vs Partner Interconnect, HA VPN SLAs, MACsec, Cloud Router BGP attributes, and Legacy vs Standard path selection.</p>
+          <p class="sec-desc">Deep dive into Dedicated vs Partner Interconnect, HA VPN SLAs, MACsec, Cloud Router BGP
+            attributes, and Legacy vs Standard path selection.</p>
         </div>
         <a href="theme3_hybrid.html" class="btn-cgp">Open Theme 3 Guide &rarr;</a>
       </div>
@@ -368,7 +429,8 @@
         <div>
           <div class="sec-badge">Theme 4</div>
           <h2 class="sec-title">GKE Networking</h2>
-          <p class="sec-desc">Master VPC-native clusters, private control planes, DNS-based endpoints, Dataplane V2 (eBPF), and container-native load balancing.</p>
+          <p class="sec-desc">Master VPC-native clusters, private control planes, DNS-based endpoints, Dataplane V2
+            (eBPF), and container-native load balancing.</p>
         </div>
         <a href="theme4_gke.html" class="btn-cgp">Open Theme 4 Guide &rarr;</a>
       </div>
@@ -378,7 +440,8 @@
         <div>
           <div class="sec-badge">Theme 5</div>
           <h2 class="sec-title">Load Balancing, DNS &amp; CDN</h2>
-          <p class="sec-desc">Understand the current LB taxonomy (Application, proxy, and passthrough), DNS routing policies (WRR, failover trickle ratio), and Cloud CDN.</p>
+          <p class="sec-desc">Understand the current LB taxonomy (Application, proxy, and passthrough), DNS routing
+            policies (WRR, failover trickle ratio), and Cloud CDN.</p>
         </div>
         <a href="theme5_lb_dns_cdn.html" class="btn-cgp">Open Theme 5 Guide &rarr;</a>
       </div>
@@ -388,7 +451,8 @@
         <div>
           <div class="sec-badge">Theme 6</div>
           <h2 class="sec-title">Network Security</h2>
-          <p class="sec-desc">Lock down your network with Cloud Armor WAF, Cloud NGFW tiers (Essentials, Standard, Enterprise), Secure Web Proxy, and Cloud NAT DPA.</p>
+          <p class="sec-desc">Lock down your network with Cloud Armor WAF, Cloud NGFW tiers (Essentials, Standard,
+            Enterprise), Secure Web Proxy, and Cloud NAT DPA.</p>
         </div>
         <a href="theme6_security.html" class="btn-cgp">Open Theme 6 Guide &rarr;</a>
       </div>
@@ -398,30 +462,40 @@
         <div>
           <div class="sec-badge">Theme 7</div>
           <h2 class="sec-title">Operations &amp; Troubleshooting</h2>
-          <p class="sec-desc">Diagnose failures using Network Intelligence Center (Network Analyzer, Connectivity Tests, Firewall Insights) and troubleshoot BGP peering.</p>
+          <p class="sec-desc">Diagnose failures using Network Intelligence Center (Network Analyzer, Connectivity Tests,
+            Firewall Insights) and troubleshoot BGP peering.</p>
         </div>
         <a href="theme7_ops.html" class="btn-cgp">Open Theme 7 Guide &rarr;</a>
       </div>
 
       <!-- Card 8 (Cheatsheet) -->
-      <div class="section-card s3" style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
+      <div class="section-card s3"
+        style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
         <div>
           <div class="sec-badge" style="background: var(--cgp-yellow-dark); color: #000;">Exam Deck</div>
           <h2 class="sec-title">Exam Guide Cheat Sheet</h2>
-          <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features high-yield fact cards, exam traps, and synthesis matrices.</p>
+          <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features
+            high-yield fact cards, exam traps, and synthesis matrices.</p>
         </div>
-        <a href="cheatsheet.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Open Exam Cheat Sheet &rarr;</a>
+        <a href="cheatsheet.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Open Exam Cheat
+          Sheet &rarr;</a>
       </div>
 
     </div>
 
     <div class="study-tip">
       <h3>💡 Coach's Study Tip!</h3>
-      <p>Don't try to memorize everything in one sitting! Start with <strong>Theme 1</strong> and <strong>Theme 2</strong> to lock down VPC and Private Access foundations. Then, test your knowledge with the inline warm-up quizzes. Once you've completed all 7 themes, use the <strong>Exam Guide Cheat Sheet</strong> as a final coverage checklist and study the <strong>Synthesis Matrices</strong> right before your exam to keep high-yield specs fresh in your mind!</p>
+      <p>Don't try to memorize everything in one sitting! Start with <strong>Theme 1</strong> and <strong>Theme
+          2</strong> to lock down VPC and Private Access foundations. Then, test your knowledge with the inline warm-up
+        quizzes. Once you've completed all 7 themes, use the <strong>Exam Guide Cheat Sheet</strong> as a final coverage
+        checklist and study the <strong>Synthesis Matrices</strong> right before your exam to keep high-yield specs
+        fresh in your mind!</p>
     </div>
 
-    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to
+      Top</button>
 
   </div>
 </body>
+
 </html>
