@@ -546,6 +546,83 @@
       <strong>The Client IP Preservation Trap!</strong> If an exam question asks you to design a load-balanced architecture where the backend servers <strong>MUST see the original client source IP address</strong> natively in the packet header, you <strong>cannot</strong> use an Application Load Balancer or Proxy Network Load Balancer (they terminate the connection, replacing the source IP with the LB's proxy IP). You <strong>MUST</strong> use a <strong>Passthrough Network Load Balancer</strong>!
     </div>
 
+    <p>That taxonomy tells you <em>what</em> each load balancer is. This next matrix is the one that wins exam questions — it lines up the <strong>discriminators</strong> examiners use to separate the right answer from the plausible-looking wrong ones. Burn it into memory: 🔥</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Application LB (proxy, L7)</th>
+            <th>Proxy NLB (proxy, L4)</th>
+            <th>Passthrough NLB (L4)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IPv6 / dual-stack</strong></td>
+            <td>✅ Yes</td>
+            <td>✅ Yes</td>
+            <td>✅ Yes (modern backend-service based)</td>
+          </tr>
+          <tr>
+            <td><strong>Port translation</strong> (frontend port ≠ backend port)</td>
+            <td>✅ Yes</td>
+            <td>✅ Yes</td>
+            <td>❌ <strong>No</strong> — same port end to end</td>
+          </tr>
+          <tr>
+            <td><strong>Content-based routing</strong> (URL maps, host/path)</td>
+            <td>✅ Yes</td>
+            <td>❌ No</td>
+            <td>❌ No</td>
+          </tr>
+          <tr>
+            <td><strong>TLS / SSL passthrough</strong> (no termination at LB)</td>
+            <td>❌ No (terminates)</td>
+            <td>❌ No (terminates)</td>
+            <td>✅ Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Preserves client source IP</strong></td>
+            <td>❌ No (X-Forwarded-For instead)</td>
+            <td>❌ No</td>
+            <td>✅ Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Global access</strong> (reach from any region / on-prem)</td>
+            <td>✅ Yes (global &amp; cross-region modes)</td>
+            <td>✅ Yes (global &amp; cross-region modes)</td>
+            <td>✅ Internal, with global access enabled</td>
+          </tr>
+          <tr>
+            <td><strong>Usable as a route next hop</strong> (for NVAs)</td>
+            <td>❌ No</td>
+            <td>❌ No</td>
+            <td>✅ <strong>Internal passthrough NLB only</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Proxy-only subnet required</strong></td>
+            <td>✅ Yes (internal/regional ALB)</td>
+            <td>✅ Yes (internal/regional proxy NLB)</td>
+            <td>❌ No</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Port-Translation Trap!</strong> A <strong>passthrough</strong> load balancer delivers packets to the backend on the <em>same</em> port the forwarding rule received them — it can never map, say, frontend port 700 to backend port 800. The moment a scenario needs a <strong>different frontend and backend port</strong>, you need a <strong>proxy</strong> load balancer. (Don't fall for the old "passthrough NLBs don't support IPv6" reasoning — modern backend-service-based passthrough NLBs <em>do</em> support IPv6; port translation is the real discriminator.)
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Proxy-Only Subnet Prerequisite!</strong> Before you can create an <strong>internal (or regional) Application Load Balancer</strong>, the region must already have a <strong>proxy-only subnet</strong> (purpose <code>REGIONAL_MANAGED_PROXY</code>). It's a prerequisite, not an afterthought — the Envoy proxies live there. Firewall rules and a reserved IP, by contrast, can be added <em>after</em> the LB exists.
+    </div>
+
+    <div class="exam-trap">
+      <strong>The NVA High-Availability Pattern!</strong> To send traffic through two network virtual appliances <strong>simultaneously</strong> with automatic failover, put them behind an <strong>internal passthrough Network Load Balancer</strong> and point a custom static route (e.g. <code>10.0.0.0/8</code>) at that LB as its <strong>next hop</strong>. Only the internal passthrough NLB can be a route next hop — proxy LBs cannot, and two priority routes only give active/standby (not both at once, and no health checking).
+    </div>
+
     <!-- 5.2 Traffic Management & Backends -->
     <h2>5.2 Traffic Management &amp; Backends</h2>
     <p>Load balancers distribute traffic to backends. GCP supports several backend types:</p>
@@ -602,6 +679,38 @@
 
     <div class="joke-box">
       "Why did the DNS record set apply a trickle ratio to its failover policy? Because it wanted to keep its backup environment warm, just in case the primary got a cold!" 🥶
+    </div>
+
+    <!-- 5.5 Hybrid DNS Architecture -->
+    <h2>5.5 Hybrid DNS Architecture: Resolving Across the Boundary</h2>
+    <p>Routing policies steer traffic <em>within</em> a zone. Hybrid DNS is a different beast: it's about <strong>which resolver answers a query</strong> when names live on-premises, in another VPC, or in Google Cloud. Three building blocks do all the work — get the direction right and these questions become easy. 🧭</p>
+
+    <div class="cgp-card tip">
+      <h3>🧭 The Three Building Blocks (and which way they point)</h3>
+      <ul>
+        <li><strong>Forwarding zone (outbound):</strong> A Cloud DNS private zone whose queries are <strong>forwarded out to a specific set of on-premises (or external) DNS servers</strong>. Scope it to the exact private zones you want resolved on-prem — not everything. This is how Google Cloud VMs resolve <em>on-premises</em> names.</li>
+        <li><strong>DNS peering (VPC → VPC):</strong> Lets one VPC <strong>hand its queries to another VPC's Cloud DNS configuration</strong>. In a hub-and-spoke design, the spokes peer to the hub so they inherit the hub's forwarding zone — you configure forwarding <em>once</em> on the hub instead of in every spoke.</li>
+        <li><strong>Server policy (inbound / outbound):</strong> Attached to a VPC.
+          <ul>
+            <li><strong>Inbound:</strong> creates an <strong>inbound forwarder IP</strong> so <em>on-premises</em> servers can resolve Google Cloud private names (the reverse direction).</li>
+            <li><strong>Outbound (alternative name servers):</strong> sends <strong>all</strong> queries from the VPC to the listed servers — a blunt instrument, not zone-scoped.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="cgp-card tip">
+      <h3>🛰️ The Hub-and-Spoke Forwarding Pattern</h3>
+      <p>Want VMs in <em>every</em> spoke VPC to resolve a specific set of private zones via on-premises DNS? Don't apply a forwarding zone to each spoke (that advertises the same DNS proxy range from every VPC and your on-prem router can't tell who asked → dropped queries). Instead:</p>
+      <ul>
+        <li>Create the <strong>forwarding zone on the hub VPC</strong> only, pointing at the on-prem DNS servers.</li>
+        <li>From each spoke, create a <strong>DNS peering zone</strong> to the hub.</li>
+      </ul>
+      <p>One forwarding config, scoped to the zones you choose, inherited by every spoke.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The 35.199.192.0/19 Trap!</strong> For <strong>outbound</strong> resolution (Google Cloud → on-prem), forwarded DNS queries leave Google from the source range <strong>35.199.192.0/19</strong>. You must <strong>advertise that range to on-premises via Cloud Router</strong> and allow it through on-prem firewalls, or the queries never arrive. The lookalike <code>169.254.169.254</code> is the <strong>metadata DNS server</strong> — wrong answer. (And remember: an <em>inbound</em> server policy is for the opposite direction, on-prem resolving Google Cloud names.)
     </div>
 
     <!-- Interactive Retrieval Quiz -->

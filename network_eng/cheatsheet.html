@@ -627,6 +627,15 @@
             <p>If you configure your Pod secondary range too small, your GKE cluster will fail to scale up node pools even if you have plenty of Compute Engine VM quota! Always calculate your Pod range based on the maximum anticipated nodes × 256 IPs per node.</p>
           </div>
 
+          <div class="know-card">
+            <h3>Alias-IP Sizing &amp; Immutability</h3>
+            <ul>
+              <li><strong>Pods range</strong> = nodes × 256 → round up to a power of two. 100 nodes = 25,600 IPs → <strong>/17</strong> (32,768).</li>
+              <li><strong>Services range</strong> = number of ClusterIP services. ~1,500 services → <strong>/21</strong> (2,048).</li>
+              <li><strong>Immutable:</strong> Pod/Service secondary ranges <strong>cannot be resized after cluster creation</strong> — size for projected growth up front. "Start small, resize later" is always a trap.</li>
+            </ul>
+          </div>
+
           <div class="doc-grid">
             <a href="https://cloud.google.com/vpc/docs/mtu" class="doc-link" target="_blank">
               <strong>VPC MTU Overview</strong>
@@ -661,7 +670,7 @@
             <h3>High-Yield Facts to Memorize</h3>
             <ul>
               <li><strong>VPC Peering:</strong> Peerings are strictly <strong>non-transitive</strong>. To share hybrid routes (VPN/Interconnect) across peerings, you must explicitly enable "Export Custom Routes" on the hosting peering link and "Import Custom Routes" on the peer.</li>
-              <li><strong>DNS-Based Endpoint:</strong> Enabled via <code>--enable-dns-access</code>. Creates a unique FQDN (e.g. <code>HASH.gke.goog</code>) resolving to Google's secure global API frontend. Allows secure, bastion-free control plane access to private GKE clusters from anywhere, gated strictly by <strong>GCP IAM</strong>!</li>
+              <li><strong>DNS-Based Endpoint:</strong> Enabled via <code>--enable-dns-access</code>. Creates a unique FQDN (e.g. <code>HASH.gke.goog</code>) resolving to Google's secure global API frontend. Bastion-free control-plane access to private clusters from <strong>other spokes / on-prem / other clouds</strong> — sidesteps non-transitive peering, gated by <strong>IAM</strong> (<code>container.clusters.connect</code>) + <strong>VPC Service Controls</strong> (not IP authorized networks). For a private-only path, reach it via <strong>PSC / VPN / Interconnect</strong> with a <code>gke.goog</code> DNS record.</li>
               <li><strong>Dataplane V2:</strong> eBPF-based (Cilium). Enforces Kubernetes Network Policies natively in the Linux kernel, bypassing slow, sequential <code>iptables</code> rules for blistering speed and massive scale.</li>
               <li><strong>Policy-Based Routing:</strong> Routes traffic based on source IP, destination IP, protocol, and network tags. Can target an <strong>Internal Load Balancer (ILB)</strong> as the next hop to distribute traffic across a pool of NVA firewalls.</li>
             </ul>
@@ -715,6 +724,26 @@
               <li><strong>Cloud DNS Failover Policy:</strong> Supports primary/backup IPs. Backup must use GEO. Use <strong><code>--backup-data-trickle-ratio</code></strong> (0 to 1) to continuously route a tiny percentage of live traffic to the DR site to ensure it is warm and functioning!</li>
               <li><strong>Cloud DNS Geofencing:</strong> Enabling <code>--enable-geo-fencing</code> on a Geolocation policy restricts traffic to that region even if all endpoints there are unhealthy (guarantees data residency compliance like GDPR).</li>
               <li><strong>Container-Native LB:</strong> Always use <strong>Network Endpoint Groups (NEGs)</strong> in GKE to route traffic from the load balancer directly to Pod IPs, bypassing the slow <code>kube-proxy</code> node hop.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>Load Balancer Capability Discriminators</h3>
+            <ul>
+              <li><strong>Port translation</strong> (frontend port ≠ backend port): <strong>proxy LBs only</strong>. A passthrough NLB delivers to backends on the same port — it cannot map 700→800. (IPv6 is <em>not</em> the discriminator anymore: modern backend-service passthrough NLBs support IPv6/dual-stack.)</li>
+              <li><strong>Route next hop</strong> (for NVA high-availability): <strong>internal passthrough NLB only</strong>. Point a static route (e.g. <code>10.0.0.0/8</code>) at the ILB to use both appliances actively with health-checked failover.</li>
+              <li><strong>Proxy-only subnet</strong> (<code>REGIONAL_MANAGED_PROXY</code>): a <strong>prerequisite</strong> for internal/regional Application LBs and proxy NLBs. Firewall rules and reserved IPs can come <em>after</em>.</li>
+              <li><strong>TLS passthrough + global access</strong> (latency-sensitive, multi-region private): <strong>internal passthrough NLB</strong> — the internal ALB terminates TLS and can't pass it through.</li>
+            </ul>
+          </div>
+
+          <div class="know-card">
+            <h3>Hybrid DNS Architecture Picker</h3>
+            <ul>
+              <li><strong>Forwarding zone (outbound):</strong> Google Cloud → on-prem resolution, scoped to specific private zones.</li>
+              <li><strong>DNS peering (VPC → VPC):</strong> hub-and-spoke pattern — put the forwarding zone on the <strong>hub</strong> only, peer each spoke to it (don't repeat forwarding in every VPC).</li>
+              <li><strong>Server policy:</strong> <strong>inbound</strong> = forwarder IP so on-prem resolves Google Cloud names; <strong>outbound</strong> alternative name servers = send <em>all</em> VPC queries out (not zone-scoped).</li>
+              <li><strong>Advertise <code>35.199.192.0/19</code></strong> to on-prem (via Cloud Router + firewall) for outbound forwarded queries. <code>169.254.169.254</code> is the metadata DNS server — a trap.</li>
             </ul>
           </div>
 

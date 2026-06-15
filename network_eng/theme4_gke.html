@@ -525,6 +525,21 @@
       <strong>The GKE IP Exhaustion Trap!</strong> If you configure your Pod secondary range too small, your GKE cluster will fail to scale up node pools even if you have plenty of Compute Engine quota! GKE allocates a fixed <code>/24</code> block (256 IPs) per node for Pods by default. If your secondary range runs out of IPs, GKE cannot provision new nodes. Plan your IPAM space carefully!
     </div>
 
+    <div class="cgp-card tip">
+      <h3>🧮 Alias-IP Sizing: A Worked Example</h3>
+      <p>Exam questions love to make you size the two secondary ranges for a cluster's <strong>projected</strong> growth while "minimizing address consumption". Work it from the per-node Pod block (default <code>/24</code> = 256 Pod IPs per node):</p>
+      <ul>
+        <li><strong>Pods range</strong> = nodes × 256 IPs. For 100 nodes that's 25,600 IPs → round up to a power of two → a <strong>/17</strong> (32,768 IPs) fits; a <code>/18</code> (16,384) would not.</li>
+        <li><strong>Services range</strong> = number of ClusterIP Services. For ~1,500 services, a <strong>/21</strong> (2,048 IPs) is comfortable while a <code>/24</code> (256) is far too small.</li>
+        <li><strong>Nodes (primary) range</strong> just needs one IP per node (plus headroom) — a small <code>/25</code> covers 100+ nodes.</li>
+      </ul>
+      <p>So a 100-node / 1,500-service target maps cleanly to a <code>/25</code> primary subnet with secondary ranges of <strong>/17 for Pods</strong> and <strong>/21 for Services</strong>.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Secondary Ranges Are Immutable!</strong> You <strong>cannot resize a cluster's Pod or Service secondary range after the cluster is created</strong> (the <code>expand-ip-range</code> command applies to primary subnet ranges, not secondaries). That's why you size for the <em>2-year projection</em> up front — "start small and resize later" is always a trap answer for secondary ranges.
+    </div>
+
     <!-- 4.2 Control Plane Isolation & DNS-Based Endpoints -->
     <h2>4.2 Control Plane Isolation &amp; DNS-Based Endpoints</h2>
     <p>Securing access to your Kubernetes API server (the control plane) is critical. GKE offers several layers of isolation:</p>
@@ -542,6 +557,10 @@
           </ul>
         </li>
       </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Hub-and-Spoke / On-Prem Control-Plane Trap!</strong> When a scenario needs control-plane access from <strong>other spoke projects</strong> or <strong>on-premises</strong>, the DNS-based endpoint is the modern answer — and it sidesteps the classic <strong>VPC Network Peering is non-transitive</strong> problem entirely, because the FQDN resolves to Google's API frontend rather than a peered internal IP. Access is gated by <strong>IAM</strong> (<code>container.clusters.connect</code>) plus <strong>VPC Service Controls</strong>, <em>not</em> IP authorized networks. For a <strong>private-only</strong> path (no public internet), reach that endpoint over <strong>Private Service Connect, Cloud VPN, or Cloud Interconnect</strong> (with a DNS record for the <code>gke.goog</code> domain). The old answers — "deploy a proxy/bastion" or "export peering routes + authorized networks" — are exactly what this replaces.
     </div>
 
     <div class="joke-box">
