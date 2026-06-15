@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <title>Professional Data Engineer - Exam Simulator</title>
     <!-- Outfit & Inter Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #ea580c;
+            --dark-accent-hover: #c2410c;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #9a3412;
+            --classic-accent-hover: #7c2d12;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional Data Engineer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,1001 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "Data Engineer",
+    "scenario": "You need a unified batch and streaming pipeline that autoscales and uses the same code for both modes. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
+        "text": "Dataflow (Apache Beam).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Dataproc (Spark).",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "Cloud Data Fusion only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "BigQuery scheduled queries.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "Dataflow runs Apache Beam pipelines for unified batch + streaming with autoscaling and a single programming model.",
+      "B": "Dataproc is best for migrating existing Spark/Hadoop jobs, not a unified Beam model.",
+      "C": "Data Fusion is GUI ETL; not a unified code-based batch/stream engine.",
+      "D": "Scheduled queries are batch SQL, not streaming pipelines."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://cloud.google.com/dataflow/docs/concepts",
+        "text": "cloud.google.com/dataflow/docs/concepts"
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "Data Engineer",
+    "scenario": "You must migrate existing on-prem Apache Spark jobs to Google Cloud with minimal code changes. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
+        "text": "Dataproc.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Dataflow.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "BigQuery.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Pub/Sub.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Dataproc is managed Spark/Hadoop, ideal for lift-and-shift of existing Spark jobs.",
+      "B": "Dataflow requires rewriting to Beam.",
+      "C": "BigQuery is a warehouse, not a Spark runtime.",
+      "D": "Pub/Sub is messaging, not compute."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://cloud.google.com/dataproc/docs",
+        "text": "cloud.google.com/dataproc/docs"
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "Data Engineer",
+    "scenario": "A streaming job must aggregate the last 60 seconds of events, recomputed every 10 seconds. Which windowing should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
+        "text": "Hopping (sliding) windows.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Tumbling (fixed) windows.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Session windows.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "Global window with no triggers.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "Hopping/sliding windows of size 60s with a 10s period overlap to recompute every 10 seconds.",
+      "B": "Tumbling windows are non-overlapping and can't recompute more often than their size.",
+      "C": "Session windows group by activity gaps, not fixed periods.",
+      "D": "A global window without triggers won't emit periodic aggregates."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines",
+        "text": "cloud.google.com/dataflow/docs/concepts/streaming-pipelines"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "Data Engineer",
+    "scenario": "You want to minimize BigQuery cost for recurring dashboards that pre-aggregate a large table and stay fresh as the source changes. What should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
+        "text": "Materialized views.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "A new copy of the table nightly.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "SELECT * each time.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "A Cloud SQL replica.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "Materialized views pre-compute aggregates and refresh incrementally as source data changes, cutting cost and latency.",
+      "B": "Nightly full copies are costly and stale between runs.",
+      "C": "Repeated full scans are the most expensive option.",
+      "D": "Cloud SQL isn't the analytics warehouse here."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://cloud.google.com/bigquery/docs/materialized-views-intro",
+        "text": "cloud.google.com/bigquery/docs/materialized-views-intro"
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "Data Engineer",
+    "scenario": "Business users want a GUI to clean data, then analyze results in a spreadsheet connected to BigQuery. Which combination?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
+        "text": "Dataprep + Connected Sheets.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "Dataflow + Looker Studio.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Dataproc + Sheets export.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Cloud Data Fusion + Data Studio dashboards.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "Dataprep offers GUI data wrangling; Connected Sheets gives spreadsheet access to BigQuery results.",
+      "B": "Dataflow requires code; Looker Studio is a dashboard, not a spreadsheet.",
+      "C": "Dataproc requires Spark code, not a GUI for business users.",
+      "D": "Data Studio is a dashboard tool, not a spreadsheet experience."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://cloud.google.com/bigquery/docs/connected-sheets",
+        "text": "cloud.google.com/bigquery/docs/connected-sheets"
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "Data Engineer",
+    "scenario": "You must share curated BigQuery datasets with many partner organizations with minimal operational overhead and no data duplication. Which feature?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
+        "text": "Analytics Hub (BigQuery sharing).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Scheduled queries copying data into each partner project.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Exporting to Cloud Storage and emailing files.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "Granting each partner project owner.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "Analytics Hub publishes datasets as listings partners subscribe to, with no copying and low overhead.",
+      "B": "Copying duplicates data and increases cost/ops.",
+      "C": "File exports are manual and stale.",
+      "D": "Granting owner over-permissions partners."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://cloud.google.com/bigquery/docs/analytics-hub-introduction",
+        "text": "cloud.google.com/bigquery/docs/analytics-hub-introduction"
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "Data Engineer",
+    "scenario": "You orchestrate a multi-step daily pipeline with dependencies and retries. Which managed service is most appropriate?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
+        "text": "Cloud Composer (Apache Airflow).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "A cron job on a VM.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Pub/Sub alone.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Manual runs.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "Cloud Composer (managed Airflow) authors DAGs with dependencies, scheduling, and retries.",
+      "B": "VM cron lacks dependency management and resilience.",
+      "C": "Pub/Sub is messaging, not workflow orchestration.",
+      "D": "Manual runs aren't repeatable or reliable."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/composer/docs",
+        "text": "cloud.google.com/composer/docs"
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "Data Engineer",
+    "scenario": "You must detect and mask PII in data before loading it to BigQuery for analytics, at scale. Which combination?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
+        "text": "Dataflow with Cloud DLP (Sensitive Data Protection).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "CMEK on the bucket only.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "IAM roles only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "VPC Service Controls only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Dataflow + Cloud DLP inspects, classifies, and de-identifies (masks/tokenizes) PII at scale before loading to BigQuery.",
+      "B": "CMEK encrypts but doesn't detect/mask PII fields.",
+      "C": "IAM controls access, not PII transformation.",
+      "D": "VPC-SC limits exfiltration but doesn't mask field-level PII."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://cloud.google.com/dlp/docs",
+        "text": "cloud.google.com/dlp/docs"
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "Data Engineer",
+    "scenario": "You need cost-efficient Dataproc for many short, independent jobs without paying for an idle cluster. What do you use?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
+        "text": "Ephemeral, job-scoped clusters (created per job, deleted after).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "One large persistent cluster running 24/7.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "A single-node cluster always on.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Dataflow streaming.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "Ephemeral per-job clusters spin up for the job and tear down after, eliminating idle cost.",
+      "B": "A persistent cluster wastes money when idle.",
+      "C": "An always-on single node still incurs idle cost and limits throughput.",
+      "D": "Switching to Dataflow changes the workload; the question is about Dataproc cost."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-web-interfaces",
+        "text": "cloud.google.com/dataproc/docs/concepts/configuring-clust..."
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "Data Engineer",
+    "scenario": "To control BigQuery analytics spend with predictable capacity rather than per-query on-demand pricing, what do you use?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "BigQuery Editions with reservations (slots).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "On-demand pricing for everything.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "Exporting all queries to Cloud SQL.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "BI Engine only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "BigQuery Editions/reservations buy dedicated slot capacity for predictable, capped spend.",
+      "B": "On-demand can be unpredictable for heavy workloads.",
+      "C": "Cloud SQL isn't a BigQuery analytics substitute.",
+      "D": "BI Engine accelerates BI but isn't the slot capacity mechanism."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://cloud.google.com/bigquery/docs/editions-intro",
+        "text": "cloud.google.com/bigquery/docs/editions-intro"
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "Data Engineer",
+    "scenario": "You must govern a decentralized lakehouse: discover data, track lineage, and enforce data quality across BigQuery and Cloud Storage. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
+        "text": "Dataplex.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "Cloud Logging.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
+        "text": "Data Catalog tags only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "BigQuery alone.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "Dataplex unifies discovery, governance, lineage, and data-quality across distributed data (BigQuery, GCS).",
+      "B": "Cloud Logging is operational logs, not data governance.",
+      "C": "Catalog tags help metadata but aren't full governance/quality on their own.",
+      "D": "BigQuery alone doesn't govern Cloud Storage data lakes."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://cloud.google.com/dataplex/docs/introduction",
+        "text": "cloud.google.com/dataplex/docs/introduction"
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "Data Engineer",
+    "scenario": "A real-time dashboard needs low-latency reads of pre-aggregated streaming results. Where should Dataflow write the aggregates?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "Memorystore (or Bigtable) for low-latency serving.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "BigQuery for sub-millisecond per-key reads.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Cloud Storage objects.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "A Pub/Sub topic.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "Low-latency dashboard reads suit Memorystore (in-memory) or Bigtable, depending on scale.",
+      "B": "BigQuery is analytical with higher per-query latency, not sub-ms key reads.",
+      "C": "Object reads aren't low-latency key lookups.",
+      "D": "Pub/Sub is transport, not a serving store."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines",
+        "text": "cloud.google.com/dataflow/docs/concepts/streaming-pipelines"
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "Data Engineer",
+    "scenario": "You need to ingest millions of events per second from globally distributed publishers with at-least-once delivery and decoupling. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
+        "text": "Pub/Sub.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Cloud Tasks.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Cloud Scheduler.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "Cloud Storage notifications only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "Pub/Sub is a global, scalable messaging service with at-least-once delivery, decoupling producers and consumers.",
+      "B": "Cloud Tasks targets per-task HTTP dispatch with rate control, not massive global event ingestion.",
+      "C": "Cloud Scheduler triggers cron jobs, not high-throughput ingestion.",
+      "D": "GCS notifications are limited to object events."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://cloud.google.com/pubsub/docs/overview",
+        "text": "cloud.google.com/pubsub/docs/overview"
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "Data Engineer",
+    "scenario": "You must handle late-arriving streaming data so windows can still include events that arrive after the watermark. What Beam/Dataflow feature do you use?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
+        "text": "Allowed lateness with triggers.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "Larger machine types.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Disabling autoscaling.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "A global window only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Configuring allowed lateness and triggers lets windows emit updated results when late data arrives after the watermark.",
+      "B": "Machine size doesn't change late-data semantics.",
+      "C": "Autoscaling is unrelated to lateness handling.",
+      "D": "A global window without triggers won't manage lateness meaningfully."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines",
+        "text": "cloud.google.com/dataflow/docs/concepts/streaming-pipelines"
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "Data Engineer",
+    "scenario": "A BigQuery table is queried with frequent filters on event_date and a high-cardinality user_id. To cut cost and improve performance, what do you apply?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
+        "text": "Partition by event_date and cluster by user_id.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Cluster by event_date only.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "No partitioning; rely on caching.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "Split into one table per user.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Partitioning by date prunes scanned data; clustering by user_id co-locates rows for filter efficiency — together cutting cost and improving speed.",
+      "B": "Clustering alone on date misses partition pruning benefits.",
+      "C": "Relying on cache doesn't reduce scanned bytes for new queries.",
+      "D": "One table per user creates unmanageable sprawl."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+        "text": "cloud.google.com/bigquery/docs/partitioned-tables"
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "Data Engineer",
+    "scenario": "You must build features and train an ML model directly on data in BigQuery using SQL, without exporting it. Which approach?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
+        "text": "BigQuery ML.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "Export to Vertex AI custom training.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
+        "text": "Dataproc MLlib.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Cloud SQL stored procedures.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "BigQuery ML trains and serves models with SQL in-place, no data export.",
+      "B": "Custom training requires moving data and ML code.",
+      "C": "MLlib needs a Spark cluster and code, not in-warehouse SQL.",
+      "D": "Cloud SQL has no native ML training."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://cloud.google.com/bigquery/docs/bqml-introduction",
+        "text": "cloud.google.com/bigquery/docs/bqml-introduction"
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "Data Engineer",
+    "scenario": "A pipeline must guarantee exactly-once processing semantics for streaming aggregates into BigQuery. Which engine provides this natively?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
+        "text": "Dataflow (Beam) with its exactly-once streaming model.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "A custom script polling Pub/Sub.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Dataproc Spark Streaming without checkpoints.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "Cloud Functions per message with no idempotency.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "Dataflow provides exactly-once processing semantics for streaming, simplifying correct aggregates.",
+      "B": "A custom poller must hand-build deduplication and offers no guarantees.",
+      "C": "Spark Streaming without checkpoints risks duplicates/loss.",
+      "D": "Per-message functions without idempotency can double-count."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://cloud.google.com/dataflow/docs/concepts/exactly-once",
+        "text": "cloud.google.com/dataflow/docs/concepts/exactly-once"
       }
     ]
   },
   {
     "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "domain": "Data Engineer",
+    "scenario": "You need disaster recovery for a Cloud Storage data lake with a 15-minute RPO and low-latency reads from us-central1. Which bucket configuration?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
+        "text": "Dual-region bucket (e.g., us-central1 + us-south1) with turbo replication.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Multi-region US bucket.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "Two separate regional buckets copied daily.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "A single regional bucket with no replication.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "A dual-region bucket with turbo replication provides a 15-minute RPO and low-latency reads in-region.",
+      "B": "Multi-region buckets have a higher (1-hour) RPO and less control over locality.",
+      "C": "Daily copies give a 24-hour RPO.",
+      "D": "A single region has no cross-region DR."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://cloud.google.com/storage/docs/availability-durability",
+        "text": "cloud.google.com/storage/docs/availability-durability"
       }
     ]
   },
   {
     "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "domain": "Data Engineer",
+    "scenario": "To prepare unstructured documents for retrieval-augmented generation (RAG) and similarity search, what BigQuery capability helps?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
+        "text": "Generating and storing vector embeddings and using vector search.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "Standard SQL JOINs only.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Materialized views on text columns.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
+        "text": "Partitioning by document length.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "BigQuery can generate embeddings and perform vector search to support RAG and semantic similarity.",
+      "B": "JOINs don't provide semantic similarity.",
+      "C": "Materialized views don't create embeddings.",
+      "D": "Partitioning by length is irrelevant to semantic retrieval."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://cloud.google.com/bigquery/docs/vector-search",
+        "text": "cloud.google.com/bigquery/docs/vector-search"
       }
     ]
   },
   {
     "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "domain": "Data Engineer",
+    "scenario": "A Cloud Composer DAG must run a step only after two upstream tasks both succeed. What construct expresses this?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
+        "text": "Task dependencies (upstream >> downstream) so the step waits for both.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "A time delay sensor guessing when they finish.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "Three separate DAGs with no links.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
+        "text": "Manual triggering after checking logs.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
+      "A": "Airflow task dependencies make a downstream task wait for all specified upstream tasks to succeed.",
+      "B": "Time guesses are fragile and race-prone.",
+      "C": "Unlinked DAGs can't express the dependency.",
+      "D": "Manual triggering defeats automation."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
+        "url": "https://cloud.google.com/composer/docs/how-to/using/writing-dags",
+        "text": "cloud.google.com/composer/docs/how-to/using/writing-dags"
       }
     ]
   },
   {
     "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
+    "domain": "Data Engineer",
+    "scenario": "You must encrypt BigQuery datasets with keys generated and held only in your on-prem HSM. Which option?",
     "options": [
       {
         "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
+        "text": "Cloud EKM (external key manager).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A multi-region (global) Spanner config.",
+        "text": "CMEK with imported key material.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Default settings and hope for the best.",
+        "text": "Google-managed keys.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
+        "text": "Customer-supplied keys per query.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
+      "A": "Cloud EKM links to an external/on-prem HSM so key material never persists in Google Cloud.",
+      "B": "Importing copies key material into Cloud KMS, violating the requirement.",
+      "C": "Google-managed keys offer no external control.",
+      "D": "BigQuery doesn't use per-query supplied keys."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+        "url": "https://cloud.google.com/kms/docs/ekm",
+        "text": "cloud.google.com/kms/docs/ekm"
       }
     ]
   },
   {
     "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
+    "domain": "Data Engineer",
+    "scenario": "Your batch Dataflow job must be resilient to zonal failures at submission time. What do you do?",
     "options": [
       {
         "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
+        "text": "Specify a region (let Dataflow choose the zone) instead of pinning a single zone.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Only on-demand backups.",
+        "text": "Always pin a single specific zone.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Read replicas.",
+        "text": "Submit two identical jobs in two zones.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Query Insights.",
+        "text": "Use a regional Cloud Storage staging bucket only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
+      "A": "Specifying the region (not a fixed zone) lets Dataflow pick a healthy zone, adding fault tolerance.",
+      "B": "Pinning a zone reduces resilience to that zone's failure.",
+      "C": "Duplicate jobs add cost and may both fail if both zones are impacted.",
+      "D": "The staging bucket doesn't address worker zonal placement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+        "url": "https://cloud.google.com/dataflow/docs/guides/pipeline-workflows",
+        "text": "cloud.google.com/dataflow/docs/guides/pipeline-workflows"
       }
     ]
   },
   {
     "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
+    "domain": "Data Engineer",
+    "scenario": "You need to load a one-time 50 TB dataset from on-prem to Cloud Storage where network transfer would take weeks. Which option is best?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner.",
+        "text": "Transfer Appliance.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Bigtable.",
+        "text": "gsutil over the existing 100 Mbps link.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL.",
+        "text": "Database Migration Service.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Memorystore.",
+        "text": "Pub/Sub.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
+      "A": "Transfer Appliance ships a physical device for large offline transfers when network bandwidth is impractical.",
+      "B": "50 TB over a slow link takes far too long.",
+      "C": "DMS migrates databases, not bulk files.",
+      "D": "Pub/Sub is messaging, not bulk data transfer."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
+        "url": "https://cloud.google.com/transfer-appliance/docs/4.0/overview",
+        "text": "cloud.google.com/transfer-appliance/docs/4.0/overview"
       }
     ]
   },
   {
     "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
+    "domain": "Data Engineer",
+    "scenario": "You want to schedule recurring BigQuery SQL that loads/transforms data daily without managing infrastructure. Which feature?",
     "options": [
       {
         "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
+        "text": "BigQuery scheduled queries.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more column families.",
+        "text": "A Compute Engine cron VM.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the number of tables.",
+        "text": "Manual query runs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Enable a public IP.",
+        "text": "Dataproc workflow templates.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
+      "A": "BigQuery scheduled queries run SQL on a recurring schedule, serverless and managed.",
+      "B": "A cron VM adds unnecessary infrastructure.",
+      "C": "Manual runs aren't scheduled.",
+      "D": "Dataproc templates are for Spark jobs, not BigQuery SQL scheduling."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
+        "url": "https://cloud.google.com/bigquery/docs/scheduling-queries",
+        "text": "cloud.google.com/bigquery/docs/scheduling-queries"
       }
     ]
   },
   {
     "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
+    "domain": "Data Engineer",
+    "scenario": "A BigQuery query scans far more data than expected and costs are high. Which change most directly reduces bytes scanned?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
+        "text": "Select only needed columns and filter on the partition column.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
+        "text": "Add ORDER BY to the query.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Manual exports when someone remembers.",
+        "text": "Increase the project's slot count.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disabling backups to save cost.",
+        "text": "Use SELECT * with a LIMIT.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
+      "A": "BigQuery bills on bytes scanned; selecting fewer columns and filtering on the partition column prunes data read.",
+      "B": "ORDER BY doesn't reduce bytes scanned.",
+      "C": "More slots speeds execution but doesn't reduce scanned bytes/cost on-demand.",
+      "D": "LIMIT still scans full columns; SELECT * reads all columns."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/bigquery/docs/best-practices-costs",
+        "text": "cloud.google.com/bigquery/docs/best-practices-costs"
       }
     ]
   }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Cloud Professional Cloud Security Engineer - Exam Simulator</title>
+    <title>Professional Cloud Security Engineer - Exam Simulator</title>
     <!-- Outfit & Inter Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #8b5cf6;
+            --dark-accent-hover: #7c3aed;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #6d28d9;
+            --classic-accent-hover: #5b21b6;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -157,6 +157,23 @@
             display: flex;
             align-items: center;
             gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
         }
 
         .timer-box {
@@ -755,11 +772,12 @@
             <div class="logo-badge">G</div>
             <div>
                 <div class="title">Professional Cloud Security Engineer</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">EXAM PRACTICE SIMULATOR</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
         <div class="header-controls">
-            <div class="timer-box" id="exam-timer">40:00</div>
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">50:00</div>
             <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
@@ -871,8 +889,8 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Domain 1: Configuring access",
-    "scenario": "Your organization is implementing a centralized identity strategy using an external Okta directory as your primary SAML 2.0 Identity Provider (IdP). To comply with strict privacy policies, you are forbidden from synchronizing corporate user identities into Cloud Identity. However, users must be able to log in to the Google Cloud Console, and you must authorize access to resources based on their Okta user groups (e.g., `gcp-security-admins`). The Okta SAML assertion includes a custom attribute named `user_groups` containing a list of the user's groups. \n\nHow should you configure this federated authorization?",
+    "domain": "Security Engineer",
+    "scenario": "(Domain 1: Configuring access)\n\nYour organization is implementing a centralized identity strategy using an external Okta directory as your primary SAML 2.0 Identity Provider (IdP). To comply with strict privacy policies, you are forbidden from synchronizing corporate user identities into Cloud Identity. However, users must be able to log in to the Google Cloud Console, and you must authorize access to resources based on their Okta user groups (e.g., `gcp-security-admins`). The Okta SAML assertion includes a custom attribute named `user_groups` containing a list of the user's groups. \n\nHow should you configure this federated authorization?",
     "options": [
       {
         "id": "A",
@@ -904,19 +922,59 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/iam/docs/workforce-sign-in-saml",
-        "url": "https://cloud.google.com/iam/docs/workforce-sign-in-saml"
+        "url": "https://cloud.google.com/iam/docs/workforce-sign-in-saml",
+        "text": "cloud.google.com/iam/docs/workforce-sign-in-saml"
       },
       {
-        "text": "https://cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials",
-        "url": "https://cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials"
+        "url": "https://cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials",
+        "text": "cloud.google.com/iam/docs/workforce-obtaining-short-lived..."
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Domain 1: Configuring access",
-    "scenario": "An application running on an AWS EC2 instance uses the AWS IAM role `arn:aws:iam::111122223333:role/billing-processor`. The application must securely write monthly report files to a private Cloud Storage bucket `corp-billing-data` in Google Cloud. To satisfy compliance requirements, you are prohibited from generating or storing long-lived service account JSON keys. You must configure Workload Identity Federation to facilitate access. The solution must grant write access to *all* instances assuming this AWS IAM role, regardless of their individual session names or transient EC2 instance IDs.\n\nHow should you configure the Workload Identity Federation attribute mapping and IAM policy?",
+    "domain": "Security Engineer",
+    "scenario": "You must prevent data in a BigQuery dataset from being exfiltrated to projects outside an approved boundary, even by users with valid IAM. What do you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A VPC Service Controls perimeter around the projects.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "An IAM deny policy on BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A hierarchical firewall policy.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Private Google Access.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "VPC Service Controls block data movement from in-scope managed services across the perimeter regardless of IAM.",
+      "B": "A deny policy restricts who can call APIs, not where authorized users can move data.",
+      "C": "Firewall policies govern VM network traffic, not serverless API data egress.",
+      "D": "Private Google Access is about private API reachability, not an exfiltration boundary."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "cloud.google.com/vpc-service-controls/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 1: Configuring access)\n\nAn application running on an AWS EC2 instance uses the AWS IAM role `arn:aws:iam::111122223333:role/billing-processor`. The application must securely write monthly report files to a private Cloud Storage bucket `corp-billing-data` in Google Cloud. To satisfy compliance requirements, you are prohibited from generating or storing long-lived service account JSON keys. You must configure Workload Identity Federation to facilitate access. The solution must grant write access to *all* instances assuming this AWS IAM role, regardless of their individual session names or transient EC2 instance IDs.\n\nHow should you configure the Workload Identity Federation attribute mapping and IAM policy?",
     "options": [
       {
         "id": "A",
@@ -948,19 +1006,59 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds",
-        "url": "https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds"
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation-wi..."
       },
       {
-        "text": "https://cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
-        "url": "https://cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation"
+        "url": "https://cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "text": "cloud.google.com/iam/docs/best-practices-for-using-worklo..."
       }
     ]
   },
   {
-    "number": 3,
-    "domain": "Domain 1: Configuring access",
-    "scenario": "To comply with strict security standards, you must ensure that absolutely no user\u2014including administrative users holding `roles/owner` or `roles/storage.admin`\u2014can delete any Cloud Storage buckets or delete objects within a sensitive audit project `corp-compliance-archive`. However, you must allow a designated automated service account `compliance-cleanup-sa` to prune expired objects on a scheduled basis. \n\nHow should you enforce this control?",
+    "number": 4,
+    "domain": "Security Engineer",
+    "scenario": "You need to grant a contractor elevated permissions only for a scheduled 3-hour maintenance window, with approval and auto-expiry. Which feature?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Privileged Access Manager (just-in-time grants).",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A permanent custom role.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Sharing an admin account.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A service account key.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Privileged Access Manager grants time-bound, approved, auto-expiring elevated access.",
+      "B": "A permanent role violates least privilege and doesn't expire.",
+      "C": "Sharing accounts is prohibited and untraceable.",
+      "D": "A key is a long-lived credential, not a scoped JIT grant."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/pam-overview",
+        "text": "cloud.google.com/iam/docs/pam-overview"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 1: Configuring access)\n\nTo comply with strict security standards, you must ensure that absolutely no user—including administrative users holding `roles/owner` or `roles/storage.admin`—can delete any Cloud Storage buckets or delete objects within a sensitive audit project `corp-compliance-archive`. However, you must allow a designated automated service account `compliance-cleanup-sa` to prune expired objects on a scheduled basis. \n\nHow should you enforce this control?",
     "options": [
       {
         "id": "A",
@@ -992,19 +1090,59 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/iam/docs/deny-overview",
-        "url": "https://cloud.google.com/iam/docs/deny-overview"
+        "url": "https://cloud.google.com/iam/docs/deny-overview",
+        "text": "cloud.google.com/iam/docs/deny-overview"
       },
       {
-        "text": "https://cloud.google.com/iam/docs/deny-permissions-support",
-        "url": "https://cloud.google.com/iam/docs/deny-permissions-support"
+        "url": "https://cloud.google.com/iam/docs/deny-permissions-support",
+        "text": "cloud.google.com/iam/docs/deny-permissions-support"
       }
     ]
   },
   {
-    "number": 4,
-    "domain": "Domain 1: Configuring access",
-    "scenario": "Your organization is adopting Google Cloud's **Privileged Access Manager (PAM)** to implement Just-In-Time (JIT) access for on-call engineers. You are creating a PAM entitlement that allows members of the Google Group `oncall-eng@company.com` to request elevated access to a production project. You want the entitlement to offer two options: (1) elevated security admin privileges via `roles/iam.securityAdmin`, and (2) broad project editor privileges via `roles/editor`. However, when attempting to configure the entitlement, the PAM API rejects the configuration containing `roles/editor`.\n\nWhat is the cause of this error and how should you resolve it?",
+    "number": 6,
+    "domain": "Security Engineer",
+    "scenario": "A workload on AWS must access a Cloud Storage bucket without long-lived service account keys. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Workload Identity Federation with the AWS provider.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A downloaded service account JSON key on the AWS host.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A shared API key.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A public bucket.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Workload Identity Federation lets the AWS workload exchange its identity for short-lived Google credentials — no keys.",
+      "B": "Storing a JSON key on AWS is exactly the long-lived-key risk to avoid.",
+      "C": "API keys don't authenticate IAM identities for GCS.",
+      "D": "A public bucket is a severe exposure."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 1: Configuring access)\n\nYour organization is adopting Google Cloud's **Privileged Access Manager (PAM)** to implement Just-In-Time (JIT) access for on-call engineers. You are creating a PAM entitlement that allows members of the Google Group `oncall-eng@company.com` to request elevated access to a production project. You want the entitlement to offer two options: (1) elevated security admin privileges via `roles/iam.securityAdmin`, and (2) broad project editor privileges via `roles/editor`. However, when attempting to configure the entitlement, the PAM API rejects the configuration containing `roles/editor`.\n\nWhat is the cause of this error and how should you resolve it?",
     "options": [
       {
         "id": "A",
@@ -1036,19 +1174,59 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/iam/docs/pam-overview",
-        "url": "https://cloud.google.com/iam/docs/pam-overview"
+        "url": "https://cloud.google.com/iam/docs/pam-overview",
+        "text": "cloud.google.com/iam/docs/pam-overview"
       },
       {
-        "text": "https://cloud.google.com/iam/docs/pam-create-entitlements",
-        "url": "https://cloud.google.com/iam/docs/pam-create-entitlements"
+        "url": "https://cloud.google.com/iam/docs/pam-create-entitlements",
+        "text": "cloud.google.com/iam/docs/pam-create-entitlements"
       }
     ]
   },
   {
-    "number": 5,
-    "domain": "Domain 2: Securing communications and establishing boundary protection",
-    "scenario": "A secure data processing application in `project-consumer` attempts to query a BigQuery table residing in `project-data`. The BigQuery dataset and its project are protected within a VPC Service Controls (VPC-SC) service perimeter named `data-perimeter`. The application fails to connect with an access denied error. You need to troubleshoot this violation using Cloud Logging in `project-data`.\n\nWhich log field contains the unique troubleshooting token, and what is the recommended method to authorize this cross-perimeter access?",
+    "number": 8,
+    "domain": "Security Engineer",
+    "scenario": "You must ensure only container images signed by an approved attestor can be deployed to Cloud Run and GKE. What do you enable?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Binary Authorization with attestation policy.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Artifact Registry private repo only.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Pod security admission.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "VPC Service Controls.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Binary Authorization enforces deploy-time policy admitting only attested images.",
+      "B": "A private repo controls storage, not signature verification at deploy.",
+      "C": "Pod security admission constrains pod security context, not image provenance.",
+      "D": "VPC-SC concerns data exfiltration, not image signing."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 2: Securing communications and establishing boundary protection)\n\nA secure data processing application in `project-consumer` attempts to query a BigQuery table residing in `project-data`. The BigQuery dataset and its project are protected within a VPC Service Controls (VPC-SC) service perimeter named `data-perimeter`. The application fails to connect with an access denied error. You need to troubleshoot this violation using Cloud Logging in `project-data`.\n\nWhich log field contains the unique troubleshooting token, and what is the recommended method to authorize this cross-perimeter access?",
     "options": [
       {
         "id": "A",
@@ -1080,19 +1258,59 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/vpc-service-controls/docs/troubleshoot-violations",
-        "url": "https://cloud.google.com/vpc-service-controls/docs/troubleshoot-violations"
+        "url": "https://cloud.google.com/vpc-service-controls/docs/troubleshoot-violations",
+        "text": "cloud.google.com/vpc-service-controls/docs/troubleshoot-v..."
       },
       {
-        "text": "https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules",
-        "url": "https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules"
+        "url": "https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules",
+        "text": "cloud.google.com/vpc-service-controls/docs/ingress-egress..."
       }
     ]
   },
   {
-    "number": 6,
-    "domain": "Domain 2: Securing communications and establishing boundary protection",
-    "scenario": "Your company requires all outbound HTTP/HTTPS traffic from a Shared VPC to be inspected for malicious payloads (such as command-and-control communication and data exfiltration attempts) using Intrusion Prevention System (IPS) threat signatures. You must configure L7 decryption and deep packet inspection using **Cloud Next Generation Firewall (Cloud NGFW) Enterprise**.\n\nWhich architectural steps must you take to enable this security control?",
+    "number": 10,
+    "domain": "Security Engineer",
+    "scenario": "To meet a strict EU data-residency mandate with personnel and control constraints, which Google Cloud offering should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Assured Workloads (EU regions + controls).",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A standard project in europe-west1 with default settings.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Cloud CDN in the EU.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A single CMEK key.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Assured Workloads enforces data residency, personnel access, and control packages for regulated regimes.",
+      "B": "A standard EU project doesn't enforce personnel/control constraints automatically.",
+      "C": "CDN caches content; it doesn't enforce residency.",
+      "D": "CMEK protects keys but doesn't enforce a full residency/compliance regime."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/assured-workloads/docs/overview",
+        "text": "cloud.google.com/assured-workloads/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 2: Securing communications and establishing boundary protection)\n\nYour company requires all outbound HTTP/HTTPS traffic from a Shared VPC to be inspected for malicious payloads (such as command-and-control communication and data exfiltration attempts) using Intrusion Prevention System (IPS) threat signatures. You must configure L7 decryption and deep packet inspection using **Cloud Next Generation Firewall (Cloud NGFW) Enterprise**.\n\nWhich architectural steps must you take to enable this security control?",
     "options": [
       {
         "id": "A",
@@ -1124,19 +1342,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/firewall/docs/about-firewall-policies",
-        "url": "https://cloud.google.com/firewall/docs/about-firewall-policies"
+        "url": "https://cloud.google.com/firewall/docs/about-firewall-policies",
+        "text": "cloud.google.com/firewall/docs/about-firewall-policies"
       },
       {
-        "text": "https://cloud.google.com/firewall/docs/configure-tls-inspection",
-        "url": "https://cloud.google.com/firewall/docs/configure-tls-inspection"
+        "url": "https://cloud.google.com/firewall/docs/configure-tls-inspection",
+        "text": "cloud.google.com/firewall/docs/configure-tls-inspection"
       }
     ]
   },
   {
-    "number": 7,
-    "domain": "Domain 2: Securing communications and establishing boundary protection",
-    "scenario": "You are securing a private Google Kubernetes Engine (GKE) cluster in a VPC with no default internet gateway. The workloads running inside GKE must pull secure software updates from `*.github.com` and `github-releases.githubusercontent.com` over HTTPS. All other outbound internet access must be blocked. You want to enforce this outbound URL filtering at the network gateway level without deploying container sidecars or modifying application configurations.\n\nHow should you design and configure this egress control?",
+    "number": 12,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 2: Securing communications and establishing boundary protection)\n\nYou are securing a private Google Kubernetes Engine (GKE) cluster in a VPC with no default internet gateway. The workloads running inside GKE must pull secure software updates from `*.github.com` and `github-releases.githubusercontent.com` over HTTPS. All other outbound internet access must be blocked. You want to enforce this outbound URL filtering at the network gateway level without deploying container sidecars or modifying application configurations.\n\nHow should you design and configure this egress control?",
     "options": [
       {
         "id": "A",
@@ -1168,19 +1386,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/secure-web-proxy/docs/overview",
-        "url": "https://cloud.google.com/secure-web-proxy/docs/overview"
+        "url": "https://cloud.google.com/secure-web-proxy/docs/overview",
+        "text": "cloud.google.com/secure-web-proxy/docs/overview"
       },
       {
-        "text": "https://cloud.google.com/secure-web-proxy/docs/secure-egress-traffic",
-        "url": "https://cloud.google.com/secure-web-proxy/docs/secure-egress-traffic"
+        "url": "https://cloud.google.com/secure-web-proxy/docs/secure-egress-traffic",
+        "text": "cloud.google.com/secure-web-proxy/docs/secure-egress-traffic"
       }
     ]
   },
   {
-    "number": 8,
-    "domain": "Domain 2: Securing communications and establishing boundary protection",
-    "scenario": "Your company wants to securely consume a payment processing service published by a partner company. The partner hosts their application on Google Cloud and has published it using a **Private Service Connect (PSC) service attachment**. To prevent data exfiltration, your security team must ensure that only workloads residing in the `secure-payment-processing` subnet of your VPC can route traffic to this partner's PSC endpoint, and all other subnets in your VPC must be blocked from accessing it.\n\nHow should you implement this egress restriction?",
+    "number": 13,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 2: Securing communications and establishing boundary protection)\n\nYour company wants to securely consume a payment processing service published by a partner company. The partner hosts their application on Google Cloud and has published it using a **Private Service Connect (PSC) service attachment**. To prevent data exfiltration, your security team must ensure that only workloads residing in the `secure-payment-processing` subnet of your VPC can route traffic to this partner's PSC endpoint, and all other subnets in your VPC must be blocked from accessing it.\n\nHow should you implement this egress restriction?",
     "options": [
       {
         "id": "A",
@@ -1212,19 +1430,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/vpc/docs/private-service-connect",
-        "url": "https://cloud.google.com/vpc/docs/private-service-connect"
+        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
+        "text": "cloud.google.com/vpc/docs/private-service-connect"
       },
       {
-        "text": "https://cloud.google.com/vpc/docs/configure-private-service-connect-services",
-        "url": "https://cloud.google.com/vpc/docs/configure-private-service-connect-services"
+        "url": "https://cloud.google.com/vpc/docs/configure-private-service-connect-services",
+        "text": "cloud.google.com/vpc/docs/configure-private-service-conne..."
       }
     ]
   },
   {
-    "number": 9,
-    "domain": "Domain 2: Securing communications and establishing boundary protection",
-    "scenario": "To mitigate public exposure of internal workloads, your security department has mandated that no Compute Engine virtual machines should be created with external IP addresses. However, this restriction must only apply to projects tagged in the resource hierarchy with the Resource Manager tag `environment: production`. Dev/Test environments must remain exempt.\n\nHow should you implement this policy?",
+    "number": 14,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 2: Securing communications and establishing boundary protection)\n\nTo mitigate public exposure of internal workloads, your security department has mandated that no Compute Engine virtual machines should be created with external IP addresses. However, this restriction must only apply to projects tagged in the resource hierarchy with the Resource Manager tag `environment: production`. Dev/Test environments must remain exempt.\n\nHow should you implement this policy?",
     "options": [
       {
         "id": "A",
@@ -1256,19 +1474,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/resource-manager/docs/tags/tags-overview",
-        "url": "https://cloud.google.com/resource-manager/docs/tags/tags-overview"
+        "url": "https://cloud.google.com/resource-manager/docs/tags/tags-overview",
+        "text": "cloud.google.com/resource-manager/docs/tags/tags-overview"
       },
       {
-        "text": "https://cloud.google.com/resource-manager/docs/organization-policy/tags-organization-policy",
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/tags-organization-policy"
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/tags-organization-policy",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
       }
     ]
   },
   {
-    "number": 10,
-    "domain": "Domain 3: Ensuring data protection",
-    "scenario": "A European financial institution is deploying Cloud SQL to host sensitive transaction databases. To satisfy digital sovereignty laws, the encryption keys must be managed by the customer on-premises using a hardware security module (HSM). Crucially, the bank must guarantee that if a Google Cloud engineer requests access to decrypt the data (e.g., during an active support session), the decryption request will be rejected at the HSM level unless the bank's security team reviews and approves the specific justification.\n\nWhich solution must you deploy to meet these requirements?",
+    "number": 15,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 3: Ensuring data protection)\n\nA European financial institution is deploying Cloud SQL to host sensitive transaction databases. To satisfy digital sovereignty laws, the encryption keys must be managed by the customer on-premises using a hardware security module (HSM). Crucially, the bank must guarantee that if a Google Cloud engineer requests access to decrypt the data (e.g., during an active support session), the decryption request will be rejected at the HSM level unless the bank's security team reviews and approves the specific justification.\n\nWhich solution must you deploy to meet these requirements?",
     "options": [
       {
         "id": "A",
@@ -1300,19 +1518,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/kms/docs/ekm",
-        "url": "https://cloud.google.com/kms/docs/ekm"
+        "url": "https://cloud.google.com/kms/docs/ekm",
+        "text": "cloud.google.com/kms/docs/ekm"
       },
       {
-        "text": "https://cloud.google.com/kms/docs/key-access-justifications-overview",
-        "url": "https://cloud.google.com/kms/docs/key-access-justifications-overview"
+        "url": "https://cloud.google.com/kms/docs/key-access-justifications-overview",
+        "text": "cloud.google.com/kms/docs/key-access-justifications-overview"
       }
     ]
   },
   {
-    "number": 11,
-    "domain": "Domain 3: Ensuring data protection",
-    "scenario": "Two medical research organizations wish to run a joint machine learning model on their respective proprietary, encrypted datasets stored in Google Cloud. Neither organization is willing to share their raw data with the other, and both must ensure that no cloud administrator (including Google personnel) can inspect the data during processing. They require an isolated, attested environment to execute the analysis and release the decryption keys only to the verified application.\n\nHow should you design this secure collaborative pipeline?",
+    "number": 16,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 3: Ensuring data protection)\n\nTwo medical research organizations wish to run a joint machine learning model on their respective proprietary, encrypted datasets stored in Google Cloud. Neither organization is willing to share their raw data with the other, and both must ensure that no cloud administrator (including Google personnel) can inspect the data during processing. They require an isolated, attested environment to execute the analysis and release the decryption keys only to the verified application.\n\nHow should you design this secure collaborative pipeline?",
     "options": [
       {
         "id": "A",
@@ -1344,19 +1562,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview",
-        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview"
+        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview",
+        "text": "cloud.google.com/confidential-computing/confidential-spac..."
       },
       {
-        "text": "https://cloud.google.com/confidential-computing/confidential-space/docs/analyze-multi-party-data",
-        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/analyze-multi-party-data"
+        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/analyze-multi-party-data",
+        "text": "cloud.google.com/confidential-computing/confidential-spac..."
       }
     ]
   },
   {
-    "number": 12,
-    "domain": "Domain 3: Ensuring data protection",
-    "scenario": "You are designing a secure machine learning environment on **Vertex AI** for a healthcare provider. The raw patient data resides in a secure Cloud Storage bucket. You must ensure that: (1) training datasets cannot be exfiltrated to the public internet during custom training jobs, (2) the Vertex AI Pipelines run within a secure network perimeter, and (3) all models and output artifacts are encrypted using Customer-Managed Encryption Keys (CMEK).\n\nWhich configuration meets all three requirements?",
+    "number": 17,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 3: Ensuring data protection)\n\nYou are designing a secure machine learning environment on **Vertex AI** for a healthcare provider. The raw patient data resides in a secure Cloud Storage bucket. You must ensure that: (1) training datasets cannot be exfiltrated to the public internet during custom training jobs, (2) the Vertex AI Pipelines run within a secure network perimeter, and (3) all models and output artifacts are encrypted using Customer-Managed Encryption Keys (CMEK).\n\nWhich configuration meets all three requirements?",
     "options": [
       {
         "id": "A",
@@ -1388,19 +1606,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/vertex-ai/docs/general/vpc-sc",
-        "url": "https://cloud.google.com/vertex-ai/docs/general/vpc-sc"
+        "url": "https://cloud.google.com/vertex-ai/docs/general/vpc-sc",
+        "text": "cloud.google.com/vertex-ai/docs/general/vpc-sc"
       },
       {
-        "text": "https://cloud.google.com/vertex-ai/docs/general/customer-managed-encryption-keys",
-        "url": "https://cloud.google.com/vertex-ai/docs/general/customer-managed-encryption-keys"
+        "url": "https://cloud.google.com/vertex-ai/docs/general/customer-managed-encryption-keys",
+        "text": "cloud.google.com/vertex-ai/docs/general/customer-managed-..."
       }
     ]
   },
   {
-    "number": 13,
-    "domain": "Domain 3: Ensuring data protection",
-    "scenario": "A database in BigQuery contains columns with sensitive customer Primary Account Numbers (PANs). For regulatory compliance, these PANs must be tokenized so they are not stored in plain text. However, downstream billing applications must be able to reverse this tokenization (re-identify the PANs) during transactional operations. Crucially, the tokenized values must retain the original length and format of the 16-digit credit card number to avoid breaking database schemas and application logic.\n\nWhich **Sensitive Data Protection (SDP)** configuration should you implement?",
+    "number": 18,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 3: Ensuring data protection)\n\nA database in BigQuery contains columns with sensitive customer Primary Account Numbers (PANs). For regulatory compliance, these PANs must be tokenized so they are not stored in plain text. However, downstream billing applications must be able to reverse this tokenization (re-identify the PANs) during transactional operations. Crucially, the tokenized values must retain the original length and format of the 16-digit credit card number to avoid breaking database schemas and application logic.\n\nWhich **Sensitive Data Protection (SDP)** configuration should you implement?",
     "options": [
       {
         "id": "A",
@@ -1432,19 +1650,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/sensitive-data-protection/docs/pseudonymization",
-        "url": "https://cloud.google.com/sensitive-data-protection/docs/pseudonymization"
+        "url": "https://cloud.google.com/sensitive-data-protection/docs/pseudonymization",
+        "text": "cloud.google.com/sensitive-data-protection/docs/pseudonym..."
       },
       {
-        "text": "https://cloud.google.com/sensitive-data-protection/docs/format-preserving-encryption",
-        "url": "https://cloud.google.com/sensitive-data-protection/docs/format-preserving-encryption"
+        "url": "https://cloud.google.com/sensitive-data-protection/docs/format-preserving-encryption",
+        "text": "cloud.google.com/sensitive-data-protection/docs/format-pr..."
       }
     ]
   },
   {
-    "number": 14,
-    "domain": "Domain 3: Ensuring data protection",
-    "scenario": "A security audit reveals that a public web application hosted on Compute Engine instances is vulnerable to a Server-Side Request Forgery (SSRF) attack. An attacker could exploit this vulnerability to force the server to query its local metadata server (`http://169.254.169.254/computeMetadata/v1/`) to retrieve the instance's default service account access tokens.\n\nWhich Google Cloud security controls should you implement to mitigate this metadata exfiltration risk?",
+    "number": 19,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 3: Ensuring data protection)\n\nA security audit reveals that a public web application hosted on Compute Engine instances is vulnerable to a Server-Side Request Forgery (SSRF) attack. An attacker could exploit this vulnerability to force the server to query its local metadata server (`http://169.254.169.254/computeMetadata/v1/`) to retrieve the instance's default service account access tokens.\n\nWhich Google Cloud security controls should you implement to mitigate this metadata exfiltration risk?",
     "options": [
       {
         "id": "A",
@@ -1476,19 +1694,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/compute/docs/metadata/overview",
-        "url": "https://cloud.google.com/compute/docs/metadata/overview"
+        "url": "https://cloud.google.com/compute/docs/metadata/overview",
+        "text": "cloud.google.com/compute/docs/metadata/overview"
       },
       {
-        "text": "https://cloud.google.com/compute/docs/metadata/setting-up-secure-metadata-headers",
-        "url": "https://cloud.google.com/compute/docs/metadata/setting-up-secure-metadata-headers"
+        "url": "https://cloud.google.com/compute/docs/metadata/setting-up-secure-metadata-headers",
+        "text": "cloud.google.com/compute/docs/metadata/setting-up-secure-..."
       }
     ]
   },
   {
-    "number": 15,
-    "domain": "Domain 4: Managing operations",
-    "scenario": "You want to automatically detect if any developer creates a Cloud SQL database instance that has authorized networks set to `0.0.0.0/0` (making it publicly open to the internet). If detected, a high-severity security finding must be raised immediately in **Security Command Center (SCC)**.\n\nHow should you implement this automated check?",
+    "number": 20,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 4: Managing operations)\n\nYou want to automatically detect if any developer creates a Cloud SQL database instance that has authorized networks set to `0.0.0.0/0` (making it publicly open to the internet). If detected, a high-severity security finding must be raised immediately in **Security Command Center (SCC)**.\n\nHow should you implement this automated check?",
     "options": [
       {
         "id": "A",
@@ -1520,19 +1738,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/security-command-center/docs/how-to-scc-custom-modules",
-        "url": "https://cloud.google.com/security-command-center/docs/how-to-scc-custom-modules"
+        "url": "https://cloud.google.com/security-command-center/docs/how-to-scc-custom-modules",
+        "text": "cloud.google.com/security-command-center/docs/how-to-scc-..."
       },
       {
-        "text": "https://cloud.google.com/security-command-center/docs/custom-modules-sha-supported-resources",
-        "url": "https://cloud.google.com/security-command-center/docs/custom-modules-sha-supported-resources"
+        "url": "https://cloud.google.com/security-command-center/docs/custom-modules-sha-supported-resources",
+        "text": "cloud.google.com/security-command-center/docs/custom-modu..."
       }
     ]
   },
   {
-    "number": 16,
-    "domain": "Domain 4: Managing operations",
-    "scenario": "You are the Security Operations Center (SOC) lead. You need to establish a centralized security logging architecture across 200+ Google Cloud projects in your organization. The design must: (1) aggregate all Cloud Audit Logs (Admin Activity and Data Access) from all projects, (2) store them securely in a dedicated security monitoring project with a 365-day retention period, and (3) allow security analysts to perform high-speed, complex forensics using standard SQL queries directly inside Cloud Logging.\n\nHow should you design this?",
+    "number": 21,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 4: Managing operations)\n\nYou are the Security Operations Center (SOC) lead. You need to establish a centralized security logging architecture across 200+ Google Cloud projects in your organization. The design must: (1) aggregate all Cloud Audit Logs (Admin Activity and Data Access) from all projects, (2) store them securely in a dedicated security monitoring project with a 365-day retention period, and (3) allow security analysts to perform high-speed, complex forensics using standard SQL queries directly inside Cloud Logging.\n\nHow should you design this?",
     "options": [
       {
         "id": "A",
@@ -1564,19 +1782,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/logging/docs/analyze/query-and-analyze",
-        "url": "https://cloud.google.com/logging/docs/analyze/query-and-analyze"
+        "url": "https://cloud.google.com/logging/docs/analyze/query-and-analyze",
+        "text": "cloud.google.com/logging/docs/analyze/query-and-analyze"
       },
       {
-        "text": "https://cloud.google.com/logging/docs/export/aggregated_sinks",
-        "url": "https://cloud.google.com/logging/docs/export/aggregated_sinks"
+        "url": "https://cloud.google.com/logging/docs/export/aggregated_sinks",
+        "text": "cloud.google.com/logging/docs/export/aggregated_sinks"
       }
     ]
   },
   {
-    "number": 17,
-    "domain": "Domain 4: Managing operations",
-    "scenario": "To secure your software supply chain, you must enforce a policy where no container image can be deployed to your production GKE clusters unless it has: (1) passed an automated vulnerability scan performed by Artifact Analysis, and (2) received manual approval from the Quality Assurance (QA) team. Both checks must generate cryptographic signatures (attestations), and GKE must block deployments lacking either signature.\n\nHow should you configure this validation?",
+    "number": 22,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 4: Managing operations)\n\nTo secure your software supply chain, you must enforce a policy where no container image can be deployed to your production GKE clusters unless it has: (1) passed an automated vulnerability scan performed by Artifact Analysis, and (2) received manual approval from the Quality Assurance (QA) team. Both checks must generate cryptographic signatures (attestations), and GKE must block deployments lacking either signature.\n\nHow should you configure this validation?",
     "options": [
       {
         "id": "A",
@@ -1608,19 +1826,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/binary-authorization/docs/overview",
-        "url": "https://cloud.google.com/binary-authorization/docs/overview"
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
       },
       {
-        "text": "https://cloud.google.com/binary-authorization/docs/key-concepts",
-        "url": "https://cloud.google.com/binary-authorization/docs/key-concepts"
+        "url": "https://cloud.google.com/binary-authorization/docs/key-concepts",
+        "text": "cloud.google.com/binary-authorization/docs/key-concepts"
       }
     ]
   },
   {
-    "number": 18,
-    "domain": "Domain 5: Supporting compliance requirements",
-    "scenario": "Your company has secured a contract with an EU government agency. The contract mandates that: (1) all customer data must reside strictly within European Union boundaries, (2) only EU-based Google personnel can perform support or administrative actions on your cloud resources, and (3) you must have administrative and cryptographic control to approve or deny any support-related data access.\n\nHow should you configure your Google Cloud environment?",
+    "number": 23,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 5: Supporting compliance requirements)\n\nYour company has secured a contract with an EU government agency. The contract mandates that: (1) all customer data must reside strictly within European Union boundaries, (2) only EU-based Google personnel can perform support or administrative actions on your cloud resources, and (3) you must have administrative and cryptographic control to approve or deny any support-related data access.\n\nHow should you configure your Google Cloud environment?",
     "options": [
       {
         "id": "A",
@@ -1652,19 +1870,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/assured-workloads/docs/concept-assured-workloads-overview",
-        "url": "https://cloud.google.com/assured-workloads/docs/concept-assured-workloads-overview"
+        "url": "https://cloud.google.com/assured-workloads/docs/concept-assured-workloads-overview",
+        "text": "cloud.google.com/assured-workloads/docs/concept-assured-w..."
       },
       {
-        "text": "https://cloud.google.com/assured-workloads/docs/sovereign-cloud-overview",
-        "url": "https://cloud.google.com/assured-workloads/docs/sovereign-cloud-overview"
+        "url": "https://cloud.google.com/assured-workloads/docs/sovereign-cloud-overview",
+        "text": "cloud.google.com/assured-workloads/docs/sovereign-cloud-o..."
       }
     ]
   },
   {
-    "number": 19,
-    "domain": "Domain 5: Supporting compliance requirements",
-    "scenario": "Your organization has enabled **Access Transparency** and **Access Approval**. A Google Cloud engineer requires temporary access to your sensitive Cloud SQL storage blocks to troubleshoot an active service outage.\n\nUnder what conditions is an Access Approval request sent, what information does it contain, and how is this action audited?",
+    "number": 24,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 5: Supporting compliance requirements)\n\nYour organization has enabled **Access Transparency** and **Access Approval**. A Google Cloud engineer requires temporary access to your sensitive Cloud SQL storage blocks to troubleshoot an active service outage.\n\nUnder what conditions is an Access Approval request sent, what information does it contain, and how is this action audited?",
     "options": [
       {
         "id": "A",
@@ -1696,19 +1914,19 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/access-approval/docs/overview",
-        "url": "https://cloud.google.com/access-approval/docs/overview"
+        "url": "https://cloud.google.com/access-approval/docs/overview",
+        "text": "cloud.google.com/access-approval/docs/overview"
       },
       {
-        "text": "https://cloud.google.com/logging/docs/audit/access-transparency-overview",
-        "url": "https://cloud.google.com/logging/docs/audit/access-transparency-overview"
+        "url": "https://cloud.google.com/logging/docs/audit/access-transparency-overview",
+        "text": "cloud.google.com/logging/docs/audit/access-transparency-o..."
       }
     ]
   },
   {
-    "number": 20,
-    "domain": "Domain 5: Supporting compliance requirements",
-    "scenario": "You are designing a Google Kubernetes Engine (GKE) cluster to host a PCI DSS compliant credit card processing environment. To satisfy strict compliance requirements around host hardening, network segmentation, runtime isolation, and monitoring, you must configure the cluster using Google-recommended best practices.\n\nWhich set of configurations should you choose?",
+    "number": 25,
+    "domain": "Security Engineer",
+    "scenario": "(Domain 5: Supporting compliance requirements)\n\nYou are designing a Google Kubernetes Engine (GKE) cluster to host a PCI DSS compliant credit card processing environment. To satisfy strict compliance requirements around host hardening, network segmentation, runtime isolation, and monitoring, you must configure the cluster using Google-recommended best practices.\n\nWhich set of configurations should you choose?",
     "options": [
       {
         "id": "A",
@@ -1740,12 +1958,12 @@
     },
     "references": [
       {
-        "text": "https://cloud.google.com/architecture/pci-dss-and-gke-guide",
-        "url": "https://cloud.google.com/architecture/pci-dss-and-gke-guide"
+        "url": "https://cloud.google.com/architecture/pci-dss-and-gke-guide",
+        "text": "cloud.google.com/architecture/pci-dss-and-gke-guide"
       },
       {
-        "text": "https://cloud.google.com/kubernetes-engine/docs/concepts/sandbox",
-        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/sandbox"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/sandbox",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/sandbox"
       }
     ]
   }
@@ -1757,7 +1975,7 @@
         let flaggedQuestions = {}; // questionIdx -> boolean
         let struckOptions = {}; // questionIdx -> Array of letters
         let examSubmitted = false;
-        let timeLeft = 40 * 60; // 40 minutes in seconds
+        let timeLeft = 50 * 60; // 50 minutes in seconds
         let timerInterval;
 
         window.onload = function() {
@@ -2114,7 +2332,7 @@
             flaggedQuestions = {};
             struckOptions = {};
             examSubmitted = false;
-            timeLeft = 40 * 60;
+            timeLeft = 50 * 60;
             document.getElementById('results-modal').style.display = 'none';
             
             initGrid();

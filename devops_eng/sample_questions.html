@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #0d9488;
+            --dark-accent-hover: #0f766e;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #115e59;
+            --classic-accent-hover: #134e4a;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional Cloud DevOps Engineer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,888 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your company uses an application that is deployed on Compute Engine virtual machines (VMs) to deliver a service to your customer. You have a Service Level Agreement (SLA) to provide 99% availability per month. Telemetry data over the first 22 days of the month shows that you served 10,000,000 requests with 99.00% availability. The development team has added new features to the application and wants to deploy them. You need to decide on a deployment approach while following Site Reliability Engineering (SRE) practices. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Deploy the new features right away to Confidential VMs.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Defer the deployment of the new features until the next month.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "Ask the customer to modify the SLOs and deploy new features right away.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "Ask the customer to modify the SLA to 98.5% and deploy new features right away.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "Confidential VMs do not guarantee high availability for end-user requests.",
+      "B": "There is no error budget remaining so you need to balance stability over feature updates.",
+      "C": "SLOs are an internal measure and do not reflect your service agreement with the customer.",
+      "D": "Changing SLAs when you have a low remaining error budget is not a recommended approach for application delivery."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://sre.google/workbook/error-budget-policy/",
+        "text": "sre.google/workbook/error-budget-policy"
+      },
+      {
+        "url": "https://sre.google/sre-book/embracing-risk/",
+        "text": "sre.google/sre-book/embracing-risk"
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "DevOps Engineer",
+    "scenario": "You have an application served by a single Compute Engine instance in one region. The VM occasionally shuts down and disrupts end user workflows. You need a quick and reliable solution that notifies you when there are VM shutdowns. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
+        "text": "Use the Logs Explorer to create a log-based alert for VM instances with the v1.compute.instances.stop payload method name.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Export the logs to BigQuery and run hourly scheduled queries to identify VM instances with the v1.compute.instances.stop payload method name.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "Update the application code to identify situations when the VM is close to shutting down, and send a notification.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Configure Cloud Scheduler to run a randomized health check on the VM with a maximum time gap of one hour.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "A log-based alert will notify you if the VM shuts down.",
+      "B": "Exporting the logs to BigQuery and then running queries can cause significant delay in responsiveness.",
+      "C": "The application might not be able to identify all situations when the machine is close to shutting down. Furthermore, the application might not be able to reliably notify you if the VM shuts down.",
+      "D": "If randomized health checks can occur at any point within an hour, the check could run toward the end of the hour and result in a significant delay before the issue is reported."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://cloud.google.com/logging/docs/alerting/log-based-alerts",
+        "text": "cloud.google.com/logging/docs/alerting/log-based-alerts"
+      },
+      {
+        "url": "https://www.skills.google/focuses/619?parent=catalog",
+        "text": "skills.google/focuses/619?parent=catalog"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/troubleshooting/troubleshooting-reboots",
+        "text": "cloud.google.com/compute/docs/troubleshooting/troubleshoo..."
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your company requires that all employees within a team use a consistent, templated development environment, which includes popular integrated development environments (IDEs). You need to maintain security patches and updates to the development environments. You also need to identify a reliable, Google-recommended way to ensure that all developers within each team use a consistent development environment. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
-        "is_correct": true
+        "text": "Create daily Compute Engine snapshots of a 'golden' machine with all security patches and make the snapshots available for developers to update their own machines.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Create a checklist of all software updates with update scripts and allow developers to update their own machines.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Create an image with all up-to-date dependencies and install the image on laptops for the developers to use.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
-        "is_correct": false
+        "text": "Create Cloud Workstations configurations specific to each team.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "Relying on the developers to make the update themselves might result in inconsistencies.",
+      "B": "Relying on the developers to make the update themselves might result in inconsistencies.",
+      "C": "Critical patches and updates cannot be reliably rolled out to all developers’ laptops.",
+      "D": "Cloud Workstations configurations provide templates for the creation of consistent workstations across multiple developers, and specify configuration settings such as machine type, disk size, tools, and pre-installed libraries. Any operations performed on a workstation configuration, such as changing the machine type or container image, reflect on each workstation the next time the workstation starts up."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://cloud.google.com/workstations/docs/overview",
+        "text": "cloud.google.com/workstations/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/workstations/docs/create-configuration",
+        "text": "cloud.google.com/workstations/docs/create-configuration"
+      },
+      {
+        "url": "https://cloud.google.com/workstations/docs/create-workstation",
+        "text": "cloud.google.com/workstations/docs/create-workstation"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=E1cblFqb8nk",
+        "text": "youtube.com/watch?v=E1cblFqb8nk"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=C6Dpmujxp9Q",
+        "text": "youtube.com/watch?v=C6Dpmujxp9Q"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your team has received information about a security patch that addresses a critical vulnerability. The patch needs to be applied to Compute Engine instances managed by VM Manager that serve millions of customers across the world. You need to roll out the security patch quickly, while minimizing cost and impact on end customers. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
+        "text": "Perform a rollout of the security patch to a small group of instances with a short duration.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "Use simultaneous patching to update the Compute Engine instances across the world.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "Perform scheduled patching across a 24-hour rolling window to occur during each region’s overnight hours.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "Perform an A/B rollout, and create a copy of all the instances in Compute Engine. Apply the security patch to the newly created instances, and then switch users.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "A canary rollout with a short duration lets you quickly and cost-effectively identify any side effects of the security patch before you expand the rollout.",
+      "B": "If the security patch has any adverse or unexpected implications, all users could be affected simultaneously.",
+      "C": "This is not an effective strategy, because critical systems in regions that currently serve customers in the day time could be an attack vector.",
+      "D": "This is not cost-effective and would also be time consuming to create a copy of all the services and machines."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://sre.google/workbook/canarying-releases/",
+        "text": "sre.google/workbook/canarying-releases"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/gcp/how-release-canaries-can-save-your-bacon-cre-life-lessons",
+        "text": "cloud.google.com/blog/products/gcp/how-release-canaries-c..."
+      },
+      {
+        "url": "https://cloud.google.com/compute/vm-manager/docs/patch#patch_deployment_overview",
+        "text": "cloud.google.com/compute/vm-manager/docs/patch#patch_depl..."
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "DevOps Engineer",
+    "scenario": "You have an application deployed on Cloud Run with users around the world. You need to configure Cloud Run to route all users to their nearest region so that request responses have low latency. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "Deploy the application to any one region, and serve the application at a global anycast IP address behind a global external Application Load Balancer.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Deploy the application to each region, and serve the application at a global anycast IP address behind a global external Application Load Balancer.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Deploy the application to one region per continent and serve the application by using a regional external Application Load Balancer in each region. Attach the same global IP address to all the regional load balancers.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Deploy the application to any one region, and configure Google Cloud Armor in the frontend to allow traffic from all IP addresses.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "All requests would have to be routed to the single Cloud Run instance, which causes latency and congestion.",
+      "B": "The Cloud Run instance needs to be available in the regions closest to where the users are located. The global external Application Load Balancer can be the endpoint for the anycast IP address which will route the request to the closest region with the Cloud Run instance running.",
+      "C": "This is not the most efficient solution. You will have to set up multiple load balancers which are complex in configuration and not unified for the customer.",
+      "D": "Google Cloud Armor allow rules will allow traffic from all over the world, but responses will have higher latency when served from one region."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://cloud.google.com/run/docs/multiple-regions",
+        "text": "cloud.google.com/run/docs/multiple-regions"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/container-contract",
+        "text": "cloud.google.com/run/docs/container-contract"
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your company is running a legacy database in Google Kubernetes Engine (GKE) that does not respond well to Pod evictions and rescheduling. Your company cannot afford any disruptions to the running database. You need to choose a GKE maintenance strategy to use. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
-        "is_correct": true
+        "text": "Configure the GKE maintenance channel to “Stable”.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Configure a node pool upgrade strategy with max-surge-upgrade set to 0.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Create a \"PodDisruptionBudget\" object and specify maxUnavailable as 100%.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
-        "is_correct": false
+        "text": "Configure a maintenance exclusion window with a scope of “No minor or node upgrades”.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "If you choose the stable release channel alone, all updates will be performed on the stable release schedule, which can cause Pod evictions.",
+      "B": "A surge upgrade strategy will not restrict maintenance updates, and that could cause pod evictions.",
+      "D": "The \"No minor or node upgrades\" setting prevents node pool disruption and avoids any eviction and rescheduling of your workloads because of node upgrades."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/maintena..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#scope_of_maintenance_to_exclude",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/maintena..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/release-..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/best-practices/upgrading-clusters",
+        "text": "cloud.google.com/kubernetes-engine/docs/best-practices/up..."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=eqJQTANI_RI",
+        "text": "youtube.com/watch?v=eqJQTANI_RI"
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization uses Cloud Run to deploy a containerized application. A new version of the application recently passed internal tests and now needs to be tested in production. You need to implement a configuration so that beta testers can test the application before you roll out the application to end users. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
-        "is_correct": true
+        "text": "Deploy the Cloud Run application to production, and direct 1% of traffic to the application.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Configure Google Cloud Armor to reject requests that originate from IP addresses outside of the testing team.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Deploy the container to a private VM instance on Compute Engine, and enable access for the testing team only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
-        "is_correct": false
+        "text": "Deploy the Cloud Run application to production with a revision tag and the “--no-traffic“ option, and share the URL with the testing team.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "End users might fall within the 1% and access the application.",
+      "B": "Maintaining a list of IP addresses that the testing team uses is cumbersome and not reliable.",
+      "C": "This deployment environment is different from the production environment, and more effort is required to reliably roll the application out to end users.",
+      "D": "Assigning a tag lets you access the revision at a specific URL without serving traffic."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#deploy-with-tags",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#tags",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=pi0Ss24bqL4",
+        "text": "youtube.com/watch?v=pi0Ss24bqL4"
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "DevOps Engineer",
+    "scenario": "You work for a small company that uses open source Java packages as part of the CI/CD pipeline in Cloud Build. Your security team is concerned that vulnerabilities in the open source packages could be exploited. You need to implement a cost-effective solution to ensure that your production system dependencies are secure. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "Pull only the latest versions of GitHub packages into your Cloud Build pipeline.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Pull the packages into Cloud Build from Assured Open Source Software (Assured OSS) packages.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "Pull the packages into Cloud Source Repositories, and have the security team validate open source packages.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "Pull the open source packages locally, use Cloud Build to scan all packages, and delete any flagged packages.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Pulling the latest open source versions might have bugs and vulnerabilities that have not been discovered yet.",
+      "B": "The Assured OSS Packages are built in Google Cloud’s own secured pipelines and are regularly scanned, analyzed, and fuzz tested for vulnerabilities.",
+      "C": "This is not the most cost-effective solution because Google Cloud already offers open source packages that have been curated and validated.",
+      "D": "Scanning all packages in each build is not cost-effective. Also, builds will not be successful if you delete essential packages."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://cloud.google.com/assured-open-source-software/docs/remoterepositoryaccess",
+        "text": "cloud.google.com/assured-open-source-software/docs/remote..."
+      },
+      {
+        "url": "https://cloud.google.com/assured-open-source-software/docs/javaaccess",
+        "text": "cloud.google.com/assured-open-source-software/docs/javaac..."
+      },
+      {
+        "url": "https://cloud.google.com/software-supply-chain-security/docs/practices",
+        "text": "cloud.google.com/software-supply-chain-security/docs/prac..."
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization has many projects with production environments that have to be migrated to Google Cloud. You manage organizational policies centrally. You want to follow Google-recommended practices to roll out policy changes in the resource hierarchy. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
+        "text": "Create an organization to experiment with policy changes and a separate one for the production environments.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "Create an organization for the production environments, and then apply policy changes gradually across this organization going down the hierarchy.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "Create an organization for the production environments and a staging environment for pre-release checks. Perform all experiments in the staging environment.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Create an organization for the production environments, and then apply policy changes gradually going up the hierarchy starting from production projects in this organization.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "Any change in the resource hierarchy the policy applies to might have far-reaching and unintended consequences. To mitigate this risk, it is a recommended practice to test policy changes in a separate organization before you apply them in your main organization.",
+      "B": "Many policies are applicable to the entire organization. Policy changes to the existing production organization might have far-reaching and unintended consequences.",
+      "C": "Staging environments should reflect the production environment configuration. It's not recommended to change configurations or make the security configurations easier just to do experiments.",
+      "D": "Policy changes to the existing production organization could have unintended consequences."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/architecture/identity/best-practices-for-planning#use_a_separate_organization_for_experimenting",
+        "text": "cloud.google.com/architecture/identity/best-practices-for..."
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization runs a fault-tolerant, batch processing application that processes very large amounts of data. The computations are spread over hundreds of VMs for parallel processing. You need to implement a cost-effective solution to perform the data processing at scale. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "Allocate Spot VMs to process data.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "Allocate sole tenant machines to process data.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "Create a managed instance group with autohealing enabled.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Create a managed instance group with accelerator-optimized VMs and autoscaling enabled.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "Spot VMs are a cost-effective solution for fault-tolerant processing in Compute Engine in comparison to regular VMs.",
+      "B": "Sole tenant VMs are not the most cost-effective solution.",
+      "C": "Autohealing will automatically repair unhealthy VMs, but it won't be the most cost-effective solution with a regular VM configuration.",
+      "D": "Autoscaling allocates VMs as required, but it’s not the most cost-effective solution with an accelerator-optimized VM configuration."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://cloud.google.com/compute/docs/instances/spot",
+        "text": "cloud.google.com/compute/docs/instances/spot"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/create-use-spot",
+        "text": "cloud.google.com/compute/docs/instances/create-use-spot"
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "DevOps Engineer",
+    "scenario": "You need to create a development, UAT, and production environment for a business application. You want to keep these environments as identical as possible, while following Google-recommended practices. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
-        "is_correct": true
+        "text": "Create the production environment using the Google Cloud console. Run Cloud Asset Inventory, list the resources in the production environment, and recreate the resources by using the Google Cloud console.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "Create the production environment using the Google Cloud console. Run a scan with the Security Command Center, list the resources in the production environment, and recreate the resources by using the gcloud CLI.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
-        "is_correct": false
+        "text": "Create a Terraform configuration to define your environment. Use Terraform to deploy identical environments for development, UAT, and production.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "Create bash shell scripts to create your environment, and rerun the scripts as required.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "Repeatedly recreating entire technical environments manually through the console is not Google-recommended.",
+      "B": "Resources listed in the Security Command Center will not have sufficient information to recreate them. Also, repeatedly recreating entire technical environments manually with the gcloud command line tool is not a Google-recommended practice.",
+      "C": "Infrastructure as code is the recommended way to manage repeatability technical environments. Terraform is the Google-recommended tool for infrastructure as code.",
+      "D": "Repeatedly recreating entire technical environments manually with bash scripts tool is not a Google-recommended practice."
     },
     "references": [
       {
+        "url": "https://cloud.google.com/blog/products/devops-sre/want-repeatable-scale-adopt-infrastructure-as-code-on-gcp",
+        "text": "cloud.google.com/blog/products/devops-sre/want-repeatable..."
+      },
+      {
         "url": "https://cloud.google.com/docs/terraform",
         "text": "cloud.google.com/docs/terraform"
+      },
+      {
+        "url": "https://cloud.google.com/docs/terraform/best-practices-for-terraform",
+        "text": "cloud.google.com/docs/terraform/best-practices-for-terraform"
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "DevOps Engineer",
+    "scenario": "You are using Cloud Build for a CI pipeline that uses containerized builds. Your monitoring data reveals that the builds are taking longer than expected to run. You want to reduce the build times. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "Specify a cached image that can be used for subsequent builds.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "Delete the .gcloudignore file in your code directory.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Create the container layer with the most frequent changes as the first layer.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Choose the latest version of the operating system for the base image.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "Using a cached image accelerates subsequent builds.",
+      "B": "You can exclude files not needed by your build with a .gcloudignore file to optimize the upload time. Deleting the file doesn’t accelerate builds.",
+      "C": "To speed up builds, enable caching and ensure that the layers built earlier do not change.",
+      "D": "The latest version of the operating system in the base image is not guaranteed to be faster for builds."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://cloud.google.com/build/docs/optimize-builds/speeding-up-builds",
+        "text": "cloud.google.com/build/docs/optimize-builds/speeding-up-b..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/optimize-builds/kaniko-cache",
+        "text": "cloud.google.com/build/docs/optimize-builds/kaniko-cache"
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your colleague noticed an increasing amount of suspicious traffic entering your project's virtual private cloud (VPC) while on call at night. Your colleague updated the configuration of Google Cloud Armor to stop the traffic that originates from certain IP addresses. The change reduced the network traffic, but there were escalations from an affected customer, which resulted in penalties for your company. Your team wants to use Google-recommended practices to prevent a recurrence. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
-        "is_correct": true
+        "text": "Institute a policy that requires that all changes are made during day time when there are additional people to review changes.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Create a process that requires a second level of review for this colleague for any changes.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
-        "is_correct": false
+        "text": "Conduct a blameless postmortem to identify core technical issues, and document the learnings for use by the entire team.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "Create an incident report attributing the incident to your colleague's error and escalate to senior management.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "This is not a viable policy, because configurations would need to be changed at any time. In this case, a potential cyber attack happened at night. The team needs processes that can be applied any time.",
+      "B": "This approach does not follow recommended practices because it focuses specifically on an individual instead of improving the process for everybody.",
+      "C": "This solution takes the DevOps/SRE approach of objectively identifying the technical issue without blaming the individual.",
+      "D": "This approach does not follow recommended practices, because it focuses on blaming the individual instead of improving the process."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://sre.google/workbook/postmortem-culture/",
+        "text": "sre.google/workbook/postmortem-culture"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/gcp/fearless-shared-postmortems-cre-life-lessons",
+        "text": "cloud.google.com/blog/products/gcp/fearless-shared-postmo..."
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "DevOps Engineer",
+    "scenario": "You are creating a software delivery pipeline for your company. New application features delivered by the development team must be deployed by using Cloud Deploy in testing, staging, and then production. The corresponding deployment targets are already defined. You instantiated the delivery pipeline by creating a release. You need to perform the deployments while following Google-recommended practices. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
-        "is_correct": true
+        "text": "Create an image for each stage in Artifact Registry and apply each image in the corresponding stage.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "Configure Binary Authorization to approve the deployment before each stage.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Create an independent delivery pipeline for each of the delivery stages.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
-        "is_correct": false
+        "text": "Promote the initial release through the staging and production stages.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Creating separate images for each deployment is not the recommended approach.",
+      "B": "Binary authorization provides a security check prior to deployment. However, it is not a solution for deployment itself.",
+      "C": "Creating separate delivery pipelines in Cloud Deploy is not recommended for this use case. The recommended approach is to promote the deployment to the next stage.",
+      "D": "Instantiating the release will deploy to the first target. You can promote it to go to staging and then again to go to production."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://cloud.google.com/deploy/docs/deploy-app-run",
+        "text": "cloud.google.com/deploy/docs/deploy-app-run"
+      },
+      {
+        "url": "https://cloud.google.com/deploy/docs/promote-release",
+        "text": "cloud.google.com/deploy/docs/promote-release"
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization runs many builds on Google Cloud daily. You need to ensure that VMs do not have public IP addresses and secure the build machines against data exfiltration. You want to use Google-recommended practices to create a customizable, easily-managed solution for your builds that can scale to the demands of your organization. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
+        "text": "Implement private pools in Cloud Build with VPC Service Controls.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Run and configure the builds in a default pool in Cloud Build for required privacy.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "Create a build environment by using Compute Engine VMs in a custom VPC. Use Jenkins to run the builds.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "Create a build environment by using Compute Engine Spot VM instances in a custom VPC. Use Jenkins to run the builds.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Using VPC Service Controls and running builds in a private pool gives you more security and allows multiple customizations that the default pool does not allow.",
+      "B": "The default pool does not allow customization to limit VM configurations such as public IP addresses.",
+      "C": "This custom approach incurs more effort and is not the recommended approach on Google Cloud.",
+      "D": "This custom approach incurs more effort and is not the recommended approach on Google Cloud."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://cloud.google.com/build/docs/private-pools/private-pools-overview",
+        "text": "cloud.google.com/build/docs/private-pools/private-pools-o..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/private-pools/using-vpc-service-controls",
+        "text": "cloud.google.com/build/docs/private-pools/using-vpc-servi..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/private-pools/set-up-private-pool-to-use-in-vpc-network",
+        "text": "cloud.google.com/build/docs/private-pools/set-up-private-..."
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your company has a major sales event planned in September. You have identified a group of employees to support operations during the sales event. You want to follow Google-recommended practices to provide the employees with access to Google Cloud resources for September only. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "Add a firewall rule to allow traffic from the identified employees’ machines to the resources. Change the firewall rule to deny traffic at the end of September.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create a group that contains the identified employees. Assign the group permissions to access the resources and configure an Identity and Access Management (IAM) condition with a date/time expression for September.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A single larger primary only.",
+        "text": "Create a group that contains the identified employees and assign the group a custom Identity and Access Management (IAM) role that has permissions to access the resources. Delete the custom role at the end of September.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Assign a custom Identity and Access Management (IAM) role that has permissions to access the resources to each of the identified employees. Create a Cloud Scheduler task to delete the custom role at the end of September.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "The firewall rules might allow network traffic, but that does not mean that the user has the IAM permissions to work on the resources.",
+      "B": "IAM conditions automatically assign the required permissions for the designated period only.",
+      "C": "You need to remember to remove the role at the end of September, which is not recommended. Also, the permissions apply right away, which is not necessary.",
+      "D": "Assigning roles to individual users is not recommended. Also, using Cloud Scheduler to later delete the role is not the recommended practice."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://cloud.google.com/iam/docs/conditions-overview",
+        "text": "cloud.google.com/iam/docs/conditions-overview"
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "DevOps Engineer",
+    "scenario": "Your company runs applications that serve users in Europe. Industry regulations require you to use resources only in specific regions. You need to ensure that all projects in your Google Cloud organization follow this requirement. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
-        "is_correct": true
+        "text": "Create a log-based alert to identify resources created outside of the allowed list of regions. Delete any non-compliant resources.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "Run an hourly Asset Inventory scan to catalog all resources. Delete any instance outside of the allowed list of regions.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Create a limited group of users with permission to create new instances. Create processes to verify compliance.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
-      }
-    ]
-  },
-  {
-    "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Memorystore for Redis.",
+        "text": "Configure the \"Resource Location Restriction\" organization policy to only allow regions in Europe.",
         "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "BigQuery BI Engine.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Firestore.",
-        "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "This option allows a resource to be created, which is a breach of the regulation.",
+      "B": "This option allows a resource to be created, which is a breach of the regulation.",
+      "C": "This is not reliable, because the team might still accidentally or maliciously create resources in the wrong regions.",
+      "D": "The organization policy constraint preempts the creation of a resource if it is not in the allowed regions."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
-      }
-    ]
-  },
-  {
-    "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
-        "is_correct": true
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations#gcloud",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
       },
       {
-        "id": "B",
-        "text": "Public IP with authorized networks.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud NAT to the instance.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "An external load balancer in front of the database.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
-      }
-    ]
-  },
-  {
-    "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Datastream.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Database Migration Service.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Storage Transfer Service.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud Scheduler with exports.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A multi-region (global) Spanner config.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Default settings and hope for the best.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/overview",
         "text": "cloud.google.com/resource-manager/docs/organization-polic..."
       }
     ]
   },
   {
-    "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
+    "number": 18,
+    "domain": "DevOps Engineer",
+    "scenario": "Your application has a module that performs a computationally intensive task. Your development team wants to optimize this module by experimenting with different algorithms. You need to help the team test the algorithms in both the staging and production environments to gather detailed data on the performance of each algorithm. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
+        "text": "Instrument the code with profiling libraries. Visualize the data in Cloud Profiler as flame graphs.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Only on-demand backups.",
+        "text": "Instrument the code to capture the flow of requests and responses. Review the request latencies in Cloud Trace.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Read replicas.",
+        "text": "Instrument the code with log statements at various parts of the algorithm. Send log-based notifications to collect data on the algorithm's execution.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Query Insights.",
+        "text": "Instrument the code with log statements at various parts of the algorithm. Send notifications based on log-metrics when the same control structures are called multiple times.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
+      "A": "Flame graphs in Cloud Profiler help you visualize the call stack within a program. This lets you identify bottlenecks and guides you in optimizing the code and algorithms.",
+      "B": "Cloud Trace does not provide sufficient information on benchmarking code. It is better suited for distributed tracing of applications with multiple calls between them.",
+      "C": "Log statements affect the timing of algorithms. Data collected in this way is inconvenient to visualize and is not detailed enough to provide guidance on bottlenecks.",
+      "D": "Log statements affect the timing of algorithms. Data collected in this way is inconvenient to visualize and is not detailed enough to provide guidance on bottlenecks."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+        "url": "https://cloud.google.com/profiler/docs/concepts-profiling",
+        "text": "cloud.google.com/profiler/docs/concepts-profiling"
+      },
+      {
+        "url": "https://cloud.google.com/profiler/docs/measure-app-performance",
+        "text": "cloud.google.com/profiler/docs/measure-app-performance"
+      },
+      {
+        "url": "https://cloud.google.com/profiler/docs/concepts-flame",
+        "text": "cloud.google.com/profiler/docs/concepts-flame"
+      },
+      {
+        "url": "https://codelabs.developers.google.com/cloud-profiler-go#0",
+        "text": "codelabs.developers.google.com/cloud-profiler-go#0"
+      },
+      {
+        "url": "https://codelabs.developers.google.com/codelabs/otel-cloudtrace-go#0",
+        "text": "codelabs.developers.google.com/codelabs/otel-cloudtrace-go#0"
       }
     ]
   },
   {
-    "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
+    "number": 19,
+    "domain": "DevOps Engineer",
+    "scenario": "Your code is stored on GitHub and built with Cloud Build, both manually and with webhooks. Building the code requires accessing confidential information. You want to follow Google-recommended practices to ensure the security of the confidential information. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner.",
-        "is_correct": true
+        "text": "Trigger the builds from the command line each time, and supply the required confidential information as parameters.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Bigtable.",
+        "text": "Create an encrypted file in your GitHub repository to only contain the confidential information, and reference the encrypted file in your Cloud Build file.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Memorystore.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
-      }
-    ]
-  },
-  {
-    "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
+        "text": "Create an entry in Secret Manager, specify the URI for the confidential secrets in the Cloud Build file, and reference the secret as parameters in the build steps.",
         "is_correct": true
       },
       {
-        "id": "B",
-        "text": "Add more column families.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Increase the number of tables.",
-        "is_correct": false
-      },
-      {
         "id": "D",
-        "text": "Enable a public IP.",
+        "text": "Retain the code in Github. Create a new repository only for confidential information in Cloud Source Repositories, and reference the new repository in your Cloud Build file.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
+      "A": "This solution does not work for those cases when webhooks trigger the build.",
+      "B": "As a rule, any confidential information, secrets, and credentials should not be stored in a source repository. Others who have access to the GitHub repository would have access to the credentials, thus breaking the principle of least privilege.",
+      "C": "Secret Manager can be configured with Identity and Access Management (IAM) to follow the principle of least privilege. Cloud Build can reference Secret Manager and you can include the secrets in the build steps by using parameter substitution.",
+      "D": "As a rule, any confidential information, secrets, and credentials should not be stored in a source repository. Isolating confidential information in a separate repository is also not acceptable. Others who have access to the Cloud Source Repositories repository would have access to the information, thus breaking the principle of least privilege."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
-      }
-    ]
-  },
-  {
-    "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
-        "is_correct": true
+        "url": "https://cloud.google.com/build/docs/securing-builds/use-secrets",
+        "text": "cloud.google.com/build/docs/securing-builds/use-secrets"
       },
       {
-        "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Manual exports when someone remembers.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Disabling backups to save cost.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/build/docs/configuring-builds/substitute-variable-values",
+        "text": "cloud.google.com/build/docs/configuring-builds/substitute..."
       }
     ]
   }

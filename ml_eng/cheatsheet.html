@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Exam Cheatsheet</title>
+  <style>
+    :root {
+      --bg: #fdf2f8;
+      --ink: #1e293b;
+      --accent: #db2777;
+      --accent-dark: #be185d;
+      --c1: #8b5cf6; --c2: #2563eb; --c3: #0d9488; --c4: #ea580c; --c5: #16a34a; --c6: #db2777;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5; margin: 0; padding: 0;
+    }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 15px 60px; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f472b6 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 36px 20px; text-align: center; position: relative; margin-bottom: 30px; overflow: hidden; color: var(--ink);
+    }
+    header::after {
+      content: "CHEAT SHEET!"; position: absolute; top: 15px; right: -35px;
+      background: var(--red); color: white; font-size: 0.75rem; font-weight: bold;
+      padding: 6px 40px; transform: rotate(45deg); border: 2px solid #000;
+    }
+    .badge-cgp {
+      background: var(--red); color: white; display: inline-block; font-size: 0.9rem; font-weight: bold;
+      padding: 6px 16px; border-radius: 999px; border: 2px solid #000; transform: rotate(-2deg); margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.8rem, 4.5vw, 3rem); margin: 8px 0; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 3px 3px 0px #fff;
+    }
+    .tagline { font-size: 1.1rem; margin: 8px auto 0; max-width: 720px; font-style: italic; }
+    .intro {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 20px 24px; margin-bottom: 30px;
+    }
+    .sec-block {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 5px 5px 0px var(--blk, #000); padding: 24px; margin-bottom: 30px;
+    }
+    .sec-block.c1 { box-shadow: 5px 5px 0px var(--c1); border-color: var(--c1); }
+    .sec-block.c2 { box-shadow: 5px 5px 0px var(--c2); border-color: var(--c2); }
+    .sec-block.c3 { box-shadow: 5px 5px 0px var(--c3); border-color: var(--c3); }
+    .sec-block.c4 { box-shadow: 5px 5px 0px var(--c4); border-color: var(--c4); }
+    .sec-block.c5 { box-shadow: 5px 5px 0px var(--c5); border-color: var(--c5); }
+    .sec-block.c6 { box-shadow: 5px 5px 0px var(--c6); border-color: var(--c6); }
+    .sec-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .sec-pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; padding: 4px 12px;
+      border-radius: 999px; border: 2px solid #000;
+    }
+    .c1 .sec-pill { background: var(--c1); } .c2 .sec-pill { background: var(--c2); }
+    .c3 .sec-pill { background: var(--c3); } .c4 .sec-pill { background: var(--c4); }
+    .c5 .sec-pill { background: var(--c5); } .c6 .sec-pill { background: var(--c6); }
+    .weight { font-size: 0.8rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; }
+    .sec-head h2 { font-size: 1.4rem; margin: 0; width: 100%; }
+    .sec-intro { color: #475569; margin: 0 0 16px; font-size: 0.96rem; }
+    .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .cards > * { min-width: 0; }
+    @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } .nav-link { width: 100%; } }
+    .fact-card {
+      background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 14px 16px;
+    }
+    .fact-card h4 { margin: 0 0 8px; font-size: 1.02rem; color: var(--accent-dark); }
+    .fact-card ul { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+    .fact-card li { margin-bottom: 5px; }
+    .fact-card p { margin: 0 0 6px; font-size: 0.9rem; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.85em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 16px; font-size: 0.92rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook {
+      display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000;
+      border-radius: 6px; padding: 1px 8px; margin-right: 6px;
+    }
+    .table-wrap { margin-top: 16px; overflow-x: auto; }
+    .table-cap { font-weight: bold; margin-bottom: 6px; color: var(--accent-dark); }
+    table { border-collapse: collapse; width: 100%; font-size: 0.86rem; background: #fff; }
+    th, td { border: 2px solid #000; padding: 8px 10px; text-align: left; vertical-align: top; }
+    thead th { background: var(--accent); color: #fff; }
+    tbody tr:nth-child(even) { background: #f1f5f9; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 20px auto 0; background: var(--yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    footer { text-align: center; margin-top: 30px; font-size: 0.85rem; color: #64748b; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Main Certs Hub</a>
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="practice_questions.html" class="nav-link">Practice Questions &rarr;</a>
+    </div>
+
+    <header>
+      <div class="badge-cgp">UK CGP Revision Style</div>
+      <h1>GCP ML Engineer</h1>
+      <p class="tagline">High-yield revision deck ordered by the official exam guide. Vertex AI map, build-vs-buy ladder, and the skew-vs-drift trap.</p>
+    </header>
+
+    <div class="intro"><strong>🤖 The big picture:</strong> Climb the <strong>build-vs-buy ladder</strong> — pretrained ML APIs / Model Garden &rarr; BigQuery ML &rarr; AutoML &rarr; custom training — and stop at the first rung that meets the requirement and team skill. Know the <strong>Vertex AI service map</strong> end to end, and never confuse <em>training-serving skew</em> with <em>drift</em>.</div>
+
+    <section class="sec-block c1">
+      <div class="sec-head">
+        <span class="sec-pill">Section 1</span>
+        <span class="weight">~13%</span>
+        <h2>Architecting Low-Code AI Solutions</h2>
+      </div>
+      <p class="sec-intro">Fastest paths to a working model.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Build-vs-buy ladder</h4>
+          <ul><li><strong>Pretrained ML APIs / Model Garden</strong>: standard tasks, no training.</li><li><strong>BigQuery ML</strong>: SQL users, data already in BQ.</li><li><strong>AutoML</strong>: custom model, little ML code.</li><li><strong>Custom training</strong>: full control, framework freedom.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>GenAI building blocks</h4>
+          <ul><li><strong>Model Garden</strong>: foundation + open models catalog.</li><li><strong>Vertex AI Agent Builder</strong>: search, RAG, agents.</li><li><strong>Document AI / Retail API</strong>: industry-specific.</li></ul>
+        </div>
+      </div>
+        <div class="table-wrap"><div class="table-cap">BigQuery ML model picker</div>
+          <table><thead><tr><th>Problem</th><th>Model</th></tr></thead><tbody>
+<tr><td>Predict a number</td><td>Linear regression</td></tr>
+<tr><td>Yes/no or class</td><td>Logistic / multiclass classification</td></tr>
+<tr><td>Forecast a time series</td><td>ARIMA_PLUS</td></tr>
+<tr><td>Recommendations</td><td>Matrix factorization</td></tr>
+<tr><td>Tabular accuracy</td><td>Boosted trees (XGBoost)</td></tr>
+<tr><td>Anomaly detection</td><td>Autoencoder / K-means</td></tr>
+          </tbody></table>
+        </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> If the data is already in BigQuery and the team writes SQL, <strong>BigQuery ML</strong> beats spinning up custom training.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "No labeled data / standard task (OCR, translation, sentiment)" &rarr; a <strong>pretrained ML API</strong>, not AutoML.</div>
+    </section>
+    <section class="sec-block c2">
+      <div class="sec-head">
+        <span class="sec-pill">Section 2</span>
+        <span class="weight">~14%</span>
+        <h2>Managing Data & Models Across Teams</h2>
+      </div>
+      <p class="sec-intro">Data prep, notebooks, and experiment tracking.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Feature management</h4>
+          <ul><li><strong>Vertex AI Feature Store</strong>: central, reusable features; online + offline serving; reduces skew.</li><li>Preprocess at scale with <strong>Dataflow</strong> / <strong>TFX</strong>.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Notebook backends</h4>
+          <ul><li><strong>Vertex AI Workbench</strong>: managed JupyterLab, secure.</li><li><strong>Colab Enterprise</strong>: collaborative, managed.</li><li><strong>Dataproc notebooks</strong>: Spark kernels for big data.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Using the same <strong>Feature Store</strong> for training and serving is the canonical way to prevent training-serving skew.</div>
+    </section>
+    <section class="sec-block c3">
+      <div class="sec-head">
+        <span class="sec-pill">Section 3</span>
+        <span class="weight">~18%</span>
+        <h2>Scaling Prototypes into ML Models</h2>
+      </div>
+      <p class="sec-intro">Train at scale and choose accelerators wisely.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Training options</h4>
+          <ul><li><strong>Vertex AI custom training</strong>: containers, any framework.</li><li><strong>Distributed training</strong> for large data; reliable pipelines.</li><li><strong>Hyperparameter tuning</strong> service for sweeps.</li><li><strong>Fine-tune</strong> foundation models in Vertex AI / Model Garden.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Accelerator choice</h4>
+          <ul><li><strong>CPU</strong>: small/classical models.</li><li><strong>GPU</strong>: most deep learning, flexible.</li><li><strong>TPU</strong>: very large TensorFlow/JAX matrix workloads.</li><li><strong>Reduction Server</strong>: faster multi-GPU all-reduce.</li></ul>
+        </div>
+      </div>
+        <div class="callout mnemonic"><span class="hook">TPU</span> <strong>TPU = Tensor-heavy, Predictable, hUge</strong> matmuls (large TF/JAX). For mixed or smaller models, reach for GPUs first.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> TPUs shine for large matrix-multiply DL graphs; for custom ops or smaller models, GPUs are usually the right call.</div>
+    </section>
+    <section class="sec-block c4">
+      <div class="sec-head">
+        <span class="sec-pill">Section 4</span>
+        <span class="weight">~20%</span>
+        <h2>Serving & Scaling Models</h2>
+      </div>
+      <p class="sec-intro">Inference patterns and production endpoints.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Inference patterns</h4>
+          <ul><li><strong>Batch prediction</strong>: large offline scoring, latency-tolerant.</li><li><strong>Online endpoint</strong>: low-latency, per-request.</li><li><strong>Private endpoints</strong> for VPC-internal traffic.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Production tuning</h4>
+          <ul><li><strong>Model Registry</strong> + versioning; A/B test via traffic split.</li><li>Autoscale serving on throughput.</li><li>Optimise latency/memory (quantisation, distillation).</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Score the whole table once a night" = <strong>batch prediction</strong>; "respond per user request in ms" = <strong>online endpoint</strong>.</div>
+    </section>
+    <section class="sec-block c5">
+      <div class="sec-head">
+        <span class="sec-pill">Section 5</span>
+        <span class="weight">~22%</span>
+        <h2>Automating & Orchestrating Pipelines</h2>
+      </div>
+      <p class="sec-intro">The biggest slice: reproducible, automated MLOps.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Orchestration</h4>
+          <ul><li><strong>Vertex AI Pipelines (KFP)</strong>: serverless ML DAGs — default choice.</li><li><strong>Cloud Composer (Airflow)</strong>: broader data orchestration.</li><li><strong>TFX</strong> components for TensorFlow pipelines.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Retraining & lineage</h4>
+          <ul><li>Trigger retraining on schedule or on drift/skew signals.</li><li><strong>CI/CD</strong> model deploy with Cloud Build.</li><li><strong>Vertex ML Metadata</strong>: artifact versions & lineage.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> For an ML-specific, serverless, reproducible pipeline pick <strong>Vertex AI Pipelines</strong>; Cloud Composer is the answer only when you need general workflow orchestration across many systems.</div>
+    </section>
+    <section class="sec-block c6">
+      <div class="sec-head">
+        <span class="sec-pill">Section 6</span>
+        <span class="weight">~13%</span>
+        <h2>Monitoring AI Solutions</h2>
+      </div>
+      <p class="sec-intro">Risk, Responsible AI, and the skew/drift distinction.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Skew vs drift</h4>
+          <ul><li><strong>Training-serving skew</strong>: training and serving data/preprocessing differ.</li><li><strong>Prediction drift</strong>: serving input distribution shifts over time.</li><li><strong>Feature attribution drift</strong>: feature importance changes.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Responsible AI</h4>
+          <ul><li>Monitor for <strong>bias / fairness</strong>; assess readiness.</li><li><strong>Explainable AI</strong> for feature attributions.</li><li>Protect models/data from exploitation.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Fix <strong>skew</strong> by sharing preprocessing/Feature Store between train and serve; detect <strong>drift</strong> with Vertex AI Model Monitoring over time.</div>
+    </section>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+    <footer><p>High-yield cheatsheet ordered by the official exam guide. Pair with the practice simulator.</p></footer>
+  </div>
+</body>
+
+</html>

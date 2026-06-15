@@ -890,1000 +890,898 @@
   {
     "number": 1,
     "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "scenario": "You have a Cloud SQL instance serving production workloads. Previously, your customers have noticed non-availability issues during maintenance events. You want to minimize the impact of such maintenance issues in the future. What should you do? (Choose two.)",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
+        "text": "Use connection pools.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Use exponential backoff.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "Set the order of update to Later.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "Remove the maintenance window.",
+        "is_correct": false
+      },
+      {
+        "id": "E",
+        "text": "Opt in to maintenance notifications.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "You can use connection pools to minimize the impact of dropped connections. Although connections between the pooler and the database are dropped during maintenance, the connections between the application and the pooler are preserved. That way, the work of reestablishing the connections is transparent to the application and offloaded to the connection pooler instead.",
+      "B": "If a query fails or a connection is dropped, the system institutes a wait period before retrying, which increases for each subsequent retry. Following this pattern ensures that these failures are corrected without overloading the service.",
+      "C": "Choosing a Later maintenance update only defers the same maintenance event and does not mitigate it.",
+      "D": "Maintenance of the database is important and will be conducted even if you do not set a maintenance window.",
+      "E": "Receiving maintenance notifications alone does not resolve the non-availability issues."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/postgres/maintenance#minim..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/mysql/maintenance#minimize..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/sqlserver/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/sqlserver/maintenance#mini..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/maintenance",
+        "text": "docs.cloud.google.com/sql/docs/postgres/maintenance"
       }
     ]
   },
   {
     "number": 2,
     "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "scenario": "You need to export a large Cloud SQL for PostgreSQL instance. The databases in the instance are used heavily in production, and export time is not a concern. You want to conduct the export operation without affecting the performance of the database. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Use Datastream.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Use serverless export.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "Use Database Migration Service.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Use Cloud SQL in high availability (HA) mode.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Datastream is used for change data capture between database instances.",
+      "B": "With serverless export, Cloud SQL creates a separate, temporary instance to offload the export operation. Offloading the export operation allows databases on the primary instance to continue to serve queries and perform operations at the usual performance rate.",
+      "C": "Database Migration Service is used to migrate databases to another instance.",
+      "D": "Cloud SQL HA mode is used for high availability and failover when there is unexpected downtime."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/import-export#serverless",
+        "text": "docs.cloud.google.com/sql/docs/postgres/import-export#ser..."
       }
     ]
   },
   {
     "number": 3,
     "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "scenario": "You migrated your on-premises MySQL instances to Cloud SQL on Google Cloud. The instances have been functioning as expected for the past six months. You need to optimize costs. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Review past logs in Cloud Logging to plan virtual machine (VM) resources.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Apply the recommendations from the Cloud SQL overprovisioned recommender.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Use Query Insights to identify query performance and plan VM resources accordingly.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "Review utilization on Cloud Monitoring dashboards to plan VM resources.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "Cloud Logging does not give you enough information on VM utilization to help plan VM sizing.",
+      "B": "The Cloud SQL overprovisioned instance recommender helps you detect instances that are unnecessarily large for a given workload. It then provides recommendations on how to resize such instances and reduce cost.",
+      "C": "Query Insights help you detect query performance, but that is not a strong indicator of optimal VM sizes.",
+      "D": "Cloud Monitoring only gives you a window of information on current utilization, which is not optimal for planning VM sizes."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/recommender-sql-overprovisioned",
+        "text": "docs.cloud.google.com/sql/docs/mysql/recommender-sql-over..."
       }
     ]
   },
   {
     "number": 4,
     "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "scenario": "You are part of the database maintenance team at your company. You are running a MySQL instance on a Compute Engine virtual machine (VM). The applications team raised a high-priority ticket regarding slow responses to queries running on the database. You need to quickly identify the slow queries. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
-        "is_correct": true
+        "text": "Add application logs before and after each of the queries.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "Configure your application to export spans to Cloud Trace.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "Migrate the MySQL instance to Cloud SQL, and then look at Query Insights.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
-        "is_correct": false
+        "text": "Set the database-flags options for slow_query_log. Then look for mysql-slow.log in the Logs Explorer.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "Adding application logs would take more time to code, test, and deploy than setting database flags.",
+      "B": "Trace lists performance insights that can help you understand how to reduce your application's latency, but does not give you detailed information about MySQL query latencies.",
+      "C": "Migrating the database is not the fastest option. Also, using Cloud SQL to run this instance might not be feasible.",
+      "D": "Setting these database flags would be a quick approach to identifying slow queries."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://dev.mysql.com/doc/refman/8.0/en/slow-query-log.html",
+        "text": "dev.mysql.com/doc/refman/8.0/en/slow-query-log.html"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/flags#tips-general-log",
+        "text": "docs.cloud.google.com/sql/docs/mysql/flags#tips-general-log"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/diagnose-issues#enable-query-logs",
+        "text": "docs.cloud.google.com/sql/docs/mysql/diagnose-issues#enab..."
+      },
+      {
+        "url": "https://cloud.google.com/community/tutorials/stackdriver-monitor-slow-query-mysql",
+        "text": "cloud.google.com/community/tutorials/stackdriver-monitor-..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/trace/docs/setup",
+        "text": "docs.cloud.google.com/trace/docs/setup"
       }
     ]
   },
   {
     "number": 5,
     "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "scenario": "You are creating applications for your company in the retail industry. Orders are stored in Cloud Spanner, and your flagship store uses storeId \"12345.\" Management wants to regularly run a query on this store for different customers. You want to parameterize this query for performance. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
+        "text": "`select productIds from orders where customerId=@customerId and storeId='12345'`",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "`select productIds from orders where customerId=@customerId and storeId=@storeId`",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "`select productIds from orders where customerId like @customerId and storeId=@storeId`",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "`select productIds from orders where customerId like @customerId and storeId='12345'`",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "If your application needs to execute many similar queries, in which only a literal value changes, you should use a parameter placeholder for that value. The storeId is constant over subsequent query invocations. Leaving the constant as a literal in this case is beneficial because it can improve the specific query plan that's chosen by the query engine.",
+      "B": "Retaining the storeId as a constant would be more performant because it is being reused in subsequent queries.",
+      "C": "Cloud Spanner does not evaluate parameterized LIKE patterns until execution time and therefore this does not improve query performance.",
+      "D": "Cloud Spanner does not evaluate parameterized LIKE patterns until execution time and therefore this does not improve query performance."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices#use_query_parameters_to_speed_up_frequently_executed_queries",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices#use..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices#use-starts_with-instead-of-like",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices#use..."
       }
     ]
   },
   {
     "number": 6,
     "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "scenario": "Analysts in your company have raised concerns about performance and failed queries from the most recent Thursday to Monday. You look at the logs on Tuesday and discover nearly 50 \"deadlock detected\" errors. In the future, you want to take a more proactive approach to discovering database issues. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Export the logs daily to BigQuery, and run a search for \"deadlock detected\" on the data.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create a Cloud Monitoring metric with \"deadlock detected\" as the text payload, and set notifications based on it.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Create a Cloud Monitoring dashboard, and watch for any issues related to congestion that could indicate a deadlock.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "Write a Cloud Function to poll the database logs for \"deadlock detected\" errors, and schedule the Cloud Function to run every hour on Cloud Scheduler.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "A daily export will be delayed in discovering current database issues.",
+      "B": "You can be alerted about specific issues when they happen.",
+      "C": "Watching the dashboard all the time is not a practical solution.",
+      "D": "Running the detector every hour is not as proactive because there could be long time periods when you do not have the latest errors."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://cloud.google.com/blog/products/databases/learn-how-to-create-alerts-based-on-your-database-logs-in-cloud-sql",
+        "text": "cloud.google.com/blog/products/databases/learn-how-to-cre..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/logging/docs/logs-based-metrics/charts-and-alerts",
+        "text": "docs.cloud.google.com/logging/docs/logs-based-metrics/cha..."
       }
     ]
   },
   {
     "number": 7,
     "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "scenario": "Each developer and tester has an individual Cloud SQL instance for their own learning and experimenting use. The team works from Monday morning to Friday evening. You want to reduce expenditure on Cloud SQL instances with minimal effort. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Configure high availability for the Cloud SQL instances, and then configure a maintenance window for the Cloud SQL instances.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Write a Cloud Function to start and stop the Cloud SQL instances, and use Cloud Scheduler to call the function as required.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Create a virtual machine (VM) on Compute Engine, and create a cron job to schedule the start and stop of the Cloud SQL instances.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Configure a read replica of each independent Cloud SQL instance, and then configure a maintenance window for the Cloud SQL instances.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "Creating an HA instance or configuring a maintenance window does not shut down the original machines and reduce costs; instead, this option adds more cost.",
+      "B": "Cloud Functions can have simple, invokable code to start and stop instances, and Cloud Scheduler can schedule these function calls when required.",
+      "C": "Running a Compute Engine instance would not be the most cost-efficient solution.",
+      "D": "Creating a read replica or configuring a maintenance window does not shut down the original machines and reduce costs; instead, this option adds more cost."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/blog/topics/developers-practitioners/lower-development-costs-schedule-cloud-sql-instances-start-and-stop",
+        "text": "cloud.google.com/blog/topics/developers-practitioners/low..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/start-stop-restart-instance",
+        "text": "docs.cloud.google.com/sql/docs/mysql/start-stop-restart-i..."
       }
     ]
   },
   {
     "number": 8,
     "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "scenario": "You are building a mobile application that allows end users to upload images. These images need to go through a series of processing steps, including converting to black and white, cropping, and other editing. Your mobile application has a feature that allows end users to notify their followers when they edit images. You want to create a scalable solution with minimal effort and cost. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
-        "is_correct": true
+        "text": "Use Firebase and Compute Engine.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "Use Cloud Spanner and Cloud Run.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "Use Bigtable and Cloud Functions for Firebase.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
-        "is_correct": false
+        "text": "Use Firebase and Cloud Functions for Firebase.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Compute Engine will require more manual effort and will incur continuous virtual machine (VM) costs.",
+      "B": "Cloud Spanner and Cloud Run do not have any built-in mechanism for real-time database updates.",
+      "C": "Bigtable does not have built-in real-time database events to notify users of changes.",
+      "D": "Developers can use Cloud Functions to offload to Google Cloud all resource-intensive work (heavy CPU or networking) that wouldn't be practical to run on a user's device. The real-time database feature of Firebase lets you trigger updates to followers. ImageMagick command-line tools are provided for use with Cloud Functions to simplify this work."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://firebase.google.com/docs/functions/functions-and-firebase",
+        "text": "firebase.google.com/docs/functions/functions-and-firebase"
+      },
+      {
+        "url": "https://firebase.google.com/docs/functions/use-cases",
+        "text": "firebase.google.com/docs/functions/use-cases"
       }
     ]
   },
   {
     "number": 9,
     "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "scenario": "You previously migrated a business-critical monolith application without modification from on-premises to Google Cloud. You want to re-architect this application to use microservices. The application has a single backend database, but in the future you want to make the database architecture more suitable to microservices. You want to minimize downtime when you make database changes. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
+        "text": "Route database connections through a new service. Connect to the new database or databases from the new service only.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "Change the frontend to a microservices approach. Make each of the microservices continue to directly connect to the single database.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "Change the backend to several databases split from the original database. Retain the frontend as a single application that connects to multiple smaller databases.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Change the frontend to a microservices approach. When the frontend is updated, simultaneously make each of the microservices connect to a new service-specific database.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "The new service will provide a loosely coupled interface between the applications and the frontend. This lets you make changes to the backend and database architecture with low impact on the frontend.",
+      "B": "Changes in the backend database will affect all frontend applications directly.",
+      "C": "The application will have to adapt to any future changes in the database architecture.",
+      "D": "Any future changes to the database will affect any directly connected applications."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/architecture/microservices-architecture-refactoring-monoliths",
+        "text": "cloud.google.com/architecture/microservices-architecture-..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/microservices-architecture-introduction",
+        "text": "docs.cloud.google.com/architecture/microservices-architec..."
       }
     ]
   },
   {
     "number": 10,
     "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "scenario": "Approximately 5 TB of data is collected daily in Amazon Simple Storage Service (S3). You want to transfer the data daily into Cloud Storage before importing the data into Cloud SQL. You need a reliable solution that takes minimal effort. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "Configure Storage Transfer Service to perform recurring transfers.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "Configure Cloud Scheduler to run a gsutil job daily to copy the data.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "Download the data to a local machine, and then use Transfer Appliance.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Configure Cloud Scheduler to run a Cloud Function daily to copy the data.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "Storage Transfer Service works with HTTPS endpoints like Amazon S3 and can be scheduled.",
+      "B": "gsutil is suitable for smaller amounts of data and also requires more effort to schedule the transfers and maintain the data transfer jobs.",
+      "C": "The size of the data is small and it needs to be transferred on a daily basis. Transfer Appliance is appropriate for quantities of data over 10 TB that would take more than a week to upload.",
+      "D": "Writing a Cloud Function for the transfer and maintaining it would require more effort."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://docs.cloud.google.com/storage-transfer/docs/create-transfers",
+        "text": "docs.cloud.google.com/storage-transfer/docs/create-transfers"
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage-transfer/docs/create-transfers/agentless/s3",
+        "text": "docs.cloud.google.com/storage-transfer/docs/create-transf..."
       }
     ]
   },
   {
     "number": 11,
     "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "scenario": "A Dedicated Interconnect connection exists between your on-premises network and a nearby Google Cloud region. A Bare Metal Solution for Oracle machine has been set up in another region. You want to use the Bare Metal machine's IP address to connect to the Oracle database. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
+        "text": "In your VPC network, set the dynamic routing mode to global.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "In your VPC network, set the dynamic routing mode to regional.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
+        "text": "In your VPC network, add a VPC peering connection between the two regions.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "In your VPC network, add a high availability VPN connection between the two regions.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "The global dynamic routing option lets you dynamically learn routes to and from all regions.",
+      "B": "The regional dynamic routing option will only learn routes in the region in which they were created, and the Oracle database is located in another region.",
+      "C": "VPC peering is not required within the same VPC.",
+      "D": "VPNs are not required within the same VPC."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://docs.cloud.google.com/bare-metal/docs/bms-setup",
+        "text": "docs.cloud.google.com/bare-metal/docs/bms-setup"
+      },
+      {
+        "url": "https://docs.cloud.google.com/network-connectivity/docs/router/how-to/create-network-set-modes",
+        "text": "docs.cloud.google.com/network-connectivity/docs/router/ho..."
       }
     ]
   },
   {
     "number": 12,
     "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "scenario": "You have set up read replicas for a Cloud SQL instance that is used by your company's application. You need to provide low latency reads for customers located on several continents. You want to follow Google-recommended practices to configure the application. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "Configure the application to use any of the replicas.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Configure the application to use the replica that is closest to the user.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Configure the application to use a new IP address that reroutes requests to any replica.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Configure a Compute Engine virtual machine (VM) as a jump server to route to any of the replicas.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "You need to connect directly to a read replica, and a database instance further away will have slower response times.",
+      "B": "Physical distance affects latency. An instance closer to the end user will return a faster response.",
+      "C": "A third IP address has to be manually coded and controlled, which is not recommended.",
+      "D": "A Compute Engine instance will need to be manually configured and managed, which is not recommended."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/replication/cross-region-replicas",
+        "text": "docs.cloud.google.com/sql/docs/mysql/replication/cross-re..."
       }
     ]
   },
   {
     "number": 13,
     "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "scenario": "You have created an instance of Cloud SQL. The data stored in the instance is expected to increase rapidly up to 60 TB. You need to ensure that the database instance is reliable and can increase capacity with minimal intervention. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
-        "is_correct": true
+        "text": "Use local SSD.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Enable high availability failover.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
-        "is_correct": false
+        "text": "Enable automatic storage increases.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "Use a cron script to increase storage when required.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "Using SSDs does not automatically change capacity.",
+      "B": "Failover does not change disk size.",
+      "C": "Google Cloud can automatically increase storage.",
+      "D": "A custom cron script would require more management than enabling automatic storage increases."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/instance-settings#automatic-storage-increase-2ndgen",
+        "text": "docs.cloud.google.com/sql/docs/mysql/instance-settings#au..."
       }
     ]
   },
   {
     "number": 14,
     "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "scenario": "Your customer is building an application for learning foreign languages. The data schema for different language learning levels is different. Followers of a user are notified in real time of progress made by the user. The application's users are also able to interact with each other; interactions may contain emojis, gifs, and voice notes. You want to use a database that supports flexible schema and real-time notifications. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
+        "text": "Use Firestore in Native mode.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "Use Firestore in Datastore mode.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Use federated queries between Cloud SQL and BigQuery.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "Use Cloud Spanner, and create interleaved rows with customers as root rows.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Firestore is a NoSQL, document-oriented database that supports flexible schemas. Native mode supports real-time updates.",
+      "B": "Cloud Firestore in Datastore mode does not support real-time updates.",
+      "C": "BigQuery and Cloud SQL have only limited schema flexibility and do not support real-time updates.",
+      "D": "Cloud Spanner is an RDBMS (Relational Database Management System) with limited schema flexibility and does not support real-time updates."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://docs.cloud.google.com/datastore/docs/firestore-or-datastore#feature_comparison",
+        "text": "docs.cloud.google.com/datastore/docs/firestore-or-datasto..."
+      },
+      {
+        "url": "https://firebase.google.com/docs/firestore/data-model",
+        "text": "firebase.google.com/docs/firestore/data-model"
+      },
+      {
+        "url": "https://docs.cloud.google.com/firestore/native/docs/overview",
+        "text": "docs.cloud.google.com/firestore/native/docs/overview"
       }
     ]
   },
   {
     "number": 15,
     "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "scenario": "You are using Cloud SQL for PostgreSQL to hold business-critical data. You want to ensure that, if an error occurs, you can recover the database to the previous state with minimal data loss. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
-        "is_correct": true
+        "text": "Enable failover replication.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Enable automated backups.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Application-level encryption only.",
-        "is_correct": false
+        "text": "Enable point-in-time recovery.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "Write all updates to a log file.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Failover replication does not automatically back up data.",
+      "B": "Automated backups are done once a day and could result in larger amounts of lost data.",
+      "C": "Point-in-time recovery has the most up-to-date recovery capability.",
+      "D": "Manually updating all changes to log files is both insecure and inefficient."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
+        "text": "docs.cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backups#automated-backups",
+        "text": "docs.cloud.google.com/sql/docs/postgres/backup-recovery/b..."
       }
     ]
   },
   {
     "number": 16,
     "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "scenario": "Your company streams TV shows to audiences around the world. Each show has a landing page that provides a quick overview and an available episode listing that is updated monthly. The website data is stored in a Cloud Spanner database. You need to have a performant way to retrieve the data. You want to design the schema using Google-recommended practices. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
-        "is_correct": true
+        "text": "Denormalize the table, and store all the data in a single row.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "Increase the number of nodes and the capacity of each node.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
-        "is_correct": false
+        "text": "Store the show data in a root row, and interleave the episodes with the root row.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Execute two parallel queries on the show data and the episodes, and then merge the data.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "Denormalizing tables is not a recommended practice in Cloud Spanner for such use cases.",
+      "B": "Increasing the number of nodes or their capacity will not improve the data retrieval latency in this situation.",
+      "C": "If data is frequently written or read together, interleaving can benefit both latency and throughput.",
+      "D": "Executing parallel queries and merging them is less performant."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://docs.cloud.google.com/spanner/docs/whitepapers/optimizing-schema-design#tradeoffs_of_locality",
+        "text": "docs.cloud.google.com/spanner/docs/whitepapers/optimizing..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices"
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/schema-and-data-model#create-interleaved-tables",
+        "text": "docs.cloud.google.com/spanner/docs/schema-and-data-model#..."
       }
     ]
   },
   {
     "number": 17,
     "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "scenario": "Your company serves customers who are primarily located in Germany. In this case, there are no compliance restrictions that data must be stored in Germany or the European Union. You have identified Cloud SQL as a suitable database. You need to choose a region to create the database instance. You want the application to be performant. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
+        "text": "Create the instance in a Google Cloud region in Germany.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "Create the instance in any Google Cloud region in Europe.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Create the instance in any Google Cloud region around the world.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "Create the instance in us-central1, Iowa, which has the maximum zones.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "The database should be set up closest to where your users are located.",
+      "B": "Physical distance affects latency, and you would want to reduce that.",
+      "C": "Physical distance affects latency, and you would want to reduce that.",
+      "D": "The extra zones do not add to improved performance or speed."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://docs.cloud.google.com/docs/get-started/consider-geographic-distribution",
+        "text": "docs.cloud.google.com/docs/get-started/consider-geographi..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/locations",
+        "text": "docs.cloud.google.com/sql/docs/mysql/locations"
       }
     ]
   },
   {
     "number": 18,
     "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "scenario": "Your company has hired a new team of analysts. Your current Cloud SQL database must be repurposed to let the analysts run queries on the data. The analysts must be able to run their queries on all of the data. You need a minimal-effort solution that ensures no performance degradation on the main database. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Use Memorystore to cache recently used data. Direct the analysts to use only the cached data.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create read replicas of the main database. Provide the analysts with read access to the replicas.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "Shard the data and write the data to different shards. Give access to different shards to different analysts.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Create views of the data, based on each analyst's need. Provide access to a view to the corresponding analyst.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "Data analysis conducted by many analysts uses lots of varying data, which is not a good use case for Memorystore.",
+      "B": "Read replicas will replicate all data, which the analysts will use to read data and reduce read pressure on the main database.",
+      "C": "Sharding the data will let analysts see only part of the data.",
+      "D": "It requires more effort to maintain separate views for each of the analysts."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/replication",
+        "text": "docs.cloud.google.com/sql/docs/mysql/replication"
       }
     ]
   },
   {
     "number": 19,
     "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "scenario": "The security policy for a Cloud SQL database dictates that it should only be accessed from VPC networks within Google Cloud. You do not want to enable a public IP address for this instance. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
+        "text": "Configure private services access in your VPC.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "Configure your VPC with a firewall rule to allow HTTP(S).",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Configure authorized networks CIDR with an internal subnet.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
+        "text": "Configure your VPC with a firewall rule to allow the database's port.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "The private connection enables virtual machine (VM) instances in your VPC network and the services that you access to communicate using internal IP addresses.",
+      "B": "Enabling HTTP(S) traffic will not let you reach the Cloud SQL instance.",
+      "C": "Cloud SQL instances cannot be reached directly from a subnet's internal, private IP addresses.",
+      "D": "Opening the database's port will not let you reach the Cloud SQL instance."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-private-services-access",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-private-se..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-private-ip",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-private-ip"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/private-services-access",
+        "text": "docs.cloud.google.com/vpc/docs/private-services-access"
       }
     ]
   },
   {
     "number": 20,
     "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "scenario": "You are creating an application that uses a Cloud SQL database in the backend. The database is installed in a single zone. You need to design a reliable database architecture to ensure high availability (HA). What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
+        "text": "Configure an instance for high availability, and fail over to the HA instance if there is a zonal failure.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "Use Cloud Scheduler to create a new database instance in another zone from a backup if there is an instance failure.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "Create two separate instances of the database in different zones, and write to each of them separately and simultaneously.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
+        "text": "Create two separate instances of the database in different regions, and write to each of them separately and simultaneously.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
+      "A": "If the primary database fails, Cloud SQL will automatically and quickly switch to the failover database.",
+      "B": "Starting a new database from a backup will take time. That does not meet the requirements of reliability and high availability.",
+      "C": "Self-managing two separate databases and trying to keep them in sync is prone to error and is not reliable.",
+      "D": "Self-managing two separate databases and trying to keep them in sync is prone to error and is not reliable."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
-        "is_correct": true
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
+        "text": "docs.cloud.google.com/sql/docs/mysql/high-availability"
       },
       {
-        "id": "B",
-        "text": "A multi-region (global) Spanner config.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Default settings and hope for the best.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
-      }
-    ]
-  },
-  {
-    "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Only on-demand backups.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Read replicas.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Query Insights.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
-      }
-    ]
-  },
-  {
-    "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Spanner.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Bigtable.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud SQL.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Memorystore.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
-      }
-    ]
-  },
-  {
-    "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Add more column families.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Increase the number of tables.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Enable a public IP.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
-      }
-    ]
-  },
-  {
-    "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Manual exports when someone remembers.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Disabling backups to save cost.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-ha",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-ha"
       }
     ]
   }

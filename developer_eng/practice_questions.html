@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <title>Professional Cloud Developer - Exam Simulator</title>
     <!-- Outfit & Inter Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #4f46e5;
+            --dark-accent-hover: #4338ca;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #3730a3;
+            --classic-accent-hover: #312e81;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional Cloud Developer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,1001 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "Cloud Developer",
+    "scenario": "You are deploying a stateless image-thumbnailing service packaged as a container. It must scale to zero when idle, scale out automatically under bursts, and require no node management. Which deployment target should you choose?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
-        "is_correct": true
+        "text": "A GKE Standard cluster with the cluster autoscaler.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "A managed instance group of Compute Engine VMs with autoscaling.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
-        "is_correct": false
+        "text": "Cloud Run with request-based autoscaling.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "App Engine flexible environment with manual scaling.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "GKE Standard requires you to manage and pay for nodes; it does not scale to zero and adds operational overhead.",
+      "B": "A managed instance group keeps minimum VMs running (no scale-to-zero) and requires OS/image management.",
+      "C": "Cloud Run runs stateless containers, scales to zero when idle, autoscales on request load, and needs no node management.",
+      "D": "App Engine flex runs on VMs that do not scale to zero, and manual scaling keeps instances always on."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://cloud.google.com/run/docs/about-instance-autoscaling",
+        "text": "cloud.google.com/run/docs/about-instance-autoscaling"
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service must process Pub/Sub messages reliably, retrying failures and eventually dead-lettering poison messages. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
+        "text": "A Pub/Sub push (or pull) subscription with retry policy and a dead-letter topic.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "A Cloud Scheduler job that polls a database.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "A single synchronous HTTP call with no retries.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Cloud Storage notifications only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Pub/Sub subscriptions support retry policies and dead-letter topics to handle transient and poison messages.",
+      "B": "Polling a database is not the event-driven Pub/Sub pattern and lacks DLQ semantics.",
+      "C": "No-retry synchronous calls lose messages on failure.",
+      "D": "GCS notifications don't provide message retry/DLQ for arbitrary events."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://cloud.google.com/pubsub/docs/handling-failures",
+        "text": "cloud.google.com/pubsub/docs/handling-failures"
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "Cloud Developer",
+    "scenario": "A frontend must allow an authenticated user to upload a single large file directly to a Cloud Storage bucket for the next 15 minutes, without granting the user any IAM role on the bucket and without proxying the bytes through your service. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Make the bucket public for writes temporarily.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Generate a V4 signed URL with a 15-minute expiry for the object.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Grant the user the Storage Object Creator role on the bucket.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "Return the service account key to the client so it can call the API.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "A public-write bucket is a severe security risk and grants access to everyone, not just the one user for a limited time.",
+      "B": "A V4 signed URL grants time-limited, operation-scoped access to a specific object with no IAM change and no proxying through your app.",
+      "C": "Granting an IAM role is broader and longer-lived than needed and violates the \"no IAM role on the bucket\" constraint.",
+      "D": "Distributing a service account key to clients is a critical credential-exposure anti-pattern."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
+        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "Cloud Developer",
+    "scenario": "You must store a database password used by a Cloud Run service and rotate it without redeploying code. What should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
+        "text": "Secret Manager, referenced by the service at runtime.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "A plaintext environment variable in the image.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "A hardcoded constant.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "A public Cloud Storage object.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "Secret Manager stores and versions secrets; Cloud Run reads them at runtime, enabling rotation without code changes.",
+      "B": "Baking secrets into images is insecure and not rotatable without rebuild.",
+      "C": "Hardcoding secrets is a serious vulnerability.",
+      "D": "Public storage exposes the secret."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://cloud.google.com/run/docs/configuring/services/secrets",
+        "text": "cloud.google.com/run/docs/configuring/services/secrets"
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "Cloud Developer",
+    "scenario": "Two internal microservices on GKE exchange high volumes of small messages and need the lowest possible latency with strongly typed contracts. Which inter-service API style should you use?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "REST over HTTP/1.1 with JSON payloads.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "gRPC over HTTP/2 with protocol buffers.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "GraphQL over HTTP/1.1.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Pub/Sub pull subscriptions between the services.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "REST/JSON over HTTP/1.1 has higher serialization overhead and no enforced schema, increasing latency and contract drift for chatty internal calls.",
+      "B": "gRPC uses HTTP/2 multiplexing and compact protobuf messages with strongly typed contracts — ideal for low-latency internal service-to-service calls.",
+      "C": "GraphQL targets flexible client queries, not minimal-latency strongly typed service-to-service messaging.",
+      "D": "Pub/Sub is asynchronous decoupled messaging; it adds latency and is not a request/response RPC mechanism."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://cloud.google.com/blog/products/api-management/understanding-grpc-openapi-and-rest",
+        "text": "cloud.google.com/blog/products/api-management/understandi..."
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "Cloud Developer",
+    "scenario": "Your gRPC microservice on GKE must expose a strongly typed contract and stream responses efficiently to internal clients. What protocol/transport is appropriate?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
+        "text": "gRPC over HTTP/2 with protocol buffers.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "SOAP over HTTP/1.1.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Plain text TCP.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "Email-based messaging.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "gRPC over HTTP/2 supports streaming and strongly typed protobuf contracts for internal services.",
+      "B": "SOAP is heavyweight and not the recommended internal RPC here.",
+      "C": "Raw TCP lacks a typed contract and tooling.",
+      "D": "Email isn't a service RPC mechanism."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://grpc.io/docs/",
+        "text": "grpc.io/docs"
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "Cloud Developer",
+    "scenario": "Your application running on Cloud Run must call the Cloud Storage API. You want to follow Google-recommended practices for authentication with the least credential-management burden. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Create a service account key, store it in Secret Manager, and load it at startup.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Assign a dedicated service account to the Cloud Run service and use Application Default Credentials.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Embed an API key in an environment variable.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Use the default Compute Engine service account with broad project editor rights.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "Service account keys are long-lived credentials that must be rotated and protected; avoiding them entirely is the recommended practice.",
+      "B": "Attaching a least-privileged service account to the Cloud Run service lets the client library use ADC automatically — no keys to manage or rotate.",
+      "C": "API keys do not authenticate as an identity for IAM-protected services like Cloud Storage and are easily leaked.",
+      "D": "The default service account with broad editor rights violates least privilege."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/docs/authentication/application-default-credentials",
+        "text": "cloud.google.com/docs/authentication/application-default-..."
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "Cloud Developer",
+    "scenario": "You want to run a containerized batch job to completion on a schedule with retries, not a long-running service. Which option fits best?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
+        "text": "Cloud Run jobs triggered by Cloud Scheduler.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "A Cloud Run service kept always-on.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "A GKE Service of type LoadBalancer.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "App Engine standard with manual scaling.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Cloud Run jobs run a task to completion with retries; Cloud Scheduler triggers them on a schedule.",
+      "B": "An always-on service wastes resources for a periodic batch task.",
+      "C": "A LoadBalancer Service exposes a long-running app, not a batch job.",
+      "D": "App Engine manual scaling keeps instances running and isn't a batch-to-completion model."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://cloud.google.com/run/docs/create-jobs",
+        "text": "cloud.google.com/run/docs/create-jobs"
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "Cloud Developer",
+    "scenario": "A pod on GKE occasionally deadlocks and stops serving while the process keeps running. You want Kubernetes to automatically restart the container when this happens, without removing healthy pods from rotation prematurely. Which probe configuration is correct?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "Configure only a readiness probe.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Configure a liveness probe that restarts the container on failure.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "Configure a startup probe with a very short timeout.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Disable probes and rely on the Horizontal Pod Autoscaler.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "A readiness probe only removes a pod from Service endpoints; it never restarts a deadlocked container.",
+      "B": "A liveness probe detects the hung process and triggers a container restart, which is exactly the desired recovery behavior.",
+      "C": "A startup probe only gates initial startup; a too-short timeout would kill slow-starting containers and does not address runtime deadlocks.",
+      "D": "The HPA scales replica count based on metrics; it does not detect or restart a deadlocked container."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/liveness-readiness-probes",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/liveness..."
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "Cloud Developer",
+    "scenario": "A client app must upload large files to Cloud Storage without those bytes flowing through your backend. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "A resumable upload via a signed URL.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "Base64-encoding files through your API.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "A public write bucket.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Email attachments to a service account.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "A signed URL (resumable) lets the client upload directly to Cloud Storage without proxying through your backend.",
+      "B": "Routing bytes through your API adds load and cost.",
+      "C": "Public write buckets are a severe security risk.",
+      "D": "Email isn't an upload mechanism for large files."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
+        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "Cloud Developer",
+    "scenario": "When calling a Google Cloud API, your service intermittently receives HTTP 429 and 503 responses during traffic spikes. What is the recommended client behavior?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
-        "is_correct": true
+        "text": "Retry immediately in a tight loop until the call succeeds.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "Fail fast and surface the error to the user without retrying.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
-        "is_correct": false
+        "text": "Retry with exponential backoff and jitter.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "Switch all calls to a second project to bypass the limit.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "Immediate tight-loop retries amplify the overload and can trigger further throttling.",
+      "B": "429/503 are transient; failing fast for retryable errors degrades reliability unnecessarily.",
+      "C": "Exponential backoff with jitter spaces out retries, relieving pressure and maximizing the chance of eventual success — the documented best practice.",
+      "D": "Spreading load across projects to dodge quotas is an abuse pattern and does not address the transient-error handling requirement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://cloud.google.com/storage/docs/retry-strategy",
+        "text": "cloud.google.com/storage/docs/retry-strategy"
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "Cloud Developer",
+    "scenario": "You need to invoke a private Cloud Run service from another service securely using the caller's identity. What should you use?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "An ID token from the calling service account, with the invoker IAM role granted.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "A shared API key in a header.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Allow unauthenticated invocations.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Basic auth with a static password.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "The caller presents a Google-signed ID token; granting `run.invoker` to its service account authorizes the call.",
+      "B": "API keys don't authenticate IAM identities for Cloud Run invocation.",
+      "C": "Unauthenticated access removes security.",
+      "D": "Static basic auth is insecure and not the recommended pattern."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://cloud.google.com/run/docs/authenticating/service-to-service",
+        "text": "cloud.google.com/run/docs/authenticating/service-to-service"
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "Cloud Developer",
+    "scenario": "You need to run a function whenever an object is finalized in a Cloud Storage bucket, delivering the event to a containerized service on Cloud Run with minimal custom plumbing. Which integration should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Poll the bucket every minute from a Cloud Scheduler job.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "An Eventarc trigger for the Cloud Storage event routed to the Cloud Run service.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "A Cloud Build trigger on bucket changes.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "A Cloud Tasks queue that the upload client populates manually.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "Polling adds latency, cost, and complexity, and can miss or duplicate events compared to native eventing.",
+      "B": "Eventarc delivers Cloud Storage events (via Cloud Audit Logs / Pub/Sub) directly to Cloud Run with minimal configuration — the recommended pattern.",
+      "C": "Cloud Build is a CI system, not an event router for application object events.",
+      "D": "Cloud Tasks requires the producer to enqueue tasks explicitly; it does not natively observe bucket finalize events."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://cloud.google.com/eventarc/docs/overview",
+        "text": "cloud.google.com/eventarc/docs/overview"
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "Cloud Developer",
+    "scenario": "Your service occasionally exceeds Firestore write limits on a single document due to a hot counter. What pattern resolves this?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
+        "text": "Distributed counters (sharded counter document).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "Write all increments to one document faster.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Disable Firestore security rules.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "Move the counter to a label.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Sharding the counter across multiple documents spreads writes beyond the single-document limit.",
+      "B": "Faster writes to one document still hit the per-document write ceiling.",
+      "C": "Security rules are unrelated to write throughput.",
+      "D": "Labels aren't a data store for counters."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://cloud.google.com/firestore/docs/solutions/counters",
+        "text": "cloud.google.com/firestore/docs/solutions/counters"
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "Cloud Developer",
+    "scenario": "A team wants to guarantee that only container images built by their trusted Cloud Build pipeline and signed by an approved attestor can be deployed to their GKE cluster. What should they enable?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Pod Security Admission in restricted mode.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Binary Authorization with an attestation requirement.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "Workload Identity for all namespaces.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "A private Artifact Registry repository.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Pod Security Admission enforces pod security context constraints, not image provenance/signing.",
+      "B": "Binary Authorization enforces a deploy-time policy that admits only images with valid attestations from approved attestors — exactly the requirement.",
+      "C": "Workload Identity governs how pods authenticate to Google APIs, not which images may run.",
+      "D": "A private repository controls where images live, but does not by itself block unsigned or untrusted images from deploying."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "Cloud Developer",
+    "scenario": "You need to expose a public API with API keys, quotas, and OpenAPI-based management for a serverless backend with minimal overhead. Which product?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
+        "text": "API Gateway.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "A self-managed NGINX proxy.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
+        "text": "Cloud Armor only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "A second Cloud Run service acting as a proxy you build.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "API Gateway provides managed API keys, quotas, and OpenAPI config for serverless backends with little ops.",
+      "B": "Self-managed NGINX is operational overhead.",
+      "C": "Cloud Armor is edge WAF/rate-limiting, not API key/quota management.",
+      "D": "Building your own proxy reinvents API Gateway."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://cloud.google.com/api-gateway/docs/about-api-gateway",
+        "text": "cloud.google.com/api-gateway/docs/about-api-gateway"
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "Cloud Developer",
+    "scenario": "During local development and CI, you must run unit tests against Firestore logic without incurring cost or affecting production data. What is the recommended approach?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "Create a separate Firestore database in production and clean it after each run.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Use the Firestore emulator from the Google Cloud CLI.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Mock the entire Firestore client library by hand.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "Point tests at a colleague's project to isolate data.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "Running tests against a real production database risks data contamination and incurs cost; cleanup is fragile.",
+      "B": "The Firestore emulator runs locally, is free, and lets unit/integration tests exercise real Firestore semantics offline.",
+      "C": "Hand-mocking the whole client is brittle and won't faithfully reproduce Firestore behavior (transactions, queries).",
+      "D": "Using another live project still hits billable services and couples your tests to someone else's environment."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://cloud.google.com/firestore/docs/emulator",
+        "text": "cloud.google.com/firestore/docs/emulator"
       }
     ]
   },
   {
     "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "domain": "Cloud Developer",
+    "scenario": "A deployment introduced a regression. You must instantly revert all traffic to the previous Cloud Run revision. What do you do?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
+        "text": "Route 100% of traffic back to the previous revision.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Redeploy from scratch and wait for build.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "Delete the service and recreate it.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Scale the new revision to zero only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "Cloud Run keeps prior revisions; you can instantly shift 100% traffic back for a fast rollback.",
+      "B": "Rebuilding is slow during an incident.",
+      "C": "Deleting/recreating causes downtime and loses revision history.",
+      "D": "Scaling the new revision to zero doesn't redirect traffic to the good revision."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
       }
     ]
   },
   {
     "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "domain": "Cloud Developer",
+    "scenario": "You are releasing a new revision of a Cloud Run service and want to send 10% of traffic to it while keeping 90% on the current revision, then increase gradually. How should you do this?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
+        "text": "Deploy the new revision with `--no-traffic`, then split traffic 10/90 across revisions.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "Deploy a second Cloud Run service and use DNS round-robin.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Set the new revision's max instances to 10% of the old one.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
+        "text": "Use a GKE canary Deployment instead.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "Cloud Run supports revision-based traffic splitting; deploying with no traffic then assigning 10% to the new revision enables a controlled canary you can ramp up.",
+      "B": "DNS round-robin gives coarse, cache-dependent splitting with no precise percentage control or instant rollback.",
+      "C": "Max instances limits concurrency, not the percentage of traffic routed to a revision.",
+      "D": "Moving to GKE is unnecessary; Cloud Run already provides native percentage traffic splitting."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
       }
     ]
   },
   {
     "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "domain": "Cloud Developer",
+    "scenario": "You must ensure only container images that passed your CI and were signed can be deployed to GKE. What do you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
+        "text": "Binary Authorization with attestations from your pipeline.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "A private bucket for images.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "Network policies only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
+        "text": "Pod resource limits.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
+      "A": "Binary Authorization enforces that only images with valid attestations (from your CI) deploy.",
+      "B": "A private bucket controls storage, not deploy-time verification.",
+      "C": "Network policies govern traffic, not image provenance.",
+      "D": "Resource limits don't verify image trust."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
+        "url": "https://cloud.google.com/binary-authorization/docs",
+        "text": "cloud.google.com/binary-authorization/docs"
       }
     ]
   },
   {
     "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
+    "domain": "Cloud Developer",
+    "scenario": "An application must store user session data that is read and written on nearly every request, requiring sub-millisecond latency. The data is ephemeral and can be reconstructed if lost. Which service should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A multi-region (global) Spanner config.",
+        "text": "Cloud SQL with a sessions table.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Memorystore for Redis.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Default settings and hope for the best.",
+        "text": "Firestore in Native mode.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
+        "text": "BigQuery with a session table.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
+      "A": "A relational database adds query and connection overhead far above sub-millisecond and is overkill for ephemeral session data.",
+      "B": "Memorystore for Redis is an in-memory cache delivering sub-millisecond reads/writes — ideal for ephemeral, high-frequency session data.",
+      "C": "Firestore offers low-latency document access but not in-memory sub-millisecond performance for per-request session reads/writes.",
+      "D": "BigQuery is an analytical warehouse with high per-query latency, wholly unsuited to per-request session storage."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
+        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
       }
     ]
   },
   {
     "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
+    "domain": "Cloud Developer",
+    "scenario": "A latency-critical read path repeatedly fetches the same reference data from a database. What is the most effective improvement?",
     "options": [
       {
         "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
+        "text": "Add a Memorystore cache in front of the database.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Only on-demand backups.",
+        "text": "Add more database replicas for every read.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Read replicas.",
+        "text": "Increase request timeouts.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Query Insights.",
+        "text": "Log every read to BigQuery.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
+      "A": "Caching frequently-read reference data in Memorystore cuts latency and database load.",
+      "B": "Replicas help read scale but add cost and still exceed cache latency.",
+      "C": "Longer timeouts don't reduce latency.",
+      "D": "Logging reads adds overhead and doesn't speed them up."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
+        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
       }
     ]
   },
   {
     "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
+    "domain": "Cloud Developer",
+    "scenario": "Your team must expose a public API with per-developer quotas, API key issuance, a developer portal, and detailed usage analytics across multiple backend services. Which Google Cloud product should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner.",
-        "is_correct": true
+        "text": "Cloud Endpoints with an ESPv2 container.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Bigtable.",
+        "text": "API Gateway in front of each backend.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL.",
-        "is_correct": false
+        "text": "Apigee.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Memorystore.",
+        "text": "A Cloud Load Balancer with Cloud Armor.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
+      "A": "Cloud Endpoints provides basic API management and auth but lacks Apigee's full developer portal, monetization, and rich cross-backend analytics.",
+      "B": "API Gateway is a lightweight managed gateway for serverless backends without a developer portal or advanced analytics.",
+      "C": "Apigee delivers full lifecycle API management: quotas, API key issuance, developer portal, and analytics across many backends.",
+      "D": "A load balancer with Cloud Armor handles routing and WAF/rate limiting, not API product management or developer portals."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
+        "url": "https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee",
+        "text": "cloud.google.com/apigee/docs/api-platform/get-started/wha..."
       }
     ]
   },
   {
     "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
+    "domain": "Cloud Developer",
+    "scenario": "You want to make a series of Google API calls efficiently when listing thousands of resources. Which techniques apply?",
     "options": [
       {
         "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
+        "text": "Paginate results, request only needed fields, and reuse a client.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more column families.",
+        "text": "Fetch everything in one unpaginated call.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the number of tables.",
+        "text": "Open a new client per call.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Enable a public IP.",
+        "text": "Disable retries entirely.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
+      "A": "Pagination, field masks, and client reuse reduce payloads, memory, and connection overhead.",
+      "B": "Unpaginated bulk calls can fail or exhaust memory and may not be supported.",
+      "C": "New clients per call waste resources.",
+      "D": "Disabling retries hurts reliability for transient errors."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
+        "url": "https://cloud.google.com/apis/design/design_patterns",
+        "text": "cloud.google.com/apis/design/design_patterns"
       }
     ]
   },
   {
     "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
+    "domain": "Cloud Developer",
+    "scenario": "Your service must publish domain events that multiple independent consumers process at their own pace, decoupled from the producer. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
+        "text": "Pub/Sub topics with multiple subscriptions.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
+        "text": "A synchronous REST call to each consumer.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Manual exports when someone remembers.",
+        "text": "A shared database table consumers poll tightly.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disabling backups to save cost.",
+        "text": "Cloud Scheduler.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
+      "A": "Pub/Sub fan-out (one topic, many subscriptions) lets independent consumers process at their own pace, fully decoupled.",
+      "B": "Synchronous calls couple producer to every consumer's availability.",
+      "C": "Tight DB polling is inefficient and couples consumers to the schema.",
+      "D": "Cloud Scheduler triggers jobs; it isn't a pub/sub fan-out bus."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/pubsub/docs/overview",
+        "text": "cloud.google.com/pubsub/docs/overview"
       }
     ]
   }

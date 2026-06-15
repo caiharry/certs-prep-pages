@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #8b5cf6;
+            --dark-accent-hover: #7c3aed;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #6d28d9;
+            --classic-accent-hover: #5b21b6;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional Cloud Security Engineer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,873 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "Security Engineer",
+    "scenario": "Developers in an organization are prototyping a few applications on Google Cloud and are starting to store sensitive information on Google Cloud. The developers are using their personal/consumer Gmail accounts to set up and manage their projects within Google Cloud. A security engineer identifies this practice as a concern to the leadership team because of the lack of centralized project management and access to the data being stored in these accounts. Which solution should be used to resolve this concern?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Enforce the setup of Security Keys as the 2-Step Verification method for those Gmail accounts.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Set up Cloud Identity and require the developers to use those accounts for Google Cloud work.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "Require the developers to log/store their Gmail passwords with the security team.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "Enable logging on all Google Cloud projects to track all developer activities.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "While it addresses some level of security concern, it still does not address centralized management.",
+      "B": "It allows for enforcing 2SV-like security features and centralized management of the identities.",
+      "C": "It breaches developer privacy and goes against best practices.",
+      "D": "It does not help in restricting access or securing accounts accessing the sensitive data."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://cloud.google.com/docs/enterprise/best-practices-for-enterprise-organizations#manage-identities",
+        "text": "cloud.google.com/docs/enterprise/best-practices-for-enter..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/assessing-existing-user-accounts",
+        "text": "docs.cloud.google.com/architecture/identity/assessing-exi..."
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "Security Engineer",
+    "scenario": "A customer wants to use Cloud Identity as their primary IdP. The customer wants to use other non-Google Cloud SaaS products for CRM, messaging, and customer ticketing management. The customer also wants to improve employee experience with Single Sign-On (SSO) capabilities to securely access Google Cloud and non-Google Cloud applications. Only authorized individuals should be able to access these third-party applications. What action should the customer take to meet these requirements?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Remove the employee from Cloud Identity, set the correct license for the individuals, and resync them to Cloud Identity for the changes to take effect.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Configure third-party applications to federate authentication and authorization to the Google Cloud IdP.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "Remove the individuals from the third-party applications, add the license to Cloud Identity, and resync the individuals back to the third-party applications.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Copy user personas from Cloud Identity to all third-party applications for the domain.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Users should continue to be in Cloud Identity as the central source of truth.",
+      "B": "Cloud Identity can serve as a SAML IdP for third-party apps.",
+      "C": "It does not help to automate user provisioning.",
+      "D": "It does not help to automate user provisioning and deprovisioning on a continual basis."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://docs.cloud.google.com/architecture/identity/single-sign-on",
+        "text": "docs.cloud.google.com/architecture/identity/single-sign-on"
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/best-practices-for-federating",
+        "text": "docs.cloud.google.com/architecture/identity/best-practice..."
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "Security Engineer",
+    "scenario": "A Cloud Development team needs to use service accounts extensively in their local development. You need to provide the team with the keys for these service accounts. You want to follow Google-recommended practices. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Implement a daily key rotation process that generates a new key and commits it to the source code repository every day.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Implement a daily key rotation process, and provide developers with a Cloud Storage bucket from which they can download the new key every day.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Create a Google Group with all developers. Assign the group the IAM role of Service Account User, and have developers generate and download their own keys.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "Create a Google Group with all developers. Assign the group the IAM role of Service Account Admin, and have developers generate and download their own keys.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "A source code repository is not the place to store keys that expire or change.",
+      "B": "Per the sample answer key, this allows a centralized admin-managed key rotation process without delegating key creation to developers. (Current Google guidance strongly prefers keyless alternatives such as workload identity federation over user-managed keys.)",
+      "C": "The Service Account User IAM role does not allow creation of keys.",
+      "D": "This veers away from best practices because keys would reside in a decentralized place and can be potentially leaked."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://docs.cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys",
+        "text": "docs.cloud.google.com/iam/docs/best-practices-for-managin..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/key-rotation",
+        "text": "docs.cloud.google.com/iam/docs/key-rotation"
+      },
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/keys-create-delete",
+        "text": "docs.cloud.google.com/iam/docs/keys-create-delete"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "Security Engineer",
+    "scenario": "A customer needs to rely on their existing user directory with the requirements of native authentication when developing solutions in Google Cloud. They want to leverage their existing tooling and functionality to gather insight on user activity from a familiar interface. Which action should you take to meet the customer's requirements?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "Provision users into Cloud Identity using Just-in-Time SAML 2.0 user provisioning with the customer User Directory as source.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Configure Cloud Identity as a SAML 2.0 Service Provider, using the customer's User Directory as the Identity Provider.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "Configure and enforce 2-Step Verification in Cloud Identity for all Super Admins.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "Configure a third-party IdP (Okta or Ping Federate) to manage authentication.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "The client wants to continue using their existing directory.",
+      "B": "It lets the client use their current user directory as the source of truth and authenticate against it while using Cloud Identity as their SAML broker.",
+      "C": "It adds protection to super admin accounts but does not address the use case.",
+      "D": "It proposes a non-native solution and does not address the use case."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://cloud.google.com/blog/products/identity-security/using-your-existing-identity-management-system-with-google-cloud-platform",
+        "text": "cloud.google.com/blog/products/identity-security/using-yo..."
+      },
+      {
+        "url": "https://support.google.com/a/answer/60224",
+        "text": "support.google.com/a/answer/60224"
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/single-sign-on",
+        "text": "docs.cloud.google.com/architecture/identity/single-sign-on"
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "Security Engineer",
+    "scenario": "A customer wants to grant access to their application running on Compute Engine to write only to a specific Cloud Storage bucket. How should you grant access?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "Create a service account for the application, and grant the Storage Object Creator role at the project level.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create a service account for the application, and grant the Storage Object Creator role at the bucket level.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Create a user account, authenticate with the application, and grant the Storage Object Admin role at the bucket level.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Create a user account, authenticate with the application, and grant the Storage Object Admin role at the project level.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "It does not restrict scope to the specific bucket.",
+      "B": "It provides the right permission and keeps the scope limited to the bucket in question.",
+      "C": "Using a user account goes against recommended practice; a machine/service account should handle writes to the bucket.",
+      "D": "Using a user account goes against recommended practice, and project-level Storage Object Admin widens scope beyond minimum required privilege."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://docs.cloud.google.com/iam/docs/understanding-service-accounts#using_service_accounts_with_compute_engine",
+        "text": "docs.cloud.google.com/iam/docs/understanding-service-acco..."
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "Security Engineer",
+    "scenario": "Your team creates an ingress firewall rule to allow SSH access from their corporate IP range to a specific bastion host on Compute Engine. Your team wants to make sure that this firewall rule cannot be used by unauthorized engineers who may otherwise have access to manage VMs in the development environment. What should your team do to meet this requirement?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Create the firewall rule with a target of a network tag. Centrally manage access to the tag.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create the firewall rule with a target of a service account. Centrally manage access to the service account.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Create the firewall rule in a Shared VPC with a target of a network tag.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "Create the firewall rule in a Shared VPC with a target of a specific subnet.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "The network tag value can be inferred by examining the firewall rule or VM metadata.",
+      "B": "Access to the service account is required to use a firewall rule with a target of a service account.",
+      "C": "The target network tag value can be inferred by examining the firewall rule or VM metadata.",
+      "D": "The target subnet value can be inferred by examining the firewall rule or VM metadata."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://docs.cloud.google.com/firewall/docs/firewalls#service-accounts-vs-tags",
+        "text": "docs.cloud.google.com/firewall/docs/firewalls#service-acc..."
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "Security Engineer",
+    "scenario": "You want to protect the default VPC network from all inbound and outbound internet traffic. What action should you take?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Create a Deny All inbound internet firewall rule.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create a Deny All outbound internet firewall rule.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Create a new subnet in the VPC network with private Google access enabled.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Create instances without external IP addresses only.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "A deny-all inbound firewall rule is already part of the standard configuration and does not need to be added.",
+      "B": "All inbound traffic is already blocked, but all egress traffic is allowed by default. To prevent any outbound traffic, an extra rule needs to be added.",
+      "C": "Private Google access allows calls to Google-managed APIs from private IP addresses, but it does not prevent providing external IPs or other outgoing traffic from instances.",
+      "D": "Outbound traffic can still come from instances with private IPs if Cloud NAT is used."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://docs.cloud.google.com/nat/docs/overview",
+        "text": "docs.cloud.google.com/nat/docs/overview"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/private-access-options",
+        "text": "docs.cloud.google.com/vpc/docs/private-access-options"
+      },
+      {
+        "url": "https://docs.cloud.google.com/firewall/docs/firewalls",
+        "text": "docs.cloud.google.com/firewall/docs/firewalls"
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "Security Engineer",
+    "scenario": "An organization recently began using App Engine to build and host its new web application for its customers. The organization wants to use its existing IAM setup to allow its developer employees to have elevated access to the application remotely. This would allow them to push updates and fixes to the application via an HTTPS connection. Non-developer employees should only get access to the production version without development permissions. Which Google Cloud solution should be used to meet these requirements?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
-        "is_correct": true
+        "text": "Synchronize the organization's Active Directory using Cloud Identity for employee access via Cloud VPN.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "Disable access for non-developer employees by removing their Google Group from the application access control list (ACL).",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
-        "is_correct": false
+        "text": "Set up Cloud Identity-Aware Proxy (Cloud IAP) to manage authentication and different authorization levels for employee access.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "Set up Virtual Private Cloud (VPC) firewall rules to manage authentication and different authorization levels for employee access.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Synchronizing users to Google Identity does not grant differentiated access to an App Engine application.",
+      "B": "App Engine IAM roles only specify different levels of administrative access to App Engine applications in a project.",
+      "C": "Cloud IAP allows establishing different levels of access based on user criteria for App Engine apps.",
+      "D": "VPC firewall rules do not grant different levels of authorization; they only allow or block traffic."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://docs.cloud.google.com/appengine/docs/standard/access-control",
+        "text": "docs.cloud.google.com/appengine/docs/standard/access-control"
+      },
+      {
+        "url": "https://docs.cloud.google.com/iap/docs/concepts-overview",
+        "text": "docs.cloud.google.com/iap/docs/concepts-overview"
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "Security Engineer",
+    "scenario": "You have defined subnets in a VPC within Google Cloud. You need multiple projects to create Compute Engine instances with IP addresses from these subnets. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
-        "is_correct": true
+        "text": "Configure Cloud VPN between the projects.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "Set up VPC peering between all related projects.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "Change the VPC subnets to enable private Google access.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
-        "is_correct": false
+        "text": "Use Shared VPC to share the subnets with the other projects.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "Cloud VPN between projects does not provide functionality to share a subnet to host resources on.",
+      "B": "Peering two VPCs allows traffic between the shared networks, but the peered VPC networks remain administratively separate.",
+      "C": "Private Google access allows you to access APIs from a private IP, but it does not affect creating Compute Engine instances on a specific subnet.",
+      "D": "Shared VPC allows you to share a VPC into multiple projects, keep administrative oversight in the host project, and restrict other projects to creating VMs on IPs in the shared VPC."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+        "text": "docs.cloud.google.com/vpc/docs/shared-vpc"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/vpc-peering",
+        "text": "docs.cloud.google.com/vpc/docs/vpc-peering"
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "Security Engineer",
+    "scenario": "An application log's data, including customer identifiers such as email addresses, needs to be redacted. However, these logs also include the email addresses of internal developers from company.com, and these should NOT be redacted. Which solution should you use to meet these requirements?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "Create a regular custom dictionary detector that lists a subset of the developers' email addresses.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create a regular expression (regex) custom infoType detector to match on @company.com.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "Create a regular custom dictionary detector to match all email addresses listed in Cloud Identity.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Create a custom infoType called COMPANY_EMAIL to match @company.com.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "All company.com email addresses are sensitive and should be protected. A static list is hard to maintain and can easily miss sensitive data.",
+      "B": "The regex will detect all company.com email addresses that need to be protected and written to the log file.",
+      "C": "The user base in Cloud Identity might only be a subset of all emails that need to be protected.",
+      "D": "You need to specify a detector within the custom infoType, and the detector should be a regular expression to match all @company.com email addresses."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-regex",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/crea..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/infotypes-reference",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/info..."
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "Security Engineer",
+    "scenario": "Which encryption algorithm is used with Default Encryption in Cloud Storage?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
+        "text": "AES-256",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "SHA512",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
+        "text": "MD5",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "3DES",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "Cloud Storage encrypts user data at rest using AES-256.",
+      "B": "Cloud Storage encrypts user data at rest using AES-256.",
+      "C": "Cloud Storage encrypts user data at rest using AES-256.",
+      "D": "Cloud Storage encrypts user data at rest using AES-256."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/default-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/default-keys"
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "Security Engineer",
+    "scenario": "Your company is storing files on Cloud Storage. To comply with local regulations, you want to ensure that uploaded files cannot be deleted within the first 5 years. It should not be possible to lower the retention period after it has been set. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "Apply a retention period of 5 years to the bucket, and lock the bucket.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "Enable Temporary hold and apply a retention period of 5 years to the bucket.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Use Cloud IAM to ensure that nobody has an IAM role that has the permissions to delete files from Cloud Storage.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Create an object lifecycle rule using the Age condition and the Delete action. Set the Age condition to 5 years.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "Bucket Lock allows you to configure a data retention policy for a Cloud Storage bucket that governs how long objects in the bucket must be retained. The feature also allows you to lock the data retention policy, permanently preventing the policy from being reduced or removed.",
+      "B": "Object holds can be easily released by operators or admins.",
+      "C": "An admin can grant themselves or someone else enough rights to tamper with files in Cloud Storage.",
+      "D": "An Age condition and Delete action does not prevent objects from being manually deleted before the Age condition is met."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://docs.cloud.google.com/storage/docs/using-bucket-lock",
+        "text": "docs.cloud.google.com/storage/docs/using-bucket-lock"
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "Security Engineer",
+    "scenario": "Your company is deploying their applications on Google Kubernetes Engine. You want to follow Google-recommended practices. What should you do to ensure that the container images used for new deployments contain the latest security patches?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
+        "text": "Use Google-managed base images for all containers.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Use Container Analysis to detect vulnerabilities in images.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Use an update script as part of every container image startup.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "Use exclusively private images in Container Registry.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "Google-provided base images are updated when new versions of official upstream images are released, helping keep container bases current.",
+      "B": "Container Analysis (Artifact Analysis) detects vulnerabilities; it does not patch images.",
+      "C": "While an update script may help patch on startup, this significantly increases the time it takes for the instance to become ready for serving workloads.",
+      "D": "Private images also go out of date and need to be patched manually by the customer."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://docs.cloud.google.com/software-supply-chain-security/docs/base-images",
+        "text": "docs.cloud.google.com/software-supply-chain-security/docs..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview",
+        "text": "docs.cloud.google.com/artifact-analysis/docs/container-sc..."
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "Security Engineer",
+    "scenario": "Your customer is moving their corporate applications to Google Cloud. The security team wants detailed visibility of all resources in the organization. You use Resource Manager to set yourself up as the org admin. What Cloud Identity and Access Management (Cloud IAM) roles should you give to the security team?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "Org viewer, Project owner",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Org viewer, Project viewer",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Org admin, Project browser",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "Project owner, Network admin",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Project Owner is too broad. The security team does not need to be able to make changes to projects.",
+      "B": "Org Viewer grants permissions to view the organization's display name; Project Viewer grants permissions to see resources within projects.",
+      "C": "Org Admin is too broad. The security team does not need to be able to make changes to the organization.",
+      "D": "Project Owner is too broad. The security team does not need to be able to make changes to projects."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://docs.cloud.google.com/resource-manager/docs/access-control-org#using_predefined_roles",
+        "text": "docs.cloud.google.com/resource-manager/docs/access-contro..."
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "Security Engineer",
+    "scenario": "Your company wants to collect and analyze CVE information for packages in container images, and wants to prevent images with known security issues from running in your Google Kubernetes Engine environment. Which two security features does Google recommend including in a container build pipeline? (Choose two.)",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
+        "text": "Deployment policies",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Password policies",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "Vulnerability scanning",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "Network isolation",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Deployment policies defined in Binary Authorization ensure that only trusted images can be deployed in GKE clusters. Binary Authorization can integrate with Artifact Analysis, which scans container images for vulnerabilities and stores trusted metadata used in the authorization process.",
+      "B": "It does not address the use case.",
+      "C": "Vulnerability scanning can be performed by Artifact Analysis to discover package vulnerability information in container base images and obtain CVE data from respective Linux distributions.",
+      "D": "It does not address the use case."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://docs.cloud.google.com/binary-authorization/docs/overview",
+        "text": "docs.cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview",
+        "text": "docs.cloud.google.com/artifact-analysis/docs/container-sc..."
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "Security Engineer",
+    "scenario": "You need to perform a vulnerability scan for an App Engine app using Web Security Scanner. Upon completion of the scan, the report is not producing the expected number of webpage results. The pages in the app with mouseover menus are missing from the report. Which action should you take to make sure the scan completes and captures the menu?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
-        "is_correct": true
+        "text": "Verify the Excluded URLs.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "Modify the scan schedule to return new results.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
-        "is_correct": false
+        "text": "Change the scan to include additional Starting URLs.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Adjust the Google account on which the scan is running.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "The missing webpages in the mouseover menu are unlikely to be explicitly excluded since they are expected to be scanned.",
+      "B": "Changing the scan schedule will not result in scanning of more webpages.",
+      "C": "Web Security Scanner may not be able to navigate through complex JavaScript such as a mouseover-driven multilevel menu. Specifying additional starting URLs can increase scan coverage in this scenario.",
+      "D": "Changing the Google account will not result in scanning of more webpages."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://docs.cloud.google.com/security-command-center/docs/how-to-web-security-scanner-custom-scans",
+        "text": "docs.cloud.google.com/security-command-center/docs/how-to..."
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "Security Engineer",
+    "scenario": "An organization is working on their GDPR compliance strategy. It wants to ensure that controls are in place to ensure that personally identifiable information (PII) is stored in Cloud Storage buckets without third-party exposure. Which Google Cloud solution should the organization use to verify that PII is stored in the correct place without exposing PII internally?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "Cloud Storage Bucket Lock",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Cloud Data Loss Prevention API",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "VPC Service Controls",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "Web Security Scanner",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "Bucket Lock protects the data retention policy and does not address the use case.",
+      "B": "Sensitive Data Protection (formerly Cloud DLP) can inspect Cloud Storage buckets for PII.",
+      "C": "VPC Service Controls can define security perimeters around Cloud Storage buckets to mitigate data exfiltration risks, but it is not a tool to locate PII.",
+      "D": "Web Security Scanner is for App Engine, Compute Engine, and GKE applications and does not address the use case."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://docs.cloud.google.com/storage/docs/using-bucket-lock",
+        "text": "docs.cloud.google.com/storage/docs/using-bucket-lock"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/inspecting-storage",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/insp..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "docs.cloud.google.com/vpc-service-controls/docs/overview"
       }
     ]
   },
   {
     "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "domain": "Security Engineer",
+    "scenario": "A cloud customer has an on-premises key management system and wants to generate, protect, rotate, and audit encryption keys with it. How can the customer use Cloud Storage with their own encryption keys?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
-        "is_correct": true
+        "text": "Declare usage of default encryption at rest in the audit report on compliance",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Upload encryption keys to the same Cloud Storage bucket",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "Use Customer Managed Encryption Keys (CMEK)",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
-        "is_correct": false
+        "text": "Use Customer-Supplied Encryption Keys (CSEK)",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "Default encryption at rest uses Google-generated and Google-managed keys and does not address the use case.",
+      "B": "You need the encryption keys to decrypt data in the bucket, but you cannot store those keys in the same bucket. Customer-supplied encryption keys are not stored on Google's infrastructure.",
+      "C": "CMEK uses Google-generated, customer-managed keys in Cloud KMS—not keys from the customer's on-premises KMS in this scenario.",
+      "D": "You can provide your own AES-256 key (CSEK). Cloud Storage does not permanently store your key on Google's servers; you provide your key for each operation."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://docs.cloud.google.com/docs/security/encryption/customer-supplied-encryption-keys",
+        "text": "docs.cloud.google.com/docs/security/encryption/customer-s..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/customer-supplied-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/customer-su..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/customer-managed-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/customer-ma..."
       }
     ]
   },
   {
     "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "domain": "Security Engineer",
+    "scenario": "You are responsible for implementing a payment processing environment that will use Google Kubernetes Engine and need to apply proper security controls. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
-        "is_correct": true
+        "text": "Implement and enforce two-factor authentication.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "Activate a firewall to prevent all egress traffic.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Establish minimum password length requirements for all systems.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
-        "is_correct": false
+        "text": "Require file integrity monitoring and antivirus scans of pods and nodes.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "This solution is not specific to GKE.",
+      "B": "This would render the environment non-functional.",
+      "C": "This solution is not specific to GKE.",
+      "D": "This is a requirement of PCI DSS in Sections 5 and 11."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://docs.cloud.google.com/architecture/pci-dss-and-gke-guide",
+        "text": "docs.cloud.google.com/architecture/pci-dss-and-gke-guide"
       }
     ]
   },
   {
     "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "domain": "Security Engineer",
+    "scenario": "A retail company is moving its e-commerce site, including its point-of-sale application, to Google Cloud. Which compliance standard must the company meet?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
-        "is_correct": true
+        "text": "FedRAMP High",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "HIPAA",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "SOX",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
+        "text": "PCI DSS",
         "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A multi-region (global) Spanner config.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Default settings and hope for the best.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
-        "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
+      "A": "FedRAMP is a U.S. government-wide program for cloud products and services; it does not fit this industry use case.",
+      "B": "HIPAA safeguards health information; it does not fit this industry use case.",
+      "C": "SOX is relevant to accounting and financial reporting for U.S. public companies; it does not address the use case.",
+      "D": "PCI DSS is relevant to protecting payment card information for e-commerce and point-of-sale workloads."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
-      }
-    ]
-  },
-  {
-    "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
-        "is_correct": true
+        "url": "https://www.pcisecuritystandards.org/pdfs/best_practices_securing_ecommerce.pdf",
+        "text": "pcisecuritystandards.org/pdfs/best_practices_securing_eco..."
       },
       {
-        "id": "B",
-        "text": "Only on-demand backups.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Read replicas.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Query Insights.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
-      }
-    ]
-  },
-  {
-    "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Spanner.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Bigtable.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud SQL.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Memorystore.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
-      }
-    ]
-  },
-  {
-    "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Add more column families.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Increase the number of tables.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Enable a public IP.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
-      }
-    ]
-  },
-  {
-    "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Manual exports when someone remembers.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Disabling backups to save cost.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/security/compliance/pci-dss/",
+        "text": "cloud.google.com/security/compliance/pci-dss"
       }
     ]
   }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <title>Professional Cloud Network Engineer - Exam Simulator</title>
     <!-- Outfit & Inter Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #16a34a;
+            --dark-accent-hover: #15803d;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #166534;
+            --classic-accent-hover: #14532d;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional Cloud Network Engineer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,1001 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "Network Engineer",
+    "scenario": "You need on-premises hosts to reach Google APIs (e.g., Cloud Storage) over your Cloud Interconnect using internal IPs only, with no traffic traversing the public internet. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
+        "text": "Private Google Access for on-premises hosts with a route to the restricted VIP.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Cloud NAT on the VPC handling the Interconnect.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "A public NEG pointing at storage.googleapis.com.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "Direct Peering with a default route to the internet.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "Private Google Access for on-premises hosts routes API requests to the restricted/private VIP over the Interconnect, keeping traffic off the public internet.",
+      "B": "Cloud NAT provides outbound internet for VMs without external IPs; it does not give on-prem hosts private API access.",
+      "C": "A public NEG still resolves to public endpoints reached over the internet.",
+      "D": "Direct Peering with an internet default route sends traffic over the public path, violating the requirement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://cloud.google.com/vpc/docs/private-google-access-hybrid",
+        "text": "cloud.google.com/vpc/docs/private-google-access-hybrid"
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "Network Engineer",
+    "scenario": "Your VPC uses custom dynamic routing on its Cloud Router. A new subnet is created in a different region. You need on-prem to learn the new subnet's routes automatically. What ensures this?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
+        "text": "Global (custom) dynamic routing mode on the VPC.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Regional dynamic routing mode on the VPC.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "A static route on each on-prem device.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Enabling VPC Flow Logs on the subnet.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Global dynamic routing makes the Cloud Router advertise subnets from all regions to on-prem, so new subnets are learned automatically.",
+      "B": "Regional dynamic routing only advertises subnets in the Cloud Router's own region.",
+      "C": "Static routes defeat the goal of automatic learning and don't scale.",
+      "D": "Flow logs are for observability, not route propagation."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "Network Engineer",
+    "scenario": "A workload in a Shared VPC service project must use a subnet in the host project. The application team can deploy VMs but cannot see the subnet. What is most likely missing?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
+        "text": "The user needs the Compute Network User role on the subnet/host project.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "The host project must enable Private Google Access.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "The service project needs its own VPC.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "A firewall rule allowing egress to the subnet.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "Using a Shared VPC subnet requires `compute.networkUser` granted on the subnet (or host project) to the service-project principals.",
+      "B": "Private Google Access concerns API reachability, not subnet visibility/usage permissions.",
+      "C": "The whole point of Shared VPC is to use the host network, not create a separate VPC.",
+      "D": "Firewall egress doesn't grant the IAM permission needed to select the subnet."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://cloud.google.com/vpc/docs/shared-vpc",
+        "text": "cloud.google.com/vpc/docs/shared-vpc"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "Network Engineer",
+    "scenario": "You must expose a global, HTTPS web application with a single anycast IP, TLS termination, and path-based routing to backends in multiple regions. Which load balancer?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
+        "text": "Global external Application Load Balancer.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "Regional external passthrough Network Load Balancer.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "Internal passthrough Network Load Balancer.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "Regional external proxy Network Load Balancer.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "The global external Application Load Balancer provides a single anycast IP, TLS termination, and L7 URL/path-based routing to multi-region backends.",
+      "B": "A passthrough NLB is L4, regional, and offers no TLS termination or path routing.",
+      "C": "An internal LB is not internet-facing.",
+      "D": "A proxy NLB handles TCP/SSL at L4, not HTTP path-based routing."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://cloud.google.com/load-balancing/docs/application-load-balancer",
+        "text": "cloud.google.com/load-balancing/docs/application-load-bal..."
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "Network Engineer",
+    "scenario": "You need private, one-way access from your VPC to a SaaS service published by a partner in their own VPC, without exposing your whole network or using public IPs. What do you use?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
+        "text": "Private Service Connect endpoint to the published service.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "VPC Network Peering with the partner VPC.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "A Shared VPC spanning both organizations.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Cloud VPN between the two VPCs.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "Private Service Connect creates a private endpoint in your VPC to consume a published service, without peering the networks.",
+      "B": "Peering connects entire VPCs bidirectionally and exposes more than needed.",
+      "C": "Shared VPC is within one organization, not for cross-org SaaS consumption.",
+      "D": "VPN connects networks broadly and requires overlapping-free addressing; it's heavier than PSC for service access."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
+        "text": "cloud.google.com/vpc/docs/private-service-connect"
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "Network Engineer",
+    "scenario": "Two VPCs are peered. Subnet A (10.0.0.0/16) in VPC1 overlaps with a subnet in VPC2. What happens?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
+        "text": "The peering will fail to establish due to overlapping subnet ranges.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Traffic is automatically NATed between them.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Routes are merged and load balanced.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "The newer subnet silently wins.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "VPC Network Peering requires non-overlapping IP ranges; overlapping subnets prevent the peering from working.",
+      "B": "Peering does not perform NAT.",
+      "C": "Overlapping routes are not merged/balanced.",
+      "D": "There is no silent winner; the overlap is rejected."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://cloud.google.com/vpc/docs/vpc-peering",
+        "text": "cloud.google.com/vpc/docs/vpc-peering"
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "Network Engineer",
+    "scenario": "You want to protect a global Application Load Balancer from SQL-injection and apply a rate limit per client IP. Which service?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
+        "text": "Google Cloud Armor security policy.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Cloud NGFW firewall policy.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "VPC Service Controls perimeter.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Cloud IDS.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "Cloud Armor provides WAF rules (preconfigured SQLi/XSS), rate limiting, and DDoS protection at the global LB edge.",
+      "B": "Cloud NGFW filters L3/L4 (and some L7) network traffic but isn't the LB WAF/rate-limiting layer.",
+      "C": "VPC Service Controls prevents data exfiltration from APIs, not web attacks.",
+      "D": "Cloud IDS detects threats but does not block/rate-limit at the LB."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview",
+        "text": "cloud.google.com/armor/docs/security-policy-overview"
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "Network Engineer",
+    "scenario": "A GKE cluster must use alias IPs so Pods get routable addresses from a secondary subnet range and integrate with VPC-native networking. What must the cluster be?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
+        "text": "A VPC-native cluster with secondary ranges for Pods and Services.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "A routes-based cluster.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "A cluster with legacy networking enabled.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "An autopilot cluster with public endpoint only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "VPC-native clusters use alias IP ranges (secondary ranges) for Pods and Services, enabling native VPC routing and features like NEG-based LB.",
+      "B": "Routes-based clusters use static routes per node, the older model lacking alias IPs.",
+      "C": "Legacy networking is deprecated and unsupported for this.",
+      "D": "Endpoint visibility is unrelated to alias-IP/VPC-native addressing."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/alias-ips"
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "Network Engineer",
+    "scenario": "You need to give VMs without external IPs outbound access to the internet to download OS packages, with no inbound exposure. What do you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
+        "text": "Cloud NAT on the subnet's region.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "An external IP on each VM.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "A public Application Load Balancer.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Identity-Aware Proxy TCP forwarding.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "Cloud NAT provides outbound-only internet access for private VMs without assigning external IPs or allowing inbound connections.",
+      "B": "External IPs expose VMs to inbound traffic, the opposite of the requirement.",
+      "C": "An LB serves inbound traffic, not general outbound egress.",
+      "D": "IAP TCP forwarding provides inbound admin access, not general outbound internet."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/nat/docs/overview",
+        "text": "cloud.google.com/nat/docs/overview"
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "Network Engineer",
+    "scenario": "Your design requires 99.99% availability for hybrid connectivity using HA VPN. What is the minimum tunnel/interface configuration?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "Two tunnels, one from each of the two HA VPN gateway interfaces, to two peer addresses.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "A single tunnel from one interface.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "Two tunnels from the same interface.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Four tunnels from one interface to one peer.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "The 99.99% SLA requires HA VPN with tunnels on both gateway interfaces to redundant peer endpoints.",
+      "B": "A single tunnel has no redundancy and doesn't meet the SLA.",
+      "C": "Both tunnels on one interface lose interface-level redundancy.",
+      "D": "Piling tunnels on one interface still lacks the required dual-interface redundancy."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies",
+        "text": "cloud.google.com/network-connectivity/docs/vpn/concepts/t..."
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "Network Engineer",
+    "scenario": "You must connect 30 VPCs and an on-prem site into a hub-and-spoke topology with transitive connectivity managed centrally. Which product fits best?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
+        "text": "Network Connectivity Center with VPC and hybrid spokes.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "Full mesh of VPC peerings.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
+        "text": "A single Shared VPC for all teams.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "Cloud DNS peering.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "Network Connectivity Center provides a hub with VPC/hybrid spokes and centralized, transitive connectivity at scale.",
+      "B": "VPC peering is non-transitive and a 30-VPC mesh is unmanageable.",
+      "C": "Forcing all teams into one Shared VPC doesn't address on-prem/transitive hub-spoke needs.",
+      "D": "DNS peering shares DNS resolution, not network connectivity."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "Network Engineer",
+    "scenario": "A subnet is running out of IP addresses. You must add capacity without recreating the subnet or disrupting existing VMs. What do you do?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "Expand the subnet's primary IP range (increase the prefix).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "Delete and recreate the subnet with a larger range.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Switch the VPC to legacy mode.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Add the VMs to a different VPC.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "You can expand a subnet's primary range non-disruptively (ranges can only grow, not shrink), preserving existing VMs.",
+      "B": "Deleting the subnet disrupts all attached resources.",
+      "C": "Legacy mode is deprecated and irrelevant.",
+      "D": "Moving VMs across VPCs is disruptive and unnecessary."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://cloud.google.com/vpc/docs/create-modify-vpc-networks#expand-subnet",
+        "text": "cloud.google.com/vpc/docs/create-modify-vpc-networks#expa..."
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "Network Engineer",
+    "scenario": "You want DNS resolution of an on-prem domain from within your VPC, forwarding queries to your on-prem DNS servers. What do you configure in Cloud DNS?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
+        "text": "A forwarding (outbound) zone targeting the on-prem DNS servers.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "A public managed zone.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "A reverse lookup zone only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "DNSSEC on the VPC.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "A Cloud DNS forwarding zone sends queries for the on-prem domain to specified on-prem name servers.",
+      "B": "A public zone serves internet resolution, not private on-prem forwarding.",
+      "C": "A reverse zone handles PTR lookups, not general on-prem name resolution.",
+      "D": "DNSSEC signs records; it doesn't forward queries on-prem."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://cloud.google.com/dns/docs/policies-overview",
+        "text": "cloud.google.com/dns/docs/policies-overview"
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "Network Engineer",
+    "scenario": "Your team needs to diagnose why packets between two VMs are dropped, identifying the specific firewall rule or route responsible, without sending real traffic. Which tool?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
+        "text": "Connectivity Tests in Network Intelligence Center.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "VPC Flow Logs.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Cloud Trace.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "Packet Mirroring.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Connectivity Tests simulate the path and report the matching firewall rule/route causing a drop, without live traffic.",
+      "B": "Flow logs record real traffic after the fact and won't pinpoint a config-based drop proactively.",
+      "C": "Cloud Trace profiles application latency, not network reachability.",
+      "D": "Packet Mirroring copies live traffic for inspection; it doesn't analyze config reachability."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview",
+        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "Network Engineer",
+    "scenario": "You must enforce that only specific instances (by service account) can receive traffic on port 8080, regardless of IP. Which firewall targeting should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
+        "text": "A firewall rule targeting a service account.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "A rule targeting the 0.0.0.0/0 source range.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "A rule based solely on instance internal IPs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "A route with a custom priority.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "Firewall rules can target instances by service account, applying regardless of the instances' IPs and surviving autoscaling.",
+      "B": "A broad source range controls who can connect, not which instances are targeted.",
+      "C": "IP-based targeting is brittle as instances scale and change addresses.",
+      "D": "Routes direct traffic paths; they don't enforce per-instance allow rules."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://cloud.google.com/firewall/docs/firewalls#serviceaccounts",
+        "text": "cloud.google.com/firewall/docs/firewalls#serviceaccounts"
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "Network Engineer",
+    "scenario": "A Cloud Interconnect carries sensitive data and compliance requires encryption in transit at layer 2 on the connection itself. What should you enable?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
+        "text": "MACsec for Cloud Interconnect.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "HA VPN only, with no Interconnect.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
+        "text": "TLS on the application.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Cloud Armor.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "MACsec encrypts traffic at layer 2 on the Dedicated Interconnect link itself, meeting in-transit encryption requirements.",
+      "B": "Removing Interconnect changes the design; the question is about encrypting the existing Interconnect.",
+      "C": "App-layer TLS doesn't satisfy a link-layer encryption mandate for all traffic.",
+      "D": "Cloud Armor is a web WAF, unrelated to Interconnect encryption."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/macsec",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/c..."
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "Network Engineer",
+    "scenario": "You need internal clients to reach a set of backend VMs via a stable internal IP with L4 load balancing and client IP preservation. Which load balancer?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
+        "text": "Internal passthrough Network Load Balancer.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "Global external Application Load Balancer.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Internal Application Load Balancer.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "External proxy Network Load Balancer.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "The internal passthrough NLB offers an internal VIP, L4 load balancing, and preserves the original client IP (no proxying).",
+      "B": "It's external and L7, not internal L4 with client-IP preservation.",
+      "C": "The internal ALB is a proxy (L7) and does not preserve client IP the same way.",
+      "D": "A proxy NLB terminates connections and is external in this context."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://cloud.google.com/load-balancing/docs/internal",
+        "text": "cloud.google.com/load-balancing/docs/internal"
       }
     ]
   },
   {
     "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "domain": "Network Engineer",
+    "scenario": "Your organization wants to centrally define firewall rules that apply across an entire folder of projects and cannot be overridden by project admins. What do you use?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
+        "text": "Hierarchical firewall policies at the folder/org level.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Per-project VPC firewall rules.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "Network tags on each VM.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Cloud Armor edge policies.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "Hierarchical firewall policies attach at org/folder level and are enforced across child projects, above project-level rules.",
+      "B": "Project firewall rules can be changed by project admins and aren't centrally enforced.",
+      "C": "Tags select targets but don't centrally enforce policy.",
+      "D": "Cloud Armor protects LBs, not VPC-wide L3/L4 policy inheritance."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://cloud.google.com/firewall/docs/firewall-policies-overview",
+        "text": "cloud.google.com/firewall/docs/firewall-policies-overview"
       }
     ]
   },
   {
     "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "domain": "Network Engineer",
+    "scenario": "You must mirror production traffic from specific subnets to an out-of-band IDS appliance for inspection without affecting the original flows. Which feature?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
+        "text": "Packet Mirroring to an instance-group collector.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "VPC Flow Logs export to BigQuery.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Cloud NAT logging.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
+        "text": "Firewall Insights.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "Packet Mirroring copies full packets from selected sources to a collector (e.g., IDS) without disrupting production traffic.",
+      "B": "Flow logs are sampled metadata, not full packet copies for IDS.",
+      "C": "NAT logging records translations, not mirrored packets.",
+      "D": "Firewall Insights analyzes rule usage, not packet capture."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://cloud.google.com/vpc/docs/packet-mirroring",
+        "text": "cloud.google.com/vpc/docs/packet-mirroring"
       }
     ]
   },
   {
     "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "domain": "Network Engineer",
+    "scenario": "A global Application Load Balancer should serve cacheable static content from the closest edge to reduce latency and origin load. What do you enable?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
+        "text": "Cloud CDN on the backend service.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "A second regional LB.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "Premium Tier only, with no CDN.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
+        "text": "A larger machine type for backends.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
+      "A": "Enabling Cloud CDN on the LB backend service caches content at Google's edge, cutting latency and origin load.",
+      "B": "Adding another LB doesn't provide edge caching.",
+      "C": "Premium Tier improves routing but isn't edge caching by itself.",
+      "D": "Bigger backends don't reduce edge latency for static content."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
+        "url": "https://cloud.google.com/cdn/docs/overview",
+        "text": "cloud.google.com/cdn/docs/overview"
       }
     ]
   },
   {
     "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
+    "domain": "Network Engineer",
+    "scenario": "You need to advertise only a specific summarized prefix to on-prem via BGP, not all VPC subnets. What do you configure on the Cloud Router?",
     "options": [
       {
         "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
+        "text": "A custom route advertisement (custom IP ranges).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A multi-region (global) Spanner config.",
+        "text": "Regional dynamic routing.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Default settings and hope for the best.",
+        "text": "A static route on the VPC.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
+        "text": "A firewall egress rule.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
+      "A": "Cloud Router custom route advertisements let you advertise specific summarized prefixes instead of the default of all subnets.",
+      "B": "Routing mode controls scope of subnet advertisement, not custom summarization.",
+      "C": "A static VPC route doesn't control BGP advertisements to on-prem.",
+      "D": "Firewall rules don't affect route advertisement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+        "url": "https://cloud.google.com/network-connectivity/docs/router/how-to/advertising-custom-ip",
+        "text": "cloud.google.com/network-connectivity/docs/router/how-to/..."
       }
     ]
   },
   {
     "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
+    "domain": "Network Engineer",
+    "scenario": "Your private GKE cluster's nodes have no external IPs and must pull images from Artifact Registry and reach Google APIs privately. What enables this?",
     "options": [
       {
         "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
+        "text": "Private Google Access on the node subnet.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Only on-demand backups.",
+        "text": "Cloud NAT only, with no Private Google Access.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Read replicas.",
+        "text": "A public endpoint on the cluster.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Query Insights.",
+        "text": "External IPs on nodes.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
+      "A": "Private Google Access lets nodes without external IPs reach Google APIs (including Artifact Registry) over internal routing.",
+      "B": "Cloud NAT enables general egress but Private Google Access is the intended path for Google APIs; relying on NAT alone routes via the internet.",
+      "C": "A public control-plane endpoint doesn't give nodes API egress.",
+      "D": "Adding external IPs contradicts the private-cluster requirement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+        "url": "https://cloud.google.com/vpc/docs/private-google-access",
+        "text": "cloud.google.com/vpc/docs/private-google-access"
       }
     ]
   },
   {
     "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
+    "domain": "Network Engineer",
+    "scenario": "You must give an internal HTTP(S) service a private DNS name resolvable only inside your VPC. Which Cloud DNS zone type?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner.",
+        "text": "A private managed zone attached to the VPC.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Bigtable.",
+        "text": "A public managed zone.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL.",
+        "text": "A forwarding zone to the internet.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Memorystore.",
+        "text": "A reverse public zone.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
+      "A": "A private managed zone is visible only to the attached VPC networks, providing internal-only name resolution.",
+      "B": "A public zone is internet-resolvable.",
+      "C": "A forwarding zone delegates resolution elsewhere; not an internal authoritative zone.",
+      "D": "A reverse public zone handles public PTR records."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
+        "url": "https://cloud.google.com/dns/docs/zones",
+        "text": "cloud.google.com/dns/docs/zones"
       }
     ]
   },
   {
     "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
+    "domain": "Network Engineer",
+    "scenario": "Traffic to your global external Application Load Balancer should route over Google's premium backbone for the lowest latency from users to Google's edge. Which network service tier?",
     "options": [
       {
         "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
+        "text": "Premium Tier.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more column families.",
+        "text": "Standard Tier.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the number of tables.",
+        "text": "There is no tier choice for global LBs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Enable a public IP.",
+        "text": "Spot Tier.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
+      "A": "Premium Tier carries traffic on Google's global backbone, entering/exiting close to the user for lowest latency; global external ALBs require Premium Tier.",
+      "B": "Standard Tier uses the public internet for more of the path, with higher latency and regional scope.",
+      "C": "Tier selection does exist and matters for global LBs.",
+      "D": "\"Spot Tier\" is not a network service tier."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
+        "url": "https://cloud.google.com/network-tiers/docs/overview",
+        "text": "cloud.google.com/network-tiers/docs/overview"
       }
     ]
   },
   {
     "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
+    "domain": "Network Engineer",
+    "scenario": "You need to restrict which Google APIs VMs can reach and ensure they only use the restricted VIP (199.36.153.4/30) for Private Google Access with VPC Service Controls. What DNS configuration is required?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
+        "text": "Create private DNS zones for googleapis.com mapping to the restricted VIP.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
+        "text": "Use only public DNS resolution.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Manual exports when someone remembers.",
+        "text": "Disable DNS in the VPC.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disabling backups to save cost.",
+        "text": "Point googleapis.com at a Cloud NAT IP.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
+      "A": "With restricted VIP access, you configure private DNS zones (e.g., for googleapis.com / *.googleapis.com) resolving to 199.36.153.4/30 so requests use the restricted path.",
+      "B": "Public DNS would resolve to standard public VIPs, bypassing the restricted/VPC-SC path.",
+      "C": "Disabling DNS breaks resolution entirely.",
+      "D": "Cloud NAT IPs are for general egress, not the restricted Google API VIP."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/vpc-service-controls/docs/set-up-private-connectivity",
+        "text": "cloud.google.com/vpc-service-controls/docs/set-up-private..."
       }
     ]
   }

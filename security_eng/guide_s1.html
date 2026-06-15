@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Engineer &mdash; Configuring Access</title>
+  <style>
+    :root {
+      --bg: #faf5ff; --ink: #1e293b; --accent: #8b5cf6; --accent-dark: #7c3aed;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ddd6fe' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #c4b5fd 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 1</span><span class="weight">~25%</span>
+      <h1>Configuring Access</h1>
+      <p class="sec-intro">Identity, authentication, and least-privilege authorization — the biggest single slice of the exam.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Identity & federation</h3>
+      <p><strong>Cloud Identity</strong> is the IdP for Google Cloud users and groups. Sync from on-prem directories with <strong>Google Cloud Directory Sync (GCDS)</strong> and enable SSO with a third-party IdP. Use <strong>Workforce Identity Federation</strong> for human external identities and <strong>Workload Identity Federation</strong> for external workloads/CI — both avoid long-lived service-account keys. Protect the super-admin account with hardware 2SV.</p>
+    </section>
+    <section class="lesson">
+      <h3>Service accounts & keys</h3>
+      <p>Prefer <strong>short-lived credentials</strong> and <strong>service-account impersonation</strong> over keys. Disable key creation org-wide with the <code>iam.disableServiceAccountKeyCreation</code> org policy. Lock down default service accounts. Use Workload Identity Federation so external systems get tokens without keys.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Service-account keys are the riskiest credential — the recommended answer is almost always impersonation, short-lived creds, or WIF, with key creation disabled by org policy.</div>
+    </section>
+    <section class="lesson">
+      <h3>IAM authorization & hierarchy</h3>
+      <p>Grant least privilege using predefined/custom roles, refine with <strong>IAM Conditions</strong>, and explicitly block with <strong>IAM deny policies</strong>. <strong>Privileged Access Manager</strong> grants just-in-time elevated access. Apply policy across the <strong>resource hierarchy</strong> (org &rarr; folders &rarr; projects), where IAM and org policies inherit downward; manage permissions through groups, not individuals.</p>
+      <div class="callout mnemonic"><span class="hook">Order</span> An <strong>IAM deny</strong> policy always overrides an allow. Deny is evaluated first.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Stop anyone from creating service-account keys across the whole org. What do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>The iam.disableServiceAccountKeyCreation organization policy.</strong></p>
+          <p class="quiz-why">Org-policy guardrail inherited by all projects regardless of project IAM.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Grant a contractor elevated access only for a 2-hour change window. Which feature?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Privileged Access Manager (just-in-time access).</strong></p>
+          <p class="quiz-why">Time-bound, audited privilege elevation.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <span></span>
+      <a href="guide_s2.html" class="nav-link">Communications &amp; Boundary Protection &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+</body>
+</html>

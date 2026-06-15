@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Engineer Revision Guide Portal</title>
+  <style>
+    :root {
+      --bg-light: #faf5ff;
+      --ink: #1e293b;
+      --accent: #8b5cf6;
+      --accent-dark: #7c3aed;
+      --cgp-violet: #8b5cf6;
+      --cgp-blue: #2563eb;
+      --cgp-teal: #0d9488;
+      --cgp-orange: #ea580c;
+      --cgp-green: #16a34a;
+      --cgp-yellow: #fef08a;
+      --cgp-yellow-dark: #eab308;
+      --cgp-red: #ef4444;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ddd6fe' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 30px 15px; }
+
+    header {
+      background: linear-gradient(135deg, #c4b5fd 0%, var(--accent) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 40px;
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    header::after {
+      content: "STUDY PORTAL!";
+      position: absolute; top: 15px; right: -35px;
+      background: var(--cgp-red); color: white;
+      font-size: 0.75rem; font-weight: bold;
+      padding: 6px 40px; transform: rotate(45deg); border: 2px solid #000;
+    }
+
+    .badge-cgp {
+      background: var(--cgp-red); color: white; display: inline-block;
+      font-size: 0.9rem; font-weight: bold; padding: 6px 16px;
+      border-radius: 999px; border: 2px solid #000; transform: rotate(-2deg); margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem); margin: 10px 0;
+      text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 3px 3px 0px #fff;
+    }
+
+    .tagline { font-size: 1.2rem; margin: 10px auto; max-width: 700px; font-style: italic; }
+
+    .intro-section {
+      background: white; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 25px; margin-bottom: 30px;
+    }
+
+    .intro-title { font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-dark); display: flex; align-items: center; gap: 10px; }
+    .intro-section ul { padding-left: 20px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--cgp-yellow); }
+
+    .action-row { margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .grid-sections { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+    .grid-sections > * { min-width: 0; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0;
+      background: var(--cgp-yellow); color: #000; font-weight: bold; padding: 10px 20px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    @media (max-width: 768px) {
+      .grid-sections { grid-template-columns: 1fr; }
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+
+    .section-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 25px; display: flex; flex-direction: column;
+      justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; min-width: 0;
+    }
+    .section-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+
+    .section-card.s1 { border-color: var(--cgp-violet); box-shadow: 4px 4px 0px var(--cgp-violet); }
+    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--cgp-violet); }
+    .section-card.s2 { border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); }
+    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--cgp-blue); }
+    .section-card.s3 { border-color: var(--cgp-teal); box-shadow: 4px 4px 0px var(--cgp-teal); }
+    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--cgp-teal); }
+    .section-card.s4 { border-color: var(--cgp-orange); box-shadow: 4px 4px 0px var(--cgp-orange); }
+    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--cgp-orange); }
+    .section-card.s5 { border-color: var(--cgp-green); box-shadow: 4px 4px 0px var(--cgp-green); }
+    .section-card.s5:hover { box-shadow: 6px 6px 0px var(--cgp-green); }
+
+    .sec-badge {
+      display: inline-block; font-size: 0.8rem; font-weight: bold; color: white;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; margin-bottom: 12px; align-self: start;
+    }
+    .s1 .sec-badge { background: var(--cgp-violet); }
+    .s2 .sec-badge { background: var(--cgp-blue); }
+    .s3 .sec-badge { background: var(--cgp-teal); }
+    .s4 .sec-badge { background: var(--cgp-orange); }
+    .s5 .sec-badge { background: var(--cgp-green); }
+
+    .sec-title { font-size: 1.3rem; margin: 0 0 10px; line-height: 1.2; }
+    .sec-desc { font-size: 0.95rem; color: #475569; margin: 0 0 16px; flex-grow: 1; }
+    .sec-topics { font-size: 0.85rem; color: #334155; margin: 0 0 8px; padding-left: 18px; }
+    .sec-topics li { margin-bottom: 4px; }
+
+    .btn-cgp {
+      display: block; text-align: center; background: var(--cgp-yellow); color: #000; font-weight: bold;
+      padding: 12px; border: 3px solid #000; border-radius: 10px; box-shadow: 3px 3px 0px #000;
+      text-decoration: none; transition: background-color 0.2s, transform 0.1s;
+      overflow-wrap: anywhere; word-break: break-word; max-width: 100%;
+    }
+    .btn-cgp:hover { background: var(--cgp-yellow-dark); }
+    .btn-cgp:active { transform: translate(1px, 1px); box-shadow: 2px 2px 0px #000; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-exam { background: var(--cgp-blue); color: #fff; }
+    .btn-exam:hover { background: #1d4ed8; }
+    .btn-official { background: var(--cgp-green); color: #fff; }
+    .btn-official:hover { background: #15803d; }
+    .btn-disabled { background: #e5e7eb; color: #9ca3af; border-color: #9ca3af; box-shadow: 2px 2px 0px #9ca3af; cursor: not-allowed; }
+    .btn-disabled:hover { transform: none; box-shadow: 2px 2px 0px #9ca3af; }
+
+    .study-tip {
+      background: #fff; border: 3px dashed var(--accent); border-radius: var(--radius);
+      padding: 20px; margin-top: 40px;
+    }
+    .study-tip h3 { margin-top: 0; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
+
+    footer {
+      text-align: center; margin-top: 50px; padding-top: 20px;
+      border-top: 1px dashed #cbd5e1; color: #64748b; font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Back to Main Certs Hub</a>
+    </div>
+
+    <header>
+      <div class="badge-cgp">UK CGP Revision Style</div>
+      <h1>Google Cloud Professional Security Engineer</h1>
+      <p class="tagline">Your study portal to master IAM, perimeter defence, data protection, security operations, and compliance — and lock the examiners out for good!</p>
+    </header>
+
+    <section class="intro-section">
+      <h2 class="intro-title"><span>🛡️ Study Coach Welcome!</span></h2>
+      <p>Welcome to your personal study portal for the Google Cloud Professional Cloud Security Engineer certification. This page is organised around the five official exam sections so you always know your blast radius. Each card summarises the high-yield topics and links to the in-depth study guide, the slide-deck cheatsheet, and the practice simulator.</p>
+      <ul>
+        <li><strong>Section weightings included —</strong> Configuring access (~25%) and data protection (~23%) carry the most marks.</li>
+        <li><strong>Cheatsheet:</strong> high-yield fact cards, key-management matrices, and exam traps ordered by the exam guide.</li>
+        <li><strong>Practice Questions:</strong> timed, flaggable simulators with full "why each option is wrong" diagnostics.</li>
+      </ul>
+    </section>
+
+    <div class="action-row">
+      <a href="cheatsheet.html" class="btn-cgp btn-primary" style="flex:1 1 220px;">📋 Open Exam Cheatsheet &rarr;</a>
+      <a href="practice_questions.html" class="btn-cgp btn-exam" style="flex:1 1 220px;">📝 Generated Practice (25 Q) &rarr;</a>
+      <a href="sample_questions.html" style="flex:1 1 220px;" class="btn-cgp btn-official">📋 Official Sample Questions &rarr;</a>
+    </div>
+
+    <h2 style="font-size: 1.6rem; margin: 30px 0 15px; text-transform: uppercase;">📚 Exam Sections at a Glance</h2>
+
+    <div class="grid-sections">
+      <div class="section-card s1">
+        <div>
+          <span class="sec-badge">Section 1 &mdash; ~25%</span>
+          <h3 class="sec-title">Configuring Access</h3>
+          <p class="sec-desc">Identity, authentication, and least-privilege authorization — the biggest single slice.</p>
+          <ul class="sec-topics">
+            <li>Cloud Identity, GCDS, SSO &amp; Workforce Identity Federation</li>
+            <li>Service accounts, key hygiene &amp; Workload Identity Federation</li>
+            <li>IAM roles, conditions, deny policies &amp; Privileged Access Manager</li>
+            <li>Resource hierarchy &amp; organization policies</li>
+          </ul>
+        </div>
+        <a href="guide_s1.html" class="btn-cgp">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s2">
+        <div>
+          <span class="sec-badge">Section 2 &mdash; ~22%</span>
+          <h3 class="sec-title">Communications &amp; Boundary Protection</h3>
+          <p class="sec-desc">Perimeter controls, segmentation, and private connectivity to keep traffic where it belongs.</p>
+          <ul class="sec-topics">
+            <li>Cloud NGFW, IAP, Cloud Armor &amp; Secure Web Proxy</li>
+            <li>VPC Service Controls perimeters &amp; Shared VPC</li>
+            <li>Private Google Access, PSC &amp; HA VPN / Interconnect</li>
+            <li>Cloud NAT for controlled egress</li>
+          </ul>
+        </div>
+        <a href="guide_s2.html" class="btn-cgp">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s3">
+        <div>
+          <span class="sec-badge">Section 3 &mdash; ~23%</span>
+          <h3 class="sec-title">Ensuring Data Protection</h3>
+          <p class="sec-desc">Protect data at rest, in transit, and in use — plus securing modern AI workloads.</p>
+          <ul class="sec-topics">
+            <li>Sensitive Data Protection (DLP), Secret Manager</li>
+            <li>CMEK, EKM, key rotation &amp; Confidential Computing</li>
+            <li>Cloud Storage lifecycle &amp; data-service access controls</li>
+            <li>Security controls for Vertex AI / ML systems</li>
+          </ul>
+        </div>
+        <a href="guide_s3.html" class="btn-cgp">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s4">
+        <div>
+          <span class="sec-badge">Section 4 &mdash; ~19%</span>
+          <h3 class="sec-title">Managing Operations</h3>
+          <p class="sec-desc">Automate security, detect threats, and respond — the SecOps backbone of the exam.</p>
+          <ul class="sec-topics">
+            <li>Binary Authorization &amp; CI/CD CVE scanning</li>
+            <li>Security posture, custom org policies &amp; SHA modules</li>
+            <li>VPC Flow Logs, Cloud IDS, Packet Mirroring, Log Analytics</li>
+            <li>Audit logs, log sinks &amp; Security Command Center</li>
+          </ul>
+        </div>
+        <a href="guide_s4.html" class="btn-cgp">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s5">
+        <div>
+          <span class="sec-badge">Section 5 &mdash; ~11%</span>
+          <h3 class="sec-title">Supporting Compliance</h3>
+          <p class="sec-desc">Map regulatory requirements onto Google Cloud controls — small slice, easy marks.</p>
+          <ul class="sec-topics">
+            <li>Shared responsibility model</li>
+            <li>Assured Workloads &amp; data regionalization</li>
+            <li>Access Transparency &amp; Access Approval</li>
+            <li>Mapping compliance to services &amp; audit coverage</li>
+          </ul>
+        </div>
+        <a href="guide_s5.html" class="btn-cgp">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s1" style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
+        <div>
+          <span class="sec-badge" style="background: var(--cgp-yellow-dark); color: #000;">Exam Deck</span>
+          <h3 class="sec-title">Cheatsheet &amp; Practice</h3>
+          <p class="sec-desc">The slide-based cheatsheet plus timed, closed-book simulators with per-option explanations. Use these in your final week.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="cheatsheet.html" class="btn-cgp btn-primary">Open Cheatsheet &rarr;</a>
+          <a href="practice_questions.html" class="btn-cgp btn-exam">📝 Generated Practice (25 Q) &rarr;</a>
+          <a href="sample_questions.html" class="btn-cgp btn-official">📋 Official Sample Questions &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="study-tip">
+      <h3>💡 Coach's Study Tip!</h3>
+      <p>Sections 1–3 together are <strong>70% of the exam</strong> — that's where your revision hours should go. Lock down the IAM hierarchy and VPC Service Controls first (they show up everywhere), then drill the data-protection key options (CMEK vs EKM vs Confidential Computing). Save Section 5 compliance for a quick final-day skim — it's only 11% and mostly common sense once you know the shared responsibility model.</p>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+</body>
+
+</html>

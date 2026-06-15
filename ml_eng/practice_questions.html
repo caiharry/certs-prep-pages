@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <title>Professional ML Engineer - Exam Simulator</title>
     <!-- Outfit & Inter Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
             --dark-bg: #0b0f19;
             --dark-card: #151d30;
             --dark-border: rgba(255, 255, 255, 0.08);
-            --dark-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
+            --dark-accent: #db2777;
+            --dark-accent-hover: #be185d;
             --dark-text-primary: #f3f4f6;
             --dark-text-secondary: #9ca3af;
             --dark-correct: #10b981;
@@ -31,8 +31,8 @@
             --classic-bg: #f3f4f6;
             --classic-card: #ffffff;
             --classic-border: #d1d5db;
-            --classic-accent: #1e3a8a;
-            --classic-accent-hover: #172554;
+            --classic-accent: #9d174d;
+            --classic-accent-hover: #831843;
             --classic-text-primary: #1f2937;
             --classic-text-secondary: #4b5563;
             --classic-correct: #15803d;
@@ -771,7 +771,7 @@
         <div class="logo-section">
             <div class="logo-badge">G</div>
             <div>
-                <div class="title">Professional Cloud Database Engineer</div>
+                <div class="title">Professional ML Engineer</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
             </div>
         </div>
@@ -889,1001 +889,1001 @@
         const quizData = [
   {
     "number": 1,
-    "domain": "Database Engineer",
-    "scenario": "A globally distributed app needs a relational database with strong external consistency and horizontal scalability across continents, with an RPO of zero. Which service?",
+    "domain": "ML Engineer",
+    "scenario": "A data analytics team stores all of its labeled customer data in BigQuery and is fluent in SQL but has limited ML engineering experience. They need to train and serve a churn classification model quickly without moving data out of the warehouse. What should they use?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner multi-region.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL with cross-region read replicas.",
+        "text": "Export the data to Cloud Storage and train a custom TensorFlow model on Vertex AI.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Build a logistic regression model with BigQuery ML.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "AlloyDB with a cross-region replica.",
+        "text": "Stand up a Dataproc cluster and train with Spark MLlib.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Bigtable with multi-cluster routing.",
+        "text": "Use the Cloud Natural Language API.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Spanner multi-region gives synchronous replication and external consistency globally with zero RPO.",
-      "B": "Cloud SQL cross-region replicas are asynchronous (RPO &gt; 0) and not horizontally scalable for writes.",
-      "C": "AlloyDB cross-region replication is asynchronous and read-only on the secondary.",
-      "D": "Bigtable is NoSQL with eventual cross-region consistency and no relational transactions."
+      "A": "Custom TensorFlow training requires ML engineering skill and moves data out of BigQuery — slower and more complex than needed.",
+      "B": "BigQuery ML lets SQL-fluent teams train and serve models in-place with `CREATE MODEL`, ideal for churn classification without data movement.",
+      "C": "Spark MLlib on Dataproc adds cluster management and code complexity the team is not equipped for.",
+      "D": "The Natural Language API analyzes text sentiment/entities; it cannot train a custom churn classifier on tabular data."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
-        "text": "cloud.google.com/spanner/docs/instance-configurations"
+        "url": "https://cloud.google.com/bigquery/docs/bqml-introduction",
+        "text": "cloud.google.com/bigquery/docs/bqml-introduction"
       }
     ]
   },
   {
     "number": 2,
-    "domain": "Database Engineer",
-    "scenario": "You run Cloud SQL for PostgreSQL and need a failover that keeps the standby in the same region and provides automatic failover with minimal data loss. What do you enable?",
+    "domain": "ML Engineer",
+    "scenario": "A team wants to tune learning rate and tree depth efficiently across many trials with early stopping. Which Vertex AI capability?",
     "options": [
       {
         "id": "A",
-        "text": "High availability (regional) configuration with a standby in another zone.",
+        "text": "Vertex AI hyperparameter tuning (Vizier).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A cross-region read replica only.",
+        "text": "Manual grid search in a notebook.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Point-in-time recovery only.",
+        "text": "Model Monitoring.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Serverless exports every 15 minutes.",
+        "text": "Feature Store.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud SQL HA uses a synchronous standby in a second zone of the same region with automatic failover and minimal data loss.",
-      "B": "A read replica is asynchronous and not an automatic HA failover target by default.",
-      "C": "PITR helps recover to a time, not provide instant automatic failover.",
-      "D": "Periodic exports are backups, not HA."
+      "A": "Vertex AI hyperparameter tuning (Vizier) runs efficient Bayesian/optimized trials with early stopping.",
+      "B": "Manual grid search is slow and not adaptive.",
+      "C": "Model Monitoring is for production drift/skew, not tuning.",
+      "D": "Feature Store manages features, not hyperparameters."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/high-availability",
-        "text": "cloud.google.com/sql/docs/postgres/high-availability"
+        "url": "https://cloud.google.com/vertex-ai/docs/training/hyperparameter-tuning-overview",
+        "text": "cloud.google.com/vertex-ai/docs/training/hyperparameter-t..."
       }
     ]
   },
   {
     "number": 3,
-    "domain": "Database Engineer",
-    "scenario": "You must migrate a 4 TB on-prem PostgreSQL database to Cloud SQL with continuous replication and minimal cutover downtime, using a managed service. Which tool?",
+    "domain": "ML Engineer",
+    "scenario": "You need to build a chatbot that answers employee questions grounded in thousands of internal PDF policy documents, with citations and minimal custom infrastructure. Which approach should you take?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service (DMS).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service.",
+        "text": "Fine-tune a large language model from scratch on the PDFs.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Implement a retrieval-augmented generation (RAG) app with Vertex AI Agent Builder.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "BigQuery Data Transfer Service.",
+        "text": "Train an AutoML text classification model on the PDFs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A manual pg_dump/pg_restore.",
+        "text": "Use the Cloud Translation API on the documents.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS performs continuous (CDC) homogeneous migrations to Cloud SQL with minimal downtime.",
-      "B": "Storage Transfer Service moves files/objects, not live databases.",
-      "C": "BigQuery DTS loads analytics data into BigQuery, not into Cloud SQL.",
-      "D": "A manual dump/restore implies a long downtime window, failing the requirement."
+      "A": "Full from-scratch fine-tuning is costly, slow, and unnecessary for grounding answers in a document corpus; it also doesn't natively provide citations.",
+      "B": "Vertex AI Agent Builder provides managed RAG: it indexes the documents and grounds LLM answers with citations, with minimal infrastructure.",
+      "C": "AutoML text classification assigns labels; it does not generate grounded conversational answers.",
+      "D": "Translation only converts languages and does nothing for grounded Q&A."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs",
-        "text": "cloud.google.com/database-migration/docs"
+        "url": "https://cloud.google.com/generative-ai-app-builder/docs/introduction",
+        "text": "cloud.google.com/generative-ai-app-builder/docs/introduction"
       }
     ]
   },
   {
     "number": 4,
-    "domain": "Database Engineer",
-    "scenario": "An application needs single-digit-millisecond lookups on petabytes of time-series IoT data with very high write throughput. Which database?",
+    "domain": "ML Engineer",
+    "scenario": "You must explain individual predictions of a deployed tabular model for a regulated use case. What do you enable?",
     "options": [
       {
         "id": "A",
-        "text": "Bigtable with a well-designed row key.",
+        "text": "Vertex Explainable AI feature attributions.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "BigQuery with partitioning.",
+        "text": "TensorBoard scalars.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud SQL with partitioned tables.",
+        "text": "Larger batch size.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore in Native mode.",
+        "text": "AutoML early stopping.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Bigtable is built for high-throughput, low-latency wide-column time-series workloads; a good row key avoids hotspots.",
-      "B": "BigQuery is analytical (scans/aggregations), not low-latency key lookups at high write QPS.",
-      "C": "Cloud SQL doesn't scale to petabytes with that write throughput.",
-      "D": "Firestore suits document/mobile workloads, not petabyte time-series."
+      "A": "Explainable AI produces per-prediction feature attributions required for transparency/compliance.",
+      "B": "TensorBoard visualizes training metrics, not per-prediction explanations.",
+      "C": "Batch size affects training, not explainability.",
+      "D": "Early stopping prevents overfitting, not explanations."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
-        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+        "url": "https://cloud.google.com/vertex-ai/docs/explainable-ai/overview",
+        "text": "cloud.google.com/vertex-ai/docs/explainable-ai/overview"
       }
     ]
   },
   {
     "number": 5,
-    "domain": "Database Engineer",
-    "scenario": "You need a PostgreSQL-compatible database with high transactional performance and fast analytical queries on the same data (HTAP), plus columnar acceleration. Which service?",
+    "domain": "ML Engineer",
+    "scenario": "A model performs well in offline evaluation but produces poor predictions in production. Investigation shows the feature transformations applied during training differ from those applied at serving time. What is this problem, and how should you prevent it?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB for PostgreSQL.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud SQL for PostgreSQL.",
+        "text": "Concept drift; retrain the model weekly.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Training-serving skew; share preprocessing via Vertex AI Feature Store or identical transform code.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Overfitting; add regularization.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "Data leakage; remove the target from features.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "AlloyDB is PostgreSQL-compatible with a columnar engine for fast analytics alongside high OLTP performance (HTAP).",
-      "B": "Cloud SQL is solid OLTP but lacks AlloyDB's columnar analytical acceleration.",
-      "C": "Bigtable is NoSQL wide-column, not PostgreSQL-compatible.",
-      "D": "Firestore is a document database, not relational."
+      "A": "Concept drift is a change in the relationship over time, not a mismatch between training and serving transforms; weekly retraining wouldn't fix inconsistent preprocessing.",
+      "B": "A mismatch between training and serving preprocessing is training-serving skew; using a shared Feature Store or the same transformation pipeline eliminates it.",
+      "C": "Overfitting shows as poor offline generalization, but here offline performance is good — the failure is at serving.",
+      "D": "Data leakage inflates offline metrics via target leakage; the described cause is transformation mismatch, not leakage."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/overview",
-        "text": "cloud.google.com/alloydb/docs/overview"
+        "url": "https://cloud.google.com/vertex-ai/docs/model-monitoring/overview",
+        "text": "cloud.google.com/vertex-ai/docs/model-monitoring/overview"
       }
     ]
   },
   {
     "number": 6,
-    "domain": "Database Engineer",
-    "scenario": "A Cloud SQL instance shows performance issues and you need to identify the most expensive queries with minimal overhead. What should you use?",
+    "domain": "ML Engineer",
+    "scenario": "Training data labels are imbalanced (1% positives) and the model predicts the majority class. What is a sound first remedy?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Query Insights.",
+        "text": "Use class weighting / resampling and evaluate with precision-recall, not accuracy.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "The general query log parsed in Cloud Logging.",
+        "text": "Add more layers.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Repeated SHOW FULL PROCESSLIST via cron.",
+        "text": "Increase the learning rate sharply.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An agent installed on the underlying VM.",
+        "text": "Train longer on the same data.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Query Insights surfaces top queries by load and execution details with negligible overhead.",
-      "B": "The general log adds heavy I/O overhead on production.",
-      "C": "Polling the process list misses short-lived spikes and adds load.",
-      "D": "You cannot install agents on the managed underlying VM."
+      "A": "Class weighting/resampling addresses imbalance, and PR/AUC metrics reflect minority-class performance better than accuracy.",
+      "B": "More layers don't fix imbalance and may overfit.",
+      "C": "A high learning rate risks divergence and doesn't address imbalance.",
+      "D": "Longer training on imbalanced data still favors the majority class."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/using-query-insights",
-        "text": "cloud.google.com/sql/docs/postgres/using-query-insights"
+        "url": "https://developers.google.com/machine-learning/data-prep/construct/sampling-splitting/imbalanced-data",
+        "text": "developers.google.com/machine-learning/data-prep/construc..."
       }
     ]
   },
   {
     "number": 7,
-    "domain": "Database Engineer",
-    "scenario": "You want IAM-based database authentication so users connect to Cloud SQL using their Google identities instead of database passwords. What do you enable?",
+    "domain": "ML Engineer",
+    "scenario": "You must score a 500 million row table of transactions once per night to flag anomalies. Latency is not a concern, but cost efficiency is. Which serving approach is most appropriate?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL IAM database authentication.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "SSL client certificates only.",
+        "text": "Deploy the model to a Vertex AI online endpoint and call it row by row.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Use Vertex AI batch prediction.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shared database superuser password.",
+        "text": "Keep a GKE inference service running 24/7.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Public IP with authorized networks.",
+        "text": "Stream each row through Pub/Sub to an online endpoint.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "IAM database authentication lets users/service accounts authenticate with Google credentials, centralizing access control.",
-      "B": "SSL certs encrypt the connection but don't provide IAM-based identity auth.",
-      "C": "A shared password destroys accountability and is insecure.",
-      "D": "Authorized networks restrict source IPs, not identity-based auth."
+      "A": "Calling an online endpoint per row for 500M rows is slow and expensive and wastes always-on capacity.",
+      "B": "Batch prediction is designed for large, latency-tolerant offline scoring jobs and is the most cost-efficient choice here.",
+      "C": "A 24/7 online service incurs continuous cost for a once-nightly job.",
+      "D": "Streaming each row to an online endpoint adds messaging overhead and online-serving cost for a batch workload."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/authentication",
-        "text": "cloud.google.com/sql/docs/postgres/authentication"
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/get-batch-predictions",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/get-batch-pre..."
       }
     ]
   },
   {
     "number": 8,
-    "domain": "Database Engineer",
-    "scenario": "Applications with dynamic public IPs must connect securely to Cloud SQL without maintaining authorized-network allowlists. What should you use?",
+    "domain": "ML Engineer",
+    "scenario": "You need a reproducible, serverless pipeline to retrain and redeploy a model whenever new data lands, with lineage. Which orchestration?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud SQL Auth Proxy.",
+        "text": "Vertex AI Pipelines triggered by new data.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add 0.0.0.0/0 to authorized networks.",
+        "text": "A laptop script run manually.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static external IP per app.",
+        "text": "A cron VM with no lineage.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable SSL and use a firewall.",
+        "text": "BigQuery scheduled query only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "The Cloud SQL Auth Proxy provides secure, IAM-authorized connections without managing IP allowlists, ideal for dynamic IPs.",
-      "B": "Opening 0.0.0.0/0 is a major security risk.",
-      "C": "Static IPs per app don't scale and still need allowlisting.",
-      "D": "Disabling SSL reduces security."
+      "A": "Vertex AI Pipelines provides serverless, reproducible ML DAGs with lineage and can be triggered on new data.",
+      "B": "Manual scripts aren't reproducible or automated.",
+      "C": "A cron VM lacks lineage and ML-native components.",
+      "D": "A scheduled query can't orchestrate training/deploy steps with lineage."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/sql-proxy",
-        "text": "cloud.google.com/sql/docs/postgres/sql-proxy"
+        "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+        "text": "cloud.google.com/vertex-ai/docs/pipelines/introduction"
       }
     ]
   },
   {
     "number": 9,
-    "domain": "Database Engineer",
-    "scenario": "You need a heterogeneous migration (Oracle to PostgreSQL) with schema conversion and continuous replication. Which combination?",
+    "domain": "ML Engineer",
+    "scenario": "A team wants a reproducible, serverless ML pipeline that runs data validation, training, evaluation, and conditional model deployment, with artifact lineage tracking. Which orchestration tool should they choose?",
     "options": [
       {
         "id": "A",
-        "text": "Database Migration Service with its schema conversion capability.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Storage Transfer Service then manual import.",
+        "text": "Cloud Composer (Apache Airflow).",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Vertex AI Pipelines.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Datastream into Cloud Storage only.",
+        "text": "Cron jobs on a Compute Engine VM.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "BigQuery federated queries.",
+        "text": "Cloud Scheduler triggering individual Cloud Functions.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "DMS supports heterogeneous migrations (e.g., Oracle&rarr;PostgreSQL) with schema conversion and CDC.",
-      "B": "STS handles objects/files, not heterogeneous DB conversion.",
-      "C": "Datastream is CDC for analytics/replication, not full heterogeneous DB migration with conversion to Cloud SQL/AlloyDB.",
-      "D": "Federated queries read external data; they don't migrate/convert schemas."
+      "A": "Cloud Composer is great for general data orchestration but is heavier and less ML-native than Vertex AI Pipelines, and you'd manage an Airflow environment.",
+      "B": "Vertex AI Pipelines is serverless, ML-specific (KFP/TFX), reproducible, and integrates with Vertex ML Metadata for lineage — exactly the requirement.",
+      "C": "VM cron jobs are not reproducible, lack lineage, and require infrastructure management.",
+      "D": "Stitching Cloud Functions via Scheduler gives no native ML lineage and becomes brittle for multi-step ML DAGs."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/database-migration/docs/oracle-to-postgresql",
-        "text": "cloud.google.com/database-migration/docs/oracle-to-postgr..."
+        "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+        "text": "cloud.google.com/vertex-ai/docs/pipelines/introduction"
       }
     ]
   },
   {
     "number": 10,
-    "domain": "Database Engineer",
-    "scenario": "A Spanner workload experiences hotspots and uneven CPU due to monotonically increasing primary keys. What is the recommended fix?",
+    "domain": "ML Engineer",
+    "scenario": "To serve a model only inside your VPC with no public exposure, what should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Avoid sequential keys; use a hashed/UUID or bit-reversed key to distribute writes.",
+        "text": "A Vertex AI private endpoint.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more read-only replicas.",
+        "text": "A public endpoint with an API key.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the node count only.",
+        "text": "A signed URL.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Switch to Cloud SQL.",
+        "text": "Cloud CDN.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Monotonic keys concentrate writes on one split; using a non-sequential (hashed/UUID/bit-reversed) key spreads load and removes hotspots.",
-      "B": "Read replicas don't fix write hotspots.",
-      "C": "Adding nodes without fixing the key still hotspots a single split.",
-      "D": "Switching databases is unnecessary and loses Spanner's scale."
+      "A": "A Vertex AI private endpoint serves predictions over private networking inside the VPC.",
+      "B": "A public endpoint is internet-exposed.",
+      "C": "Signed URLs are for object access, not model serving.",
+      "D": "Cloud CDN caches content; it isn't a private model endpoint."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/schema-design",
-        "text": "cloud.google.com/spanner/docs/schema-design"
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/using-private-endpoints",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/using-private..."
       }
     ]
   },
   {
     "number": 11,
-    "domain": "Database Engineer",
-    "scenario": "You must deploy databases reproducibly across environments with version-controlled definitions and automated provisioning. Which approach?",
+    "domain": "ML Engineer",
+    "scenario": "You are training a very large TensorFlow model with massive matrix-multiplication workloads and want the fastest, most cost-effective accelerator for this specific pattern. Which hardware should you select?",
     "options": [
       {
         "id": "A",
-        "text": "Terraform / Infrastructure as Code.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Manual creation in the Console.",
+        "text": "A fleet of CPU-only machines with many cores.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Cloud TPUs.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shell script run ad hoc by each engineer.",
+        "text": "A single low-memory GPU.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloning a VM image of the database.",
+        "text": "Edge TPUs on Coral devices.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "IaC (Terraform) provides reproducible, version-controlled, automated database provisioning across environments.",
-      "B": "Manual Console steps are not reproducible or auditable.",
-      "C": "Ad-hoc scripts drift and aren't consistently applied.",
-      "D": "Cloning VM images doesn't apply to managed database services."
+      "A": "CPUs are far too slow and inefficient for large deep-learning matrix operations.",
+      "B": "Cloud TPUs are purpose-built for large, dense matrix-multiply workloads in TensorFlow/JAX, offering strong price-performance at scale.",
+      "C": "A single low-memory GPU cannot efficiently handle a very large model and would bottleneck on memory.",
+      "D": "Edge TPUs are for on-device inference, not large-scale training."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/docs/terraform",
-        "text": "cloud.google.com/docs/terraform"
+        "url": "https://cloud.google.com/tpu/docs/intro-to-tpu",
+        "text": "cloud.google.com/tpu/docs/intro-to-tpu"
       }
     ]
   },
   {
     "number": 12,
-    "domain": "Database Engineer",
-    "scenario": "You need a DR setup for Cloud SQL where a failure in the primary region promotes a replica in a second region within minutes, accepting small data loss. What do you configure?",
+    "domain": "ML Engineer",
+    "scenario": "A model's offline metrics are excellent but production performance degrades over weeks as user behavior changes. What is happening and how do you detect it?",
     "options": [
       {
         "id": "A",
-        "text": "A cross-region read replica that can be promoted on regional failure.",
+        "text": "Concept/prediction drift; use Vertex AI Model Monitoring over time.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Same-zone HA only.",
+        "text": "Training-serving skew from preprocessing.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Nightly exports to Cloud Storage.",
+        "text": "Overfitting visible offline.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A second standalone instance with manual copies.",
+        "text": "Data leakage.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A cross-region read replica provides asynchronous replication and can be promoted to recover from a regional outage with small RPO.",
-      "B": "Same-region HA doesn't survive a full regional failure.",
-      "C": "Nightly exports give hours of RPO.",
-      "D": "Manual copies are slow and error-prone."
+      "A": "Gradual degradation as inputs/behavior shift is drift; Model Monitoring detects distribution changes over time.",
+      "B": "Skew shows immediately at serving due to preprocessing mismatch, not gradual change.",
+      "C": "Overfitting would show poor offline generalization, but offline is good here.",
+      "D": "Leakage inflates offline metrics via target leakage, not gradual production decay."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/replication",
-        "text": "cloud.google.com/sql/docs/postgres/replication"
+        "url": "https://cloud.google.com/vertex-ai/docs/model-monitoring/overview",
+        "text": "cloud.google.com/vertex-ai/docs/model-monitoring/overview"
       }
     ]
   },
   {
     "number": 13,
-    "domain": "Database Engineer",
-    "scenario": "A document-style mobile backend needs offline sync, real-time listeners, and automatic multi-region replication with serverless scaling. Which database?",
+    "domain": "ML Engineer",
+    "scenario": "A deployed fraud model's accuracy is slowly degrading. You suspect the distribution of incoming feature values has shifted compared to the training data. Which Vertex AI capability should you use to detect this automatically?",
     "options": [
       {
         "id": "A",
-        "text": "Firestore in Native mode.",
+        "text": "Vertex AI Model Monitoring for prediction/feature drift.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Vertex AI Vizier hyperparameter tuning.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Bigtable.",
+        "text": "Explainable AI feature attributions only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spanner.",
+        "text": "Cloud Logging log-based metrics on request counts.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Firestore Native mode offers offline sync, real-time listeners, and serverless multi-region scaling for mobile/web.",
-      "B": "Cloud SQL has no native mobile sync/real-time listeners.",
-      "C": "Bigtable is wide-column NoSQL without document sync features.",
-      "D": "Spanner is relational; overkill and lacks mobile sync."
+      "A": "Vertex AI Model Monitoring detects feature drift (and training-serving skew) by comparing serving input distributions against a baseline and alerting when they diverge.",
+      "B": "Vizier optimizes hyperparameters during training; it does not monitor production input distributions.",
+      "C": "Explainable AI attributes predictions to features but does not, by itself, continuously detect distribution drift.",
+      "D": "Counting requests reveals traffic volume, not changes in feature value distributions."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firestore/docs",
-        "text": "cloud.google.com/firestore/docs"
+        "url": "https://cloud.google.com/vertex-ai/docs/model-monitoring/overview",
+        "text": "cloud.google.com/vertex-ai/docs/model-monitoring/overview"
       }
     ]
   },
   {
     "number": 14,
-    "domain": "Database Engineer",
-    "scenario": "You want to minimize Spanner cost for a workload that needs less than a full node of capacity. What should you use?",
+    "domain": "ML Engineer",
+    "scenario": "You want to standardize and reuse engineered features across multiple models and teams, with consistent online/offline values. What do you adopt?",
     "options": [
       {
         "id": "A",
-        "text": "Processing units (e.g., 100–900 PU) instead of full nodes.",
+        "text": "Vertex AI Feature Store.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Pause the instance overnight.",
+        "text": "A per-project CSV of features.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Switch to free tier.",
+        "text": "Recompute features in each model.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Use a single-region Cloud SQL instance.",
+        "text": "A shared spreadsheet.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Spanner granular instance sizing in processing units lets you provision &lt; 1 node (1000 PU) to reduce cost for small workloads.",
-      "B": "Spanner instances can't be paused.",
-      "C": "There is no general Spanner free tier for production.",
-      "D": "Switching products changes requirements; the question is about Spanner sizing."
+      "A": "Feature Store centralizes reusable features with consistent online/offline serving, reducing duplication and skew.",
+      "B": "CSVs don't serve online or guarantee consistency.",
+      "C": "Recomputing risks skew and duplicates effort.",
+      "D": "Spreadsheets aren't a serving system."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/compute-capacity",
-        "text": "cloud.google.com/spanner/docs/compute-capacity"
+        "url": "https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview",
+        "text": "cloud.google.com/vertex-ai/docs/featurestore/latest/overview"
       }
     ]
   },
   {
     "number": 15,
-    "domain": "Database Engineer",
-    "scenario": "You must encrypt a Cloud SQL instance with keys you control and can rotate/revoke. What do you configure?",
+    "domain": "ML Engineer",
+    "scenario": "Your team must centralize feature computation so the same features are used consistently for both model training and low-latency online serving, avoiding duplicated logic. Which Vertex AI component fits?",
     "options": [
       {
         "id": "A",
-        "text": "Customer-managed encryption keys (CMEK) via Cloud KMS.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Default Google-managed encryption.",
+        "text": "Vertex AI TensorBoard.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Vertex AI Feature Store.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Application-level encryption only.",
+        "text": "Vertex AI Experiments.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Customer-supplied keys uploaded per query.",
+        "text": "Vertex AI Model Registry.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "CMEK lets you control the KMS key used to encrypt the instance, including rotation and revocation.",
-      "B": "Google-managed keys give no customer control over rotation/revocation.",
-      "C": "App-level encryption doesn't meet a managed-instance CMEK requirement.",
-      "D": "Per-query supplied keys aren't how Cloud SQL CMEK works."
+      "A": "TensorBoard visualizes training metrics; it does not store or serve features.",
+      "B": "Vertex AI Feature Store centrally manages features with both offline (training) and online (serving) access, ensuring consistency and reducing skew.",
+      "C": "Experiments tracks and compares runs, not feature serving.",
+      "D": "Model Registry manages model versions, not features."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/cmek",
-        "text": "cloud.google.com/sql/docs/postgres/cmek"
+        "url": "https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview",
+        "text": "cloud.google.com/vertex-ai/docs/featurestore/latest/overview"
       }
     ]
   },
   {
     "number": 16,
-    "domain": "Database Engineer",
-    "scenario": "A read-heavy AlloyDB workload spikes during reporting. You need read scaling that doesn't affect the primary's writes and scales automatically. What do you configure?",
+    "domain": "ML Engineer",
+    "scenario": "You must distribute large-scale training across many GPUs efficiently, reducing all-reduce communication overhead on Vertex AI. What helps?",
     "options": [
       {
         "id": "A",
-        "text": "AlloyDB read pool instances with autoscaling.",
+        "text": "Reduction Server.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Scale up the primary's machine size during spikes.",
+        "text": "A single bigger GPU.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single larger primary only.",
+        "text": "CPU-only training.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Export to BigQuery for all reads.",
+        "text": "Disabling checkpoints.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "AlloyDB read pools add read-only nodes that scale horizontally for read spikes without impacting the primary's writes.",
-      "B": "Vertically scaling the primary is disruptive and doesn't isolate read load.",
-      "C": "A single primary can't isolate spiky reads from writes.",
-      "D": "Routing all reads to BigQuery changes the consistency/latency model and isn't the AlloyDB-native scaling answer."
+      "A": "Vertex AI Reduction Server optimizes all-reduce for multi-GPU distributed training, improving throughput.",
+      "B": "One bigger GPU doesn't address multi-node communication.",
+      "C": "CPU training is far slower for large DL.",
+      "D": "Disabling checkpoints risks losing progress and doesn't speed comms."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/alloydb/docs/instance-read-pool-create",
-        "text": "cloud.google.com/alloydb/docs/instance-read-pool-create"
+        "url": "https://cloud.google.com/vertex-ai/docs/training/distributed-training",
+        "text": "cloud.google.com/vertex-ai/docs/training/distributed-trai..."
       }
     ]
   },
   {
     "number": 17,
-    "domain": "Database Engineer",
-    "scenario": "You need to test HA/DR failover behavior safely before an incident. What practice should you adopt?",
+    "domain": "ML Engineer",
+    "scenario": "A regulated lending application requires that each model decision can be explained in terms of which input features drove it. Which capability should you enable?",
     "options": [
       {
         "id": "A",
-        "text": "Scheduled game-day failover testing in a non-prod or controlled window.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Wait for a real outage to validate failover.",
+        "text": "AutoML early stopping.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Vertex Explainable AI feature attributions.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Disable monitoring during tests.",
+        "text": "Data Catalog tags on the training set.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Only test backups, never failover.",
+        "text": "Increasing the model's number of layers.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Regular game-day failover drills validate HA/DR readiness and runbooks before a real incident.",
-      "B": "Relying on real outages is risky and reactive.",
-      "C": "Disabling monitoring during a test removes the signals you need.",
-      "D": "Backups alone don't prove failover works."
+      "A": "Early stopping prevents overfitting during training; it provides no per-prediction explanations.",
+      "B": "Vertex Explainable AI produces feature attributions (e.g., integrated gradients, sampled Shapley) so each decision can be explained — required for fairness/regulatory needs.",
+      "C": "Data Catalog organizes metadata; it does not explain model decisions.",
+      "D": "Adding layers increases complexity and typically reduces interpretability."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/disaster-recovery",
-        "text": "cloud.google.com/architecture/disaster-recovery"
+        "url": "https://cloud.google.com/vertex-ai/docs/explainable-ai/overview",
+        "text": "cloud.google.com/vertex-ai/docs/explainable-ai/overview"
       }
     ]
   },
   {
     "number": 18,
-    "domain": "Database Engineer",
-    "scenario": "Which managed service provides Redis-compatible, in-memory caching with sub-millisecond latency for a session store?",
+    "domain": "ML Engineer",
+    "scenario": "A standard task requires transcribing audio to text at scale with no model training. Which option?",
     "options": [
       {
         "id": "A",
-        "text": "Memorystore for Redis.",
+        "text": "The Speech-to-Text API (Model Garden / ML API).",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud SQL.",
+        "text": "Train a custom RNN from scratch.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "BigQuery BI Engine.",
+        "text": "AutoML tabular.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Firestore.",
+        "text": "BigQuery ML logistic regression.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Memorystore for Redis is a managed in-memory store with sub-millisecond latency, ideal for sessions/caching.",
-      "B": "Cloud SQL is disk-based relational, not sub-ms caching.",
-      "C": "BI Engine accelerates BigQuery analytics, not app session caching.",
-      "D": "Firestore is a document DB, not an in-memory cache."
+      "A": "A pretrained Speech-to-Text API handles transcription with no training.",
+      "B": "Training from scratch is unnecessary and costly for a standard task.",
+      "C": "AutoML tabular is for structured data, not audio transcription.",
+      "D": "Logistic regression doesn't transcribe audio."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/memorystore/docs/redis",
-        "text": "cloud.google.com/memorystore/docs/redis"
+        "url": "https://cloud.google.com/speech-to-text/docs",
+        "text": "cloud.google.com/speech-to-text/docs"
       }
     ]
   },
   {
     "number": 19,
-    "domain": "Database Engineer",
-    "scenario": "You must ensure private connectivity from your app VPC to a Cloud SQL instance without public IPs. What do you configure?",
+    "domain": "ML Engineer",
+    "scenario": "You need to do exploratory data analysis and model prototyping on terabytes of data already in a Hadoop/Spark ecosystem, using familiar Spark kernels in a notebook. Which backend is most appropriate?",
     "options": [
       {
         "id": "A",
-        "text": "Private services access (VPC peering with the service producer) / private IP for Cloud SQL.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Public IP with authorized networks.",
+        "text": "Vertex AI Workbench with a small CPU instance and pandas.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Notebooks running on Dataproc with Spark kernels.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Cloud NAT to the instance.",
+        "text": "Colab free tier.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "An external load balancer in front of the database.",
+        "text": "BigQuery BI Engine.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Enabling private IP for Cloud SQL uses private services access (a peered range) so the app reaches the DB over internal IPs only.",
-      "B": "Public IP exposes the instance and isn't private connectivity.",
-      "C": "Cloud NAT is for outbound VM internet access, not DB ingress.",
-      "D": "A public LB doesn't provide private DB connectivity."
+      "A": "A single small Workbench instance with pandas cannot process terabytes held in a Spark ecosystem.",
+      "B": "Dataproc notebooks provide managed Spark with the right kernels to analyze large datasets in the existing Hadoop/Spark environment.",
+      "C": "Colab free tier lacks the scale and managed Spark connectivity for terabyte-scale enterprise data.",
+      "D": "BI Engine accelerates BigQuery BI queries; it is not a Spark notebook environment for model prototyping."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/configure-private-ip",
-        "text": "cloud.google.com/sql/docs/postgres/configure-private-ip"
+        "url": "https://cloud.google.com/dataproc/docs/tutorials/jupyter-notebook",
+        "text": "cloud.google.com/dataproc/docs/tutorials/jupyter-notebook"
       }
     ]
   },
   {
     "number": 20,
-    "domain": "Database Engineer",
-    "scenario": "You need continuous change data capture from a Cloud SQL source into BigQuery for near-real-time analytics. Which service?",
+    "domain": "ML Engineer",
+    "scenario": "You want to compare experiment runs (params, metrics, artifacts) to pick the best model. Which Vertex AI tool?",
     "options": [
       {
         "id": "A",
-        "text": "Datastream.",
+        "text": "Vertex AI Experiments.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Database Migration Service.",
+        "text": "Cloud Billing reports.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Storage Transfer Service.",
+        "text": "Cloud Armor.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler with exports.",
+        "text": "Dataflow.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Datastream is serverless CDC that streams changes from operational databases into BigQuery/Cloud Storage for near-real-time analytics.",
-      "B": "DMS migrates databases to a target DB, not continuous CDC into BigQuery for analytics.",
-      "C": "STS moves objects, not database change streams.",
-      "D": "Scheduled exports are batch, not near-real-time CDC."
+      "A": "Vertex AI Experiments tracks and compares runs' parameters, metrics, and artifacts.",
+      "B": "Billing reports track cost, not experiments.",
+      "C": "Cloud Armor is a WAF.",
+      "D": "Dataflow is data processing, not experiment tracking."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/datastream/docs/overview",
-        "text": "cloud.google.com/datastream/docs/overview"
+        "url": "https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments",
+        "text": "cloud.google.com/vertex-ai/docs/experiments/intro-vertex-..."
       }
     ]
   },
   {
     "number": 21,
-    "domain": "Database Engineer",
-    "scenario": "To meet a strict regional data-residency rule, you must guarantee a database and its replicas never leave the EU. What do you use?",
+    "domain": "ML Engineer",
+    "scenario": "A standard business task requires extracting structured fields (totals, dates, line items) from scanned invoices at scale. The team wants the fastest path with no model training. What should they use?",
     "options": [
       {
         "id": "A",
-        "text": "Choose EU regions and enforce the resource-location org policy / Assured Workloads.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A multi-region (global) Spanner config.",
+        "text": "Train a custom object detection model with AutoML Vision.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "The Document AI Invoice parser.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Default settings and hope for the best.",
+        "text": "The Cloud Vision API generic text detection only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cross-region replicas in the US for DR.",
+        "text": "A BigQuery ML boosted-tree model.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Selecting EU regions plus the resource-location org policy (and Assured Workloads where required) enforces data residency.",
-      "B": "A global config may place replicas outside the EU.",
-      "C": "Defaults don't guarantee residency.",
-      "D": "US replicas violate EU residency."
+      "A": "Training a custom AutoML Vision model is slower and unnecessary when a specialized pretrained parser exists.",
+      "B": "Document AI's Invoice parser is a pretrained, industry-specific API that extracts structured invoice fields with no training — the fastest path.",
+      "C": "Generic Vision OCR returns raw text but not structured invoice entities like line items and totals.",
+      "D": "Boosted trees handle tabular prediction, not document field extraction from scans."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
-        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+        "url": "https://cloud.google.com/document-ai/docs/processors-list",
+        "text": "cloud.google.com/document-ai/docs/processors-list"
       }
     ]
   },
   {
     "number": 22,
-    "domain": "Database Engineer",
-    "scenario": "You want automated, point-in-time recovery for Cloud SQL to recover from accidental data deletion to a specific second. What must be enabled?",
+    "domain": "ML Engineer",
+    "scenario": "You must prevent prompt-injection and unsafe content in a production generative-AI application. Which Google Cloud capability helps screen model inputs/outputs?",
     "options": [
       {
         "id": "A",
-        "text": "Automated backups and binary logging (PITR).",
+        "text": "Model Armor / safety filters for generative AI.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Only on-demand backups.",
+        "text": "Increasing the model temperature.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Read replicas.",
+        "text": "A larger context window only.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Query Insights.",
+        "text": "Disabling logging.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "PITR requires automated backups plus binary/transaction logging to restore to a precise point in time.",
-      "B": "On-demand backups alone don't enable second-level PITR.",
-      "C": "Replicas aren't a recovery-to-a-timestamp mechanism.",
-      "D": "Query Insights is performance tooling, not recovery."
+      "A": "Model Armor and safety filters screen prompts/responses for unsafe content and injection patterns.",
+      "B": "Raising temperature increases randomness, not safety.",
+      "C": "A larger context window doesn't add safety controls.",
+      "D": "Disabling logging reduces visibility, harming safety."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
-        "text": "cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+        "url": "https://cloud.google.com/security-command-center/docs/model-armor-overview",
+        "text": "cloud.google.com/security-command-center/docs/model-armor..."
       }
     ]
   },
   {
     "number": 23,
-    "domain": "Database Engineer",
-    "scenario": "Which database best supports a system requiring globally consistent secondary indexes and SQL with horizontal write scaling?",
+    "domain": "ML Engineer",
+    "scenario": "You want to compare two candidate model versions in production by sending a small portion of live traffic to the new version while most users stay on the current one, then promote based on real metrics. Which Vertex AI feature supports this?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Spanner.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Bigtable.",
+        "text": "Hyperparameter tuning with Vizier.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Traffic splitting across model versions on a Vertex AI endpoint.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Cloud SQL.",
+        "text": "A second project running the new model.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Memorystore.",
+        "text": "Batch prediction comparison jobs.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Spanner provides SQL, globally consistent secondary indexes, and horizontal write scaling.",
-      "B": "Bigtable has no SQL or multi-row global secondary indexes in that sense.",
-      "C": "Cloud SQL doesn't scale writes horizontally globally.",
-      "D": "Memorystore is a cache, not a system of record."
+      "A": "Vizier tunes hyperparameters during training and has nothing to do with live traffic comparison.",
+      "B": "A Vertex AI endpoint can host multiple model versions and split live traffic between them, enabling A/B testing and gradual promotion.",
+      "C": "Running in a separate project gives no shared endpoint traffic split and complicates routing and comparison.",
+      "D": "Batch prediction scores offline datasets; it cannot perform a live A/B traffic split."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/spanner/docs/secondary-indexes",
-        "text": "cloud.google.com/spanner/docs/secondary-indexes"
+        "url": "https://cloud.google.com/vertex-ai/docs/general/deployment",
+        "text": "cloud.google.com/vertex-ai/docs/general/deployment"
       }
     ]
   },
   {
     "number": 24,
-    "domain": "Database Engineer",
-    "scenario": "You must reduce Bigtable latency caused by a single node being overloaded by sequential row keys (timestamp prefix). What design change helps?",
+    "domain": "ML Engineer",
+    "scenario": "A model is too large and slow for the latency budget on serving. Which technique reduces size/latency while largely preserving accuracy?",
     "options": [
       {
         "id": "A",
-        "text": "Use field promotion / salting so the row key prefix distributes writes.",
+        "text": "Quantization / distillation.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Add more column families.",
+        "text": "Adding more features.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Increase the number of tables.",
+        "text": "Training for more epochs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Enable a public IP.",
+        "text": "Increasing batch size at training only.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Designing the row key to avoid a monotonic timestamp prefix (e.g., field promotion or salting) spreads writes across nodes and removes hotspots.",
-      "B": "More column families don't fix key-based hotspots.",
-      "C": "More tables don't address the key distribution problem.",
-      "D": "Networking changes are irrelevant to row-key hotspots."
+      "A": "Quantization and distillation shrink models and speed inference with limited accuracy loss.",
+      "B": "More features increase complexity and latency.",
+      "C": "More epochs don't reduce serving latency.",
+      "D": "Training batch size doesn't shrink the served model."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/bigtable/docs/schema-design",
-        "text": "cloud.google.com/bigtable/docs/schema-design"
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/optimized-tensorflow-runtime",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/optimized-ten..."
       }
     ]
   },
   {
     "number": 25,
-    "domain": "Database Engineer",
-    "scenario": "Your team needs automated, serverless logical exports of a Cloud SQL database on a schedule to Cloud Storage for compliance archives. What is a good approach?",
+    "domain": "ML Engineer",
+    "scenario": "You need a low-code way to build a custom image-classification model from labeled images without writing training code. Which option?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Scheduler triggering a Cloud Run/Functions job that calls the export API.",
+        "text": "AutoML (Vertex AI) image classification.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A persistent VM running cron with mysqldump.",
+        "text": "A pretrained Vision API only (no custom classes).",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Manual exports when someone remembers.",
+        "text": "BigQuery ML.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disabling backups to save cost.",
+        "text": "Dataproc Spark.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A serverless schedule (Cloud Scheduler &rarr; Cloud Run/Functions calling the Cloud SQL export API) automates compliant, repeatable exports without managing servers.",
-      "B": "A persistent VM adds ops overhead and cost versus serverless.",
-      "C": "Manual exports are unreliable for compliance.",
-      "D": "Disabling backups harms recoverability."
+      "A": "AutoML trains a custom image classifier from labeled data with minimal code.",
+      "B": "The generic Vision API offers preset labels, not your custom classes.",
+      "C": "BigQuery ML targets tabular/SQL data, not custom image training.",
+      "D": "Dataproc requires writing Spark ML code."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/sql/docs/postgres/import-export/exporting",
-        "text": "cloud.google.com/sql/docs/postgres/import-export/exporting"
+        "url": "https://cloud.google.com/vertex-ai/docs/training-overview",
+        "text": "cloud.google.com/vertex-ai/docs/training-overview"
       }
     ]
   }
