@@ -93,6 +93,11 @@
       <p>Use <strong>committed-use discounts</strong> (resource commitments for steady workloads) and automatic <strong>sustained-use discounts</strong>; <strong>Spot VMs</strong> for fault-tolerant batch; right-size via <strong>Active Assist / Recommender</strong>; apply storage lifecycle policies and autoscaling. Cloud shifts spend from <strong>CapEx</strong> to <strong>OpEx</strong> — a common business-process answer.</p>
       <div class="callout mnemonic"><span class="hook">CUD</span> Committed-use discounts are commitments on <strong>resources</strong> (vCPU/RAM), not specific VMs — they survive resizing.</div>
     </section>
+    <section class="lesson">
+      <h3>SDLC, CI/CD &amp; change management</h3>
+      <p>Optimise the delivery process, not just the infrastructure. Automate the path to prod with <strong>Cloud Build</strong> (CI), <strong>Artifact Registry</strong> (artifacts), and <strong>Cloud Deploy</strong> (managed progressive delivery with approvals across environments). Track the <strong>DORA metrics</strong> (deployment frequency, lead time, change-failure rate, MTTR) and gate risky changes with approvals and automated rollback rather than change-advisory-board bottlenecks.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Promote a release through dev&rarr;staging&rarr;prod with approvals and easy rollback" points to <strong>Cloud Deploy</strong>, not hand-rolled scripts.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -107,6 +112,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Committed-use discounts.</strong></p>
           <p class="quiz-why">CUDs reward steady resource usage; Spot is for fault-tolerant batch, not steady production.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You need managed promotion of a release across dev, staging, and prod with approvals and one-click rollback. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Deploy.</strong></p>
+          <p class="quiz-why">It's the managed continuous-delivery service with pipelines, approvals, and rollback across targets.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You resize committed VMs frequently. Do committed-use discounts still apply?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Yes &mdash; CUDs commit to resources (vCPU/RAM), not specific VMs.</strong></p>
+          <p class="quiz-why">The discount applies to the committed amount of resource usage regardless of which VMs consume it.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A line-of-business app must come back within roughly 10 minutes of a regional failure, can lose at most a few minutes of data, and the budget is moderate &mdash; not unlimited. Which DR pattern fits best?</p>
+        <ul>
+          <li>A) Backup and restore from nightly snapshots.</li>
+          <li>B) A warm standby: a scaled-down replica kept in sync, promoted on failover.</li>
+          <li>C) A multi-region active-active deployment.</li>
+          <li>D) A cold standby rebuilt from IaC after the outage.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A warm standby promotes a running, replicating replica within minutes and only loses recent data &mdash; matching the ~10-minute RTO, small RPO, and moderate budget.</p>
+          <p class="quiz-why"><strong>A/D:</strong> Backup-restore and cold standby take far longer than 10 minutes. <strong>C:</strong> Active-active meets the RTO but costs the most, beyond a moderate budget.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A steady, 24/7 production workload of predictable size runs on Compute Engine and finance wants to cut its bill. Which mechanism gives the best savings without risking interruption?</p>
+        <ul>
+          <li>A) Move the workload to Spot VMs.</li>
+          <li>B) Purchase committed-use discounts for the steady resource usage.</li>
+          <li>C) Rely solely on automatic sustained-use discounts.</li>
+          <li>D) Schedule the VMs to stop overnight.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> CUDs give the deepest discount for steady, predictable usage and never interrupt the workload.</p>
+          <p class="quiz-why"><strong>A:</strong> Spot VMs can be preempted &mdash; unsafe for steady production. <strong>C:</strong> Sustained-use discounts help but are smaller than a commitment. <strong>D:</strong> A 24/7 workload can't be stopped overnight.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Leadership wants releases promoted automatically through dev, staging, and production, each stage gated by approval, with fast rollback on failure. Which Google Cloud service should anchor this?</p>
+        <ul>
+          <li>A) Cloud Build alone, triggering deploys with custom scripts.</li>
+          <li>B) Cloud Deploy delivery pipelines with targets, approvals, and rollback.</li>
+          <li>C) A Cloud Scheduler job that runs deployment commands nightly.</li>
+          <li>D) Manual gcloud deploys performed by the on-call engineer.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Deploy is the managed CD service with multi-stage pipelines, approvals, and built-in rollback &mdash; exactly the workflow described.</p>
+          <p class="quiz-why"><strong>A:</strong> Cloud Build does CI; promotion/approvals/rollback are Cloud Deploy's job. <strong>C/D:</strong> Cron scripts and manual deploys lack approvals and reliable rollback.</p>
         </details>
       </div>
     </section>

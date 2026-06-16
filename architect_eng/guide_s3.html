@@ -97,6 +97,12 @@
       <p><strong>VPC Service Controls</strong> build a perimeter that stops data exfiltration from serverless APIs (BigQuery, GCS, Pub/Sub) even with valid credentials. <strong>IAP / Chrome Enterprise Premium</strong> give context-aware, identity-based access with no VPN. <strong>Workload Identity Federation</strong> lets external/CI workloads call Google APIs without long-lived keys. Compliance: know the shared-responsibility model, data-residency via org policy, and Assured Workloads for regulated estates.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To stop exfiltration from a serverless product, reach for <strong>VPC Service Controls</strong> — not firewall rules (which only govern VM traffic).</div>
     </section>
+    <section class="lesson">
+      <h3>IAM design &amp; least privilege</h3>
+      <p>Grant roles to <strong>groups</strong>, not individuals, and prefer <strong>predefined</strong> roles over broad <strong>basic</strong> roles (Owner/Editor/Viewer); craft <strong>custom</strong> roles only when predefined ones are too broad. Give workloads their own <strong>service accounts</strong> with minimal roles, use <strong>service-account impersonation</strong> instead of keys, and add <strong>IAM Conditions</strong> for time- or resource-bound access. Use the <strong>IAM Recommender</strong> to trim unused permissions.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Assigning Editor/Owner "to get it working" is always wrong &mdash; the keyed answer grants the narrowest predefined role that satisfies the task.</div>
+      <div class="callout mnemonic"><span class="hook">GRoup</span> <strong>G</strong>roups get roles, <strong>R</strong>oles stay predefined-and-minimal, accounts impersonate (no keys).</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -111,6 +117,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud EKM.</strong></p>
           <p class="quiz-why">EKM uses externally held keys that never persist inside Google Cloud.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must enforce data residency so resources can only be created in EU regions, org-wide. What do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An organization policy restricting resource locations.</strong></p>
+          <p class="quiz-why">Org policies inherit down the hierarchy and constrain where resources may be created.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A team asks for Editor on the prod project "to deploy". What's the right response?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Grant the narrowest predefined deploy role (e.g. Cloud Run Admin) to their group.</strong></p>
+          <p class="quiz-why">Least privilege: Editor is far too broad; scope to exactly what deployment needs.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Analysts hold valid BigQuery access, but a new policy says dataset contents must never be exfiltrated to projects outside an approved boundary &mdash; even by those authorised users. What enforces this?</p>
+        <ul>
+          <li>A) Tighten IAM so analysts have only the Viewer role.</li>
+          <li>B) A VPC Service Controls perimeter around the projects holding the data.</li>
+          <li>C) VPC firewall rules blocking egress from the dataset.</li>
+          <li>D) CMEK encryption on the BigQuery dataset.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> VPC Service Controls draws a perimeter around managed services so data can't move across it regardless of valid IAM &mdash; the only control that stops authorised-user exfiltration.</p>
+          <p class="quiz-why"><strong>A:</strong> Viewer still lets data be read and copied out. <strong>C:</strong> Firewall rules govern VM network traffic, not BigQuery's managed API. <strong>D:</strong> CMEK controls keys, not where data can be copied.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A regulator mandates that encryption keys be generated and stored only in the customer's on-premises HSM and never persist inside Google Cloud, while Google services still encrypt the data. Which model meets this?</p>
+        <ul>
+          <li>A) Google-managed default encryption keys.</li>
+          <li>B) CMEK with key material imported into Cloud KMS.</li>
+          <li>C) Cloud External Key Manager (Cloud EKM).</li>
+          <li>D) Confidential Computing for encryption in use.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Cloud EKM keeps the key in the external/on-prem manager; Google uses it for crypto operations but the key never persists in Google Cloud.</p>
+          <p class="quiz-why"><strong>A:</strong> Default keys are Google-held. <strong>B:</strong> Imported CMEK material <em>does</em> persist in Cloud KMS, violating the rule. <strong>D:</strong> Confidential Computing protects data in memory, not key custody.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A developer requests the Editor role on the production project so their service can write to one Cloud Storage bucket. What should the architect grant?</p>
+        <ul>
+          <li>A) Editor on the project, since it's simplest and unblocks them.</li>
+          <li>B) A dedicated service account with Storage Object Admin scoped to that bucket.</li>
+          <li>C) Owner on the project so they can self-serve future needs.</li>
+          <li>D) A long-lived service-account key emailed to the developer.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Least privilege: a workload service account with the narrowest predefined role on just the target bucket meets the need without over-granting.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Editor/Owner are far broader than required. <strong>D:</strong> Distributing long-lived keys is an anti-pattern; use the attached service account / impersonation.</p>
         </details>
       </div>
     </section>

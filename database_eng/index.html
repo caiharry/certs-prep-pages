@@ -8,13 +8,13 @@
     :root {
       --bg-light: #fefcf4;
       --ink: #1e293b;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #facc15;
-      --cgp-blue: #3b82f6;
-      --cgp-violet: #8b5cf6;
-      --cgp-teal: #0d9488;
-      --cgp-orange: #ea580c;
-      --cgp-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #facc15;
+      --rev-blue: #3b82f6;
+      --rev-violet: #8b5cf6;
+      --rev-teal: #0d9488;
+      --rev-orange: #ea580c;
+      --rev-green: #16a34a;
       --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
       --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
       --radius: 16px;
@@ -65,7 +65,7 @@
       border: 2px solid #000;
     }
 
-    .badge-cgp {
+    .badge-rev {
       background: #ef4444;
       color: white;
       display: inline-block;
@@ -106,7 +106,7 @@
     .intro-title {
       font-size: 1.5rem;
       margin-bottom: 15px;
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -138,7 +138,7 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     .grid-sections {
@@ -157,7 +157,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -206,14 +206,14 @@
       box-shadow: 6px 6px 0px #000;
     }
 
-    .section-card.s1 { border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); }
-    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--cgp-blue); }
-    .section-card.s2 { border-color: var(--cgp-violet); box-shadow: 4px 4px 0px var(--cgp-violet); }
-    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--cgp-violet); }
-    .section-card.s3 { border-color: var(--cgp-teal); box-shadow: 4px 4px 0px var(--cgp-teal); }
-    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--cgp-teal); }
-    .section-card.s4 { border-color: var(--cgp-orange); box-shadow: 4px 4px 0px var(--cgp-orange); }
-    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--cgp-orange); }
+    .section-card.s1 { border-color: var(--rev-blue); box-shadow: 4px 4px 0px var(--rev-blue); }
+    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--rev-blue); }
+    .section-card.s2 { border-color: var(--rev-violet); box-shadow: 4px 4px 0px var(--rev-violet); }
+    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--rev-violet); }
+    .section-card.s3 { border-color: var(--rev-teal); box-shadow: 4px 4px 0px var(--rev-teal); }
+    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--rev-teal); }
+    .section-card.s4 { border-color: var(--rev-orange); box-shadow: 4px 4px 0px var(--rev-orange); }
+    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--rev-orange); }
 
     .sec-badge {
       display: inline-block;
@@ -227,10 +227,10 @@
       align-self: start;
     }
 
-    .s1 .sec-badge { background: var(--cgp-blue); }
-    .s2 .sec-badge { background: var(--cgp-violet); }
-    .s3 .sec-badge { background: var(--cgp-teal); }
-    .s4 .sec-badge { background: var(--cgp-orange); }
+    .s1 .sec-badge { background: var(--rev-blue); }
+    .s2 .sec-badge { background: var(--rev-violet); }
+    .s3 .sec-badge { background: var(--rev-teal); }
+    .s4 .sec-badge { background: var(--rev-orange); }
 
     .sec-title {
       font-size: 1.4rem;
@@ -245,10 +245,10 @@
       flex-grow: 1;
     }
 
-    .btn-cgp {
+    .btn-rev {
       display: block;
       text-align: center;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 12px;
@@ -262,12 +262,12 @@
       max-width: 100%;
     }
 
-    .btn-cgp:hover {
-      background: var(--cgp-yellow-dark);
+    .btn-rev:hover {
+      background: var(--rev-yellow-dark);
       text-decoration: none;
     }
 
-    .btn-cgp:active {
+    .btn-rev:active {
       transform: translate(2px, 2px);
       box-shadow: 1px 1px 0px #000;
     }
@@ -276,24 +276,24 @@
     .s1 .btn-infra:hover { background: #60a5fa; }
     .s1 .btn-data { background: #a7f3d0; }
     .s1 .btn-data:hover { background: #34d399; }
-    .s2 .btn-cgp { background: #c084fc; }
-    .s2 .btn-cgp:hover { background: #a855f7; }
-    .s3 .btn-cgp { background: #2dd4bf; }
-    .s3 .btn-cgp:hover { background: #0d9488; }
-    .s4 .btn-cgp { background: #fb923c; }
-    .s4 .btn-cgp:hover { background: #f97316; }
+    .s2 .btn-rev { background: #c084fc; }
+    .s2 .btn-rev:hover { background: #a855f7; }
+    .s3 .btn-rev { background: #2dd4bf; }
+    .s3 .btn-rev:hover { background: #0d9488; }
+    .s4 .btn-rev { background: #fb923c; }
+    .s4 .btn-rev:hover { background: #f97316; }
 
     .tips-block {
       background: #ecfdf5;
-      border: 3px solid var(--cgp-green);
+      border: 3px solid var(--rev-green);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
       padding: 25px;
       margin-top: 40px;
     }
 
     .tips-title {
-      color: var(--cgp-green);
+      color: var(--rev-green);
       font-size: 1.4rem;
       margin-bottom: 12px;
       display: flex;
@@ -310,7 +310,7 @@
       border-top: 2px dashed #cbd5e1;
     }
 
-    .cgp-humor {
+    .rev-humor {
       background: #fef2f2;
       border: 2px dashed #ef4444;
       padding: 10px 15px;
@@ -328,7 +328,7 @@
     </div>
 
     <header>
-      <div class="badge-cgp">No-Nonsense study guides</div>
+      <div class="badge-rev">No-Nonsense study guides</div>
       <h1>Google Cloud Platform</h1>
       <h2 style="margin: 0; text-transform: uppercase; -webkit-text-stroke: 0.5px #000; text-shadow: 1px 1px 0px #fff; font-size: clamp(1.2rem, 3vw, 2rem);">Professional Cloud Database Engineer</h2>
       <p class="tagline">The Ultimate Complete Revision &amp; Practice Guide. Filled with bulletproof explanations, exam secrets, handy mnemonics, and just enough terrible puns to keep you awake!</p>
@@ -349,8 +349,8 @@
     </section>
 
     <div style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px;">
-      <a href="practice_questions.html" class="btn-cgp" style="background: #93c5fd; display: inline-block; padding: 14px 24px;">Generated Practice (25 Questions) &rarr;</a>
-      <a href="sample_questions.html" class="btn-cgp" style="background: #bbf7d0; display: inline-block; padding: 14px 24px;">Official Sample Questions (20) &rarr;</a>
+      <a href="practice_questions.html" class="btn-rev" style="background: #93c5fd; display: inline-block; padding: 14px 24px;">Generated Practice (25 Questions) &rarr;</a>
+      <a href="sample_questions.html" class="btn-rev" style="background: #bbf7d0; display: inline-block; padding: 14px 24px;">Official Sample Questions (20) &rarr;</a>
     </div>
 
     <h2 style="font-size: 1.8rem; margin: 30px 0 15px; text-transform: uppercase;">📚 Choose Your Section and Start Scoring Points:</h2>
@@ -364,8 +364,8 @@
           <p class="sec-desc">Sizing compute and storage, deciding regional HA vs multi-region, private networks, session poolers, and database evaluation. Includes the famous <strong>Which Database? Decision Matrix</strong>.</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-          <a href="section1a_infra.html" class="btn-cgp btn-infra">1A: Infra &amp; Connections &rarr;</a>
-          <a href="section1b_data.html" class="btn-cgp btn-data">1B: DB Choice &amp; Schema &rarr;</a>
+          <a href="section1a_infra.html" class="btn-rev btn-infra">1A: Infra &amp; Connections &rarr;</a>
+          <a href="section1b_data.html" class="btn-rev btn-data">1B: DB Choice &amp; Schema &rarr;</a>
         </div>
       </div>
 
@@ -376,7 +376,7 @@
           <h3 class="sec-title">Managing Multi-Technology Solutions</h3>
           <p class="sec-desc">Connectivity &amp; access management, IAM database auth, Query Insights, log-based metrics, automated serverless exports, and performance tuning.</p>
         </div>
-        <a href="section2_manage.html" class="btn-cgp">Enter Section 2 Study Guide &rarr;</a>
+        <a href="section2_manage.html" class="btn-rev">Enter Section 2 Study Guide &rarr;</a>
       </div>
 
       <!-- Section 3 -->
@@ -386,7 +386,7 @@
           <h3 class="sec-title">Migrating Data Solutions</h3>
           <p class="sec-desc">Homogeneous vs heterogeneous migrations, Database Migration Service (DMS), Datastream for continuous CDC, reverse replication fallback paths, and the schema conversion workflow.</p>
         </div>
-        <a href="section3_migrate.html" class="btn-cgp">Enter Section 3 Study Guide &rarr;</a>
+        <a href="section3_migrate.html" class="btn-rev">Enter Section 3 Study Guide &rarr;</a>
       </div>
 
       <!-- Section 4 -->
@@ -396,17 +396,17 @@
           <h3 class="sec-title">Deploying Scalable &amp; HA Databases</h3>
           <p class="sec-desc">Automated provisioning, Infrastructure as Code with Terraform, game-day HA and DR failover testing, multi-regional replication setup, and monitoring standby health.</p>
         </div>
-        <a href="section4_deploy.html" class="btn-cgp">Enter Section 4 Study Guide &rarr;</a>
+        <a href="section4_deploy.html" class="btn-rev">Enter Section 4 Study Guide &rarr;</a>
       </div>
 
       <!-- Cheatsheet -->
-      <div class="section-card s1" style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
+      <div class="section-card s1" style="background: #fffbeb; border-color: var(--rev-yellow-dark); box-shadow: 4px 4px 0px var(--rev-yellow-dark);">
         <div>
-          <span class="sec-badge" style="background: var(--cgp-yellow-dark); color: #000;">Exam Deck</span>
+          <span class="sec-badge" style="background: var(--rev-yellow-dark); color: #000;">Exam Deck</span>
           <h3 class="sec-title">Exam Guide Cheat Sheet</h3>
           <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features high-yield fact cards, exam traps, and synthesis matrices.</p>
         </div>
-        <a href="cheatsheet.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Open Exam Cheat Sheet &rarr;</a>
+        <a href="cheatsheet.html" class="btn-rev" style="background: var(--rev-green); color: white;">Open Exam Cheat Sheet &rarr;</a>
       </div>
     </div>
 
@@ -414,7 +414,7 @@
       <h3 class="tips-title">💡 Quick Study Tip: Spaced Retrieval Practice</h3>
       <p>Don't try to cram all four guides into your brain at 2 AM! Read through one section guide, write down three key facts from memory, do the interactive warm-up quizzes, and try the practice questions at the end. Then sleep on it &mdash; your brain builds neural pathways while you snooze (and dreams about Spanner TrueTime latency)! 😴</p>
       
-      <div class="cgp-humor">
+      <div class="rev-humor">
         <strong>⚠️ Warning &mdash; Dad Joke Alert:</strong> Why did the SQL database query go to therapy? Because it had too many unresolved relations! (Groan... sorry, it only gets worse from here!)
       </div>
     </div>

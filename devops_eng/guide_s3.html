@@ -93,6 +93,12 @@
       <h3>Lifecycle, capacity & incident mitigation</h3>
       <p>Plan capacity with quotas, reservations, and Dynamic Workload Scheduler; autoscale with MIGs, Cloud Run, and GKE. Mitigate incident impact by <strong>draining/redirecting traffic</strong>, <strong>adding capacity</strong>, and <strong>rolling back</strong>.</p>
     </section>
+    <section class="lesson">
+      <h3>Toil, postmortems &amp; alerting</h3>
+      <p>SRE attacks <strong>toil</strong> (manual, repetitive, automatable work) so engineers spend time on engineering, not firefighting. After incidents, run <strong>blameless postmortems</strong> that fix systems, not people. Alert on <strong>symptoms that burn the error budget</strong> (SLO burn-rate alerts), not on every low-level cause &mdash; this cuts alert fatigue and pages humans only when users are actually affected.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Page on user-facing symptoms / SLO burn rate, not on raw CPU spikes that may not affect users &mdash; cause-based alerts create noise.</div>
+      <div class="callout mnemonic"><span class="hook">TOIL</span> If it's manual and repetitive, automate it; if it broke, write a blameless postmortem; if it pages, make sure a user actually cared.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -107,6 +113,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>SLO is the internal target; SLA is the external contract with penalties.</strong></p>
           <p class="quiz-why">SLOs guide engineering; SLAs are customer commitments.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> On-call is drowning in pages from CPU spikes that don't affect users. What should alerts target instead?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>User-facing symptoms / SLO burn rate.</strong></p>
+          <p class="quiz-why">Alerting on budget-burning symptoms pages only when users are impacted, cutting noise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> After a major outage, what kind of review does SRE prescribe?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A blameless postmortem.</strong></p>
+          <p class="quiz-why">It fixes systemic causes without blaming individuals, encouraging honest disclosure.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A service has exhausted its monthly error budget against a 99.9% SLO, yet the product team wants to ship a risky new feature. What does SRE practice prescribe?</p>
+        <ul>
+          <li>A) Ship the feature anyway and quietly lower the SLA to stay compliant.</li>
+          <li>B) Freeze risky releases and prioritise reliability work until the budget recovers.</li>
+          <li>C) Raise the SLO to 100% so there's no budget pressure.</li>
+          <li>D) Remove the SLO so deployments aren't blocked.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> An empty error budget means slow down on change and invest in reliability &mdash; that's the whole point of the budget.</p>
+          <p class="quiz-why"><strong>A:</strong> Quietly changing the customer SLA is dishonest and unrelated to the internal SLO. <strong>C/D:</strong> Inflating or removing the SLO games the metric instead of improving reliability.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> On-call engineers are burning out from frequent pages triggered by short CPU and memory spikes that rarely correlate with user-visible problems. How should the team redesign alerting?</p>
+        <ul>
+          <li>A) Raise the CPU alert thresholds slightly and keep paging on them.</li>
+          <li>B) Alert on SLO burn rate and user-facing symptoms rather than low-level causes.</li>
+          <li>C) Route all alerts to email so nobody is paged.</li>
+          <li>D) Add more granular per-resource alerts for completeness.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Symptom/SLO-burn-rate alerting pages only when users are actually affected, eliminating cause-based noise and fatigue.</p>
+          <p class="quiz-why"><strong>A:</strong> Higher thresholds still page on non-impacting causes. <strong>C:</strong> Email-only risks missing real incidents. <strong>D:</strong> More cause-based alerts worsen the noise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A team spends hours each week manually restarting a service and clearing queues after recurring failures. What is the SRE-aligned response?</p>
+        <ul>
+          <li>A) Accept the manual work as normal operations and add more on-call staff.</li>
+          <li>B) Treat it as toil: automate the remediation and fix the underlying cause via a postmortem.</li>
+          <li>C) Schedule the restarts more frequently to pre-empt failures.</li>
+          <li>D) Increase the SLA penalty to motivate the team.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Repetitive manual remediation is toil; SRE automates it and drives out the root cause through a blameless postmortem.</p>
+          <p class="quiz-why"><strong>A:</strong> Throwing people at toil doesn't scale. <strong>C:</strong> More frequent restarts treat the symptom, not the cause. <strong>D:</strong> SLA penalties don't fix the engineering problem.</p>
         </details>
       </div>
     </section>

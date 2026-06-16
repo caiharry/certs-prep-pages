@@ -85,12 +85,32 @@
 
     <section class="lesson">
       <h3>Orchestration choice</h3>
-      <p><strong>Vertex AI Pipelines (KFP)</strong> is the default — serverless, ML-native, reproducible, with built-in lineage via <strong>Vertex ML Metadata</strong>. Use <strong>Cloud Composer (Airflow)</strong> only when you need broad cross-system workflow orchestration. <strong>TFX</strong> components suit TensorFlow pipelines.</p>
-      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> For an ML-specific, serverless, reproducible pipeline pick Vertex AI Pipelines; Composer is for general workflow orchestration.</div>
+      <p>Pick the orchestrator by the shape of the workflow:</p>
+      <ul>
+        <li><strong>Vertex AI Pipelines (KFP)</strong> &mdash; the default for ML: serverless, ML-native, reproducible, with built-in lineage via Vertex ML Metadata.</li>
+        <li><strong>Cloud Composer (Airflow)</strong> &mdash; broad, cross-system workflow orchestration (data + ML + ops) when you already run Airflow.</li>
+        <li><strong>TFX</strong> &mdash; standard components (ExampleGen, Transform, Trainer, Evaluator, Pusher) for TensorFlow pipelines, runnable on Vertex Pipelines.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> ML-specific, serverless, reproducible pipeline = Vertex AI Pipelines. Composer is for general workflow orchestration across many systems.</div>
     </section>
     <section class="lesson">
-      <h3>Retraining & lineage</h3>
-      <p>Trigger retraining on a schedule or on drift/skew signals, and deploy via CI/CD (Cloud Build). Track artifact versions and data/model lineage in <strong>Vertex ML Metadata</strong> so every model is reproducible and auditable.</p>
+      <h3>Reusable, parameterised components</h3>
+      <p>Build pipelines from versioned, containerised <strong>components</strong> with typed inputs/outputs, so steps are reusable and cacheable (unchanged steps are skipped on re-runs). Parameterise data paths, hyperparameters, and thresholds so the same pipeline serves dev, staging, and prod.</p>
+      <div class="callout mnemonic"><span class="hook">REUSE</span> One pipeline, many parameters &mdash; promote the <em>definition</em>, change only the inputs.</div>
+    </section>
+    <section class="lesson">
+      <h3>Automated retraining triggers</h3>
+      <p>Kick off retraining from: a <strong>schedule</strong> (Cloud Scheduler), a <strong>drift/skew signal</strong> from Model Monitoring, or <strong>new data</strong> landing (Pub/Sub / Eventarc on a GCS drop). The pipeline should retrain, evaluate, and only promote if the new model beats the incumbent.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Retrain when production data drifts" wires Model Monitoring alerts to trigger the pipeline &mdash; not a fixed nightly cron that retrains regardless.</div>
+    </section>
+    <section class="lesson">
+      <h3>CI/CD for ML (a validation gate)</h3>
+      <p>Use <strong>Cloud Build</strong> to test pipeline code and trigger runs. Add a <strong>model-evaluation gate</strong>: the pipeline compares candidate metrics against the current production model and a minimum bar, and the <strong>Pusher</strong>/registration step deploys only if the candidate passes. This is "CD for models," not just code.</p>
+      <div class="callout mnemonic"><span class="hook">GATE</span> Train &rarr; Evaluate &rarr; <em>only then</em> Deploy. A failing eval blocks the rollout automatically.</div>
+    </section>
+    <section class="lesson">
+      <h3>Metadata &amp; reproducibility</h3>
+      <p>Every run logs artifacts, parameters, and executions to <strong>Vertex ML Metadata</strong>, giving end-to-end lineage: which data + code + hyperparameters produced which model. That makes models auditable and lets you reproduce or roll back a specific version with confidence.</p>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -106,6 +126,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Vertex ML Metadata.</strong></p>
           <p class="quiz-why">Tracks lineage and versions for reproducibility.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must retrain only when production input distributions drift, not on a fixed timer. How do you trigger it?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Wire a Model Monitoring drift alert to trigger the pipeline.</strong></p>
+          <p class="quiz-why">Retraining fires on the signal that actually matters, saving compute when nothing changed.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Your CD must deploy a new model only if it beats the current one. What do you add to the pipeline?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An evaluation/validation gate before the deploy step.</strong></p>
+          <p class="quiz-why">The Pusher/registration step runs only when the candidate clears the metric bar.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team needs a serverless, reproducible training-and-deployment pipeline that records full artifact lineage and skips unchanged steps on re-runs, with the least operational overhead. What should they use?</p>
+        <ul>
+          <li>A) Cloud Composer (Airflow) DAGs running each ML step as a task.</li>
+          <li>B) Vertex AI Pipelines with containerised KFP components and caching.</li>
+          <li>C) A Cloud Run service that chains the steps with custom code.</li>
+          <li>D) Cron-triggered scripts on a Compute Engine VM.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Vertex AI Pipelines is serverless and ML-native, gives lineage through ML Metadata, and caches unchanged steps &mdash; minimal ops for an ML workflow.</p>
+          <p class="quiz-why"><strong>A:</strong> Composer is for broad cross-system orchestration and adds a managed Airflow to run. <strong>C/D:</strong> Hand-rolled services or cron scripts give no lineage, caching, or reproducibility.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Retraining is currently a nightly cron that runs whether or not anything changed, wasting compute. The team wants retraining to happen only when it's actually needed. What is the best trigger?</p>
+        <ul>
+          <li>A) Keep the nightly cron but on a larger machine to finish faster.</li>
+          <li>B) Trigger the pipeline from Vertex AI Model Monitoring drift/skew alerts.</li>
+          <li>C) Retrain manually whenever someone notices accuracy drop.</li>
+          <li>D) Retrain on every single new row via a streaming trigger.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Drift/skew alerts fire when the data actually shifts, so retraining runs when it adds value and is skipped otherwise.</p>
+          <p class="quiz-why"><strong>A:</strong> A faster cron still wastes runs. <strong>C:</strong> Manual noticing is slow and unreliable. <strong>D:</strong> Per-row retraining is wildly expensive and unstable.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Leadership requires that a retrained model is promoted to production only if it outperforms the incumbent on a holdout set. How do you enforce this automatically?</p>
+        <ul>
+          <li>A) Always deploy the latest model and roll back later if metrics look bad.</li>
+          <li>B) Add an evaluation gate that compares candidate vs production metrics, deploying only on pass.</li>
+          <li>C) Email the metrics to a reviewer who approves deployments by hand.</li>
+          <li>D) Deploy both versions permanently and let users pick.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A built-in evaluation/validation step gates the Pusher: the candidate is registered and deployed only when it clears the bar, enforcing the policy automatically.</p>
+          <p class="quiz-why"><strong>A:</strong> Deploy-then-rollback risks shipping a worse model. <strong>C:</strong> Manual approval doesn't scale and isn't automatic. <strong>D:</strong> Keeping both forever isn't a promotion policy.</p>
         </details>
       </div>
     </section>

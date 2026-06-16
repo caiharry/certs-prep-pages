@@ -85,12 +85,28 @@
 
     <section class="lesson">
       <h3>Skew vs drift</h3>
-      <ul><li><strong>Training-serving skew</strong> — training and serving data/preprocessing differ; fix by sharing preprocessing/Feature Store.</li><li><strong>Prediction (feature) drift</strong> — serving input distribution shifts over time; detect with <strong>Vertex AI Model Monitoring</strong>.</li><li><strong>Feature attribution drift</strong> — feature importance changes over time.</li></ul>
-      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Good offline metrics but poor production results due to preprocessing mismatch = training-serving skew, not concept drift.</div>
+      <ul>
+        <li><strong>Training-serving skew</strong> &mdash; training and serving data or preprocessing differ; fix by sharing preprocessing / a Feature Store.</li>
+        <li><strong>Prediction (feature) drift</strong> &mdash; the serving input distribution shifts over time versus training; detect with Vertex AI Model Monitoring.</li>
+        <li><strong>Feature attribution drift</strong> &mdash; the relative importance of features changes over time, hinting the world has moved.</li>
+        <li><strong>Concept drift</strong> &mdash; the relationship between inputs and the label itself changes (the right answer moves).</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Good offline metrics but poor production results <em>from day one</em> = training-serving skew. Metrics that decay <em>over weeks</em> = drift. The timing tells you which.</div>
     </section>
     <section class="lesson">
-      <h3>Responsible AI & explainability</h3>
-      <p>Monitor for <strong>bias and fairness</strong>, assess solution readiness, and use <strong>Vertex Explainable AI</strong> (feature attributions) so each decision can be explained — essential in regulated domains. Protect models and data from exploitation.</p>
+      <h3>Setting up Model Monitoring</h3>
+      <p><strong>Vertex AI Model Monitoring</strong> compares live serving inputs (and optionally attributions) against a <strong>baseline</strong> &mdash; usually the training distribution &mdash; and raises alerts when divergence crosses a threshold you set. Sample a fraction of traffic to control cost, route alerts to Cloud Monitoring, and feed them into the retraining trigger you built in the pipelines section.</p>
+      <div class="callout mnemonic"><span class="hook">BASE</span> No baseline, no monitoring. Drift is always measured <em>relative to</em> the training distribution.</div>
+    </section>
+    <section class="lesson">
+      <h3>Responsible AI &amp; explainability</h3>
+      <p>Check for <strong>bias and fairness</strong> across slices before launch, assess solution readiness, and use <strong>Vertex Explainable AI</strong> (feature attributions, e.g. integrated gradients / sampled Shapley) so each decision can be explained &mdash; essential in regulated domains like lending or healthcare. Attribution drift also doubles as an early-warning signal.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "We must justify each individual decision to a regulator" = Explainable AI per-prediction attributions, not aggregate accuracy or a confusion matrix.</div>
+    </section>
+    <section class="lesson">
+      <h3>Securing models &amp; GenAI safety</h3>
+      <p>Protect models and data from exploitation: restrict endpoint access with IAM and private networking, guard against <strong>data exfiltration</strong> with VPC Service Controls, and for GenAI watch for <strong>prompt injection</strong> and unsafe output. Apply <strong>safety filters</strong> and human-in-the-loop review for high-risk actions, and log prompts/responses for audit.</p>
+      <div class="callout mnemonic"><span class="hook">GUARD</span> Least-privilege access + private serving + safety filters = a model that's hard to abuse.</div>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -106,6 +122,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Vertex Explainable AI feature attributions.</strong></p>
           <p class="quiz-why">Produces per-prediction attributions for transparency.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A model is great in tests but underperforms from the very first day in production. Skew or drift?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Training-serving skew.</strong></p>
+          <p class="quiz-why">Day-one gaps point to a training/serving mismatch, not a gradual distribution shift over time.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> What must Model Monitoring be given before it can detect drift?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A baseline distribution (usually the training data).</strong></p>
+          <p class="quiz-why">Drift is divergence from that baseline, so it's required to compare against.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A model scored well on the holdout set but produced noticeably worse results the moment it went live, before any data could have shifted. What is the most likely cause?</p>
+        <ul>
+          <li>A) Concept drift caused by a changing input-label relationship.</li>
+          <li>B) Training-serving skew from differing preprocessing or features.</li>
+          <li>C) Gradual feature drift accumulating over several weeks.</li>
+          <li>D) Overfitting that only appears after months of serving.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A gap present from day one, with no time for distributions to move, is training-serving skew &mdash; the serving path differs from training.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Drift develops over time; it can't explain an immediate launch-day gap. <strong>D:</strong> Overfitting shows up in evaluation, not specifically at the train/serve boundary.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A regulated lender must justify each individual loan decision the model makes. Which capability satisfies the requirement?</p>
+        <ul>
+          <li>A) An aggregate accuracy and confusion-matrix report per quarter.</li>
+          <li>B) Vertex AI Model Monitoring drift alerts on the input features.</li>
+          <li>C) Vertex Explainable AI per-prediction feature attributions.</li>
+          <li>D) A traffic split that A/B tests two model versions.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Per-prediction feature attributions explain why <em>this</em> decision was made &mdash; exactly what a regulator demands for individual cases.</p>
+          <p class="quiz-why"><strong>A:</strong> Aggregate metrics don't explain a single decision. <strong>B:</strong> Drift detection watches distributions, not individual rationale. <strong>D:</strong> A/B testing compares versions, not decisions.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You want production retraining to fire automatically when the live feature distribution diverges from training, with cost kept reasonable. What should you set up?</p>
+        <ul>
+          <li>A) Model Monitoring on a sample of traffic, with a baseline and a drift threshold that triggers the pipeline.</li>
+          <li>B) A fixed daily retraining job regardless of whether anything changed.</li>
+          <li>C) Manual quarterly reviews of accuracy dashboards.</li>
+          <li>D) Explainable AI attributions logged but not alerted on.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Monitoring a sampled stream against a baseline detects drift cheaply, and the threshold alert triggers retraining only when needed.</p>
+          <p class="quiz-why"><strong>B:</strong> Daily retraining wastes compute when nothing changed. <strong>C:</strong> Quarterly manual review is slow and misses fast shifts. <strong>D:</strong> Logging attributions without alerts won't trigger anything.</p>
         </details>
       </div>
     </section>

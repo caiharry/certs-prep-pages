@@ -97,6 +97,26 @@
       <p>Grant least privilege using predefined/custom roles, refine with <strong>IAM Conditions</strong>, and explicitly block with <strong>IAM deny policies</strong>. <strong>Privileged Access Manager</strong> grants just-in-time elevated access. Apply policy across the <strong>resource hierarchy</strong> (org &rarr; folders &rarr; projects), where IAM and org policies inherit downward; manage permissions through groups, not individuals.</p>
       <div class="callout mnemonic"><span class="hook">Order</span> An <strong>IAM deny</strong> policy always overrides an allow. Deny is evaluated first.</div>
     </section>
+    <section class="lesson">
+      <h3>IAM Conditions &amp; context-aware access</h3>
+      <p>Plain role bindings are blunt; <strong>IAM Conditions</strong> add attribute logic so a grant only applies <em>when</em> certain things are true — a request before an expiry date, traffic from a specific resource tag, or access during business hours. For human access to apps and the console, layer on <strong>context-aware access</strong>: <strong>access levels</strong> built in <strong>Access Context Manager</strong> evaluate device posture, IP range, and geo, then <strong>Identity-Aware Proxy</strong> (and Chrome Enterprise Premium / BeyondCorp) enforces them. The result is zero-trust: identity <em>plus</em> context, no VPN required.</p>
+      <ul>
+        <li><strong>IAM Condition</strong> — refines a single role binding (e.g. <code>request.time &lt; expiry</code> or <code>resource.matchTag</code>).</li>
+        <li><strong>Access level</strong> — a reusable device/network condition (managed device, corporate IP, country).</li>
+        <li><strong>IAP</strong> — gates the app/SSH/RDP tunnel; honours the access level for the request.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">WHEN vs WHO</span> IAM roles answer <em>who</em> can do what; IAM Conditions and access levels answer <em>when and from where</em> they may do it.</div>
+    </section>
+    <section class="lesson">
+      <h3>Resource hierarchy &amp; org policy guardrails</h3>
+      <p>The hierarchy is <strong>organization &rarr; folders &rarr; projects &rarr; resources</strong>. Both <strong>IAM allow policies</strong> and <strong>Organization Policy</strong> constraints inherit downward — but they are different tools. IAM grants <em>permissions</em>; org policies set <em>guardrails</em> on configuration (which regions, whether external IPs are allowed, whether SA keys can be made). Manage access through <strong>Google Groups</strong> so leavers and joiners are handled in one place, and reserve <strong>IAM deny policies</strong> for hard blocks that must beat any allow.</p>
+      <ul>
+        <li><strong>IAM</strong> = who gets which permissions on a resource.</li>
+        <li><strong>Org Policy</strong> = what configurations are even permitted (e.g. <code>constraints/gcp.resourceLocations</code>).</li>
+        <li><strong>Deny policy</strong> = explicit prohibition evaluated before allows.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> If a stem says "regardless of project-level permissions" or "even if an admin grants a role," the answer is an org policy or a deny policy — not another role binding, which an admin could simply re-add.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -111,6 +131,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Privileged Access Manager (just-in-time access).</strong></p>
           <p class="quiz-why">Time-bound, audited privilege elevation.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A CI pipeline on GitHub Actions needs to deploy to Google Cloud without a stored secret. What do you configure?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Workload Identity Federation.</strong></p>
+          <p class="quiz-why">The external OIDC token is exchanged for short-lived Google credentials, so no service-account key is ever stored.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Allow console access to a sensitive project only from corporate-managed devices on the company IP range. Which mechanism defines that condition?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An access level in Access Context Manager (enforced via context-aware access / IAP).</strong></p>
+          <p class="quiz-why">Access levels encode device posture, IP, and geo for zero-trust enforcement.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A data-science team and a separate platform team both work in one project. You must ensure the platform admins, who hold <code>roles/owner</code>, can never read objects in a specific Cloud Storage bucket holding regulated PII — even though they can edit IAM. What is the most reliable control?</p>
+        <ul>
+          <li>A) Remove the Storage Object Viewer role from the platform admins on that bucket</li>
+          <li>B) Create an IAM deny policy denying storage object read permissions to the platform group on that bucket</li>
+          <li>C) Apply a bucket IAM condition that only grants access during business hours to the platform group</li>
+          <li>D) Move the bucket into a folder where the platform admins have no role bindings at all</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> An IAM deny policy is evaluated before allow policies and cannot be overridden by a role binding, so even an owner who can edit IAM cannot grant themselves read access in the face of an explicit deny.</p>
+          <p class="quiz-why"><strong>A:</strong> Owners can edit IAM, so they would simply re-add the role — removal is not durable against the very people you are restricting. <strong>C:</strong> A condition that allows access during business hours still permits reads (just within a window); it does not prohibit them. <strong>D:</strong> A bucket lives in a project, not a folder, so it cannot be moved into a separate folder away from the project's owners.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> An external SaaS analytics vendor needs read access to one BigQuery dataset for the next 30 days only, after which access must lapse automatically with no manual cleanup. You want to avoid issuing any long-lived credential. Which approach best fits?</p>
+        <ul>
+          <li>A) Create a service account, generate a JSON key, and email it to the vendor with a calendar reminder to revoke it</li>
+          <li>B) Add the vendor's Google identity to a group and grant the group BigQuery Data Viewer with no expiry</li>
+          <li>C) Grant the vendor's Google identity BigQuery Data Viewer with an IAM condition that expires after 30 days</li>
+          <li>D) Share a service-account impersonation grant and rely on the vendor to stop using it after a month</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> An IAM Condition with a <code>request.time</code> expiry makes the grant lapse automatically at the deadline, needs no stored key, and requires no manual revocation.</p>
+          <p class="quiz-why"><strong>A:</strong> A JSON key is a long-lived credential and manual revocation is exactly the failure mode you are told to avoid. <strong>B:</strong> A group grant with no expiry persists indefinitely and still relies on someone remembering to remove it. <strong>D:</strong> Impersonation here has no time bound and trusts the vendor to self-restrict, which is not enforceable.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Security wants to guarantee that no project anywhere in the organization can attach external IP addresses to VMs, and the guarantee must hold even if a project owner tries to enable them. Where do you enforce this?</p>
+        <ul>
+          <li>A) A firewall rule at each VPC denying ingress from the public internet to the VMs</li>
+          <li>B) The compute.vmExternalIpAccess organization policy constraint set at the org node</li>
+          <li>C) A custom IAM role for project owners that omits the compute network update permission</li>
+          <li>D) A VPC Service Controls perimeter wrapping all the projects in the organization</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> The <code>compute.vmExternalIpAccess</code> org policy constraint set at the organization is a guardrail that inherits to every project and cannot be overridden by a project owner.</p>
+          <p class="quiz-why"><strong>A:</strong> A firewall controls traffic flow but does not stop an external IP being assigned, and it must be set per-VPC. <strong>C:</strong> A project owner can grant themselves a different role, so a custom role is not a durable guardrail. <strong>D:</strong> VPC-SC stops API data exfiltration across a service perimeter; it does not govern whether a VM may carry an external IP.</p>
         </details>
       </div>
     </section>

@@ -89,10 +89,20 @@
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Cloud Run gives native percentage traffic splitting across revisions — don't reach for DNS round-robin or a second service.</div>
     </section>
     <section class="lesson">
-      <h3>GKE health & autoscaling</h3>
-      <p>Use <strong>liveness</strong> probes to restart hung containers and <strong>readiness</strong> probes to gate traffic until a pod is ready. The <strong>Horizontal Pod Autoscaler</strong> scales replicas on CPU or custom metrics; set resource requests/limits so the scheduler and HPA behave.</p>
+      <h3>GKE health &amp; autoscaling</h3>
+      <p>Use <strong>liveness</strong> probes to restart hung containers, <strong>readiness</strong> probes to gate traffic until a pod is ready, and <strong>startup</strong> probes for slow-booting apps so liveness doesn't kill them prematurely. The <strong>Horizontal Pod Autoscaler</strong> scales replicas on CPU or custom metrics; set resource requests/limits so the scheduler and HPA behave.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A failing readiness probe removes a pod from the Service (no restart); only a failing liveness probe restarts the container.</div>
-      <div class="callout mnemonic"><span class="hook">Probes</span> <strong>Readiness = Receive traffic; Liveness = restart if Lifeless.</strong></div>
+      <div class="callout mnemonic"><span class="hook">Probes</span> <strong>R</strong>eadiness = <strong>R</strong>eceive traffic; <strong>L</strong>iveness = restart if <strong>L</strong>ifeless; <strong>S</strong>tartup = wait while booting.</div>
+    </section>
+    <section class="lesson">
+      <h3>Configuration &amp; secrets</h3>
+      <p>Externalise config so the same image runs in every environment (12-factor). Pass non-secret settings as environment variables; keep secrets in <strong>Secret Manager</strong> and mount/reference them at runtime &mdash; never bake credentials into the image or commit them. On GKE use ConfigMaps for config and Secret Manager (via the CSI driver / Workload Identity) for secrets.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Hardcoding API keys or DB passwords in the container image (or env vars committed to source) is always wrong &mdash; use Secret Manager.</div>
+    </section>
+    <section class="lesson">
+      <h3>Deployment strategies</h3>
+      <p>Roll out safely: a <strong>rolling update</strong> replaces pods gradually (GKE default), a <strong>canary</strong> sends a small traffic slice to the new version first, and <strong>blue-green</strong> keeps two full environments and flips traffic for instant rollback. On Cloud Run, revision traffic splitting gives canary and blue-green for free.</p>
+      <div class="callout mnemonic"><span class="hook">SAFE</span> Small slice first (canary), keep the old one warm (blue-green), and you can always roll back fast.</div>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -108,6 +118,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>A liveness probe (restarts the container).</strong></p>
           <p class="quiz-why">Readiness only de-registers; liveness restarts.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Where should a database password used by a Cloud Run service live?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Secret Manager, referenced at runtime.</strong></p>
+          <p class="quiz-why">Keeps the secret out of the image and source, with rotation and access control.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> An app takes 90s to initialise; liveness probes keep killing it during boot. What fixes this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Add a startup probe.</strong></p>
+          <p class="quiz-why">It defers liveness checks until startup completes, so slow boots aren't mistaken for failures.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> You want to release a new Cloud Run version to 5% of users, watch error rates, then ramp to 100% &mdash; with the ability to roll back instantly. What's the simplest approach?</p>
+        <ul>
+          <li>A) Deploy a second Cloud Run service and switch DNS when confident.</li>
+          <li>B) Deploy a new revision with no traffic, then shift 5% to it and ramp using the revision traffic split.</li>
+          <li>C) Replace the running revision in place and monitor logs afterward.</li>
+          <li>D) Put both versions behind an external load balancer with weighted backends.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Run's built-in revision traffic splitting gives canary and instant rollback by simply shifting percentages back.</p>
+          <p class="quiz-why"><strong>A:</strong> DNS switching is coarse and slow to revert. <strong>C:</strong> In-place replacement has full blast radius. <strong>D:</strong> An external LB is unnecessary extra plumbing when Cloud Run does this natively.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A GKE pod's process occasionally deadlocks but the container keeps running, so it stops serving without being replaced. Which probe configuration addresses this?</p>
+        <ul>
+          <li>A) A readiness probe only, so the pod is removed from the Service.</li>
+          <li>B) A liveness probe that fails and triggers a container restart.</li>
+          <li>C) Increasing CPU requests so the process never deadlocks.</li>
+          <li>D) A startup probe that runs once at boot.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A liveness probe detects the hung process and restarts the container, restoring service automatically.</p>
+          <p class="quiz-why"><strong>A:</strong> Readiness only de-registers the pod; it never restarts it. <strong>C:</strong> More CPU doesn't fix a logical deadlock. <strong>D:</strong> Startup probes only cover the boot window.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> The same container image must run in dev, staging, and prod with different database credentials, and security forbids credentials in the image or source. How should the app get its secrets?</p>
+        <ul>
+          <li>A) Bake per-environment credentials into separate images at build time.</li>
+          <li>B) Commit an encrypted <code>.env</code> file and decrypt it in the entrypoint.</li>
+          <li>C) Reference Secret Manager secrets at runtime, scoped per environment.</li>
+          <li>D) Pass the credentials as plaintext build arguments.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Secret Manager keeps credentials out of the image and source, supports per-environment access and rotation, and is read at runtime.</p>
+          <p class="quiz-why"><strong>A:</strong> Per-environment images break "one image everywhere" and embed secrets. <strong>B:</strong> Committing secrets, even encrypted, risks exposure and key sprawl. <strong>D:</strong> Build args end up in image history.</p>
         </details>
       </div>
     </section>

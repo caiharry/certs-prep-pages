@@ -93,6 +93,18 @@
       <p>In streaming, group events with windows: <strong>tumbling</strong> (fixed, non-overlapping), <strong>hopping/sliding</strong> (overlapping, e.g., last 30s every 2s), and <strong>session</strong> (activity-gap based). Handle <strong>late-arriving data</strong> with watermarks and triggers. Orchestrate jobs with <strong>Cloud Composer</strong> (Airflow) or <strong>Workflows</strong>; add CI/CD.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Aggregate the last 30 seconds, every 2 seconds" describes a hopping (sliding) window, not tumbling or session.</div>
     </section>
+    <section class="lesson">
+      <h3>Pub/Sub ingestion &amp; delivery semantics</h3>
+      <p>Pub/Sub decouples producers from consumers and absorbs spikes. Know its guarantees and knobs:</p>
+      <ul>
+        <li><strong>At-least-once</strong> delivery by default &mdash; design consumers to be idempotent (or enable exactly-once delivery where supported).</li>
+        <li><strong>Ordering keys</strong> preserve order per key when you actually need it (it costs throughput).</li>
+        <li><strong>Dead-letter topics</strong> capture messages that repeatedly fail, so a poison message can't block the stream.</li>
+        <li><strong>BigQuery / Cloud Storage subscriptions</strong> land data directly with no custom code.</li>
+        <li><strong>Pub/Sub Lite</strong> trades features for lower cost at very high, predictable throughput.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A few repeatedly-failing messages stalling a subscription = configure a <strong>dead-letter topic</strong>, not infinite retries.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -107,6 +119,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Hopping (sliding) window.</strong></p>
           <p class="quiz-why">Overlapping windows of fixed size at a fixed period.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A handful of malformed messages keep failing and blocking a Pub/Sub subscription. What do you configure?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A dead-letter topic.</strong></p>
+          <p class="quiz-why">After N delivery attempts, the message is moved aside so the stream keeps flowing.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A new pipeline must run the same logic for both nightly batch and real-time streams. Which engine?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Dataflow (Apache Beam).</strong></p>
+          <p class="quiz-why">Beam's unified model runs the same pipeline in batch and streaming with autoscaling.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team has years of on-prem Apache Spark jobs and wants to move them to Google Cloud with the least rewriting. Which managed service should they target?</p>
+        <ul>
+          <li>A) Dataflow, rewriting the jobs as Apache Beam pipelines.</li>
+          <li>B) Dataproc, running the existing Spark jobs as-is on a managed cluster.</li>
+          <li>C) Cloud Data Fusion, rebuilding the jobs in its visual designer.</li>
+          <li>D) BigQuery, porting the transformations to SQL.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Dataproc is managed Spark/Hadoop, so existing Spark jobs lift-and-shift with minimal change.</p>
+          <p class="quiz-why"><strong>A:</strong> Dataflow would require rewriting to Beam. <strong>C:</strong> Data Fusion means rebuilding visually. <strong>D:</strong> Porting Spark to SQL is a full rewrite.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A dashboard must show a metric aggregated over the last 30 seconds, recomputed every 2 seconds. Which streaming window type does this require?</p>
+        <ul>
+          <li>A) Tumbling (fixed, non-overlapping) windows.</li>
+          <li>B) Session windows keyed on user activity.</li>
+          <li>C) Hopping (sliding) windows of 30s every 2s.</li>
+          <li>D) Global windows with a single final trigger.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Overlapping windows of fixed size (30s) emitted at a fixed period (2s) are hopping/sliding windows.</p>
+          <p class="quiz-why"><strong>A:</strong> Tumbling windows don't overlap, so they can't recompute every 2s over a 30s span. <strong>B:</strong> Session windows are gap-based, not periodic. <strong>D:</strong> A global window doesn't produce rolling 30s aggregates.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A streaming pipeline occasionally receives malformed events that fail processing and are retried forever, stalling the subscription. What is the best fix?</p>
+        <ul>
+          <li>A) Increase the acknowledgement deadline so retries have more time.</li>
+          <li>B) Configure a dead-letter topic after a maximum number of delivery attempts.</li>
+          <li>C) Disable retries entirely so bad messages are dropped silently.</li>
+          <li>D) Switch the subscription from pull to push delivery.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A dead-letter topic moves repeatedly-failing messages aside after N attempts, so the stream keeps flowing and the bad data can be inspected.</p>
+          <p class="quiz-why"><strong>A:</strong> A longer deadline doesn't fix permanently bad messages. <strong>C:</strong> Silently dropping loses data with no record. <strong>D:</strong> Push vs pull doesn't address poison messages.</p>
         </details>
       </div>
     </section>

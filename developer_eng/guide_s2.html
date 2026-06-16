@@ -89,8 +89,19 @@
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> For unit tests against Firestore/Pub/Sub, the recommended approach is the local emulator, not a real or shared project.</div>
     </section>
     <section class="lesson">
-      <h3>Build pipeline & provenance</h3>
-      <p><strong>Cloud Build</strong> runs CI steps in containers; store images and language packages in <strong>Artifact Registry</strong>. Generate <strong>build provenance</strong> in Cloud Build and verify it with <strong>Binary Authorization</strong> so only trusted images deploy. Run automated integration tests as Cloud Build steps.</p>
+      <h3>Build pipeline &amp; provenance</h3>
+      <p><strong>Cloud Build</strong> runs CI steps in containers; store images and language packages in <strong>Artifact Registry</strong> (the successor to Container Registry). Generate <strong>build provenance</strong> (a signed attestation of how an image was built) in Cloud Build, and verify it with <strong>Binary Authorization</strong> so only trusted, attested images can deploy.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Only images built by our pipeline may run in prod" = Binary Authorization checking attestations &mdash; not a naming convention or a manual review.</div>
+    </section>
+    <section class="lesson">
+      <h3>Reproducible container builds</h3>
+      <p>Build images reproducibly with a <strong>Dockerfile</strong>, <strong>Cloud Native Buildpacks</strong> (no Dockerfile needed), or <strong>Jib</strong> for Java. Pin base images and dependency versions, keep images small and non-root, and scan for vulnerabilities (Artifact Analysis) in the pipeline. Tag by immutable digest, not a moving <code>latest</code>.</p>
+      <div class="callout mnemonic"><span class="hook">BUILD</span> Buildpacks for no-Dockerfile, Jib for Java, Dockerfile for full control &mdash; all land in Artifact Registry.</div>
+    </section>
+    <section class="lesson">
+      <h3>Testing strategy</h3>
+      <p>Follow the test pyramid: many fast <strong>unit tests</strong> (with emulators for data services), fewer <strong>integration tests</strong> against real-ish dependencies as Cloud Build steps, and targeted <strong>load tests</strong> before launch. Gate merges on tests; fail the build on regressions rather than catching them in production.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Running unit tests against a shared real project is wrong &mdash; it's slow, flaky, billable, and pollutes data. Use emulators.</div>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -106,6 +117,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Artifact Registry, with Binary Authorization checking attestations.</strong></p>
           <p class="quiz-why">Registry stores images; Binary Authorization gates deployment on trusted provenance.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A Java team wants reproducible container images without writing or maintaining a Dockerfile. What do you suggest?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Jib (or Cloud Native Buildpacks).</strong></p>
+          <p class="quiz-why">Both produce optimized, reproducible images straight from source with no Dockerfile.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You want a secure, consistent cloud development environment for the whole team. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Workstations.</strong></p>
+          <p class="quiz-why">Managed, policy-controlled cloud IDEs that standardise the dev environment.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Compliance requires that production can run only container images produced by the official Cloud Build pipeline. What enforces this at deploy time?</p>
+        <ul>
+          <li>A) A naming convention requiring all prod images to start with a fixed prefix.</li>
+          <li>B) Binary Authorization policy that requires a Cloud Build attestation before a pod runs.</li>
+          <li>C) IAM restricting who can push to Artifact Registry.</li>
+          <li>D) A manual code-review checklist before each release.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Binary Authorization checks a cryptographic attestation at admission, so only images the pipeline built and signed can deploy.</p>
+          <p class="quiz-why"><strong>A:</strong> Names are trivially spoofed. <strong>C:</strong> Push permissions limit <em>who</em> uploads but not <em>what</em> runs. <strong>D:</strong> Manual checklists aren't enforced by the platform.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Unit tests that hit a shared development Firestore database are slow, flaky, and occasionally corrupt each other's data in CI. What is the recommended fix?</p>
+        <ul>
+          <li>A) Give each test its own real Firestore project, created and destroyed per run.</li>
+          <li>B) Run the tests against the Firestore emulator started by the gcloud CLI.</li>
+          <li>C) Add sleeps between tests to avoid contention on the shared database.</li>
+          <li>D) Run the suite only nightly to reduce contention.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> The local emulator is fast, free, isolated per run, and faithful to Firestore semantics &mdash; the standard way to unit-test data logic.</p>
+          <p class="quiz-why"><strong>A:</strong> Spinning real projects per run is slow and costly. <strong>C:</strong> Sleeps hide races without fixing isolation. <strong>D:</strong> Nightly runs delay feedback and don't fix flakiness.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Deployments sometimes pull a different image than was tested because the team deploys the <code>latest</code> tag. How do you guarantee the exact tested artifact ships?</p>
+        <ul>
+          <li>A) Re-tag the image as <code>latest</code> more carefully on each build.</li>
+          <li>B) Deploy by immutable image digest (sha256) rather than a moving tag.</li>
+          <li>C) Rebuild the image at deploy time from the same source.</li>
+          <li>D) Keep only one image in the registry at a time.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A digest references one exact image forever, so what you tested is exactly what deploys.</p>
+          <p class="quiz-why"><strong>A:</strong> <code>latest</code> still moves. <strong>C:</strong> Rebuilding can produce a different image than the one tested. <strong>D:</strong> Pruning images doesn't pin which one deploys.</p>
         </details>
       </div>
     </section>

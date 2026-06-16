@@ -91,6 +91,26 @@
       <h3>Mapping compliance to controls</h3>
       <p>Translate requirements (e.g., SOC 2, PCI, data sovereignty) into concrete controls: network/access segmentation, audit-log coverage, encryption with CMEK, and least-privilege IAM. Determine which parts of the environment are in scope for each regulation.</p>
     </section>
+    <section class="lesson">
+      <h3>Transparency vs Approval vs Assured Workloads</h3>
+      <p>Three controls cluster around regulated estates and the exam tests the difference. <strong>Access Transparency</strong> gives you near-real-time <em>logs</em> of when Google personnel access your content (e.g. during a support case) — visibility only. <strong>Access Approval</strong> adds a <em>gate</em>: Google must request, and you must explicitly approve, before that access happens. <strong>Assured Workloads</strong> is broader still — it creates a compliance-boundary folder that enforces data residency, personnel controls (support staff location/citizenship), and a curated set of services for regimes like FedRAMP, CJIS, or EU sovereignty.</p>
+      <ul>
+        <li><strong>Access Transparency</strong> — see Google access after the fact (logs).</li>
+        <li><strong>Access Approval</strong> — approve Google access before it happens (gate).</li>
+        <li><strong>Assured Workloads</strong> — enforce residency, personnel, and service constraints (boundary).</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "We need a log of Google access" = Access Transparency. "We must approve it first" = Access Approval. Don't confuse the passive log with the active gate.</div>
+    </section>
+    <section class="lesson">
+      <h3>Enforcing residency &amp; auditing for frameworks</h3>
+      <p>Beyond Assured Workloads, the day-to-day residency guardrail is the <strong>resource-location org policy</strong> (<code>constraints/gcp.resourceLocations</code>), which stops resources being created outside approved regions. To <em>demonstrate</em> compliance, lean on evidence: <strong>Cloud Audit Logs</strong> for who-did-what, <strong>Security Command Center</strong> compliance reports mapping findings to standards (CIS, PCI DSS, NIST), and CMEK so you control the keys. Decide which projects are <strong>in scope</strong> for each framework and isolate them with the resource hierarchy and VPC Service Controls so the audit surface stays small.</p>
+      <ul>
+        <li><strong>Resource-location org policy</strong> — block resource creation outside approved regions.</li>
+        <li><strong>SCC compliance dashboard</strong> — map posture to CIS/PCI/NIST benchmarks.</li>
+        <li><strong>Scoping</strong> — isolate in-scope projects to shrink the audit boundary.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">SEE / GATE / BOUND</span> Transparency lets you <em>see</em>, Approval is the <em>gate</em>, Assured Workloads draws the <em>boundary</em>.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -105,6 +125,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Access Approval (with Access Transparency).</strong></p>
           <p class="quiz-why">Requires explicit customer approval and logs Google access.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You only need a log showing when Google staff accessed your content during support, with no approval workflow. Which feature?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Access Transparency.</strong></p>
+          <p class="quiz-why">It records Google administrative access to your content as logs, without gating it.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Prevent developers from creating any resource outside approved regions, without buying a full compliance program. Which control?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>The resource-location organization policy (constraints/gcp.resourceLocations).</strong></p>
+          <p class="quiz-why">It restricts where resources can be created and inherits across the hierarchy.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A government customer's regulation requires that any Google support engineer who touches their data must be located in-country, that data stays in approved regions, and that only an approved service set is used. Which offering meets all three at once?</p>
+        <ul>
+          <li>A) Access Approval combined with the resource-location organization policy</li>
+          <li>B) Assured Workloads configured for the relevant compliance regime</li>
+          <li>C) A VPC Service Controls perimeter plus CMEK on all data services</li>
+          <li>D) Access Transparency logs reviewed alongside Security Command Center findings</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Assured Workloads is the single offering that bundles personnel controls (support-staff location), data residency, and a restricted approved-service set for a chosen compliance regime.</p>
+          <p class="quiz-why"><strong>A:</strong> This pair covers approval and residency but not the support-personnel location requirement. <strong>C:</strong> VPC-SC and CMEK protect data exfiltration and keys but say nothing about where support staff are located or residency enforcement. <strong>D:</strong> These provide visibility into access and posture, not enforcement of residency, personnel, or service constraints.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> An auditor for a PCI assessment asks you to demonstrate that your in-scope projects are continuously checked against an industry benchmark and to produce evidence of the findings. Which approach gives this with the least custom build?</p>
+        <ul>
+          <li>A) Export all audit logs to BigQuery and write SQL that re-implements the benchmark checks</li>
+          <li>B) Schedule a third-party scanner against each project and collate its reports manually</li>
+          <li>C) Use the Security Command Center compliance dashboard mapped to the relevant benchmark</li>
+          <li>D) Enable Access Transparency and present the Google-access logs as compliance evidence</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Security Command Center maps Security Health Analytics findings to industry benchmarks such as PCI DSS and CIS out of the box, providing continuous checks and exportable evidence with minimal build.</p>
+          <p class="quiz-why"><strong>A:</strong> Re-implementing benchmark logic in SQL is exactly the heavy custom build the question asks you to avoid. <strong>B:</strong> Manual collation of third-party reports is neither continuous nor low-effort. <strong>D:</strong> Access Transparency logs Google access; it is unrelated to benchmarking your configuration against PCI.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A data-sovereignty rule says certain workloads must never have resources created outside two approved European regions, and the restriction must hold across all current and future projects without depending on per-project setup. What enforces this?</p>
+        <ul>
+          <li>A) Setting the resource-location organization policy at the org node listing the two approved regions</li>
+          <li>B) A hierarchical firewall policy permitting only traffic to and from the two regions</li>
+          <li>C) Tagging resources by region and auditing the tags with a scheduled report</li>
+          <li>D) A VPC Service Controls perimeter restricted to subnets in the two approved regions</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> The <code>gcp.resourceLocations</code> org policy set at the org node inherits to all current and future projects and blocks resource creation outside the listed regions — preventive, not detective.</p>
+          <p class="quiz-why"><strong>B:</strong> Firewall policies govern network traffic, not where resources may be created. <strong>C:</strong> Tagging and reporting only detects violations after the fact and relies on per-resource discipline. <strong>D:</strong> VPC-SC limits API data movement across a perimeter; it does not constrain the regions in which resources are provisioned.</p>
         </details>
       </div>
     </section>

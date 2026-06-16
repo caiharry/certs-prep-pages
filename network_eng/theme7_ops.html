@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4; /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
-      --cgp-green-light: #dcfce7;
-      --cgp-green-border: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-green-border);
+      color: var(--rev-green-border);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdf4;
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-green-border);
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -504,7 +504,7 @@
     <h2>7.1 Logging &amp; Monitoring: The Eyes and Ears</h2>
     <p>In a complex cloud network, you can't fix what you can't see! Google Cloud Observability provides deep logging and metrics for every network component. Let's look at the high-yield logs and metrics you must know for the exam: 📊</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🔍 Core Network Logs</h3>
       <ul>
         <li><strong>VPC Flow Logs:</strong> Captures samples of network traffic entering and leaving VM network interfaces. It records the standard <strong>5-tuple</strong> (source IP, destination IP, source port, destination port, protocol) plus packet counts and latency. Essential for traffic auditing, security forensics, and cost optimization!</li>
@@ -570,7 +570,7 @@
     <h2>7.3 Maintaining &amp; Troubleshooting Connectivity</h2>
     <p>Let's look at the classic real-world break-fix scenarios that examiners love to throw at you:</p>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🚨 Troubleshooting BGP Peering Issues</h3>
       <p>If your hybrid connection is down, check your Cloud Router BGP session state in Cloud Logging:</p>
       <ul>
@@ -634,84 +634,84 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> You are troubleshooting a connectivity issue where VMs in a newly created GKE node pool cannot pull container images from an external registry. The GKE nodes are private and use Cloud NAT for internet access. You suspect SNAT port exhaustion. What is the most efficient way to verify this using Google Cloud Observability?</p>
+        <p><strong>Question 1:</strong> Private GKE nodes using Cloud NAT can't pull container images from an external registry, and you suspect SNAT port exhaustion. What is the most efficient way to confirm this with Google Cloud Observability?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure VPC Flow Logs on the private GKE subnet and write a custom SQL query in BigQuery to parse packet payload sizes and count local MTU fragmentation drops.</li>
-          <li data-option="B">B) Search Cloud Logging for the <strong><code>OUT_OF_RESOURCES</code></strong> error in the <code>dropped_sent_packets_count</code> metric or Cloud NAT gateway logs.</li>
-          <li data-option="C">C) Run a manual Connectivity Test in Network Intelligence Center from the GKE node interfaces to the external registry's public IP using dynamic protocol packet simulation.</li>
-          <li data-option="D">D) Delete and recreate the Cloud NAT gateway with the static port range mapping parameter changed to support dual-stack IPv4/IPv6 egress.</li>
+          <li data-option="A">A) Turn on VPC Flow Logs for the GKE subnet and query BigQuery to count MTU-fragmentation drops by packet size.</li>
+          <li data-option="B">B) Run a one-off Connectivity Test from the node interfaces to the registry's public IP with protocol packet simulation.</li>
+          <li data-option="C">C) Search Cloud Logging / the Cloud NAT gateway logs for <code>OUT_OF_RESOURCES</code> drops (the dropped-sent-packets metric).</li>
+          <li data-option="D">D) Recreate the Cloud NAT gateway with the static port-range mapping changed to enable dual-stack IPv4/IPv6 egress.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> Cloud NAT automatically logs <strong><code>OUT_OF_RESOURCES</code></strong> errors in Cloud Logging whenever a VM attempts to open an outbound connection but has exhausted its allocated SNAT ports. This is the fastest, most direct way to confirm port exhaustion! 🚨</p>
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> Cloud NAT logs <code>OUT_OF_RESOURCES</code> whenever a VM can't obtain an SNAT port. Reading those logs and the drop metric is the fastest, most direct confirmation of port exhaustion. 🚨</p>
           <ul>
-            <li><strong>A:</strong> VPC Flow Logs capture traffic samples but do not explicitly flag Cloud NAT port allocation failures or resource exhaustion errors, nor do they help count MTU drops.</li>
-            <li><strong>C:</strong> Connectivity Tests check routing and firewall rules, but they do not simulate dynamic port allocation limits or SNAT port exhaustion under live load.</li>
-            <li><strong>D:</strong> Recreating the gateway is a highly disruptive action that does not diagnose the root cause and will not prevent the issue from reoccurring under load.</li>
+            <li><strong>A:</strong> Flow Logs sample traffic; they don't flag NAT port-allocation failures or help count MTU drops.</li>
+            <li><strong>B:</strong> Connectivity Tests check routes and firewalls, not live SNAT port limits.</li>
+            <li><strong>D:</strong> Recreating the gateway is disruptive and diagnoses nothing.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> You have configured a custom static route in your VPC that routes traffic destined for a secure partner network through a specific third-party firewall VM (NVA). The partner reports that they are no longer receiving data. You suspect the firewall VM has crashed or been deleted. Which Network Intelligence Center module will automatically detect this suboptimal configuration and alert you?</p>
+        <p><strong>Question 2:</strong> A custom static route sends traffic for a partner network through a third-party firewall VM (NVA). The partner stops receiving data and you suspect the NVA crashed or was deleted. Which Network Intelligence Center module automatically detects this misconfiguration?</p>
         <ul class="option-list">
-          <li data-option="A">A) Connectivity Tests configured to run as a recurring scheduled task targeting the secure partner network's external endpoints.</li>
-          <li data-option="B">B) Network Topology dashboard set to alert on active traffic path changes and node latency anomalies across peered VPC networks.</li>
-          <li data-option="C) Network Analyzer</li>
-          <li data-option="D">D) Performance Dashboard configured to monitor packet loss and round-trip times (RTT) for the specific firewall VM interface.</li>
+          <li data-option="A">A) Connectivity Tests scheduled to run recurrently against the partner network's endpoints.</li>
+          <li data-option="B">B) Network Analyzer, which continuously flags invalid route next hops as configuration insights.</li>
+          <li data-option="C">C) Network Topology dashboard set to alert on traffic-path changes and node latency anomalies.</li>
+          <li data-option="D">D) Performance Dashboard monitoring packet loss and round-trip time on the firewall VM's interface.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> <strong>Network Analyzer</strong> continuously and automatically monitors your VPC configurations. It detects invalid next hops (such as a static route pointing to a VM that is stopped, crashed, or deleted) and publishes an active configuration error insight, allowing you to proactively fix the route! 🚨</p>
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> <strong>Network Analyzer</strong> continuously inspects your VPC config and raises an insight when a static route's next hop is a stopped or deleted VM &mdash; exactly this failure &mdash; with no manual run. 🚨</p>
           <ul>
-            <li><strong>A:</strong> Connectivity Tests can diagnose the issue, but they must be run manually and do not continuously monitor configurations in the background.</li>
-            <li><strong>B:</strong> Network Topology visualizes traffic flows but does not automatically flag invalid route next hops or generate configuration alerts.</li>
-            <li><strong>D:</strong> Performance Dashboard monitors latency and packet loss but does not analyze routing configurations or next-hop VM states.</li>
+            <li><strong>A:</strong> Connectivity Tests can diagnose it but must be run manually; they don't watch config in the background.</li>
+            <li><strong>C:</strong> Network Topology visualizes flows but doesn't flag invalid next hops.</li>
+            <li><strong>D:</strong> Performance Dashboard tracks latency and loss, not routing configuration.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You have established a Dedicated Interconnect connection to Google Cloud. The physical link is up, but your Cloud Router BGP session is stuck in the <code>Active</code> state, and no routes are being learned. You want to troubleshoot this. What is the most likely cause?</p>
+        <p><strong>Question 3:</strong> Your Dedicated Interconnect physical link is up, but the Cloud Router BGP session is stuck in the <code>Active</code> state and no routes are learned. What is the most likely cause?</p>
         <ul class="option-list">
-          <li data-option="A">A) The VPC dynamic routing mode is set to Global, which prevents BGP sessions from establishing across regions unless a regional route reflector is configured.</li>
-          <li data-option="B">B) A VPC firewall rule is blocking TCP port 179 (BGP) on the Cloud Router's link-local IP addresses, or there is an ASN/IP mismatch in the BGP peer configuration.</li>
-          <li data-option="C">C) The physical Dedicated Interconnect port is not using MACsec encryption, causing Cloud Router to drop unencrypted packets at the physical Layer 1 layer.</li>
-          <li data-option="D">D) Connection Draining is enabled on the Cloud Router's dynamic routing protocol layer, which blocks new routes from being exchanged with the peer.</li>
+          <li data-option="A">A) The VPC's dynamic routing mode is Global, which blocks cross-region BGP unless a regional route reflector is configured.</li>
+          <li data-option="B">B) The Interconnect port lacks MACsec, so Cloud Router drops the unencrypted packets at Layer 1.</li>
+          <li data-option="C">C) Connection draining is enabled on the Cloud Router, which stops new routes from being exchanged with the peer.</li>
+          <li data-option="D">D) A firewall is blocking TCP 179 on the link-local peer IPs, or the BGP peer IP / ASN is mismatched.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> When a BGP session is stuck in <code>Active</code> or <code>Idle</code>, the routers are failing to establish the TCP connection (BGP uses TCP port 179). This is almost always caused by a firewall blocking port 179, a mismatch in the configured BGP peer IPs (link-local IPs), or a mismatched Autonomous System Number (ASN) configuration! 🔌</p>
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> A session stuck in <code>Active</code> means the BGP TCP session (port 179) never forms &mdash; typically a blocked port 179, a wrong peer link-local IP, or an ASN mismatch. 🔌</p>
           <ul>
-            <li><strong>A:</strong> Global dynamic routing does not prevent BGP sessions from establishing; it only controls how learned routes are propagated.</li>
-            <li><strong>C:</strong> MACsec provides Layer 2 encryption but is optional; its absence does not prevent standard BGP sessions from establishing.</li>
-            <li><strong>D:</strong> Connection Draining is a load balancer feature, not a Cloud Router feature.</li>
+            <li><strong>A:</strong> Global dynamic routing controls route propagation, not whether a BGP session establishes.</li>
+            <li><strong>B:</strong> MACsec is optional Layer 2 encryption; its absence doesn't stop BGP.</li>
+            <li><strong>C:</strong> Connection draining is a load-balancer feature, not a Cloud Router one.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 4 -->
       <div class="q-box">
-        <p><strong>Question 4:</strong> You need to perform a rolling upgrade on a pool of Compute Engine VMs behind an external Application Load Balancer. You want to ensure that active users currently in the middle of checking out do not experience any connection drops or error pages when their target VM is shut down. What should you configure?</p>
+        <p><strong>Question 4:</strong> You're rolling an upgrade across Compute Engine VMs behind an external Application Load Balancer. Users mid-checkout must not see dropped connections or error pages when their target VM is shut down. What should you configure?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a Geolocation DNS routing policy in Cloud DNS to route all new traffic to a separate temporary regional load balancer while you upgrade the VMs.</li>
-          <li data-option="B">B) Enable <strong>Connection Draining</strong> (Deregistration Delay) on the backend service, allowing active sessions to complete before VMs are terminated.</li>
-          <li data-option="C">C) Delete the VMs immediately during the maintenance window to force the Application Load Balancer to perform sub-second failover to the healthy instances.</li>
-          <li data-option="D">D) Enable Cloud Armor rate-limiting on the backend security policy to block new connection attempts, forcing active users to retry their checkouts.</li>
+          <li data-option="A">A) Enable connection draining (deregistration delay) on the backend service so active sessions finish before VMs terminate.</li>
+          <li data-option="B">B) Use a Cloud DNS geolocation policy to send new traffic to a temporary regional load balancer while you upgrade the VMs.</li>
+          <li data-option="C">C) Delete the VMs during the window so the load balancer fails over sub-second to the healthy instances.</li>
+          <li data-option="D">D) Turn on Cloud Armor rate limiting to block new connections, forcing active users to retry their checkouts.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> <strong>Connection Draining</strong> (Deregistration Delay) tells the load balancer to stop sending new requests to a VM marked for removal, while keeping existing connections open to complete their transactions gracefully within a timeout window. This ensures zero disruption for active checkout sessions! 🛒</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> <strong>Connection draining</strong> (deregistration delay) stops new requests to a VM being removed while letting existing connections finish within a timeout &mdash; zero disruption for in-flight checkouts. 🛒</p>
           <ul>
-            <li><strong>A:</strong> DNS caching makes DNS-based redirection far too slow (minutes or hours) to protect active web sessions during a rolling VM upgrade.</li>
-            <li><strong>C:</strong> Deleting VMs immediately will instantly sever active user connections, causing failed checkouts and HTTP 502/503 error pages.</li>
-            <li><strong>D:</strong> Cloud Armor rate limiting blocks malicious traffic but does not manage graceful backend VM lifecycle transitions.</li>
+            <li><strong>B:</strong> DNS changes propagate too slowly (cached) to protect live sessions during a rolling upgrade.</li>
+            <li><strong>C:</strong> Deleting VMs immediately severs active connections, causing failed checkouts and 502/503 errors.</li>
+            <li><strong>D:</strong> Rate limiting throttles traffic; it doesn't gracefully drain a VM's existing sessions.</li>
           </ul>
         </div>
       </div>

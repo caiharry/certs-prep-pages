@@ -92,6 +92,28 @@
       <p>Create threshold alerts on key metrics and route notifications via <strong>Cloud Monitoring</strong>. Crucially, configure <strong>silent source detection</strong> to alert when an expected log feed stops sending data — a blind spot your content rules cannot catch (they simply see nothing).</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A feed that quietly stops sending logs is caught by silent source detection, not by your detection rules.</div>
     </section>
+    <section class="lesson">
+      <h3>Metrics that matter & audience-fit dashboards</h3>
+      <p>Observability is only useful if the right person sees the right number. Match the metric to the audience:</p>
+      <ul>
+        <li><strong>SOC-operational</strong> — alert volume, MTTD/MTTR, case backlog, false-positive rate; these tune day-to-day operations.</li>
+        <li><strong>Detection-coverage</strong> — rules firing, ATT&amp;CK coverage, top noisy rules; these guide detection engineering.</li>
+        <li><strong>Executive/leadership</strong> — trend lines, risk posture, SLA adherence in scheduled, exportable reports — not raw event firehoses.</li>
+        <li><strong>Ingestion-health</strong> — per-source volume, latency, and parser error rates; an early-warning layer for the pipeline itself.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">RIGHT EYES</span> Operators want <strong>live ops</strong> metrics; execs want <strong>trends &amp; SLAs</strong>. Don't hand leadership a raw alert feed or analysts a quarterly PDF.</div>
+    </section>
+    <section class="lesson">
+      <h3>Pipeline health beyond silent sources</h3>
+      <p>A detection can only fire on data that arrives, on time, correctly parsed. So monitor the pipeline itself as a first-class concern:</p>
+      <ul>
+        <li><strong>Silent / missing sources</strong> — alert when an expected feed stops; content rules see nothing and stay quiet, so they cannot catch this.</li>
+        <li><strong>Ingestion latency</strong> — data arriving hours late means detections fire late; alert on lag, not just absence.</li>
+        <li><strong>Parser errors / drops</strong> — a vendor format change can silently break a parser, so events ingest but land in the wrong fields and dodge rules.</li>
+        <li><strong>Routing &amp; thresholds</strong> — push pipeline-health alerts through <strong>Cloud Monitoring</strong> to the on-call channel, separate from security alerts.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Logs still arrive but a vendor changed their format and detections went quiet" is a <strong>parser error</strong> problem, not a silent-source one — the feed isn't silent, it's mis-parsed.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +128,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>SecOps SOAR/SIEM dashboards with scheduled reports (optionally Looker Studio).</strong></p>
           <p class="quiz-why">Centralised observability with exportable reporting.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A feed still sends data, but after a vendor format change detections on it stopped firing. What's the likely cause?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A parser error — events land in the wrong UDM fields.</strong></p>
+          <p class="quiz-why">The source isn't silent; mis-parsed fields slip past rules. Not a silent-source case.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Analysts need live alert-volume and MTTR; the CISO wants quarterly trends. How do you serve both?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Audience-fit views: live operational dashboards for the SOC, scheduled trend reports for the CISO.</strong></p>
+          <p class="quiz-why">Match the metric and cadence to the audience rather than one shared view.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A firewall feed keeps streaming events at its normal volume, but after the vendor pushed a firmware update, none of your firewall detections fire anymore. Ingestion-volume dashboards look completely healthy. What is the most likely root cause?</p>
+        <ul>
+          <li>A) The source went silent, so silent-source detection should have already raised an alert</li>
+          <li>B) The vendor format changed and the parser now mis-maps fields, so events dodge the rules</li>
+          <li>C) Ingestion latency spiked, so the events arrive too late for the detections to evaluate</li>
+          <li>D) The detections were accidentally disabled during the firmware change-management window</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Steady volume plus dead detections after a vendor format change is the signature of a broken parser: events still ingest but land in the wrong UDM fields, so rules no longer match.</p>
+          <p class="quiz-why"><strong>A:</strong> Silent-source detection only triggers when a feed goes quiet, and volume is normal here, so it is not the cause. <strong>C:</strong> Latency would show as a lag or backlog, not normal-volume ingestion with healthy dashboards. <strong>D:</strong> A disable would be unrelated to the format change and is speculative; the format-change timing points squarely at parsing.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> The CISO wants a monthly, exportable summary of detection trends, SLA adherence, and overall risk posture to share with the board, while the SOC floor needs constantly-updating alert and case metrics. How should you deliver this?</p>
+        <ul>
+          <li>A) Give both groups the same live SIEM dashboard and let each filter it to whatever they need</li>
+          <li>B) Send the CISO the raw alert feed export weekly and have the SOC read the same export</li>
+          <li>C) Build a live operational dashboard for the SOC and scheduled exportable trend reports for the CISO</li>
+          <li>D) Configure Cloud Monitoring threshold alerts to email both the board and the SOC on every spike</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Matching cadence and content to audience — a live operational dashboard for the SOC and scheduled, exportable trend reports for leadership — is exactly the audience-fit observability the scenario needs.</p>
+          <p class="quiz-why"><strong>A:</strong> A single live dashboard buries the board in operational noise and assumes execs will self-serve filters they don't want. <strong>B:</strong> A raw alert feed is unreadable for a board summary and too coarse for live SOC work. <strong>D:</strong> Threshold alerts are for pipeline/operational anomalies, not board-level trend reporting or SOC dashboards.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You want early warning before detections degrade: notification when any expected source stops sending, when ingestion lags by hours, or when parser error rates climb. Where should these pipeline-health alerts be wired so they reach on-call without polluting the security alert queue?</p>
+        <ul>
+          <li>A) As high-severity YARA-L rules in the SIEM so they surface alongside threat detections</li>
+          <li>B) Through Cloud Monitoring thresholds routed to the on-call channel, separate from security alerts</li>
+          <li>C) Into the SOAR case queue so each ingestion hiccup opens a case for an analyst to triage</li>
+          <li>D) Onto the executive trend report so leadership sees ingestion health each reporting cycle</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Pipeline-health signals (silent sources, latency, parser errors) belong in Cloud Monitoring with notifications routed to on-call, keeping operational health distinct from the security alert queue.</p>
+          <p class="quiz-why"><strong>A:</strong> YARA-L watches ingested UDM events for threats; it cannot natively alert on the ingestion pipeline's own health and would mix the two queues. <strong>C:</strong> Opening a SOAR case per ingestion hiccup floods case management with operational, non-incident work. <strong>D:</strong> A monthly trend report is far too slow to act as early warning before detections degrade.</p>
         </details>
       </div>
     </section>

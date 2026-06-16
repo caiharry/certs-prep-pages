@@ -97,6 +97,12 @@
       <h3>Compute provisioning & AI platform</h3>
       <p>Configure volatility (spot vs standard), patch management, and orchestration (MIGs, GKE). The current exam adds the <strong>Gemini Enterprise Agent Platform</strong>: Agent Platform Pipelines orchestrate the ML lifecycle, and <strong>AI Hypercomputer</strong> runs large-scale GPU/TPU training. Know that Model Garden supplies models and prebuilt AI APIs (Vision, Document AI, etc.) cover standard tasks.</p>
     </section>
+    <section class="lesson">
+      <h3>Infrastructure as Code &amp; provisioning</h3>
+      <p>Provision repeatably, never by clicking in the console. <strong>Terraform</strong> is the de facto IaC tool on Google Cloud; the <strong>Cloud Foundation Toolkit</strong> ships opinionated, secure module blueprints, and <strong>Config Controller / Config Connector</strong> manage GCP resources declaratively through the Kubernetes API for GitOps. Keep state remote and locked, review changes via pull requests, and bake guardrails (org policies) into the pipeline.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Repeatable, reviewable, auditable environment creation" = Terraform/IaC in a pipeline &mdash; not gcloud scripts run by hand or console clicks.</div>
+      <div class="callout mnemonic"><span class="hook">IaC</span> If it isn't in version control, it didn't happen &mdash; declarative + peer-reviewed beats imperative + ad-hoc.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -111,6 +117,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Shared VPC.</strong></p>
           <p class="quiz-why">Host project holds the network; service projects attach — centralised governance.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> VPC A peers with B, and B peers with C. Can A reach C?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>No &mdash; VPC Peering is non-transitive.</strong></p>
+          <p class="quiz-why">Each peering connects only the two directly-peered VPCs; A&ndash;C needs its own peering, an NCC hub, or a transit design.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Auditors require every environment to be created the same way, reviewed before apply. What approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Infrastructure as Code (Terraform) through a CI/CD pipeline.</strong></p>
+          <p class="quiz-why">Declarative, version-controlled, peer-reviewed, and auditable &mdash; unlike manual console changes.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A regulated enterprise needs a connection to on-premises that is encrypted in transit, carries a 99.99% SLA, and can be live this week. They have no colocation presence yet. What should they deploy?</p>
+        <ul>
+          <li>A) Dedicated Interconnect with two connections in one metro.</li>
+          <li>B) HA VPN with two tunnels and Cloud Router BGP.</li>
+          <li>C) Partner Interconnect with a single VLAN attachment.</li>
+          <li>D) A Classic VPN tunnel to a single on-prem gateway.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> HA VPN is encrypted, carries a 99.99% SLA, and deploys in days over the internet &mdash; matching every constraint.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Interconnect needs colo provisioning (weeks) and isn't encrypted by default. <strong>D:</strong> Classic VPN is deprecated and has no 99.99% SLA.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A central platform team must own and govern one network that dozens of application teams' projects deploy into, while keeping firewall and routing control centralised. Which design fits best?</p>
+        <ul>
+          <li>A) A separate VPC per team, fully meshed with VPC Peering.</li>
+          <li>B) Shared VPC, with the network in a host project and teams' service projects attached.</li>
+          <li>C) One giant project that every team shares directly.</li>
+          <li>D) Private Service Connect endpoints between every pair of teams.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Shared VPC centralises network and firewall control in the host project while service projects attach &mdash; exactly the governance model described.</p>
+          <p class="quiz-why"><strong>A:</strong> A peering mesh is non-transitive and hard to govern centrally. <strong>C:</strong> One shared project destroys project-level isolation and billing. <strong>D:</strong> PSC exposes single services, not a shared network.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> After several outages caused by hand-made console changes, leadership wants all infrastructure changes to be declarative, peer-reviewed, and auditable. What should the team adopt?</p>
+        <ul>
+          <li>A) A shared runbook of gcloud commands operators paste into the console.</li>
+          <li>B) Terraform managed through a CI/CD pipeline with remote state and pull-request review.</li>
+          <li>C) Nightly snapshots so changes can be rolled back after the fact.</li>
+          <li>D) Tighter IAM so only senior engineers can click in the console.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> IaC in a pipeline makes changes declarative, version-controlled, reviewed, and auditable &mdash; eliminating ad-hoc drift.</p>
+          <p class="quiz-why"><strong>A:</strong> Pasting commands is still manual and error-prone. <strong>C:</strong> Snapshots recover data, not change governance. <strong>D:</strong> Restricting who clicks doesn't make changes reviewable or repeatable.</p>
         </details>
       </div>
     </section>

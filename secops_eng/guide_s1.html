@@ -93,6 +93,27 @@
       <p>Grant IAM for <strong>feature</strong> access vs <strong>data</strong> access separately — analysts can use a tool without seeing all raw data. Use service accounts/API keys for automation and <strong>Workforce Identity Federation</strong> for external analysts. Prioritise telemetry sources (SCC, SecOps, GTI, Cloud IDS) and integrate them to close coverage gaps.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To restrict which analysts can read sensitive raw logs, use data-access IAM — feature access alone does not gate the data.</div>
     </section>
+    <section class="lesson">
+      <h3>Feeds, forwarders & getting telemetry in</h3>
+      <p>Knowing the <em>tools</em> is only half of it — the exam loves the plumbing that gets logs into Google SecOps. Pick the right intake for the source:</p>
+      <ul>
+        <li><strong>Direct ingestion / native GCP feeds</strong> — Cloud Audit Logs, VPC Flow, DNS, and SCC findings flow in through the Google Cloud integration with minimal setup; prefer this for first-party telemetry.</li>
+        <li><strong>Feeds</strong> — pull/push connectors for third-party SaaS and APIs (Okta, AWS CloudTrail, Microsoft 365, threat feeds) on a schedule.</li>
+        <li><strong>Forwarder</strong> — a lightweight on-prem/VM agent that ships <code>syslog</code>, packet, and file-based logs from inside your network to SecOps.</li>
+        <li><strong>Ingestion API / Bindplane agent</strong> — for endpoints and custom apps that emit their own structured events.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> On-prem firewall or appliance emitting <code>syslog</code> &rarr; deploy a <strong>forwarder</strong> inside the network. A cloud SaaS API &rarr; a <strong>feed</strong>. Don't reach for a forwarder when a managed feed already exists.</div>
+    </section>
+    <section class="lesson">
+      <h3>Scoping access cleanly</h3>
+      <p>SecOps access has two dials and the exam tests both. <strong>Feature access</strong> (via IAM roles) controls which parts of the product an analyst can open — SIEM, SOAR, dashboards, rule editor. <strong>Data access</strong> (data RBAC, scoped by label) controls which slices of the normalised logs they can actually read. A tier-1 analyst might open SIEM search yet be blocked from reading HR or finance log labels.</p>
+      <ul>
+        <li>Use <strong>data RBAC labels</strong> to fence sensitive log scopes from broad analyst groups.</li>
+        <li>Use <strong>Workforce Identity Federation</strong> for external/contractor analysts so no Google accounts are provisioned.</li>
+        <li>Use <strong>service accounts / API keys</strong> for automation and SOAR integrations, never a human's credentials.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">2 DIALS</span> <strong>Feature</strong> = which doors open; <strong>Data</strong> = which rooms you may enter. Granting the door does not grant the room.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -107,6 +128,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Workforce Identity Federation.</strong></p>
           <p class="quiz-why">Federates external identities without provisioning Google accounts.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An on-prem firewall emits syslog that must reach Google SecOps. Which intake mechanism fits?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A SecOps forwarder deployed inside the network.</strong></p>
+          <p class="quiz-why">Forwarders collect syslog/packet/file logs from on-prem and ship them to SecOps; feeds are for cloud/SaaS APIs.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A tier-1 analyst can open SIEM search but must not read finance-team logs. What enforces that?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Data RBAC (data-access scoping by label).</strong></p>
+          <p class="quiz-why">Feature access opens the tool; data RBAC restricts which log scopes are readable.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Your SOC already ingests Cloud Audit Logs and VPC Flow natively. The team now needs Okta sign-in events and AWS CloudTrail in Google SecOps, with the least operational overhead and no agents to maintain. What do you set up?</p>
+        <ul>
+          <li>A) Configure managed feeds for the Okta and AWS CloudTrail connectors so SecOps pulls the events via API</li>
+          <li>B) Deploy a SecOps forwarder on a VM in each cloud and point the providers' syslog output at it</li>
+          <li>C) Export the logs to a Cloud Storage bucket and import them into Security Command Center for analysis</li>
+          <li>D) Write a YARA-L rule that references the Okta and CloudTrail APIs directly at detection time</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Okta and AWS CloudTrail are cloud/SaaS sources with first-party connectors, so managed feeds pull them over API with no agents to run — exactly the low-overhead intake for SaaS telemetry.</p>
+          <p class="quiz-why"><strong>B:</strong> A forwarder is for on-prem syslog/file/packet logs and adds the VM-agent maintenance the scenario explicitly wants to avoid. <strong>C:</strong> SCC is a posture/CSPM tool, not the SIEM where these logs are searched and detected on, and bucket round-trips add latency. <strong>D:</strong> YARA-L runs over normalised UDM events already ingested; it cannot pull from external APIs and is a detection construct, not an ingestion one.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Compliance requires that only the fraud team can read payment-system logs, even though all 40 analysts use the same SecOps SIEM for hunting. You must not stop the wider team from using search. What do you implement?</p>
+        <ul>
+          <li>A) Remove the SIEM feature-access role from everyone except the fraud team so others cannot open search</li>
+          <li>B) Apply data RBAC so payment-system log labels are readable only by the fraud team's scope</li>
+          <li>C) Move the payment-system logs into a separate Google Cloud project with its own IAM bindings</li>
+          <li>D) Create a YARA-L reference list of payment hostnames and exclude other analysts from matching it</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Data RBAC scopes which log labels each group can read while leaving feature access intact, so the wider team keeps searching everything except the fenced payment logs.</p>
+          <p class="quiz-why"><strong>A:</strong> Stripping feature access blocks the 40 analysts from search entirely, breaking the requirement that they keep hunting. <strong>C:</strong> Splitting projects fragments the SIEM tenant and does not map to how SecOps data-access controls work. <strong>D:</strong> Reference lists tune detection logic, not who is permitted to read raw log data during search.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Leadership asks for one finding that proves a bucket is publicly exposed AND chained to an over-privileged service account that can reach customer data. They want it surfaced as a posture risk, not as a log-based detection. Where does this belong?</p>
+        <ul>
+          <li>A) A multi-event YARA-L correlation rule joining IAM and storage UDM events over a time window</li>
+          <li>B) A scheduled UDM search in the SIEM that pivots from bucket access to service-account activity</li>
+          <li>C) Security Command Center, which evaluates posture and surfaces toxic-combination attack paths</li>
+          <li>D) A SOAR playbook that periodically queries storage and IAM APIs and opens a case on a match</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Chaining individually-minor misconfigurations into a path to sensitive data is a posture/attack-path problem, which SCC's toxic-combination analysis is purpose-built to surface.</p>
+          <p class="quiz-why"><strong>A:</strong> YARA-L correlates activity events for detections; static posture exposure is not an event stream it watches. <strong>B:</strong> A UDM search inspects logged activity, not the standing configuration state of buckets and IAM. <strong>D:</strong> A playbook can react to findings but is response automation, not the engine that evaluates posture risk in the first place.</p>
         </details>
       </div>
     </section>

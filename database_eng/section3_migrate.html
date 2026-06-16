@@ -8,14 +8,14 @@
     :root {
       --bg-light: #f0fdfa;
       --ink: #1e293b;
-      --cgp-teal: #0d9488;
-      --cgp-teal-light: #ccfbf1;
-      --cgp-teal-border: #14b8a6;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-green: #16a34a;
+      --rev-teal: #0d9488;
+      --rev-teal-light: #ccfbf1;
+      --rev-teal-border: #14b8a6;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-green: #16a34a;
       --radius: 12px;
     }
 
@@ -64,11 +64,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #2dd4bf 0%, var(--cgp-teal) 100%);
+      background: linear-gradient(135deg, #2dd4bf 0%, var(--rev-teal) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -113,7 +113,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-teal);
+      color: var(--rev-teal);
     }
 
     h3 {
@@ -127,7 +127,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -137,31 +137,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdfa;
-      border-color: var(--cgp-teal-border);
-      box-shadow: 4px 4px 0px var(--cgp-teal-border);
+      border-color: var(--rev-teal-border);
+      box-shadow: 4px 4px 0px var(--rev-teal-border);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-teal);
+    .rev-card.tip h3 {
+      color: var(--rev-teal);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -171,7 +171,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -223,7 +223,7 @@
     }
 
     .flow-step {
-      background: var(--cgp-teal-light);
+      background: var(--rev-teal-light);
       border: 2px solid #000;
       padding: 12px;
       border-radius: 8px;
@@ -243,7 +243,7 @@
     .flow-arrow {
       font-size: 1.5rem;
       font-weight: bold;
-      color: var(--cgp-teal);
+      color: var(--rev-teal);
     }
 
     /* Table styles */
@@ -268,7 +268,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -280,15 +280,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -326,7 +326,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -343,7 +343,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -375,7 +375,7 @@
     }
 
     .explanation-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -393,7 +393,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -454,8 +454,8 @@
 
     .option-list li.selected {
       background: #ccfbf1;
-      border-color: var(--cgp-teal);
-      box-shadow: 2px 2px 0px var(--cgp-teal);
+      border-color: var(--rev-teal);
+      box-shadow: 2px 2px 0px var(--rev-teal);
     }
 
     .option-list li.eliminated {
@@ -466,16 +466,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -515,7 +515,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -561,7 +561,7 @@
     <h2>3.1 Shifting the Data &mdash; Migration &amp; Replication</h2>
     <p>Let's face it: packing up a physical server database and moving it to the cloud is not like moving house. You can't just throw your data tables into cardboard boxes, load them into a rusty transit van, and hope none of the primary keys fall out on the motorway! 🚛</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🚀 Homogeneous vs. Heterogeneous &mdash; Choose Your Battle!</h3>
       <p>The type of migration you perform determines exactly how much hair your engineering team will pull out during the process:</p>
       <ul>
@@ -601,7 +601,7 @@
       <strong>DMS Conversion Workspaces!</strong> When doing a heterogeneous migration (e.g., Oracle to AlloyDB), DMS provides built-in <strong>Conversion Workspaces</strong>. They give you automated schema translations, highlight code compatibility errors, and even offer Gemini-assisted code fixes! But remember: the tool is clever, not clairvoyant &mdash; human review and testing of stored procedures are still absolutely mandatory! 🕵️
     </div>
 
-    <div class="cgp-card">
+    <div class="rev-card">
       <h3>🐌 Extended-Outage Migration: Simple, If You Can Stand It!</h3>
       <p>Not every exam scenario demands near-zero downtime. If the business can tolerate a planned weekend outage, keep it simple and skip the complex live CDC pipelines:</p>
       <ul class="bullet-chk">

@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4;
       --ink: #1e293b;
-      --cgp-blue: #2563eb;
-      --cgp-blue-light: #eff6ff;
-      --cgp-blue-border: #3b82f6;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-green: #16a34a;
-      --cgp-violet: #8b5cf6;
+      --rev-blue: #2563eb;
+      --rev-blue-light: #eff6ff;
+      --rev-blue-border: #3b82f6;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-green: #16a34a;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #60a5fa 0%, var(--cgp-blue) 100%);
+      background: linear-gradient(135deg, #60a5fa 0%, var(--rev-blue) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-blue);
+      color: var(--rev-blue);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #eff6ff;
-      border-color: var(--cgp-blue);
-      box-shadow: 4px 4px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 4px 4px 0px var(--rev-blue);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-blue);
+    .rev-card.tip h3 {
+      color: var(--rev-blue);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -504,7 +504,7 @@
     <h2>1.1 Sizing Up the Beast &mdash; Capacity &amp; Sizing</h2>
     <p>Right then! Let's kick off with a classic exam trap: <strong>guessing</strong> your database size. Don't do it! Google doesn't like guesswork, and neither does your bank balance. To pass this exam, you need <strong>cold, hard evidence</strong>!</p>
     
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>📈 Sizing from Evidence &mdash; No Guessing Allowed!</h3>
       <p>When you are asked to size compute and storage for a migration, don't just close your eyes and point at a random virtual machine. You need to gather actual performance metrics over a <strong>representative window</strong> &mdash; we're talking <strong>weeks or months</strong>, not just a cheeky five-minute check during lunchtime traffic! Here's your checklist of things to hunt down:</p>
       <ul class="bullet-chk">
@@ -572,7 +572,7 @@
       </table>
     </div>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>⚠️ Warning: High Availability is NOT Disaster Recovery!</h3>
       <p>Let's get this straight: <strong>HA is for local glitches; DR is for regional apocalypses!</strong></p>
       <p>If you enable <strong>High Availability (HA)</strong> on Cloud SQL or AlloyDB, Google spins up a <strong>synchronous standby replica</strong> in a <em>different zone in the same region</em>. If Zone A goes dark, it fails over automatically to Zone B in seconds. Brilliant! 🌟</p>
@@ -593,7 +593,7 @@
     <h2>1.3 Lock It Down &mdash; How Applications Connect &amp; Advanced Networking</h2>
     <p>Security is absolute king. Leaving your database open to the public internet is like leaving your front door wide open with a giant neon sign saying <strong>"Free Jewellery Inside!"</strong> 🏠💍</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🔒 Private IPs only: PSA vs. PSC</h3>
       <p>To keep the bad guys out, always use <strong>Private IP addresses</strong> for your databases. Google manages your databases in a special network, so you need to bridge your VPC to theirs. Here are the two ways to do it:</p>
       <ul>
@@ -604,7 +604,7 @@
     </div>
 
     <!-- ADVANCED NETWORKING ROUTING TRAPS -->
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🔥 Advanced Network Route Traps: PSA vs. PSC under the Hood!</h3>
       <p>Examiners love testing your understanding of hybrid routing. If your database is fully private (no public IP), how do developers or apps located <strong>on-premises</strong> (connected via Cloud VPN or Interconnect) reach it? Let's break down the rules of the road:</p>
       
@@ -624,7 +624,7 @@
       <p>Because it's a local subnet IP, your on-premises networks can route traffic to it natively over VPN or Interconnect without any peering updates! All you need to do is advertise the PSC endpoint IP or its subnet through your standard Cloud Router BGP configuration. It's clean, simple, and avoids all routing head-scratchers. 🌟</p>
     </div>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🌍 Global Dynamic Routing &amp; SOCKS5 Tunneling Secrets</h3>
       <p>Here are two more advanced connectivity tricks that might save your bacon under pressure:</p>
       <ul>
@@ -650,7 +650,7 @@
     <p>Every time an app establishes a new database connection, your DB has to burn precious CPU and RAM to set it up. If you have hundreds of serverless containers (like Cloud Run) spinning up and tearing down, your database will quickly <strong>run out of breath and collapse</strong>! 😵</p>
     <p>To prevent this, use <strong>Managed Connection Pooling</strong> (like the built-in pooler in Cloud SQL or AlloyDB). It keeps a steady pool of "warm" connections open, sharing them out to incoming requests.</p>
     
-    <div class="mnemonic" style="border-color: var(--cgp-blue); box-shadow: 4px 4px 0px var(--cgp-blue); background: #f0fdf4;">
+    <div class="mnemonic" style="border-color: var(--rev-blue); box-shadow: 4px 4px 0px var(--rev-blue); background: #f0fdf4;">
       <strong>🕵️ The Connection Dynamic Duo:</strong>
       <p>Don't confuse the Auth Proxy with the Connection Pooler. They have very different day jobs:</p>
       <ul>

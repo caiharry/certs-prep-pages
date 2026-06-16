@@ -92,6 +92,12 @@
       <p>Prefer progressive delivery — <strong>canary, blue/green, rolling</strong> — with automated rollback on SLO breach. Prove reliability with <strong>chaos engineering, load testing, and penetration testing</strong> rather than assuming it.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Operational-excellence answers favour automation and measurable SLOs over heroic manual intervention.</div>
     </section>
+    <section class="lesson">
+      <h3>SRE: SLIs, SLOs &amp; error budgets</h3>
+      <p>Operational excellence is measured, not assumed. Pick <strong>SLIs</strong> (e.g. request latency, availability) that reflect user happiness, set <strong>SLOs</strong> (targets) on them, and run on the resulting <strong>error budget</strong>: while budget remains, ship features; when it's spent, freeze risky changes and invest in reliability. Reduce <strong>toil</strong> with automation, and run blameless postmortems after incidents.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Chasing 100% availability is the wrong answer &mdash; SRE deliberately targets an SLO below 100% so an error budget exists to spend on velocity.</div>
+      <div class="callout mnemonic"><span class="hook">SLO</span> Service Level Objective = the line you promise; the gap to 100% is your <em>error budget</em> to spend on shipping.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +112,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud Profiler.</strong></p>
           <p class="quiz-why">Continuous profiling of CPU/heap in production with low overhead.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A team has burned its monthly error budget. What should SRE practice dictate?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Freeze risky feature releases and prioritise reliability work.</strong></p>
+          <p class="quiz-why">The error budget governs velocity: empty budget means slow down and stabilise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Where do you route logs for long-term analytics and compliance retention?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A Cloud Logging sink to BigQuery (or GCS for archive).</strong></p>
+          <p class="quiz-why">Sinks export logs to BigQuery for SQL analysis or to GCS for cheap long-term retention.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A product team wants to ship features quickly, but leadership worries about reliability. What SRE construct balances release velocity against stability?</p>
+        <ul>
+          <li>A) A change-advisory board approving every release manually.</li>
+          <li>B) An SLO with an error budget that gates risky releases when exhausted.</li>
+          <li>C) A target of 100% availability enforced on every service.</li>
+          <li>D) Freezing all releases for the last week of each month.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> The error budget is the SRE mechanism: while budget remains, ship; when it's spent, slow down and fix reliability. It balances both goals automatically.</p>
+          <p class="quiz-why"><strong>A:</strong> A manual CAB is a bottleneck, not a measured balance. <strong>C:</strong> 100% is unrealistic and leaves no budget for change. <strong>D:</strong> A blanket freeze ignores actual reliability data.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> You must release a new version to a small fraction of live users, monitor error rate and latency, then ramp or roll back fast. Which release approach should the architecture use?</p>
+        <ul>
+          <li>A) Big-bang deploy to all users during a maintenance window.</li>
+          <li>B) Canary deployment with progressive traffic shifting and automated rollback on SLO breach.</li>
+          <li>C) Recreate strategy that tears down old pods before starting new ones.</li>
+          <li>D) Manual deploy with a rollback runbook for on-call.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Canary exposes a small slice, gates promotion on metrics, and rolls back automatically &mdash; minimal blast radius with fast recovery.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Big-bang and recreate expose everyone at once. <strong>D:</strong> Manual rollback is slower and error-prone versus automated SLO-gated promotion.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Compliance requires keeping all audit logs for seven years and also running ad-hoc SQL analysis on recent logs. How should you configure log routing?</p>
+        <ul>
+          <li>A) Leave everything in the default _Default log bucket and query there.</li>
+          <li>B) Create Cloud Logging sinks: one to BigQuery for analysis and one to GCS (with retention) for long-term archive.</li>
+          <li>C) Export logs manually with gcloud once a month.</li>
+          <li>D) Increase the default log bucket retention to seven years and query it directly.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Sinks route logs to the right place: BigQuery for SQL analysis and GCS for cheap, durable long-term retention &mdash; meeting both needs.</p>
+          <p class="quiz-why"><strong>A/D:</strong> The default bucket isn't built for seven-year archive or rich SQL analytics economically. <strong>C:</strong> Manual monthly exports are fragile and miss data.</p>
         </details>
       </div>
     </section>

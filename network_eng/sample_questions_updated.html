@@ -1360,7 +1360,7 @@
         let flaggedQuestions = {};
         let struckOptions = {};
         let examSubmitted = false;
-        let timeLeft = 60 * 60;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60);
         let timerInterval;
 
         window.onload = function() {
@@ -1653,7 +1653,7 @@
 
         function resetExam() {
             selectedAnswers = {}; flaggedQuestions = {}; struckOptions = {};
-            examSubmitted = false; timeLeft = 60 * 60;
+            examSubmitted = false; timeLeft = Math.round(quizData.length * 2.4 * 60);
             document.getElementById('results-modal').style.display = 'none';
             initGrid(); loadQuestion(0); startTimer();
             const btn = document.getElementById('submit-exam-btn');

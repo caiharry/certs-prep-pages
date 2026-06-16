@@ -93,6 +93,11 @@
       <p>Prepare features for training/serving (incl. <strong>BigQuery ML</strong>), and prepare unstructured data for embeddings and RAG. Share governed data with <strong>Analytics Hub</strong> (publish/subscribe to datasets) rather than copying.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Share BigQuery data across teams with least operational overhead via Analytics Hub, not by replicating tables into each project.</div>
     </section>
+    <section class="lesson">
+      <h3>Fine-grained access &amp; masking</h3>
+      <p>Share data without over-exposing it. Use <strong>authorized views</strong> / authorized datasets to expose only chosen rows/columns, <strong>column-level security</strong> (policy tags via Dataplex) to gate sensitive fields, <strong>dynamic data masking</strong> to show redacted values to some roles, and <strong>row-level security</strong> to scope each consumer to their slice. Layer Cloud DLP for detection.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Analysts may query the table but must never see the raw card number" = column-level security / dynamic masking, not a separate copied table.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -107,6 +112,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Analytics Hub (BigQuery sharing).</strong></p>
           <p class="quiz-why">Publish/subscribe to shared datasets without copies.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Analysts may query a table but must never see the raw SSN column. What enforces this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Column-level security (policy tags) or dynamic data masking.</strong></p>
+          <p class="quiz-why">Restricts or masks the sensitive column while leaving the rest queryable &mdash; no copied table needed.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A query is slow and over-budget for a repeated aggregation. Cheap BI accelerator?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>BI Engine and/or a materialized view.</strong></p>
+          <p class="quiz-why">Both cache/precompute results so the heavy aggregation isn't rerun from scratch each time.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Several teams need to query a central BigQuery dataset, but the data owner wants to avoid copying tables into each project and minimise operational overhead. What should they use?</p>
+        <ul>
+          <li>A) A scheduled query that replicates the tables into each team's project nightly.</li>
+          <li>B) Analytics Hub to publish the dataset and let teams subscribe in place.</li>
+          <li>C) Export to Cloud Storage and have each team import it.</li>
+          <li>D) Grant every analyst Owner on the source project.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Analytics Hub shares datasets via publish/subscribe with no copying and minimal ops &mdash; consumers query the live data in place.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Replication and exports duplicate data and add maintenance. <strong>D:</strong> Owner is wildly over-privileged and still doesn't solve sharing cleanly.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Analysts must run queries over a customer table, but policy says they must never see the raw credit-card column, while still using the other fields. What is the cleanest control?</p>
+        <ul>
+          <li>A) Maintain a second copy of the table with the column removed for analysts.</li>
+          <li>B) Apply column-level security (policy tags) and/or dynamic data masking to the sensitive column.</li>
+          <li>C) Revoke all analyst access to the dataset.</li>
+          <li>D) Encrypt the whole table with CMEK.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Column-level security and dynamic masking restrict or redact just the sensitive field while keeping the rest queryable &mdash; no duplicate tables to maintain.</p>
+          <p class="quiz-why"><strong>A:</strong> A second copy is extra maintenance and drift risk. <strong>C:</strong> Revoking access blocks the legitimate analysis. <strong>D:</strong> CMEK protects keys, not which columns a role can read.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Business users want to explore and pivot BigQuery data inside a familiar spreadsheet, against billions of rows, without exporting samples. Which tool fits?</p>
+        <ul>
+          <li>A) Looker Studio dashboards.</li>
+          <li>B) Connected Sheets, which queries BigQuery directly from a spreadsheet.</li>
+          <li>C) Downloading a CSV extract into the spreadsheet.</li>
+          <li>D) A materialized view exposed via the API.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Connected Sheets lets users analyse full BigQuery datasets from a spreadsheet without extracting samples.</p>
+          <p class="quiz-why"><strong>A:</strong> Looker Studio is a dashboard, not a spreadsheet. <strong>C:</strong> CSV extracts cap at sample sizes and go stale. <strong>D:</strong> A materialized view speeds queries but isn't a spreadsheet interface.</p>
         </details>
       </div>
     </section>

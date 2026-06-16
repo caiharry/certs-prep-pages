@@ -91,6 +91,12 @@
       <h3>Per-workload optimisation</h3>
       <p>Tune individual workloads: GKE bin-packing and autoscaling, Cloud Run concurrency/min-instances, and Compute Engine right-sizing. Manage observability cost itself with log exclusions and metric sampling.</p>
     </section>
+    <section class="lesson">
+      <h3>Cost visibility &amp; accountability</h3>
+      <p>You can't optimise what you can't see. Use <strong>billing export to BigQuery</strong> for detailed analysis, <strong>labels</strong> on resources for cost allocation/showback, and <strong>budgets and alerts</strong> to catch overruns early. The FinOps loop is inform &rarr; optimise &rarr; operate: attribute spend, act on recommenders, then make it a habit.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Attribute cost to each team/service" relies on consistent <strong>resource labels</strong> + billing export, not eyeballing the console billing page.</div>
+      <div class="callout mnemonic"><span class="hook">FinOps</span> Inform (export + labels), Optimise (recommenders + discounts), Operate (budgets + habits).</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -105,6 +111,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Spot VMs.</strong></p>
           <p class="quiz-why">Deep discount for preemptible, restartable workloads.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Finance wants per-team cost attribution and early warning on overruns. What do you set up?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Resource labels + billing export to BigQuery, plus budgets and alerts.</strong></p>
+          <p class="quiz-why">Labels attribute spend; export enables analysis; budgets alert before overrun.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A steady 24/7 production fleet of predictable size needs cheaper compute without interruption risk. Which discount?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Committed-use discounts.</strong></p>
+          <p class="quiz-why">Best for steady, predictable load; Spot risks preemption, so it's wrong for steady prod.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A nightly batch pipeline is fault-tolerant and restartable, and finance wants its compute cost minimised. Which option fits?</p>
+        <ul>
+          <li>A) Committed-use discounts on always-on standard VMs.</li>
+          <li>B) Spot VMs, with the job designed to resume after preemption.</li>
+          <li>C) A larger machine type to finish the batch faster.</li>
+          <li>D) Premium network tier to speed the job.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Spot VMs are deeply discounted and ideal for interruptible, restartable batch &mdash; exactly this workload.</p>
+          <p class="quiz-why"><strong>A:</strong> CUDs suit steady 24/7 load, not a nightly job. <strong>C:</strong> A bigger machine may cost more, not less. <strong>D:</strong> Network tier doesn't address compute cost for batch.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Leadership wants each team's cloud spend attributed back to them and an alert before any team blows its monthly budget. What should the platform team implement?</p>
+        <ul>
+          <li>A) A monthly manual export of the console billing summary into a slide deck.</li>
+          <li>B) Consistent resource labels plus billing export to BigQuery, with budgets and alerts per team.</li>
+          <li>C) Separate billing accounts created ad hoc when teams ask.</li>
+          <li>D) IAM restrictions so only finance can view billing.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Labels attribute spend, billing export enables per-team analysis, and budgets/alerts catch overruns early &mdash; the standard FinOps showback setup.</p>
+          <p class="quiz-why"><strong>A:</strong> Manual decks are stale and unattributed. <strong>C:</strong> Ad-hoc billing accounts fragment governance. <strong>D:</strong> Hiding billing doesn't attribute or alert on cost.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A platform engineer wants a single place to surface right-sizing, idle-resource, and committed-use savings opportunities across the whole project. What should they consult?</p>
+        <ul>
+          <li>A) Active Assist / Google Cloud recommenders.</li>
+          <li>B) The raw billing CSV for last month.</li>
+          <li>C) Cloud Trace latency reports.</li>
+          <li>D) The IAM Recommender only.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Active Assist recommenders surface cost (right-sizing, idle, CUD), performance, security, and reliability recommendations in one place.</p>
+          <p class="quiz-why"><strong>B:</strong> A billing CSV shows spend, not actionable recommendations. <strong>C:</strong> Trace is for latency, not cost. <strong>D:</strong> The IAM Recommender is one narrow recommender, not the full cost set.</p>
         </details>
       </div>
     </section>

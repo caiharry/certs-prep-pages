@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4; /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
-      --cgp-green-light: #dcfce7;
-      --cgp-green-border: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-green-border);
+      color: var(--rev-green-border);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdf4;
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-green-border);
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -505,7 +505,7 @@
     <h2>2.1 Private Google Access &amp; VIPs</h2>
     <p>Right, let's talk about accessing Google's own APIs (like Cloud Storage, BigQuery, or Pub/Sub) privately. If your VM doesn't have a public IP, how does it talk to Google APIs? It can't route to the public internet! The answer is <strong>Private Google Access (PGA)</strong>. 🌟</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>📡 Private Google Access (PGA)</h3>
       <p>PGA is a simple subnet-level checkbox. When enabled, VMs in that subnet with <strong>only private IPs</strong> can send traffic to the external IP addresses of Google APIs. The traffic travels entirely over Google's internal network, never touching the public internet!</p>
       <p>But wait! What if you are on-premises and want to reach Google APIs privately over VPN or Interconnect? On-prem networks can't use PGA directly. Instead, you must use one of Google's Virtual IPs (VIPs):</p>
@@ -516,7 +516,7 @@
     </div>
 
     <div class="exam-trap">
-      <strong>The DNS Forwarding VIP Trap!</strong> To make on-premises resources use these VIPs, you must configure your on-prem DNS servers to resolve <code><em>.googleapis.com</code> as a CNAME to <code>private.googleapis.com</code> or <code>restricted.googleapis.com</code>, and set up DNS forwarding policies in Cloud DNS. If you forget the DNS overrides, on-prem traffic will try to resolve public IPs and fail!
+      <strong>The DNS Forwarding VIP Trap!</strong> To make on-premises resources use these VIPs, you must configure your on-prem DNS servers to resolve <code>*.googleapis.com</code> as a CNAME to <code>private.googleapis.com</code> or <code>restricted.googleapis.com</code>, and set up DNS forwarding policies in Cloud DNS. If you forget the DNS overrides, on-prem traffic will try to resolve public IPs and fail!
     </div>
 
     <!-- 2.2 PSA vs. PSC vs. Serverless VPC Access -->
@@ -573,7 +573,7 @@
     <h2>2.3 Network Connectivity Center (NCC)</h2>
     <p>As your cloud footprint grows, managing pairwise VPC peerings becomes a nightmare. <strong>Network Connectivity Center (NCC)</strong> is Google's hub-and-spoke network connectivity model. It acts as a single centralized logical control plane to connect VPCs, on-premises offices, and other clouds!</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🌐 NCC Topologies &amp; Spokes</h3>
       <p>An NCC configuration consists of a central <strong>Hub</strong> and multiple attached <strong>Spokes</strong>:</p>
       <ul>
@@ -594,14 +594,14 @@
     </div>
 
     <div class="exam-trap">
-      <strong>The NCC Star Topology Hybrid Trap!</strong> If you configure an NCC hub with a <strong>Star topology</strong>, hybrid spokes with <strong>site-to-site data transfer enabled</strong> (which allows on-prem sites to transit through Google's network to talk to other on-prem sites) are <strong>only supported in the Center spoke group</strong>! Edge spoke groups only support hybrid spokes with site-to-site data transfer </em>disabled*.
+      <strong>The NCC Star Topology Hybrid Trap!</strong> If you configure an NCC hub with a <strong>Star topology</strong>, hybrid spokes with <strong>site-to-site data transfer enabled</strong> (which allows on-prem sites to transit through Google's network to talk to other on-prem sites) are <strong>only supported in the Center spoke group</strong>! Edge spoke groups only support hybrid spokes with site-to-site data transfer disabled.
     </div>
 
     <!-- 2.4 VPC Service Controls (VPC-SC) -->
     <h2>2.4 VPC Service Controls (VPC-SC)</h2>
     <p>Firewall rules block network access, but they don't prevent <strong>data exfiltration</strong> (where an insider with valid credentials copies sensitive database data to an external, unauthorized GCP project). To stop this, you need <strong>VPC Service Controls (VPC-SC)</strong>! 🛡️</p>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🔒 Service Perimeters &amp; Bridges</h3>
       <p>VPC-SC allows you to define a <strong>Service Perimeter</strong> around your Google Cloud resources (like Cloud Storage, BigQuery, or Cloud SQL). This perimeter acts as a giant security wall. APIs inside the perimeter cannot talk to resources outside, even if they have valid IAM credentials!</p>
       <ul>
@@ -656,84 +656,84 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> Your company has deployed a secure data warehouse in BigQuery inside a VPC Service Controls perimeter. An automated pipeline running on-premises needs to load data into BigQuery over a Dedicated Interconnect connection. The pipeline is failing with "Request blocked by VPC Service Controls" errors. How should you resolve this securely?</p>
+        <p><strong>Question 1:</strong> A secure data warehouse in BigQuery sits inside a VPC Service Controls perimeter. An automated pipeline running on-premises loads data into BigQuery over Dedicated Interconnect and fails with "Request blocked by VPC Service Controls". How should you resolve this securely?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure on-premises DNS to resolve BigQuery APIs to the public IP of a transit gateway VM in the Hub VPC, and create a custom route that bypasses VPC Service Controls checks by using a hierarchical firewall policy with a "target-service" tag.</li>
-          <li data-option="B">B) Configure on-premises DNS to resolve BigQuery APIs to <code>restricted.googleapis.com</code> (<code>199.36.153.4/30</code>), advertise this range over BGP, and write a VPC-SC Ingress Policy allowing access from the on-premises pipeline's public IP or service account identity.</li>
-          <li data-option="C">C) Configure on-premises DNS to resolve BigQuery APIs to <code>private.googleapis.com</code> (<code>199.36.153.8/30</code>), advertise this range over dynamic BGP, and configure the service perimeter in dry-run mode to permanently auto-approve incoming pipeline connections.</li>
-          <li data-option="D">D) Create a VPC-SC Perimeter Bridge between the on-premises network gateway project and the BigQuery project, and configure a Cloud Router NAT gateway to perform SNAT on all incoming API requests to hide their on-premises origin.</li>
+          <li data-option="A">A) Resolve the BigQuery API on-premises to the public IP of a transit VM in the hub VPC, and add a hierarchical firewall rule tagged to bypass the perimeter check.</li>
+          <li data-option="B">B) Resolve the BigQuery API to <code>private.googleapis.com</code> (<code>199.36.153.8/30</code>), advertise it over BGP, and leave the perimeter in dry-run mode so the pipeline is auto-allowed.</li>
+          <li data-option="C">C) Resolve the BigQuery API to <code>restricted.googleapis.com</code> (<code>199.36.153.4/30</code>), advertise that range over BGP, and add a VPC-SC ingress policy authorizing the pipeline's identity.</li>
+          <li data-option="D">D) Create a VPC-SC perimeter bridge to the on-premises gateway project, and use Cloud NAT to SNAT the API requests so their on-premises origin is hidden.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> To access VPC-SC protected APIs from on-premises, you must route traffic through the <strong>Restricted VIP</strong> (<code>restricted.googleapis.com</code>). You must also configure an <strong>Ingress Policy</strong> on the service perimeter to explicitly authorize the on-premises pipeline's identity (service account) and network origin to cross the perimeter boundary. 🔒</p>
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> Reaching VPC-SC&ndash;protected APIs from on-premises requires routing to the <strong>restricted VIP</strong> (<code>restricted.googleapis.com</code>) over the Interconnect, <em>plus</em> an <strong>ingress policy</strong> that explicitly authorizes the pipeline's service-account identity and source. That combination crosses the perimeter without weakening it. 🔒</p>
           <ul>
-            <li><strong>A:</strong> Hierarchical firewall policies and transit gateway VMs cannot bypass or override VPC Service Controls perimeter checks, which are enforced at the Google API gateway layer.</li>
-            <li><strong>C:</strong> <code>private.googleapis.com</code> does not support VPC-SC perimeter enforcement, and dry-run mode only logs violations without enforcing them; it does not "auto-approve" or resolve blocking errors once enforced.</li>
-            <li><strong>D:</strong> You cannot create a VPC-SC Perimeter Bridge with an on-premises network; bridges are strictly for connecting projects within different perimeters. SNAT does not bypass VPC-SC boundary rules.</li>
+            <li><strong>A:</strong> Firewall policies and transit VMs can't bypass VPC-SC &mdash; the perimeter is enforced at the Google API layer, not by routing or firewall tags.</li>
+            <li><strong>B:</strong> <code>private.googleapis.com</code> does not enforce VPC-SC, and dry-run mode only <em>logs</em> violations; it never auto-allows traffic once the perimeter is enforced.</li>
+            <li><strong>D:</strong> Perimeter bridges join projects in different perimeters, not on-premises networks, and SNAT changes the source IP without satisfying any ingress rule.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> You are designing a multi-tenant SaaS platform on Google Cloud. You have a central Producer VPC containing a shared analytics service. You want to expose this service to hundreds of independent Customer VPCs. The customer networks must not be able to communicate with each other, and they must not have any direct VPC peering connections to your Producer VPC to avoid IP address space overlaps. What is the recommended architecture?</p>
+        <p><strong>Question 2:</strong> You run a multi-tenant SaaS platform. A central producer VPC hosts a shared analytics service that must be exposed to hundreds of independent customer VPCs. Customers must not reach each other, and there must be no direct peering to your VPC so that overlapping customer IP ranges never matter. What architecture fits?</p>
         <ul class="option-list">
-          <li data-option="A">A) Establish pairwise VPC Network Peering links between the Producer VPC and every Customer VPC, and configure custom route exchange properties to dynamically re-translate overlapping CIDR subnets using Cloud NAT.</li>
-          <li data-option="B">B) Deploy Private Service Connect (PSC). Create a PSC Service Attachment in the Producer VPC behind an Internal Load Balancer, and have each customer create a local PSC Endpoint (Private IP) in their own VPC pointing to your Service Attachment.</li>
-          <li data-option="C">C) Configure a Network Connectivity Center (NCC) hub with a Star topology, placing the Producer VPC in the Center group and all Customer VPCs in the Edge group, then enable dynamic BGP route leaking across all spokes.</li>
-          <li data-option="D">D) Use Cloud VPN to establish secure IPSec tunnels between the Producer VPC and every Customer VPC, and deploy a pool of third-party proxy VMs in the Producer VPC to perform destination NAT on overlapping traffic.</li>
+          <li data-option="A">A) Use Private Service Connect: publish a service attachment behind an internal load balancer in the producer VPC, and have each customer create a PSC endpoint (a private IP) in their own VPC.</li>
+          <li data-option="B">B) Establish pairwise VPC peering from the producer VPC to every customer VPC, and use Cloud NAT to translate any overlapping customer CIDR ranges on the links.</li>
+          <li data-option="C">C) Build an NCC hub with a star topology, putting the producer VPC in the center group and every customer VPC in the edge group with BGP route leaking.</li>
+          <li data-option="D">D) Terminate a Cloud VPN tunnel from each customer VPC and run a pool of proxy VMs in the producer VPC to destination-NAT the overlapping traffic.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is the textbook use case for Private Service Connect (PSC)! By using PSC, customers can access the shared producer service via a local IP endpoint in their own subnet. This completely avoids VPC Peering limits, prevents any IP address conflicts (since NAT is handled natively by PSC), and ensures customers are completely isolated from each other. 🌟</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> <strong>Private Service Connect</strong> is built for this. Each consumer reaches the published service through a private endpoint IP in its own subnet, which sidesteps peering quotas and IP overlaps and keeps consumers fully isolated from one another. 🌟</p>
           <ul>
-            <li><strong>A:</strong> VPC Peering has a strict limit on the number of active peerings, requires non-overlapping IP address spaces, and Cloud NAT cannot translate peered traffic dynamically to resolve IP overlaps.</li>
-            <li><strong>C:</strong> While NCC Star topology isolates Edge spokes from each other, it still requires coordinating non-overlapping IP address allocations across all spokes, which is impossible to guarantee with hundreds of independent customers.</li>
-            <li><strong>D:</strong> Cloud VPN has massive configuration and cost overhead, and deploying proxy VMs to manage hundreds of overlapping NAT configurations introduces a massive bottleneck and operational nightmare.</li>
+            <li><strong>B:</strong> Peering caps the number of connections, forbids overlapping CIDRs, and Cloud NAT can't dynamically de-overlap peered ranges.</li>
+            <li><strong>C:</strong> A star topology isolates edge spokes, but spokes still need non-overlapping IP space &mdash; impossible to guarantee across hundreds of independent customers.</li>
+            <li><strong>D:</strong> Per-customer VPN plus proxy-VM NAT is heavy to operate and a scaling bottleneck compared with native PSC.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You are configuring a Network Connectivity Center (NCC) hub to connect several regional retail branch offices to your central Google Cloud VPC. The branch offices are connected via HA VPN. You want to ensure that branch offices can communicate directly with the central VPC, but branch offices must strictly be blocked from routing traffic to each other through Google's network. How should you configure the NCC hub?</p>
+        <p><strong>Question 3:</strong> You're using a Network Connectivity Center (NCC) hub to connect several retail branch offices (over HA VPN) to your central Google Cloud VPC. Branches must reach the central VPC directly, but must never route to <em>each other</em> through Google's network. How should you configure the hub?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create the NCC hub with a Mesh topology and attach all branch VPNs as hybrid spokes, then configure separate VPC firewall rules in the central VPC to drop inter-branch traffic at the egress layer.</li>
-          <li data-option="B">B) Create the NCC hub with a Star topology. Place the central VPC spoke in the Center group, and place all branch office hybrid spokes in the Edge group.</li>
-          <li data-option="C">C) Use dynamic VPC Network Peering instead of NCC to connect all branches, and configure the peering links to import custom routes but restrict BGP dynamic route advertisements at the Host Project level.</li>
-          <li data-option="D">D) Create the NCC hub with a Star topology. Place all branch office hybrid spokes in the Center group, and the central VPC in the Edge group, then disable BGP route advertisements on all branch Cloud Routers.</li>
+          <li data-option="A">A) Create a mesh-topology hub, attach all branch VPNs as hybrid spokes, and add VPC firewall rules in the central VPC to drop branch-to-branch traffic.</li>
+          <li data-option="B">B) Create a star-topology hub, put the central VPC spoke in the center group, and place all branch hybrid spokes in the edge group.</li>
+          <li data-option="C">C) Skip NCC and connect each branch with VPC peering, importing custom routes but restricting BGP advertisements at the host-project level.</li>
+          <li data-option="D">D) Create a star-topology hub, put the branch hybrid spokes in the center group and the central VPC in the edge group, then disable BGP on the branch routers.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> NCC's <strong>Star topology</strong> is designed exactly for this! In a Star topology, spokes in the <strong>Edge group</strong> can communicate with spokes in the <strong>Center group</strong>, but Edge spokes are strictly blocked from communicating with other Edge spokes. Placing the branches in the Edge group and the central VPC in the Center group enforces this isolation natively. 🌟</p>
+          <p><strong>Why Option B is correct:</strong> In an NCC <strong>star topology</strong>, edge spokes can reach center spokes but not one another. Branches in the edge group and the central VPC in the center group gives exactly "branches reach the center, never each other," enforced natively by NCC. 🌟</p>
           <ul>
-            <li><strong>A:</strong> Mesh topology allows all spokes to communicate with each other, meaning branches would be able to route traffic to other branches over your GCP network. Egress firewall rules do not prevent transit routing at the NCC layer.</li>
-            <li><strong>C:</strong> You cannot terminate customer VPN tunnels directly inside a VPC Peering connection, and peering does not scale to support dynamic branch routing.</li>
-            <li><strong>D:</strong> Placing branches in the Center group would allow them to communicate directly with each other, violating the security requirements. Disabling BGP advertisements would break basic cloud connectivity.</li>
+            <li><strong>A:</strong> Mesh lets every spoke reach every other spoke, so branches could transit to each other; central-VPC firewall rules don't stop spoke-to-spoke transit at the NCC layer.</li>
+            <li><strong>C:</strong> You can't terminate branch VPN tunnels inside a peering connection, and peering doesn't scale to many dynamically-routed branches.</li>
+            <li><strong>D:</strong> Putting branches in the center group lets them reach each other (the very thing you must prevent), and disabling BGP would break their connectivity.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 4 -->
       <div class="q-box">
-        <p><strong>Question 4:</strong> You are troubleshooting a newly deployed VPC Service Controls perimeter. Developers report that their Cloud Run applications can no longer read files from a secure Cloud Storage bucket. You inspect the Cloud Logging logs. What is the most efficient way to identify the exact cause of the block without disrupting other services?</p>
+        <p><strong>Question 4:</strong> After deploying a VPC Service Controls perimeter, developers report their Cloud Run apps can no longer read a secure Cloud Storage bucket. What is the most efficient way to pinpoint the exact cause and fix it without disrupting other services?</p>
         <ul class="option-list">
-          <li data-option="A">A) Delete the service perimeter, recreate it with Cloud Run excluded from the protected services list, and inspect the Cloud Audit Logs for permission-denied events to rebuild the perimeter.</li>
-          <li data-option="B">B) Search Cloud Logging for <code>protoPayload.metadata.violationReason</code> and inspect the <code>callerIp</code>, <code>serviceName</code>, and <code>authenticationInfo</code> fields of the blocked requests to write an appropriate Ingress Policy.</li>
-          <li data-option="C">C) Disable VPC Service Controls enforcement entirely, use the Access Context Manager to set up an IP-based access level for the Cloud Run service account, and rely on IAM permissions.</li>
-          <li data-option="D">D) Grant the <code>roles/storage.admin</code> role to all user identities and the GKE service agents in the project, and configure a Cloud Storage bucket policy that bypasses IP-based restriction checks.</li>
+          <li data-option="A">A) Delete the perimeter, recreate it with Cloud Run removed from the protected services, and read the audit logs to rebuild it correctly.</li>
+          <li data-option="B">B) Disable VPC-SC enforcement, add an IP-based access level in Access Context Manager for the Cloud Run identity, and rely on IAM.</li>
+          <li data-option="C">C) Grant <code>roles/storage.admin</code> to the relevant identities and set a bucket policy that ignores IP-based restriction checks.</li>
+          <li data-option="D">D) Search Cloud Logging for the VPC-SC <code>violationReason</code>, read the <code>callerIp</code>, <code>serviceName</code>, and <code>authenticationInfo</code> fields, then write a precise ingress policy.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> Cloud Logging captures detailed metadata for every VPC Service Controls violation. By searching for the specific violation logs, you can extract the exact caller identity, IP address, and target service, allowing you to write a precise, secure Ingress Policy to allow the legitimate traffic through. 🛠️</p>
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> VPC-SC logs every violation with the caller identity, source IP, and target service. Reading those fields tells you exactly what to authorize, so you can add a tight <strong>ingress policy</strong> for the legitimate traffic without touching anything else. 🛠️</p>
           <ul>
-            <li><strong>A:</strong> Deleting and recreating the perimeter is highly disruptive, breaches security compliance, and does not provide precise diagnostic details for the original configuration.</li>
-            <li><strong>C:</strong> Disabling VPC-SC violates security compliance and exposes the system to data exfiltration. Access Context Manager IP levels do not apply directly to standard serverless Cloud Run identities without PGA or egress routing.</li>
-            <li><strong>D:</strong> IAM roles do not override VPC Service Controls perimeters. Even a project Owner or Storage Admin will be blocked if they try to cross a perimeter boundary without an Ingress Policy!</li>
+            <li><strong>A:</strong> Deleting and recreating the perimeter is disruptive, weakens security, and still doesn't pinpoint the original cause.</li>
+            <li><strong>B:</strong> Disabling VPC-SC removes exfiltration protection, and ACM IP levels don't cleanly apply to serverless Cloud Run identities without egress routing.</li>
+            <li><strong>C:</strong> IAM roles never override a VPC-SC perimeter &mdash; even a project Owner is blocked crossing the boundary without an ingress rule.</li>
           </ul>
         </div>
       </div>

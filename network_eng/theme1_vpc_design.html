@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4; /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
-      --cgp-green-light: #dcfce7;
-      --cgp-green-border: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-green-border);
+      color: var(--rev-green-border);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdf4;
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-green-border);
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -505,7 +505,7 @@
     <h2>1.1 VPC Foundations &amp; Network Tiers</h2>
     <p>Welcome, networking wizard! Let's kick off with the absolute bedrock of Google Cloud Networking. A Google Cloud VPC is a <strong>global</strong> resource, but subnets are strictly <strong>regional</strong>. This is a massive architectural superpower! It means you can have a single VPC spanning the entire planet, with subnets in Europe, the US, and Asia talking to each other without touching the public internet. 🌍</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>⚡ Premium vs. Standard Network Tiers</h3>
       <p>Google Cloud offers two network service tiers. Examiners love to test your understanding of the trade-offs between cost and performance:</p>
       <ul>
@@ -581,7 +581,7 @@
     <h2>1.3 IP Address Management (IPAM) &amp; Subnets</h2>
     <p>Managing IP addresses is like playing a high-stakes game of Tetris. If you run out of IP space, your GKE clusters can't scale, and your subnets will overlap with your on-premises network!</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🎨 Advanced IPAM Strategies</h3>
       <ul>
         <li><strong>Subnet Range Expansion:</strong> You can expand the IP range of an existing subnet without destroying any VMs or interrupting traffic! The new range must be larger than the old one (e.g., changing <code>/24</code> to <code>/22</code>) and must not overlap with other subnets. <em>Note: You can never shrink a subnet range!</em></li>
@@ -595,7 +595,7 @@
     <h2>1.4 VPC Peering &amp; Routing</h2>
     <p>Routing is how packets find their way home. Google Cloud uses <strong>Cloud Router</strong> to manage dynamic routing via BGP. Let's look at the routing rules that examiners love to test.</p>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🚨 The Non-Transitive Peering Wall</h3>
       <p>Just like in the Database exam, this is the #1 networking trap in GCP! <strong>VPC Network Peering is non-transitive.</strong></p>
       <p>If Network A is peered with Network B, and Network B is peered with Network C, Network A <strong>cannot</strong> talk to Network C! Traffic simply hits a brick wall and dies. 🧱</p>
@@ -658,84 +658,84 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> You are designing a Shared VPC architecture for a financial services company. The security team demands that the Payment Processing application in Service Project A must only be allowed to deploy VMs into <code>subnet-payment</code> in the Host Project, while the Analytics application in Service Project B must only use <code>subnet-analytics</code>. How should you configure the IAM permissions?</p>
+        <p><strong>Question 1:</strong> In a Shared VPC, Service Project A (payments) must deploy VMs only into <code>subnet-payment</code>, and Service Project B (analytics) only into <code>subnet-analytics</code>, both in the host project. The central network team must keep control of routing and firewall rules. How should you grant access?</p>
         <ul class="option-list">
-          <li data-option="A">A) Grant the <code>roles/compute.networkUser</code> role to the Service Project A and Service Project B deployment identities at the Host Project level. This allows the central network team to manage subnet restrictions via folder-level organization policies instead of granular subnet IAM bindings.</li>
-          <li data-option="B">B) Grant the <code>roles/compute.networkUser</code> role to the Service Project A deployment identity bound strictly to <code>subnet-payment</code>, and to the Service Project B deployment identity bound strictly to <code>subnet-analytics</code> in the Host Project.</li>
-          <li data-option="C">C) Grant the <code>roles/compute.networkAdmin</code> role to both service project deployment identities in the Host Project, then configure Shared VPC subnet policies to restrict which regions are allowed for each specific project's Compute Engine API calls.</li>
-          <li data-option="D">D) Enable VPC Network Peering between Service Project A and Service Project B, and write hierarchical firewall policies in the Host Project that filter traffic based on source and destination subnet IPs.</li>
+          <li data-option="A">A) Grant <code>roles/compute.networkUser</code> to each service project's identity at the host-project level, then rely on an organization policy to limit which subnet each one may use.</li>
+          <li data-option="B">B) Grant <code>roles/compute.networkUser</code> to project A's identity on <code>subnet-payment</code> only, and to project B's identity on <code>subnet-analytics</code> only.</li>
+          <li data-option="C">C) Grant <code>roles/compute.networkAdmin</code> to both service-project identities on the host project so each team manages the bindings for its own subnet.</li>
+          <li data-option="D">D) Peer each service project's own VPC to the host VPC, then use a hierarchical firewall policy to confine each team to its assigned subnet.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is the principle of least privilege! By binding the <code>compute.networkUser</code> role at the <strong>subnet level</strong> rather than the project level, you ensure that each service project can only see and deploy resources into its designated subnet, preventing cross-contamination. 🔒</p>
+          <p><strong>Why Option B is correct:</strong> This is least privilege in action. Binding <code>compute.networkUser</code> at the <strong>subnet level</strong> means each service project can see and deploy into only its designated subnet, and because you never grant admin roles, the central team keeps control of routes and firewalls. 🔒</p>
           <ul>
-            <li><strong>A:</strong> Binding at the project level allows both projects to deploy resources into <em>any</em> subnet in the Host Project, violating the security requirement.</li>
-            <li><strong>C:</strong> <code>networkAdmin</code> is a highly privileged role that allows service project admins to modify firewalls, VPNs, and routing in the Host Project, which violates central management principles.</li>
-            <li><strong>D:</strong> Shared VPC does not require peering between service projects, and peering alone does not restrict subnet deployment permissions.</li>
+            <li><strong>A:</strong> Project-level <code>networkUser</code> lets both projects deploy into <em>any</em> subnet in the host project, and organization policy doesn't scope subnet usage per project this way.</li>
+            <li><strong>C:</strong> <code>networkAdmin</code> lets the service teams change firewalls, routes, and VPNs in the host project &mdash; exactly the central control you must keep.</li>
+            <li><strong>D:</strong> Shared VPC service projects consume the host network directly rather than via peering, and firewall policy filters traffic; it does not grant subnet deploy permission.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> You have a VPC network with an MTU of 8896 bytes (Jumbo frames) to optimize high-throughput database replication between VMs. You need to establish an HA VPN connection to your on-premises data center. On-premises developers report that they can establish SSH sessions to GCP VMs, but large file transfers and UDP-based monitoring metrics are failing. What is the root cause and the correct resolution?</p>
+        <p><strong>Question 2:</strong> A subnet's primary range <code>10.0.0.0/24</code> is nearly exhausted. The team needs more internal IPs on this subnet without renumbering or recreating the running VMs. What is the supported way to add capacity?</p>
         <ul class="option-list">
-          <li data-option="A">A) HA VPN does not support Jumbo frames for any traffic type. You must modify the dynamic routing MTU properties in Cloud Router to force a regional fallback to 1460 bytes, or recreate the VPC network with an MTU of 1460 bytes.</li>
-          <li data-option="B">B) The HA VPN tunnel has an MTU of 1460. TCP traffic works due to MSS clamping, but UDP packets exceeding 1460 bytes are silently dropped because HA VPN does not support fragmentation and PMTUD is failing. You must configure on-premises routers to clamp MSS and ensure ICMP Type 3 Code 4 (Fragmentation Needed) is allowed through all firewalls, or lower the sending MTU.</li>
-          <li data-option="C">C) Standard Tier routing is active on the VPC network. You must switch the entire network to Premium Tier to enable Google's global routing plane to handle UDP packet fragmentation across inter-region HA VPN paths.</li>
-          <li data-option="D">D) Cloud Router does not support dynamic BGP routing over networks using Jumbo frames. You must delete the Cloud Router, configure static routes for the HA VPN tunnel, and set a custom metric on the on-premises peer.</li>
+          <li data-option="A">A) Expand the subnet's primary IPv4 range in place to a larger prefix such as <code>/22</code>, which keeps existing IPs and adds free addresses.</li>
+          <li data-option="B">B) Delete and recreate the subnet with a <code>/22</code> range, then migrate the VMs into the new subnet during a maintenance window.</li>
+          <li data-option="C">C) Add a second primary IPv4 range to the subnet so that newly created VMs can draw their primary IP from either range.</li>
+          <li data-option="D">D) Peer this subnet to a new <code>/22</code> subnet in another VPC so the existing VMs can borrow addresses across the peering link.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> This is a classic real-world hybrid MTU failure mode! HA VPN has a hard MTU ceiling of 1460 bytes due to IPSec encapsulation overhead. While TCP connections survive by negotiating a lower segment size (MSS Clamping), UDP has no connection negotiation. If PMTUD (Path MTU Discovery) is broken because firewalls block ICMP "Fragmentation Needed" packets, large UDP packets are silently dropped. Allowing ICMP or lowering the workload's MTU solves this.</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> Google Cloud lets you <strong>expand a subnet's primary IPv4 range</strong> to a larger block (a smaller prefix length) in place. Existing instances keep their addresses and more become available. You can't <em>shrink</em> a range, but expansion is fully supported and non-disruptive. 📈</p>
           <ul>
-            <li><strong>A:</strong> You do not need to delete the VPC or modify dynamic routing MTU properties; you can update the MTU dynamically, but lowering the entire VPC MTU unnecessarily affects internal VM-to-VM traffic.</li>
-            <li><strong>C:</strong> Network service tiers (Standard vs Premium) determine the routing paths over public internet vs Google private fiber, but do not affect UDP packet fragmentation or MTU constraints.</li>
-            <li><strong>D:</strong> Cloud Router fully supports BGP regardless of MTU size; dynamic routing is unaffected, and switching to static routing does not resolve physical packet drops.</li>
+            <li><strong>B:</strong> Deleting and recreating is disruptive and unnecessary &mdash; in-place expansion exists precisely to avoid this.</li>
+            <li><strong>C:</strong> A subnet has exactly one primary IPv4 range. You can add <em>secondary</em> ranges for alias IPs / GKE Pods and Services, but VMs' primary NIC addresses always come from the single primary range.</li>
+            <li><strong>D:</strong> Peering does not let a VM pull an IP from another subnet's range; a VM's address always comes from its own subnet.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You are designing a transit VPC architecture. You have a central Hub VPC containing a pool of third-party firewall appliances (NVAs) behind an Internal Load Balancer (ILB). You have multiple Spoke VPCs peered with the Hub VPC. You want to route all egress internet traffic from the Spoke VPCs through the firewall NVAs in the Hub VPC. How should you configure the routing?</p>
+        <p><strong>Question 3:</strong> A latency-sensitive web service runs in one region on Standard Tier networking. Users far from that region complain about high latency, and you want traffic to ride Google's backbone, entering and leaving as close to each user as possible. Which change best achieves this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create a regional default route (0.0.0.0/0) in each Spoke VPC with the next hop set to the Hub VPC's Internal Load Balancer frontend IP, ensuring that transit routing over the peering link is enabled.</li>
-          <li data-option="B">B) Configure Policy-Based Routing (PBR) rules in each of the Spoke VPCs that match all outbound destination IPs and set the next-hop target directly to the Hub VPC's ILB VIP address.</li>
-          <li data-option="C">C) In the Hub VPC, create a custom static route for 0.0.0.0/0 with the next hop set to the ILB. Configure the VPC peering links to export custom routes from the Hub VPC and import custom routes into the Spoke VPCs.</li>
-          <li data-option="D">D) Configure a Network Connectivity Center (NCC) hub with VPC spoke attachments for the Hub and Spoke VPCs, and enable dynamic custom route leaking across all spokes using Cloud Router BGP sessions.</li>
+          <li data-option="A">A) Keep Standard Tier but place Cloud CDN in front of the load balancer so responses are cached at the network edge for all users.</li>
+          <li data-option="B">B) Deploy the service in a second region and keep Standard Tier in both, using DNS geo-routing to send each user to the nearer region.</li>
+          <li data-option="C">C) Move the external IP and load balancer to Premium Tier so traffic enters and exits Google's edge nearest the user, over the backbone.</li>
+          <li data-option="D">D) Configure the load balancer for Premium Tier egress while keeping its forwarding rule on Standard Tier to hold down inbound traffic cost.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> You cannot set the next hop of a route in a peered VPC directly to an ILB in another VPC (Option A is invalid). Instead, you must define the custom route (0.0.0.0/0 pointing to the ILB) locally in the Hub VPC, and then use the VPC Peering <strong>"Export/Import Custom Routes"</strong> feature to propagate that default route down into the Spoke VPCs! 🗺️</p>
+          <p><strong>Why Option C is correct:</strong> <strong>Premium Tier</strong> carries traffic on Google's private global backbone using cold-potato routing, so packets enter and leave at the Google edge closest to the user &mdash; cutting latency for distant users. (Global external load balancers require Premium Tier anyway.) 🌍</p>
           <ul>
-            <li><strong>A:</strong> Peered networks cannot target a peer's ILB directly as a next hop in their static route configurations because peered hops are not transit-routable.</li>
-            <li><strong>B:</strong> Policy-Based Routing cannot target next-hop IP addresses or load balancers that reside in peered VPCs.</li>
-            <li><strong>D:</strong> NCC is used for hybrid and multi-VPC hub-spoke dynamic routing, but simple peered transit routing is best solved via custom route export/import over peering without BGP session complexity.</li>
+            <li><strong>A:</strong> CDN helps cacheable content, but dynamic/uncacheable requests still traverse the underlying path, which the tier governs.</li>
+            <li><strong>B:</strong> Multi-region plus DNS helps, but on Standard Tier each region still hands traffic to the public internet near the source, so long-haul latency remains.</li>
+            <li><strong>D:</strong> You can't split a single forwarding rule's ingress and egress across tiers; tier is set per forwarding rule / external IP, so this is not a valid configuration.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 4 -->
       <div class="q-box">
-        <p><strong>Question 4:</strong> You need to connect an on-premises network to Google Cloud. You have configured a Cloud Router in <code>us-east1</code> with a dynamic routing mode set to <strong>Regional</strong>. You establish an HA VPN tunnel. On-premises servers can ping VMs in <code>us-east1</code>, but they cannot reach VMs in <code>us-west1</code> within the same VPC. What should you do?</p>
+        <p><strong>Question 4:</strong> An HA VPN with a Cloud Router in <code>us-east1</code> (dynamic routing mode: <em>Regional</em>) lets on-premises hosts reach VMs in <code>us-east1</code>, but not VMs in <code>us-west1</code> in the same VPC. You want the simplest change that lets on-premises reach all regions. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Establish a second redundant HA VPN tunnel directly from the on-premises gateway to a new Cloud Router located in <code>us-west1</code>, and configure BGP over both tunnels.</li>
-          <li data-option="B">B) Change the VPC's dynamic routing mode from Regional to Global.</li>
-          <li data-option="C">C) Configure custom static routes in the VPC network pointing to the <code>us-west1</code> subnets with the next-hop set to the <code>us-east1</code> HA VPN gateway interfaces.</li>
-          <li data-option="D">D) Enable VPC Network Peering between the <code>us-east1</code> and <code>us-west1</code> regional subnets, and configure custom route exchange properties on the peering link.</li>
+          <li data-option="A">A) Add a second HA VPN and Cloud Router in <code>us-west1</code> and run BGP over both so each region is advertised to on-premises locally.</li>
+          <li data-option="B">B) Switch the VPC's dynamic routing mode from Regional to Global so the Cloud Router advertises every region's subnets.</li>
+          <li data-option="C">C) Add custom static routes for the <code>us-west1</code> subnets with the next hop set to the <code>us-east1</code> HA VPN gateway interface.</li>
+          <li data-option="D">D) Enable VPC Network Peering between the <code>us-east1</code> and <code>us-west1</code> subnets and turn on custom route export on the peering link.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> When the dynamic routing mode of a VPC is set to <strong>Regional</strong>, Cloud Router only propagates learned BGP routes to the subnets in its own region (<code>us-east1</code>). By changing the mode to <strong>Global</strong>, the learned routes are distributed to all subnets across all regions in the VPC, allowing the on-premises network to route traffic to <code>us-west1</code> natively. 🌐</p>
+          <p><strong>Why Option B is correct:</strong> In <strong>Regional</strong> mode a Cloud Router only advertises (and applies learned routes to) subnets in its own region. <strong>Global</strong> dynamic routing propagates BGP routes to and from all regions, so on-premises learns <code>us-west1</code> &mdash; a single-setting fix. 🌐</p>
           <ul>
-            <li><strong>A:</strong> While this would work, it is highly inefficient, expensive, and increases operational complexity compared to a simple VPC configuration change.</li>
-            <li><strong>C:</strong> Static routes override dynamic routing and are hard to maintain, violating best practices for hybrid scale.</li>
-            <li><strong>D:</strong> Regional subnets in the same VPC do not need peering; they are already connected natively and peering them is not possible.</li>
+            <li><strong>A:</strong> A second tunnel and router would work, but it's far more cost and operational overhead than flipping one VPC setting.</li>
+            <li><strong>C:</strong> Static routes here are brittle and don't scale, and on-premises still wouldn't <em>learn</em> <code>us-west1</code> unless the Cloud Router advertises it (i.e. Global mode).</li>
+            <li><strong>D:</strong> Subnets in the same VPC are already connected and cannot be peered to each other; peering is only for separate VPCs.</li>
           </ul>
         </div>
       </div>

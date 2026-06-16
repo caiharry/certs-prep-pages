@@ -97,6 +97,11 @@
       <p>Run <strong>Artifact Analysis</strong> vulnerability scanning, enforce <strong>Binary Authorization</strong> and the <strong>SLSA</strong> framework for supply-chain integrity, and scope IAM by environment. Inject secrets at build vs runtime via <strong>Secret Manager</strong>, Certificate Manager, and KMS.</p>
       <div class="callout mnemonic"><span class="hook">Supply chain</span> <strong>Binary Authorization + SLSA</strong> = only verified, attested artifacts reach production.</div>
     </section>
+    <section class="lesson">
+      <h3>Trigger patterns &amp; CI/CD for infra and ML</h3>
+      <p>Wire <strong>Cloud Build triggers</strong> to git events (push, tag, PR) so builds are automatic and traceable. CD isn't just for apps: apply the same pipeline discipline to <strong>infrastructure</strong> (Terraform plan/apply gated by review) and <strong>ML</strong> (train &rarr; evaluate &rarr; register, with an eval gate). Cache dependencies and run steps in parallel to keep pipelines fast.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Apply Terraform only after review and approval" = a CI/CD pipeline running <code>plan</code> on PR and gated <code>apply</code> on merge &mdash; not engineers running <code>apply</code> locally.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -111,6 +116,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud Deploy.</strong></p>
           <p class="quiz-why">Managed CD with release promotion and approval gates.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Only artifacts your pipeline built and signed may run in prod. Which two controls?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Binary Authorization + build attestations (SLSA).</strong></p>
+          <p class="quiz-why">Binary Authorization admits only images with valid attestations from your build process.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You want an instant 100% cutover with the old version kept ready for fast rollback. Which strategy?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Blue/green deployment.</strong></p>
+          <p class="quiz-why">Two full environments; flip traffic at once and flip back instantly if needed.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team needs managed continuous delivery to GKE and Cloud Run with promotion through dev&rarr;staging&rarr;prod, approval gates, and one-click rollback, using Skaffold. Which service anchors this?</p>
+        <ul>
+          <li>A) Cloud Build alone, with custom deploy scripts per environment.</li>
+          <li>B) Cloud Deploy delivery pipelines with targets and approvals.</li>
+          <li>C) A Cloud Scheduler job running gcloud deploy commands.</li>
+          <li>D) Argo CD self-managed on a dedicated cluster.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Deploy is the managed CD service: Skaffold-based pipelines, multi-target promotion, approvals, and rollback out of the box.</p>
+          <p class="quiz-why"><strong>A:</strong> Cloud Build is CI; promotion/approvals/rollback are Cloud Deploy's role. <strong>C:</strong> Scheduled gcloud lacks promotion and approvals. <strong>D:</strong> Argo CD works but is self-managed overhead versus the native managed option.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Compliance requires that only container images produced and attested by the official pipeline can run in production clusters. Which combination enforces this at admission?</p>
+        <ul>
+          <li>A) Artifact Registry IAM limiting who can push images.</li>
+          <li>B) Binary Authorization requiring build attestations (SLSA) before a pod admits.</li>
+          <li>C) A naming convention for production image tags.</li>
+          <li>D) Vulnerability scanning that emails the security team.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Binary Authorization checks cryptographic attestations at admission, so only images the pipeline built and signed can run.</p>
+          <p class="quiz-why"><strong>A:</strong> Push permissions don't control what actually runs. <strong>C:</strong> Tags are spoofable. <strong>D:</strong> Scanning detects issues but doesn't block deployment.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A new release must reach a small fraction of users first, with promotion gated on live error-rate and latency metrics and fast rollback if they regress. Which deployment strategy fits?</p>
+        <ul>
+          <li>A) Blue/green with an immediate 100% cutover.</li>
+          <li>B) Canary with progressive, metric-gated traffic shifting.</li>
+          <li>C) Recreate, replacing all instances at once.</li>
+          <li>D) A big-bang deploy during a maintenance window.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Canary exposes a small slice, gates promotion on metrics, and rolls back quickly &mdash; exactly the requirement.</p>
+          <p class="quiz-why"><strong>A:</strong> Blue/green flips everyone at once (no gradual exposure). <strong>C/D:</strong> Recreate and big-bang expose all users simultaneously.</p>
         </details>
       </div>
     </section>

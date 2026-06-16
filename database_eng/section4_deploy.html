@@ -8,13 +8,13 @@
     :root {
       --bg-light: #fff7ed;
       --ink: #1e293b;
-      --cgp-orange: #ea580c;
-      --cgp-orange-light: #ffedd5;
-      --cgp-orange-border: #f97316;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-red: #ef4444;
-      --cgp-green: #16a34a;
+      --rev-orange: #ea580c;
+      --rev-orange-light: #ffedd5;
+      --rev-orange-border: #f97316;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-red: #ef4444;
+      --rev-green: #16a34a;
       --radius: 12px;
     }
 
@@ -63,11 +63,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #fb923c 0%, var(--cgp-orange) 100%);
+      background: linear-gradient(135deg, #fb923c 0%, var(--rev-orange) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -112,7 +112,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
     }
 
     h3 {
@@ -126,7 +126,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -136,31 +136,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #fff7ed;
-      border-color: var(--cgp-orange-border);
-      box-shadow: 4px 4px 0px var(--cgp-orange-border);
+      border-color: var(--rev-orange-border);
+      box-shadow: 4px 4px 0px var(--rev-orange-border);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-orange);
+    .rev-card.tip h3 {
+      color: var(--rev-orange);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -170,7 +170,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -235,15 +235,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -281,7 +281,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -298,7 +298,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -330,7 +330,7 @@
     }
 
     .explanation-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -348,7 +348,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -409,8 +409,8 @@
 
     .option-list li.selected {
       background: #ffedd5;
-      border-color: var(--cgp-orange);
-      box-shadow: 2px 2px 0px var(--cgp-orange);
+      border-color: var(--rev-orange);
+      box-shadow: 2px 2px 0px var(--rev-orange);
     }
 
     .option-list li.eliminated {
@@ -421,16 +421,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -470,7 +470,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -515,7 +515,7 @@
     <h2>4.1 Pressing the Button &mdash; Scalable &amp; HA Deployment</h2>
     <p>We've made it to the final section of our study guide! Now it's time to actually construct our databases. But wait... you aren't going to build these production instances by clicking random buttons in the GCP Console, are you? No! That is strictly for amateurs! 🖱️</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🏗️ Infrastructure as Code (IaC) &mdash; The Terraform Way</h3>
       <p>Real-world Cloud Architects write, review, and version-control their database infrastructure using <strong>Terraform</strong>. This ensures total environment consistency (your staging database will match production perfectly) and prevents fat-finger manual mistakes. Here is how you declare a Cloud SQL instance with High Availability enabled:</p>
 
@@ -544,7 +544,7 @@
       <p>Always use <strong><code>terraform import</code></strong> to safely link the existing live resource to your Terraform state file first! After importing, run <code>terraform plan</code> like a hawk to catch any configuration drift. Reviewing drift is the difference between a clean deployment and an emergency coffee run at 2 AM! ☕</p>
     </div>
 
-    <div class="cgp-card">
+    <div class="rev-card">
       <h3>📚 Scaling Reads Without Melting the Primary</h3>
       <p>Read scaling is the classic "same data, too many eyeballs" problem. Make sure you pick the replica type that matches the engine:</p>
       <ul class="bullet-chk">
@@ -568,7 +568,7 @@
       <p>For the highest-tier databases that require multi-regional replication with <strong>99.999% availability and strong consistency</strong>, head straight for <strong>Cloud Spanner</strong>. Spanner uses TrueTime for globally consistent transactions, but remember: you still need excellent schema design because bad keys can still cause hotspots and make your database slow and grumpy!</p>
     </div>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>📈 HA Monitoring: Trust, But Verify</h3>
       <p>After deploying your HA database, monitor these four metrics to prove HA is actually doing its job:</p>
       <ul class="bullet-chk">
@@ -725,10 +725,10 @@
 
     </div>
 
-    <div style="background: #ecfdf5; border: 3px solid var(--cgp-green); border-radius: var(--radius); padding: 25px; margin-top: 50px; box-shadow: 4px 4px 0px var(--cgp-green);">
-      <h3 style="color: var(--cgp-green); margin-top: 0;">🎉 Congratulations &mdash; You Are Ready to Score Points!</h3>
+    <div style="background: #ecfdf5; border: 3px solid var(--rev-green); border-radius: var(--radius); padding: 25px; margin-top: 50px; box-shadow: 4px 4px 0px var(--rev-green);">
+      <h3 style="color: var(--rev-green); margin-top: 0;">🎉 Congratulations &mdash; You Are Ready to Score Points!</h3>
       <p>You have read through all four comprehensive study guides! You know how to size instances, construct private connections, manage backups, scale read fleets, and execute near-zero downtime cutovers with Database Migration Service.</p>
-      <p>Go back to the <a href="index.html" style="color: var(--cgp-orange); font-weight: bold; text-decoration: underline;">Main Revision Hub</a>, review any topics you felt shaky on, and get ready to crush that Professional Cloud Database Engineer exam! 🎓🚀</p>
+      <p>Go back to the <a href="index.html" style="color: var(--rev-orange); font-weight: bold; text-decoration: underline;">Main Revision Hub</a>, review any topics you felt shaky on, and get ready to crush that Professional Cloud Database Engineer exam! 🎓🚀</p>
     </div>
 
     <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>

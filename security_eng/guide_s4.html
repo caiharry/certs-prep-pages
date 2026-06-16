@@ -92,6 +92,26 @@
       <p>Analyse network logs (VPC Flow Logs, Cloud NGFW, Packet Mirroring, <strong>Cloud IDS</strong>, Log Analytics). Configure <strong>Cloud Audit Logs</strong> and data-access logs, route them with <strong>log sinks / aggregated sinks</strong> (to BigQuery/Pub/Sub/GCS or external SIEM), and centralise findings in <strong>Security Command Center</strong>.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Data-access logs are not all enabled by default — you must explicitly turn them on for the services you need to audit.</div>
     </section>
+    <section class="lesson">
+      <h3>Audit logs: the four types &amp; routing them</h3>
+      <p>Know the four <strong>Cloud Audit Logs</strong> streams and which are on by default. <strong>Admin Activity</strong> and <strong>System Event</strong> logs are always on and free. <strong>Data Access</strong> logs (who read/wrote data) and <strong>Policy Denied</strong> logs are <em>not</em> all enabled by default — you turn Data Access logging on per service in the IAM audit config. To retain or analyse logs beyond the default <code>_Default</code> bucket, create <strong>log sinks</strong>; an <strong>aggregated sink</strong> at the org/folder level captures logs from every child project in one place and exports to BigQuery, Pub/Sub, Cloud Storage, or an external SIEM.</p>
+      <ul>
+        <li><strong>Admin Activity</strong> — config changes; always on, cannot disable.</li>
+        <li><strong>Data Access</strong> — reads/writes of data; mostly off by default, enable per service.</li>
+        <li><strong>Aggregated sink</strong> — org/folder-level export of all child logs.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "We had no record of who read the data" almost always means Data Access logs were never enabled — they are off by default. Don't blame the sink; fix the IAM audit config first.</div>
+    </section>
+    <section class="lesson">
+      <h3>Threat detection &amp; incident response</h3>
+      <p><strong>Security Command Center</strong> is the posture and threat hub: <strong>Security Health Analytics</strong> flags misconfigurations, <strong>Event Threat Detection</strong> spots malicious activity in logs, and <strong>Container/VM Threat Detection</strong> watch workloads. For network forensics, <strong>VPC Flow Logs</strong> show connection metadata, <strong>Packet Mirroring</strong> feeds full packets to <strong>Cloud IDS</strong> for signature-based detection. When responding, you can quarantine a VM with a deny-all firewall tag, rotate or disable compromised credentials/keys, and snapshot disks for evidence — automate the routine steps so response is fast and repeatable.</p>
+      <ul>
+        <li><strong>Security Health Analytics</strong> — misconfiguration findings.</li>
+        <li><strong>Event Threat Detection</strong> — log-based threat detection.</li>
+        <li><strong>Cloud IDS</strong> — packet-mirrored, signature-based intrusion detection.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">SCC = SEE</span> Security Command Center is where you <em>see</em> it all — misconfig (SHA), threats (ETD), and posture in one console.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +126,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Security Command Center.</strong></p>
           <p class="quiz-why">Aggregates findings, vulnerabilities, and posture.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You need every project's logs exported to one central SIEM with the least ongoing maintenance. What do you configure?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An aggregated log sink at the organization (or folder) level.</strong></p>
+          <p class="quiz-why">It captures logs from all current and future child projects without per-project setup.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> An investigation finds no record of which user read a sensitive BigQuery table last month. What was most likely missing?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Data Access audit logs were not enabled for BigQuery.</strong></p>
+          <p class="quiz-why">Data Access logs are off by default and must be turned on per service in the IAM audit config.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A compliance team needs a tamper-resistant record of every read against objects in a set of regulated Cloud Storage buckets, retained for seven years in an external SIEM. Currently nothing is recorded. What is the correct first step before any export will help?</p>
+        <ul>
+          <li>A) Create an aggregated log sink to the SIEM and assume the read events will start flowing</li>
+          <li>B) Enable Data Access audit logs for Cloud Storage in the IAM audit configuration</li>
+          <li>C) Turn on VPC Flow Logs on the subnets that host the storage clients</li>
+          <li>D) Add a Security Health Analytics custom module that watches the buckets for reads</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Object reads are Data Access events, which are off by default; until you enable Data Access audit logs for Cloud Storage there is nothing for any sink to export.</p>
+          <p class="quiz-why"><strong>A:</strong> A sink only routes logs that already exist — with Data Access logging off there is nothing to route. <strong>C:</strong> Flow Logs record network connection metadata, not who read which storage object. <strong>D:</strong> Security Health Analytics reports misconfigurations, not per-object read events.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Event Threat Detection raises a finding that a Compute Engine instance is communicating with a known crypto-mining command-and-control IP. You must contain the host immediately while preserving evidence for later analysis. What is the best response?</p>
+        <ul>
+          <li>A) Delete the instance right away so the mining process can no longer run anywhere</li>
+          <li>B) Remove the service account from the instance and wait to see if the traffic stops on its own</li>
+          <li>C) Apply a deny-all firewall rule via a network tag to isolate the VM, then snapshot its disks</li>
+          <li>D) Lower the instance's machine type to starve the miner of CPU while you investigate</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Isolating the VM with a deny-all firewall tag cuts the C2 channel immediately, and snapshotting the disks preserves forensic evidence before any further change.</p>
+          <p class="quiz-why"><strong>A:</strong> Deleting the instance destroys exactly the evidence you are told to preserve. <strong>B:</strong> Removing the service account does not stop outbound network traffic and "wait and see" is not containment. <strong>D:</strong> Resizing slows the miner but leaves the C2 connection open, so the host is not contained.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Security wants signature-based intrusion detection on east-west traffic between application tiers in a VPC, with full-payload inspection and managed threat signatures, without writing detection rules themselves. Which combination fits?</p>
+        <ul>
+          <li>A) Packet Mirroring feeding Cloud IDS, which applies Google-managed threat signatures</li>
+          <li>B) VPC Flow Logs exported to BigQuery with scheduled queries flagging suspicious patterns</li>
+          <li>C) Cloud Armor rules inspecting the traffic between the application tiers</li>
+          <li>D) A custom Security Health Analytics module scanning the tier configurations for drift</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Cloud IDS consumes mirrored packets and applies Google-managed (Palo Alto) threat signatures for full-payload, signature-based detection with no rule authoring required.</p>
+          <p class="quiz-why"><strong>B:</strong> Flow Logs carry only connection metadata, not payloads, and require you to write the detection queries yourself. <strong>C:</strong> Cloud Armor protects inbound HTTP(S) at the load balancer edge, not east-west VPC traffic. <strong>D:</strong> Security Health Analytics checks configuration posture, not live payload-level intrusions.</p>
         </details>
       </div>
     </section>

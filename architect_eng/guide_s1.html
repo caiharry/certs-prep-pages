@@ -102,6 +102,17 @@
       <h3>Migration planning</h3>
       <p>Use <strong>Migration Center</strong> for automated discovery, dependency mapping, fit assessment, and TCO before any move. Then pick the mover: <strong>Migrate to Virtual Machines</strong> for VMs, <strong>Database Migration Service</strong> for databases, <strong>Storage Transfer Service / Transfer Appliance</strong> for data at rest. Plan waves, test workloads, and account for software-license implications.</p>
     </section>
+    <section class="lesson">
+      <h3>Designing for HA &amp; DR (RTO/RPO)</h3>
+      <p>Two numbers drive every resilience design: <strong>RTO</strong> (how fast you must recover) and <strong>RPO</strong> (how much data loss you can tolerate). They pick the DR pattern:</p>
+      <ul>
+        <li><strong>Backup &amp; restore</strong> &mdash; cheapest, highest RTO/RPO (hours).</li>
+        <li><strong>Cold / warm standby</strong> (pilot light) &mdash; minimal idle resources, faster recovery.</li>
+        <li><strong>Hot standby / multi-region active-active</strong> &mdash; near-zero RTO/RPO, highest cost.</li>
+      </ul>
+      <p>Spread across <strong>zones</strong> for HA within a region; span <strong>regions</strong> for disaster recovery. Use regional managed instance groups, multi-region storage, and a load balancer with health checks for automatic failover.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Near-zero RPO across regions" rules out async replication (Cloud SQL cross-region replicas) and backup/restore &mdash; you need synchronous/multi-region (Spanner) or active-active.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -116,6 +127,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud Run.</strong></p>
           <p class="quiz-why">Scale-to-zero, request autoscaling, fully managed — minimal ops, no idle cost.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Two designs both meet the technical need, but one costs less and one is more "cutting edge". The stem names a hard budget cap. Which wins?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>The one that satisfies the explicit budget constraint.</strong></p>
+          <p class="quiz-why">The keyed answer matches the stated business constraint, not the most powerful or newest service.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A fault-tolerant nightly batch job wants the lowest compute cost. What VM option?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Spot VMs.</strong></p>
+          <p class="quiz-why">Deeply discounted and fine for interruptible, restartable batch work; never for latency-critical stateful services.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A global retailer must keep inventory counts strongly consistent across the US, Europe, and Asia with an RPO of zero, and the application is relational. Which database should the architecture use?</p>
+        <ul>
+          <li>A) Cloud SQL with cross-region read replicas promoted on failover.</li>
+          <li>B) Cloud Spanner configured as a multi-region instance.</li>
+          <li>C) Bigtable replicated across three regions.</li>
+          <li>D) Firestore in multi-region mode with offline sync.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Spanner is the only relational option giving synchronous, globally consistent writes with RPO 0 at multi-region scale.</p>
+          <p class="quiz-why"><strong>A:</strong> Cross-region replicas are asynchronous, so RPO &gt; 0. <strong>C:</strong> Bigtable is wide-column NoSQL, not relational, and replication is eventually consistent. <strong>D:</strong> Firestore is a document store and not the fit for relational inventory with RPO 0.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> An architecture review lists two valid designs. One uses a brand-new managed service; the other is simpler and clearly cheaper. The scenario states a strict monthly budget. Which design should you recommend?</p>
+        <ul>
+          <li>A) The newer service, because modern services are favoured.</li>
+          <li>B) The cheaper design that still meets every functional requirement and the budget.</li>
+          <li>C) Whichever has the highest raw performance.</li>
+          <li>D) A hybrid that runs both to hedge risk.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> The keyed answer satisfies the explicit business constraint &mdash; here, the budget &mdash; while meeting the functional needs.</p>
+          <p class="quiz-why"><strong>A/C:</strong> "Newer" or "fastest" isn't the goal when a budget is stated. <strong>D:</strong> Running both raises cost and complexity, breaking the constraint.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You are planning a migration of 300 mixed VMs and databases. Leadership wants discovery, dependency mapping, fit assessment, and a TCO estimate before committing. What should you start with?</p>
+        <ul>
+          <li>A) Migrate to Virtual Machines for an immediate lift-and-shift of everything.</li>
+          <li>B) Migration Center for discovery, dependency mapping, fit assessment, and TCO.</li>
+          <li>C) Database Migration Service to move the databases first.</li>
+          <li>D) Transfer Appliance to ship the data, then decide.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Migration Center is the assessment-and-planning tool: it discovers assets, maps dependencies, assesses fit, and estimates TCO before any move.</p>
+          <p class="quiz-why"><strong>A/C:</strong> These are execution movers, used after assessment, not for planning. <strong>D:</strong> Transfer Appliance moves bulk data; it doesn't assess or plan the migration.</p>
         </details>
       </div>
     </section>

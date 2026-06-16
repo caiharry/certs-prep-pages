@@ -92,6 +92,11 @@
       <p>Query with the <strong>Logs Explorer</strong> and Logging query language; export/retain via sinks to BigQuery/Pub/Sub/GCS. Analyse metrics in <strong>Metrics Explorer</strong> (PromQL supported), build dashboards, and configure alerting policies on SLIs/SLOs. Capture <strong>distributed traces</strong> (OpenTelemetry), analyse span waterfalls, and correlate trace IDs with structured logs.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To detect VM shutdowns quickly, create a log-based alert on the audit-log method (e.g., compute.instances.stop) — not an hourly scheduled BigQuery query.</div>
     </section>
+    <section class="lesson">
+      <h3>Root-cause workflow</h3>
+      <p>Debug systematically, top-down from the user symptom: confirm the SLO impact in <strong>Cloud Monitoring</strong>, narrow the time/scope, then drill into <strong>Cloud Trace</strong> to find the slow span and into <strong>Cloud Logging</strong> (correlated by trace ID) for the error. Use <strong>Cloud Profiler</strong> for CPU/memory hotspots and <strong>Error Reporting</strong> to group recurring exceptions. The three pillars &mdash; metrics, logs, traces &mdash; answer "how bad", "what happened", and "where".</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Which microservice adds the latency in a request that crosses ten services?" = distributed tracing (Cloud Trace), not reading each service's logs by hand.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +111,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Google Cloud Managed Service for Prometheus.</strong></p>
           <p class="quiz-why">Managed, scalable Prometheus-compatible metrics.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A request crossing 10 microservices is slow. Which signal finds the offending hop?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Distributed tracing (Cloud Trace) span waterfall.</strong></p>
+          <p class="quiz-why">Traces show per-span latency across services, pinpointing the slow hop &mdash; logs alone can't.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Logging bills are too high from verbose debug logs. Two cheap levers?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Log exclusions/filters and sampling.</strong></p>
+          <p class="quiz-why">Drop or sample low-value logs before ingestion to cut cost without losing key signals.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> The on-call team must be alerted within seconds whenever a production VM is stopped, with no polling cost. What is the best approach?</p>
+        <ul>
+          <li>A) An hourly scheduled BigQuery query over exported audit logs.</li>
+          <li>B) A Cloud Logging log-based alert on the <code>compute.instances.stop</code> audit-log method.</li>
+          <li>C) A cron job that lists instances and compares state every minute.</li>
+          <li>D) A weekly review of the activity log.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A log-based alert fires in near-real-time off the audit log with no polling, exactly matching the requirement.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Hourly queries and per-minute polling lag and cost more. <strong>D:</strong> Weekly review is far too slow.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A user request that traverses ten microservices is intermittently slow, and you must identify which service contributes the latency. Which observability signal is the right tool?</p>
+        <ul>
+          <li>A) Aggregate CPU metrics for the whole cluster.</li>
+          <li>B) Distributed tracing (Cloud Trace) with correlated trace IDs.</li>
+          <li>C) Reading each service's logs in sequence by hand.</li>
+          <li>D) Error Reporting exception counts.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A trace's span waterfall shows per-service latency across the whole request, pinpointing the slow hop.</p>
+          <p class="quiz-why"><strong>A:</strong> Cluster CPU doesn't isolate one service's request latency. <strong>C:</strong> Manual log reading across ten services is slow and error-prone. <strong>D:</strong> Error Reporting counts exceptions, not latency.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An existing Kubernetes estate already exposes Prometheus metrics, and the team wants them collected at scale on Google Cloud without running and scaling their own Prometheus servers. What should they adopt?</p>
+        <ul>
+          <li>A) Google Cloud Managed Service for Prometheus.</li>
+          <li>B) A self-hosted Prometheus per cluster with manual federation.</li>
+          <li>C) Rewrite all metrics as Cloud Monitoring custom metrics by hand.</li>
+          <li>D) Ship metrics as logs and build log-based metrics from them.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Managed Service for Prometheus ingests existing Prometheus metrics at scale with no servers to run, keeping PromQL compatibility.</p>
+          <p class="quiz-why"><strong>B:</strong> Self-hosting is the operational burden they want to avoid. <strong>C:</strong> Hand-porting metrics is wasteful and error-prone. <strong>D:</strong> Logs-as-metrics is a workaround, not native Prometheus ingestion.</p>
         </details>
       </div>
     </section>

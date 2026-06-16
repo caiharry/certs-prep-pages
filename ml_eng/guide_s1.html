@@ -85,18 +85,61 @@
 
     <section class="lesson">
       <h3>The build-vs-buy ladder</h3>
-      <p>Climb only as high as you need: <strong>pretrained ML APIs / Model Garden</strong> for standard tasks (OCR, translation, sentiment) &rarr; <strong>BigQuery ML</strong> when data is in BigQuery and the team writes SQL &rarr; <strong>AutoML</strong> for a custom model with little code &rarr; <strong>custom training</strong> for full control. Stop at the first rung that meets the requirement and team skill.</p>
-      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> No labelled data and a standard task points to a pretrained ML API — not AutoML or custom training.</div>
+      <p>The single most-tested instinct in this domain: <em>climb only as high as you need</em>. Each rung up costs more data, more skill, and more time to maintain.</p>
+      <ul>
+        <li><strong>Pretrained ML APIs / Model Garden</strong> &mdash; standard tasks (OCR, translation, sentiment, transcription) with <em>no</em> training data.</li>
+        <li><strong>BigQuery ML</strong> &mdash; the data already lives in BigQuery and the team writes SQL.</li>
+        <li><strong>AutoML</strong> &mdash; you need a <em>custom</em> model but want minimal code and have some labelled data.</li>
+        <li><strong>Custom training (Vertex AI)</strong> &mdash; full control over framework, architecture, and hardware.</li>
+      </ul>
+      <p>Pick the lowest rung that satisfies the requirement <em>and</em> the team's skill. The exam loves to dangle a fancy option when a humbler one is correct.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "No labelled data + a standard task" points to a pretrained ML API &mdash; never AutoML or custom training, both of which need labelled examples.</div>
+      <div class="callout mnemonic"><span class="hook">LADDER</span> <strong>L</strong>owest rung wins. If two options both work, the cheaper / less-custom one is almost always the keyed answer.</div>
+    </section>
+    <section class="lesson">
+      <h3>Pretrained ML APIs at a glance</h3>
+      <p>Know which API owns which task &mdash; the exam tests the boundaries, not the SDK calls:</p>
+      <ul>
+        <li><strong>Cloud Vision</strong> &mdash; labels, objects, OCR, faces, safe-search on images.</li>
+        <li><strong>Video Intelligence</strong> &mdash; shot/label/object tracking and explicit-content detection in video.</li>
+        <li><strong>Natural Language</strong> &mdash; entities, sentiment, syntax, classification of free text.</li>
+        <li><strong>Speech-to-Text / Text-to-Speech</strong> &mdash; transcription and voice synthesis.</li>
+        <li><strong>Translation</strong> &mdash; language detection and translation.</li>
+        <li><strong>Document AI</strong> &mdash; structured extraction from forms, invoices, and contracts (key-value pairs, tables).</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Extract fields from scanned invoices" is <strong>Document AI</strong>, not the raw Vision OCR &mdash; Document AI understands document <em>structure</em>, Vision just returns text.</div>
     </section>
     <section class="lesson">
       <h3>BigQuery ML model picker</h3>
-      <ul><li>Predict a number &rarr; linear regression.</li><li>Yes/no or class &rarr; logistic / multiclass classification.</li><li>Forecast a time series &rarr; ARIMA_PLUS.</li><li>Recommendations &rarr; matrix factorization.</li><li>Tabular accuracy &rarr; boosted trees (XGBoost).</li><li>Anomaly detection &rarr; autoencoder / k-means.</li></ul>
-      <div class="callout mnemonic"><span class="hook">BQML</span> If the data already lives in BigQuery and the user speaks SQL, BigQuery ML beats standing up custom training.</div>
+      <p>BigQuery ML lets analysts train and serve models with <code>CREATE MODEL</code> SQL &mdash; no data leaves the warehouse. Match the goal to the model type:</p>
+      <ul>
+        <li>Predict a number &rarr; <strong>linear regression</strong>.</li>
+        <li>Yes/no or a class &rarr; <strong>logistic / multiclass classification</strong>.</li>
+        <li>Forecast a time series &rarr; <strong>ARIMA_PLUS</strong>.</li>
+        <li>Recommendations &rarr; <strong>matrix factorization</strong>.</li>
+        <li>Maximum tabular accuracy &rarr; <strong>boosted trees (XGBoost)</strong>.</li>
+        <li>Anomaly detection / grouping &rarr; <strong>autoencoder / k-means</strong>.</li>
+        <li>Reuse a TensorFlow model &rarr; <strong>imported TF model</strong> for in-warehouse inference.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">BQML</span> Data in BigQuery + a SQL-speaking team = BigQuery ML beats standing up custom training every time.</div>
+    </section>
+    <section class="lesson">
+      <h3>AutoML &mdash; the low-code custom rung</h3>
+      <p>AutoML (now folded into Vertex AI) trains a <em>custom</em> model on <em>your</em> labelled data with almost no code, handling feature engineering, architecture search, and tuning for you. Use it when a pretrained API can't capture your domain (e.g. classifying <em>your</em> defect types) but you lack the team or time for custom training.</p>
+      <p>It spans tabular, image, text, and video. The trade-off versus custom training is control: you don't choose the architecture or framework, and very large or exotic models still want custom training.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> AutoML still needs a <em>labelled</em> dataset. If the scenario says "we have no labels", AutoML is wrong &mdash; consider a pretrained API or an unsupervised approach.</div>
     </section>
     <section class="lesson">
       <h3>Generative AI building blocks</h3>
-      <p><strong>Model Garden</strong> catalogs foundation and open models. <strong>Vertex AI Agent Builder</strong> provides managed RAG, search, and agents — ground LLM answers in your documents with citations and minimal infrastructure. Industry APIs (<strong>Document AI</strong>, <strong>Retail API</strong>) solve domain-specific extraction tasks out of the box.</p>
-      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Grounding answers in a document corpus with citations = RAG via Agent Builder, not fine-tuning a model from scratch.</div>
+      <p><strong>Model Garden</strong> is the catalogue of foundation and open models (Gemini, plus third-party and open-weight models). <strong>Vertex AI Agent Builder</strong> provides managed retrieval-augmented generation (RAG), search, and agents &mdash; ground an LLM's answers in your own documents with citations and minimal infrastructure.</p>
+      <p>Choose the lightest customization that works: <strong>prompt design</strong> first, then <strong>grounding / RAG</strong> to inject fresh private knowledge, then <strong>tuning</strong> (e.g. supervised fine-tuning) only when style or format must be baked in. Full pre-training is essentially never the exam answer.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Answer from a document corpus, with citations, kept current" = RAG via Agent Builder. Fine-tuning memorizes, doesn't cite, and goes stale the moment the docs change.</div>
+      <div class="callout mnemonic"><span class="hook">PGT</span> <strong>P</strong>rompt &rarr; <strong>G</strong>round (RAG) &rarr; <strong>T</strong>une. Walk up the GenAI ladder one step at a time, just like build-vs-buy.</div>
+    </section>
+    <section class="lesson">
+      <h3>Responsible AI &amp; data residency</h3>
+      <p>Even low-code solutions carry obligations. Watch for scenarios that hinge on <strong>data residency</strong> (keep training/serving in a specific region), <strong>sensitive data</strong> (run Cloud DLP / Sensitive Data Protection to de-identify before training), or <strong>fairness/explainability</strong> (Vertex Explainable AI feature attributions). Pretrained APIs process data in Google's managed service &mdash; if a constraint forbids that, you may be pushed up to a model you host in-region.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A strict "PII must never leave our region / be exposed to a shared API" constraint can rule out a pretrained API even when the task is standard.</div>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -112,6 +155,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>RAG with Vertex AI Agent Builder.</strong></p>
           <p class="quiz-why">Managed retrieval-augmented generation grounds answers and cites sources.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must pull line items and totals out of scanned supplier invoices. Vision OCR or Document AI?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Document AI.</strong></p>
+          <p class="quiz-why">It returns structured key-value pairs and tables; Vision OCR only gives you raw text you'd have to parse yourself.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A standard sentiment task, but the team has zero labelled data and no ML engineers. Which rung?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Pretrained Natural Language API.</strong></p>
+          <p class="quiz-why">No labels and a standard task = lowest rung. AutoML and custom training both need labelled examples.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A retailer wants automatic object and label tagging on catalogue photos. There is no ML team and no labelled training data, and the budget is tight. What is the best approach?</p>
+        <ul>
+          <li>A) Train an AutoML Vision model on a labelled subset of the catalogue and deploy it to a Vertex endpoint.</li>
+          <li>B) Use the pretrained Cloud Vision API label and object-detection features from the application.</li>
+          <li>C) Fine-tune a Model Garden vision foundation model on the product images.</li>
+          <li>D) Build a custom CNN with Vertex AI custom training on a managed image dataset.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Object and label detection is a standard task with no labelled data, so the pretrained Cloud Vision API is the lowest, cheapest rung that works.</p>
+          <p class="quiz-why"><strong>A:</strong> AutoML needs labelled data and effort that a standard task doesn't justify. <strong>C:</strong> Fine-tuning needs data and skill for no benefit here. <strong>D:</strong> Custom training is the most expensive rung &mdash; massive overkill.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> SQL analysts must ship a customer-churn classifier this week, on data already in BigQuery, with minimal new infrastructure. What should they use?</p>
+        <ul>
+          <li>A) Export the data to Cloud Storage and train an AutoML Tabular model.</li>
+          <li>B) Stand up Vertex AI custom training with a TensorFlow model.</li>
+          <li>C) Train a logistic-regression model in place using BigQuery ML and SQL.</li>
+          <li>D) Call the Vertex AI Gemini API to classify each customer row.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> BigQuery ML trains and serves with SQL where the data already lives &mdash; no movement, no new infrastructure, and it fits a SQL team and a tight deadline.</p>
+          <p class="quiz-why"><strong>A:</strong> Exporting adds data movement and setup for no gain. <strong>B:</strong> Custom training is heavy for a SQL team on a one-week timeline. <strong>D:</strong> An LLM is the wrong, costly tool for structured tabular classification.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A support assistant must answer questions from 10,000 internal PDFs, cite its sources, and stay accurate as documents are updated, with low engineering effort. What fits best?</p>
+        <ul>
+          <li>A) Fine-tune a foundation model on the PDFs so it memorizes their content.</li>
+          <li>B) Use Vertex AI Agent Builder RAG over the indexed PDFs to ground answers and cite sources.</li>
+          <li>C) Paste the full set of PDFs into the prompt context on every request.</li>
+          <li>D) Train an AutoML text-classification model on the PDF corpus.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> RAG retrieves the relevant passages at query time, so answers stay grounded with citations and update automatically as the corpus changes &mdash; with minimal infrastructure.</p>
+          <p class="quiz-why"><strong>A:</strong> Fine-tuning is costly, can't cite, and goes stale on every document change. <strong>C:</strong> The corpus far exceeds the context window and is expensive per call. <strong>D:</strong> Classification assigns labels; it doesn't answer questions with citations.</p>
         </details>
       </div>
     </section>

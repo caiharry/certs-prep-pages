@@ -96,6 +96,26 @@
       <h3>Private connectivity</h3>
       <p>Reach Google APIs without public IPs via <strong>Private Google Access</strong> and <strong>Private Service Connect</strong>. Connect on-prem privately with <strong>HA VPN</strong> or <strong>Cloud Interconnect</strong>, and allow controlled egress with <strong>Cloud NAT</strong>.</p>
     </section>
+    <section class="lesson">
+      <h3>Firewalls: VPC rules vs hierarchical policies vs Cloud NGFW</h3>
+      <p>There are three layers and the exam loves to test which one fits. <strong>VPC firewall rules</strong> live in a single network and act on tags/service accounts. <strong>Hierarchical firewall policies</strong> attach at the <strong>organization or folder</strong> node and inherit downward, so security teams can enforce baseline allow/deny across many projects centrally — and use <code>goto_next</code> to delegate the rest to project owners. <strong>Cloud NGFW</strong> (the Cloud Firewall stack) adds <strong>network firewall policies</strong>, FQDN and geo objects, and L7 intrusion prevention via the Enterprise tier. Evaluation runs most-specific to least: a higher-level deny in a hierarchical policy beats a permissive project rule.</p>
+      <ul>
+        <li><strong>VPC firewall rule</strong> — per-network, tag/SA-scoped, classic.</li>
+        <li><strong>Hierarchical firewall policy</strong> — org/folder-wide guardrail, inherited.</li>
+        <li><strong>Cloud NGFW Enterprise</strong> — L7 IPS, TLS inspection, threat intel.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Enforce a baseline firewall rule across every project, owners cannot remove it" = hierarchical firewall policy at org/folder. A plain VPC rule is editable by anyone with network-admin on that project.</div>
+    </section>
+    <section class="lesson">
+      <h3>Private access paths &amp; egress control</h3>
+      <p>Distinguish the private-connectivity options, because they solve different problems. <strong>Private Google Access</strong> lets a VM with no external IP reach Google APIs over internal routes. <strong>Private Service Connect</strong> exposes a Google or published service behind a private endpoint IP inside your VPC, and is the modern way to consume managed services privately. For controlled outbound traffic, <strong>Cloud NAT</strong> gives egress without inbound exposure, and <strong>Secure Web Proxy</strong> filters and logs egress to the internet by URL/host. Pair these with <strong>VPC Service Controls</strong> to box in the data-exfiltration risk at the API layer.</p>
+      <ul>
+        <li><strong>Private Google Access</strong> — no-external-IP VM reaching Google APIs.</li>
+        <li><strong>Private Service Connect</strong> — private endpoint to a producer service.</li>
+        <li><strong>Secure Web Proxy</strong> — policy-based, logged internet egress.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">PERIMETER vs PIPE</span> VPC Service Controls is a <em>perimeter</em> around API data; PSC and Private Google Access are private <em>pipes</em> for connectivity. Don't reach for a pipe when the question is about exfiltration.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -110,6 +130,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Identity-Aware Proxy (IAP).</strong></p>
           <p class="quiz-why">Context-aware, identity-based access to apps.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Security must enforce a deny-all baseline firewall rule across every project that owners cannot delete. Which feature?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A hierarchical firewall policy at the organization or folder node.</strong></p>
+          <p class="quiz-why">It inherits downward and is managed centrally, so project network admins cannot remove it.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A VM with no external IP must reach the Cloud Storage API over Google's network. What do you enable on its subnet?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Private Google Access.</strong></p>
+          <p class="quiz-why">It routes requests to Google APIs internally so no public IP is required.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A compromised service account inside a project has valid IAM permissions on a Cloud Storage bucket and is attempting to copy the bucket's contents to a personal project in another organization. You must stop the copy even though the IAM grant is legitimate. What blocks it?</p>
+        <ul>
+          <li>A) A VPC firewall egress rule denying outbound traffic to the internet from the affected subnet</li>
+          <li>B) Removing the Storage Object Viewer role from the service account on the bucket</li>
+          <li>C) A VPC Service Controls perimeter around the project that restricts Cloud Storage egress</li>
+          <li>D) A Cloud Armor security policy applied in front of the storage endpoint</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> VPC Service Controls enforces a perimeter at the API layer, so a copy from in-perimeter Cloud Storage to a project outside the perimeter is denied regardless of the identity's valid IAM permissions.</p>
+          <p class="quiz-why"><strong>A:</strong> Storage API calls go to Google's API frontends, not arbitrary internet egress, so a subnet egress rule does not reliably stop an authorised API-to-API copy. <strong>B:</strong> The grant is described as legitimate and needed; revoking it breaks normal use and an attacker with IAM-edit could restore it. <strong>D:</strong> Cloud Armor protects inbound HTTP(S) load-balanced applications, not outbound storage API exfiltration.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> An internal HR application runs on Compute Engine and must be reachable by employees from anywhere, but only after their identity and device posture are verified, and you want to retire the corporate VPN. Which design meets this?</p>
+        <ul>
+          <li>A) Put the app behind Identity-Aware Proxy with an access level that checks device posture and group membership</li>
+          <li>B) Publish the app on an external load balancer protected by a Cloud Armor IP allowlist of office ranges</li>
+          <li>C) Keep the VPN but add a hierarchical firewall policy restricting the app's port to internal ranges</li>
+          <li>D) Expose the app through Private Service Connect so only endpoints inside the VPC can reach it</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> IAP combined with an Access Context Manager access level gives identity-aware, device-aware, VPN-less access from any network — the BeyondCorp model the question describes.</p>
+          <p class="quiz-why"><strong>B:</strong> An IP allowlist binds access to office networks, which fails the "from anywhere" requirement and checks neither identity nor device. <strong>C:</strong> This keeps the VPN you were asked to retire and does no identity/device verification. <strong>D:</strong> PSC restricts reachability to inside-VPC endpoints, the opposite of letting verified employees connect from anywhere.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> VMs in a locked-down subnet have no external IPs but must download OS patches from a specific set of vendor domains on the public internet, and security wants every outbound request logged and filtered by hostname. Which control fits best?</p>
+        <ul>
+          <li>A) Cloud NAT on the subnet so the VMs can reach the patch servers via a managed egress IP</li>
+          <li>B) Private Google Access so the VMs can resolve and reach the external vendor endpoints</li>
+          <li>C) Secure Web Proxy with a policy allowing only the approved vendor hostnames and logging all egress</li>
+          <li>D) A VPC Service Controls perimeter listing the vendor domains as allowed egress destinations</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Secure Web Proxy applies URL/host-based egress policy and logs every request, exactly matching "filtered by hostname and logged."</p>
+          <p class="quiz-why"><strong>A:</strong> Cloud NAT provides egress but applies no hostname filtering or per-request application logging. <strong>B:</strong> Private Google Access only reaches Google APIs, not arbitrary external vendor domains. <strong>D:</strong> VPC-SC governs access to Google-managed API services, not generic internet hostnames for patch downloads.</p>
         </details>
       </div>
     </section>

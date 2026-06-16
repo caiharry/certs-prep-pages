@@ -91,6 +91,12 @@
       <h3>Fleets & secure dev environments</h3>
       <p>Manage many GKE clusters as a <strong>fleet</strong> for consistent config and policy. Provide secure, reproducible developer environments with <strong>Cloud Workstations</strong> and <strong>Cloud Shell</strong>, bootstrapped with required tooling and accelerated by <strong>Gemini Code Assist / Cloud Assist</strong>.</p>
     </section>
+    <section class="lesson">
+      <h3>Policy guardrails &amp; config sync</h3>
+      <p>Set guardrails high in the hierarchy and let them inherit. The <strong>Organization Policy Service</strong> enforces constraints (restrict resource locations, disable service-account key creation, require OS Login, restrict external IPs). For fleets, <strong>Config Sync</strong> applies a Git repo of config to every cluster, and <strong>Policy Controller</strong> (OPA Gatekeeper) blocks non-compliant Kubernetes resources at admission &mdash; consistent policy as code.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Stop anyone in the org from creating VMs with external IPs" = an organization policy constraint, not a per-project firewall or manual review.</div>
+      <div class="callout mnemonic"><span class="hook">GUARD</span> Org Policy sets the rules, Config Sync distributes them, Policy Controller enforces them at the cluster door.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -105,6 +111,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Terraform / Infrastructure Manager (IaC).</strong></p>
           <p class="quiz-why">Declarative, version-controlled, reproducible.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Org-wide, no one may create resources outside EU regions. What enforces this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An organization policy restricting resource locations.</strong></p>
+          <p class="quiz-why">Org policies inherit down folders/projects and constrain where resources can be created.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Keep dozens of clusters' Kubernetes config in sync from one Git repo. Which tool?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Config Sync (with Policy Controller for guardrails).</strong></p>
+          <p class="quiz-why">GitOps reconciliation applies the repo to every fleet cluster continuously.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Security mandates that, across the entire organization, no Compute Engine VM may be created with an external IP address, with no per-team exceptions to maintain by hand. What enforces this centrally?</p>
+        <ul>
+          <li>A) A firewall rule in each project denying egress to the internet.</li>
+          <li>B) An organization policy constraint disabling external IPs, set at the org node.</li>
+          <li>C) A weekly script that deletes VMs found with external IPs.</li>
+          <li>D) IAM that prevents developers from creating VMs at all.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> An org policy constraint inherits to every folder and project and blocks creation of VMs with external IPs &mdash; central, preventive, no manual upkeep.</p>
+          <p class="quiz-why"><strong>A:</strong> Firewall rules govern traffic, not whether an external IP is assigned, and would be per-project. <strong>C:</strong> Deleting after the fact is reactive and disruptive. <strong>D:</strong> Blocking all VM creation overshoots the requirement.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A platform team runs 40 GKE clusters and needs identical configuration and admission policies applied to all of them from a single source of truth. What should they use?</p>
+        <ul>
+          <li>A) Manually <code>kubectl apply</code> the same manifests to each cluster.</li>
+          <li>B) A fleet with Config Sync distributing a Git repo and Policy Controller enforcing rules.</li>
+          <li>C) A separate Terraform workspace per cluster with copied config.</li>
+          <li>D) One giant cluster instead of 40 to simplify config.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A fleet with Config Sync continuously reconciles every cluster to the Git repo, and Policy Controller enforces guardrails at admission &mdash; consistent config-as-code at scale.</p>
+          <p class="quiz-why"><strong>A:</strong> Manual apply drifts and doesn't scale to 40 clusters. <strong>C:</strong> Copied Terraform per cluster duplicates and drifts. <strong>D:</strong> Collapsing to one cluster harms isolation and blast radius.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> After repeated outages from inconsistent, hand-built environments, leadership wants every environment provisioned the same way, reviewed before changes apply. What practice should the team adopt?</p>
+        <ul>
+          <li>A) A documented console runbook each engineer follows.</li>
+          <li>B) Infrastructure as Code (Terraform / Infrastructure Manager) under GitOps with pull-request review.</li>
+          <li>C) Granting only senior engineers console access.</li>
+          <li>D) Taking project snapshots to roll back after mistakes.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> IaC under GitOps makes provisioning declarative, reviewed, and repeatable, eliminating drift between environments.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Manual steps and access limits still allow inconsistent, unreviewed changes. <strong>D:</strong> Snapshots recover state but don't make provisioning consistent.</p>
         </details>
       </div>
     </section>

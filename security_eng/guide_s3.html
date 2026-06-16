@@ -96,6 +96,27 @@
       <h3>Securing AI workloads</h3>
       <p>Apply security and privacy controls to ML systems: protect training data and models from exfiltration, secure Vertex AI access, and consider Model Armor / Sensitive Data Protection for generative AI inputs and outputs.</p>
     </section>
+    <section class="lesson">
+      <h3>Cloud KMS in practice: CMEK, rotation &amp; separation of duties</h3>
+      <p>When you choose <strong>CMEK</strong>, you own the key lifecycle in <strong>Cloud KMS</strong>: create key rings, set <strong>automatic rotation</strong> schedules, disable or destroy versions, and import your own key material if a regulator demands "generate-then-import." Each Google service uses your CMEK through a per-service <strong>service agent</strong> that needs the <code>roles/cloudkms.cryptoKeyEncrypterDecrypter</code> role on the key — revoke it and the data becomes inaccessible (a deliberate kill-switch). Keep <strong>separation of duties</strong>: the key admin should not also be the data admin, so no single person can both grant data access and control the keys.</p>
+      <ul>
+        <li><strong>CMEK</strong> — your key in KMS; you control rotation, disable, destroy.</li>
+        <li><strong>CMEK import</strong> — bring your own key material into KMS.</li>
+        <li><strong>Cloud EKM</strong> — key stays in an external HSM/KMS, never in Google Cloud.</li>
+        <li><strong>Confidential Computing</strong> — encrypts data in use, in memory.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Revoke access to encrypted data instantly without touching the data" = disable/destroy the CMEK key version (or revoke the service agent's key role). Re-running DLP or changing bucket IAM does not achieve a cryptographic kill-switch.</div>
+    </section>
+    <section class="lesson">
+      <h3>Sensitive Data Protection &amp; Secret Manager</h3>
+      <p><strong>Sensitive Data Protection</strong> (the service formerly called Cloud DLP) does three distinct jobs the exam separates: <strong>discovery</strong> (profiling where sensitive data lives across BigQuery, Cloud Storage, and Cloud SQL), <strong>inspection</strong> (matching infoTypes like credit cards or national IDs), and <strong>de-identification</strong> (redaction, masking, or format-preserving <strong>tokenisation/pseudonymisation</strong> so analytics still work). For application credentials, use <strong>Secret Manager</strong> — versioned secrets, IAM-scoped access, CMEK encryption, and rotation — never hard-coded strings or config files baked into images.</p>
+      <ul>
+        <li><strong>Discovery / profiling</strong> — find sensitive data at scale.</li>
+        <li><strong>De-identification</strong> — redact, mask, or tokenise while keeping utility.</li>
+        <li><strong>Secret Manager</strong> — central, versioned, IAM-controlled secrets.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">FIND-then-FUZZ</span> Sensitive Data Protection first <em>finds</em> the PII, then <em>fuzzes</em> it (redact/mask/tokenise). If the stem keeps analytics usable, the answer is tokenisation, not deletion.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -110,6 +131,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud EKM.</strong></p>
           <p class="quiz-why">External keys never persist in Google Cloud.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An auditor asks you to instantly render a CMEK-encrypted dataset unreadable without deleting the data. What do you do?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Disable (or destroy) the CMEK key version in Cloud KMS.</strong></p>
+          <p class="quiz-why">Without the key, the ciphertext cannot be decrypted, giving an immediate cryptographic kill-switch.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A database password is currently baked into a container image. Where should it live instead?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Secret Manager.</strong></p>
+          <p class="quiz-why">It provides versioned, IAM-controlled, encrypted storage with rotation, retrieved at runtime.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A financial regulator requires that the encryption keys protecting your BigQuery datasets are generated and stored exclusively in your own on-premises HSM and never reside in Google Cloud, even briefly. Which key option satisfies this?</p>
+        <ul>
+          <li>A) CMEK with key material imported into Cloud KMS from the on-prem HSM</li>
+          <li>B) Google-managed encryption keys with Access Approval enabled on the project</li>
+          <li>C) Cloud External Key Manager backed by your on-prem HSM through a supported partner</li>
+          <li>D) CMEK in Cloud HSM with a strict automatic rotation policy and audit logging</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Cloud EKM keeps the key in your external HSM and Google only receives a short-lived wrapped reference, so the key material never resides in Google Cloud — exactly the regulator's constraint.</p>
+          <p class="quiz-why"><strong>A:</strong> Importing key material places that material into Cloud KMS, violating "never resides in Google Cloud." <strong>B:</strong> Google-managed keys live entirely in Google's infrastructure; Access Approval gates support access but not key location. <strong>D:</strong> Cloud HSM keys are generated and held in Google's HSMs, not your on-prem HSM.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Analysts need to run aggregate queries over a customer table that contains national ID numbers. The IDs must stay non-readable, yet rows for the same customer must still join consistently across tables. What is the right transformation?</p>
+        <ul>
+          <li>A) Apply Sensitive Data Protection redaction so the ID values are removed from the output entirely</li>
+          <li>B) Apply Sensitive Data Protection deterministic tokenisation (format-preserving encryption) to the ID column</li>
+          <li>C) Encrypt the whole table with a CMEK key and grant analysts the key decrypt role</li>
+          <li>D) Move the table behind a VPC Service Controls perimeter and grant analysts BigQuery access</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Deterministic tokenisation replaces each ID with a stable surrogate, so the value is unreadable but the same input always yields the same token, preserving joins across tables.</p>
+          <p class="quiz-why"><strong>A:</strong> Redaction removes the values, breaking the cross-table joins the analysts require. <strong>C:</strong> Granting decrypt access makes the raw IDs readable, defeating the requirement. <strong>D:</strong> A perimeter controls where data can go but does nothing to de-identify the ID values for the analysts who are allowed in.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Your security team must ensure that the engineer who manages encryption keys cannot also grant themselves read access to the data those keys protect, satisfying a separation-of-duties audit finding. How do you structure this?</p>
+        <ul>
+          <li>A) Give the key engineer Owner on the project so they can manage both keys and data consistently</li>
+          <li>B) Store all keys as Google-managed so no human holds key permissions at all</li>
+          <li>C) Put the keys in Secret Manager and grant the key engineer the Secret Accessor role</li>
+          <li>D) Grant the key engineer Cloud KMS Admin on the key project and ensure they hold no data-read role on the data project</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: D.</strong> Splitting duties means the key admin holds only KMS roles in the key project and has no data-read role on the data resources, so they can manage keys but cannot read the protected data.</p>
+          <p class="quiz-why"><strong>A:</strong> Owner grants both key and data control to one person, which is the exact concentration the audit flagged. <strong>B:</strong> Google-managed keys remove the requirement to manage keys at all, but the question requires a human key admin who is fenced off from data. <strong>C:</strong> Secret Manager stores secrets, not the KMS keys that encrypt the datasets, so it does not implement key/data separation.</p>
         </details>
       </div>
     </section>

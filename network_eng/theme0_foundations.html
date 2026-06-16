@@ -8,16 +8,16 @@
     :root {
       --bg-light: #f5f3ff; /* Very light purple/violet background */
       --ink: #1e293b;
-      --cgp-violet: #8b5cf6; /* Theme 0 primary violet */
-      --cgp-violet-light: #ede9fe;
-      --cgp-violet-border: #6d28d9;
-      --cgp-green: #16a34a;
-      --cgp-green-light: #dcfce7;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
+      --rev-violet: #8b5cf6; /* Theme 0 primary violet */
+      --rev-violet-light: #ede9fe;
+      --rev-violet-border: #6d28d9;
+      --rev-green: #16a34a;
+      --rev-green-light: #dcfce7;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
       --radius: 12px;
     }
 
@@ -66,11 +66,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #a78bfa 0%, var(--cgp-violet) 100%);
+      background: linear-gradient(135deg, #a78bfa 0%, var(--rev-violet) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -115,7 +115,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-violet-border);
+      color: var(--rev-violet-border);
     }
 
     h3 {
@@ -129,7 +129,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -139,31 +139,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #fdf4ff;
-      border-color: var(--cgp-violet);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      border-color: var(--rev-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-violet-border);
+    .rev-card.tip h3 {
+      color: var(--rev-violet-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -173,7 +173,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -228,7 +228,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -240,15 +240,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet-border);
+      color: var(--rev-violet-border);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -286,7 +286,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -303,7 +303,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -338,7 +338,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -399,8 +399,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -411,16 +411,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -460,7 +460,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -507,7 +507,7 @@
     
     <p>An <strong>IPv4 Address</strong> is just a 32-bit digital address written in four decimal parts (called <strong>octets</strong>) separated by dots (e.g., <code>192.168.1.50</code>). Each octet is 8 bits, meaning its value can range from <code>0</code> to <code>255</code>.</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🌍 RFC 1918: The Private Playground</h3>
       <p>Computers on the public internet must have globally unique IP addresses. But inside our own private networks (like your home Wi-Fi or a GCP VPC), we use a special set of "un-routable" IP ranges reserved by the internet gods under a document called <strong>RFC 1918</strong>. These are completely free for anyone to use internally:</p>
       <ul class="bullet-chk">
@@ -593,7 +593,7 @@
     <h3>🤝 Layer 4 (Transport Layer) — TCP vs. UDP</h3>
     <p>Layer 4 sits on top of Layer 3 and handles the actual "conversation." It offers two completely different personalities:</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🤝 TCP (Transmission Control Protocol) — The Reliable Handshaker</h3>
       <p>TCP is the polite, organized, and reliable protocol. It is <strong>connection-oriented</strong>, meaning it won't send a single byte of actual data until both computers perform a friendly 3-way handshake:</p>
       <ol>
@@ -604,7 +604,7 @@
       <p>TCP guarantees that every single packet arrives safely, in the exact correct order, and will re-transmit any that get lost. It's like a telephone call. 📞</p>
     </div>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>📣 UDP (User Datagram Protocol) — The Fast-and-Furious Screamer</h3>
       <p>UDP is the chaotic, high-speed speedster. It is completely <strong>connectionless</strong>. It doesn't perform handshakes, doesn't verify if anyone is listening, and doesn't care if packets arrive out of order or get lost in a routing storm. It just screams packets out of a megaphone. 📣</p>
       <p>Why use it? It has zero setup overhead, making it incredibly fast. Perfect for live streaming, gaming, and VoIP calls where a lost packet is just a tiny blip but a delay is fatal.</p>
@@ -626,7 +626,7 @@
     
     <p>This SDN architecture gives GCP some incredible characteristics that are major exam topics:</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🚀 The Global VPC</h3>
       <p>In other clouds (like AWS or Azure), virtual networks are bound to a single region. If you want resources in Virginia to talk to resources in Dublin, you have to configure peering links. </p>
       <p>In GCP, the <strong>VPC is Global</strong>! A single VPC spans the entire planet. While subnets inside that VPC are regional (meaning <code>subnet-us</code> lives in Iowa and <code>subnet-eu</code> lives in Belgium), they can communicate out-of-the-box over Google's ultra-fast private fiber backplane without any complex configuration. 🌎✨</p>
@@ -692,7 +692,7 @@
         <p><strong>Q1:</strong> If you configure a subnet range with a <code>/24</code> CIDR block in Google Cloud, how many VMs can you assign a private IP address to?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
         <div id="ans1" class="answer-panel">
-          <strong>251 VMs!</strong> A <code>/24</code> contains 256 total IP addresses, but Google Cloud always reserves exactly <strong>5 IP addresses</strong> (network, default gateway, DNS, future use, and broadcast), leaving 251 usable host IPs.
+          <strong>252 VMs!</strong> A <code>/24</code> contains 256 total IP addresses, but Google Cloud reserves <strong>4 IP addresses</strong> in every primary IPv4 range (network address, default gateway, second-to-last, and broadcast), leaving 252 usable host IPs.
         </div>
       </div>
 
@@ -729,60 +729,61 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> You are designing a custom regional subnet for a database cluster in Google Cloud that will eventually grow to require exactly 508 usable host IP addresses. Which CIDR subnet range is the most efficient choice to accommodate this growth without wasting IP addresses?</p>
+        <p><strong>Question 1:</strong> You are assigning the primary IPv4 range for a new subnet in a custom-mode VPC. The service will grow to roughly 500 instances, each needing an internal IP, and the network team wants the smallest range that still fits so address space isn't wasted. Accounting for Google Cloud's reserved addresses, which range should you choose?</p>
         <ul class="option-list">
-          <li data-option="A">A) <code>10.0.0.0/24</code></li>
-          <li data-option="B">B) <code>10.0.0.0/23</code></li>
-          <li data-option="C">C) <code>10.0.0.0/22</code></li>
-          <li data-option="D">D) <code>10.0.0.0/21</code></li>
+          <li data-option="A">A) <code>10.8.0.0/24</code></li>
+          <li data-option="B">B) <code>10.8.0.0/23</code></li>
+          <li data-option="C">C) <code>10.8.0.0/22</code></li>
+          <li data-option="D">D) <code>10.8.0.0/25</code></li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> A <code>/23</code> CIDR block contains 512 total IP addresses. In Google Cloud, 5 IP addresses are reserved in every subnet (network ID, gateway, DNS, future use, broadcast). This leaves <code>512 - 5 = 507</code> usable host IPs. Wait! 507 usable IPs is just 1 short of the required 508. Let's recalculate carefully! Since <code>/23</code> only gives 507 usable IPs, you must go to the next larger block, which is a <code>/22</code> (1,024 total IPs, 1,019 usable). Thus, <strong>Option C</strong> is the correct answer to accommodate exactly 508 usable host IPs! This is a classic examiner trap designed to check if you remember to subtract Google's 5 reserved IPs!</p>
-          <p><strong>Why other options are wrong:</strong><br>
-          * <strong>Option A (/24)</strong> only provides 251 usable IPs (256 - 5), which is far too small.<br>
-          * <strong>Option B (/23)</strong> provides 507 usable IPs (512 - 5), which is frustratingly 1 IP short of the 508 requirement!<br>
-          * <strong>Option D (/21)</strong> provides 2,043 usable IPs (2,048 - 5), which is functional but highly inefficient, wasting over 1,500 addresses.</p>
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> A <code>/23</code> holds 512 addresses. Google Cloud reserves <strong>4</strong> addresses in every subnet's primary IPv4 range (network address, default gateway, second-to-last, and broadcast), leaving <code>512 - 4 = 508</code> usable. That is the smallest standard block that still covers ~500 instances, so it fits without wasting space.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option A (/24):</strong> 256 total minus 4 reserved leaves only 252 usable &mdash; well short of 500.<br>
+          <strong>Option C (/22):</strong> 1,024 total leaves 1,020 usable. It works, but it wastes roughly 500 addresses, breaking the "smallest range that fits" requirement.<br>
+          <strong>Option D (/25):</strong> 128 total leaves only 124 usable &mdash; far too small.</p>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> A junior developer is deploying a custom network virtual appliance (NVA) inside your GCP VPC. They notice that when VMs send UDP traffic larger than 1450 bytes across an HA VPN tunnel, the packets disappear completely. However, TCP traffic of any size transmits perfectly. Which explanation and solution should you provide to resolve this?</p>
+        <p><strong>Question 2:</strong> A VM with no external IP has an ingress firewall rule that denies all inbound TCP 443, yet it still receives the responses to HTTPS requests it makes to an external API. A colleague wants to add an ingress <em>allow</em> rule so the replies keep working. What is the correct explanation?</p>
         <ul class="option-list">
-          <li data-option="A">A) GCP's distributed firewall applies strict rate-limiting on unfragmented UDP traffic exceeding 1400 bytes to prevent DNS amplification attacks unless a hierarchical firewall policy with a "bypass-udp" rule is applied. You must create an egress policy to explicitly allow high-throughput UDP packet fragmentation on the VPC.</li>
-          <li data-option="B">B) UDP packets are being fragmented because HA VPN tunnels have an MTU limit of 1460 bytes. Unlike TCP (which uses MSS Clamping to dynamically shrink packets), UDP does not handle fragmentation or MSS negotiations, causing larger packets to be silently dropped. The solution is to configure the sending application or VM network interface MTU to 1430 or 1460.</li>
-          <li data-option="C">C) Standard Tier routing does not support UDP encapsulation across inter-region HA VPN paths because it lacks the required Global Routing feature. The project must be migrated to Premium Tier and the VMs configured to use the Premium Tier's regional NAT gateways.</li>
-          <li data-option="D">D) Cloud Router dynamic routing has a regional MTU mismatch with on-premises routers. You must configure the BGP session on the Cloud Router to advertise a custom route for the HA VPN gateway with a specific BGP Med priority that forces the gateway to fragment UDP packets at the IPSec layer.</li>
+          <li data-option="A">A) The VPC's implied allow-ingress rule already permits established TCP traffic on ephemeral source ports, so the reply packets match it.</li>
+          <li data-option="B">B) Cloud NAT rewrites the reply packets onto an internal flow, which lets them skip firewall evaluation on the way back in.</li>
+          <li data-option="C">C) Egress rules automatically generate a matching temporary ingress rule for every new outbound connection a VM opens.</li>
+          <li data-option="D">D) VPC firewall rules are stateful, so replies to a connection the VM initiated are tracked and allowed without any ingress rule.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> HA VPN tunnels have a strict Maximum Transmission Unit (MTU) of <strong>1460 bytes</strong>. TCP packets survive because of a feature called <strong>MSS (Maximum Segment Size) Clamping</strong>, which automatically shrinks TCP segment headers at the tunnel gateway. UDP, however, is a dumb connectionless protocol with no MSS clamping support! Packet sizes exceeding 1460 bytes will be discarded without error feedback (silent black-holing). Configuring MTU size limits on the sending clients/applications directly prevents this issue.</p>
-          <p><strong>Why other options are wrong:</strong><br>
-          * <strong>Option A</strong> is incorrect because GCP firewall rules do not have an MTU limit or packet fragmentation rate-limiting constraint that is resolved by a port rule or hierarchical policy.<br>
-          * <strong>Option C</strong> is incorrect because Standard Tier fully supports HA VPN routing and UDP transport, but Standard Tier uses the public internet instead of Google's private network for routing; the MTU limit of 1460 remains identical.<br>
-          * <strong>Option D</strong> is incorrect because BGP operates over TCP Port 179 and does not configure packet-level IPSec fragmentation or negotiate MTUs for UDP VM traffic.</p>
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> Google Cloud VPC firewall rules are <strong>stateful</strong>. Once egress for a new connection is allowed, the return traffic for that connection is tracked and permitted automatically &mdash; the ingress deny rule never applies to it. No extra ingress rule is needed.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option A:</strong> The only implied rules are allow-egress and deny-ingress; there is no "established on ephemeral ports" allow rule. Statefulness, not a port match, is why replies arrive.<br>
+          <strong>Option B:</strong> Cloud NAT provides outbound translation for VMs without external IPs; it does not exempt packets from firewall evaluation.<br>
+          <strong>Option C:</strong> Egress rules never spawn ingress rules. Connection tracking, not rule generation, is what lets replies through.</p>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You are explaining Google Cloud VPC architecture to a team of AWS architects. They ask how much administrative overhead is required to maintain routing tables for cross-region communication between a subnet in <code>us-central1</code> and a subnet in <code>europe-west1</code> within the same VPC. How should you respond?</p>
+        <p><strong>Question 3:</strong> Architects from another cloud ask how much routing you must configure for a VM in <code>us-central1</code> to reach a VM in <code>europe-west1</code> over internal IPs, where both VMs live in the same custom-mode VPC. What should you tell them?</p>
         <ul class="option-list">
-          <li data-option="A">A) You must configure VPC Network Peering between the two regional subnets and write static routes pointing to the peer region's gateway in order for the cross-region Andromeda controller to synchronize routing tables across the WAN.</li>
-          <li data-option="B">B) You must deploy Cloud Routers in both regions and configure BGP peering with the local BGP sessions enabled for global dynamic routing to establish dynamic routes across Google's public transit network.</li>
-          <li data-option="C">C) Zero administrative overhead. In GCP, the VPC is naturally global, and system-generated routes are automatically created to connect all subnets in the same VPC regardless of region. Communication occurs seamlessly over Google's private global fiber network.</li>
-          <li data-option="D">D) GCP VPCs are strictly regional boundaries; you must interconnect them using an HA VPN gateway mesh or a dedicated Network Connectivity Center (NCC) hub with custom route leaking enabled between regions.</li>
+          <li data-option="A">A) Nothing extra &mdash; a VPC is a global resource, so subnet routes for every region exist automatically and internal traffic crosses Google's backbone.</li>
+          <li data-option="B">B) Enable global dynamic routing and run a Cloud Router in each region so that each one advertises the other region's subnets over BGP.</li>
+          <li data-option="C">C) Create VPC Network Peering between the two regions and add static routes that point at each region's internal gateway address.</li>
+          <li data-option="D">D) Build an HA VPN tunnel mesh between the regions, because subnets in different regions are isolated from one another by default.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> This is one of GCP's greatest superpowers! In Google Cloud, a <strong>VPC is global</strong>, whereas subnets are regional. By default, every subnet in the same VPC can automatically communicate across regions with <strong>zero peering or static route maintenance</strong> required. Andromeda (the Software-Defined Network controller) dynamically coordinates all internal routing under the hood over Google's private backplane fiber.</p>
-          <p><strong>Why other options are wrong:</strong><br>
-          * <strong>Option A and D</strong> describe limitations found in other cloud providers like AWS or Azure, where virtual networks are strictly regional boundaries requiring explicit cross-region peering or transit gateways.<br>
-          * <strong>Option B</strong> is incorrect because Cloud Router and BGP are used strictly for *hybrid* connectivity (on-premises to cloud) or *cross-VPC* architectures via Network Connectivity Center, not for default intra-VPC routing.</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> In Google Cloud a <strong>VPC spans all regions</strong>. Subnets are regional, but their subnet routes are global by default, so a VM in one region reaches a VM in another over internal IPs with no extra routing &mdash; the traffic simply rides Google's private backbone.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option B:</strong> Global dynamic routing and Cloud Routers control how BGP-learned (on-prem) routes propagate across regions, not intra-VPC reachability, which is already automatic.<br>
+          <strong>Option C:</strong> VPC Network Peering connects <em>separate</em> VPCs; subnets that already share one VPC don't peer with themselves.<br>
+          <strong>Option D:</strong> HA VPN is for hybrid or cross-cloud links. Subnets in the same VPC are not region-isolated, so a tunnel mesh is unnecessary.</p>
         </div>
       </div>
     </div>

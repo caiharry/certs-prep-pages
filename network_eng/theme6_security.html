@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4; /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
-      --cgp-green-light: #dcfce7;
-      --cgp-green-border: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-green-border);
+      color: var(--rev-green-border);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdf4;
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-green-border);
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -505,7 +505,7 @@
     <h2>6.1 Google Cloud Armor: The Shield of GCP</h2>
     <p>Leaving your web applications exposed to the raw public internet without a Web Application Firewall (WAF) is like inviting a group of rowdy vikings to your tea party! <strong>Google Cloud Armor</strong> is your global shield, protecting applications behind external HTTP/S load balancers from DDoS attacks and application-level exploits: 🛡️</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>⚔️ Cloud Armor Core Capabilities</h3>
       <ul>
         <li><strong>Preconfigured WAF Rules (OWASP Top 10):</strong> Out-of-the-box protection against SQL Injection (SQLi), Cross-Site Scripting (XSS), Remote File Inclusion (RFI), and Local File Inclusion (LFI).</li>
@@ -545,7 +545,7 @@
           </tr>
           <tr>
             <td><strong>Standard</strong></td>
-            <td>Adds <strong>FQDN filtering</strong> (e.g., allow egress only to <code><em>.github.com</code>), Geo-IP matching, and Google Threat Intelligence lists.</td>
+            <td>Adds <strong>FQDN filtering</strong> (e.g., allow egress only to <code>*.github.com</code>), Geo-IP matching, and Google Threat Intelligence lists.</td>
             <td>Enforced natively in Andromeda.</td>
           </tr>
           <tr>
@@ -557,7 +557,7 @@
       </table>
     </div>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🚦 Firewall Rule Evaluation Order</h3>
       <p>When a packet enters your VPC, Google evaluates firewall rules in a strict top-down order. Memorize this sequence:</p>
       <ol>
@@ -573,7 +573,7 @@
     <h2>6.3 Public Cloud NAT &amp; Secure Web Proxy</h2>
     <p>How do private VMs safely initiate outbound connections to the internet (e.g., to download software updates) without exposing themselves to inbound attacks?</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>💧 Cloud NAT &amp; Dynamic Port Allocation (DPA)</h3>
       <p>Cloud NAT provides managed Source NAT (SNAT) for private instances. The #1 production issue with Cloud NAT is <strong>SNAT Port Exhaustion</strong> (where VMs open too many outbound connections and run out of allocated source ports, causing connection drops and <code>OUT_OF_RESOURCES</code> errors).</p>
       <p><strong>🛠️ The Dynamic Port Allocation (DPA) Fix:</strong> Instead of statically assigning a fixed number of ports (like 64) to every VM regardless of usage, enable DPA!</p>
@@ -607,7 +607,7 @@
         <p><strong>Q1:</strong> Which Cloud NGFW tier is required to perform deep packet inspection (Layer 7 IPS) to detect active malware exploits?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
         <div id="ans1" class="answer-panel">
-          <strong>Cloud NGFW Enterprise</strong>. It is the only tier that supports L7 packet inspection, which it enforces by routing traffic through managed </em>Firewall Endpoints<em>.
+          <strong>Cloud NGFW Enterprise</strong>. It is the only tier that supports L7 packet inspection, which it enforces by routing traffic through managed Firewall Endpoints.
         </div>
       </div>
 
@@ -628,7 +628,7 @@
       </div>
 
       <div class="quiz-item">
-        <p><strong>Q4:</strong> What managed GCP service should you deploy to restrict outbound VM traffic to specific external domains (like <code></em>.github.com</code>) without managing proxy VMs?</p>
+        <p><strong>Q4:</strong> What managed GCP service should you deploy to restrict outbound VM traffic to specific external domains (like <code>*.github.com</code>) without managing proxy VMs?</p>
         <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
         <div id="ans4" class="answer-panel">
           <strong>Secure Web Proxy (SWP)</strong>. It is a fully managed egress proxy that supports FQDN, URL, and category-based filtering for HTTP/S traffic.
@@ -643,84 +643,84 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> You are managing a high-traffic e-commerce website behind a Global External Application Load Balancer. During a major sales event, your backend servers experience a massive surge in CPU utilization. You inspect the logs and discover a distributed Layer 7 HTTP flood attack originating from thousands of rotating IP addresses. You need to mitigate this attack automatically without blocking legitimate shoppers. What should you do?</p>
+        <p><strong>Question 1:</strong> Your e-commerce site sits behind a Global External Application Load Balancer. During a sale, backend CPU spikes and logs reveal a Layer 7 HTTP flood from thousands of rotating IPs. You need to mitigate it automatically without blocking legitimate shoppers. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Create an Edge Security Policy in Cloud Armor to block the top 10 countries originating the highest query volume, and configure a custom error redirect page for blocked customers.</li>
-          <li data-option="B">B) Enable <strong>Cloud Armor Adaptive Protection</strong> on your backend security policy. Allow it to analyze the traffic anomaly, draft a custom blocking rule, and apply it to block the attack signature.</li>
-          <li data-option="C">C) Configure a Rate-Limiting Rule in Cloud Armor with a threshold of 1 request per minute per IP address, and apply it globally to all backend services behind the load balancer.</li>
-          <li data-option="D">D) Switch the frontend load balancer to a Regional External Passthrough Network Load Balancer to bypass Layer 7 HTTP header parsing and absorb the surge at the network level.</li>
+          <li data-option="A">A) Create a Cloud Armor edge security policy that blocks the top 10 countries by query volume, with a custom error page for blocked users.</li>
+          <li data-option="B">B) Add a Cloud Armor rate-limiting rule of 1 request per minute per IP and apply it to every backend service behind the load balancer.</li>
+          <li data-option="C">C) Enable Cloud Armor Adaptive Protection on the backend policy and let it model the anomaly and apply a generated rule for the attack signature.</li>
+          <li data-option="D">D) Swap the frontend to a regional passthrough Network Load Balancer to skip L7 parsing and absorb the surge at the network layer.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> <strong>Cloud Armor Adaptive Protection</strong> uses machine learning to detect anomalous Layer 7 HTTP floods. It automatically identifies the unique signature of the attack traffic (across thousands of rotating IPs) and generates a precise blocking rule. This mitigates the attack instantly while allowing legitimate shoppers to continue browsing unaffected! 🛡️</p>
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> <strong>Cloud Armor Adaptive Protection</strong> uses ML to fingerprint an anomalous L7 flood across many rotating IPs and proposes a targeted rule, blocking the attack while legitimate shoppers keep browsing. 🛡️</p>
           <ul>
-            <li><strong>A:</strong> Blocking entire countries will block thousands of legitimate shoppers, causing massive revenue loss and violating SLA expectations.</li>
-            <li><strong>C:</strong> A rate limit of 1 request per minute is far too restrictive and will completely break the e-commerce shopping and checkout experience for all legitimate users.</li>
-            <li><strong>D:</strong> Passthrough NLB does not support Cloud Armor, WAF, or L7 security policies, leaving your backend servers completely unprotected and exposed to the Layer 7 HTTP flood.</li>
+            <li><strong>A:</strong> Country blocking drops thousands of legitimate shoppers &mdash; crude and revenue-destroying.</li>
+            <li><strong>B:</strong> 1 request per minute per IP breaks normal browsing and checkout for everyone.</li>
+            <li><strong>D:</strong> Passthrough NLB doesn't support Cloud Armor or WAF, leaving the backends exposed to the L7 flood.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> Your company's security policy dictates that all outbound internet traffic from private Compute Engine VMs must be restricted. VMs must only be allowed to download software updates from <code><em>.ubuntu.com</code> and <code></em>.github.com</code>. You want to implement this egress filtering with minimal operational overhead and no VM-level proxy configurations. What should you deploy?</p>
+        <p><strong>Question 2:</strong> Policy requires that private Compute Engine VMs reach the internet only to pull updates from <code>*.ubuntu.com</code> and <code>*.github.com</code>. You want this egress filtering with minimal operational overhead and no per-VM proxy configuration. What should you deploy?</p>
         <ul class="option-list">
-          <li data-option="A">A) Deploy a Public Cloud NAT gateway in the subnet, write custom static routes pointing to the public IP blocks of Ubuntu and GitHub, and configure the route metrics to prefer local egress.</li>
-          <li data-option="B">B) Deploy <strong>Secure Web Proxy (SWP)</strong> in your VPC, configure an egress policy allowing <code><em>.ubuntu.com</code> and <code></em>.github.com</code>, and route outbound HTTP/S traffic through it.</li>
-          <li data-option="C">C) Create regional VPC Firewall Rules with target tags assigned to the VMs, set the egress action to DENY for destination <code>0.0.0.0/0</code>, and configure source ranges matching the update repositories.</li>
-          <li data-option="D">D) Deploy an auto-scaling group of third-party Squid Proxy VMs behind an Internal Load Balancer, and write a startup script on all Compute Engine VMs to force curl and apt to use the proxy.</li>
+          <li data-option="A">A) Deploy Secure Web Proxy in the VPC, write an egress policy allowing <code>*.ubuntu.com</code> and <code>*.github.com</code>, and route outbound HTTP/S through it.</li>
+          <li data-option="B">B) Deploy a public Cloud NAT gateway and add static routes to Ubuntu's and GitHub's public IP blocks, with metrics preferring local egress.</li>
+          <li data-option="C">C) Create egress VPC firewall rules with target tags that deny <code>0.0.0.0/0</code> and allow source ranges matching the update repositories.</li>
+          <li data-option="D">D) Run an autoscaling pool of Squid proxy VMs behind an internal load balancer, with a startup script pointing <code>apt</code> and <code>curl</code> at the proxy.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> <strong>Secure Web Proxy (SWP)</strong> is a fully managed, serverless egress proxy designed exactly for this! It allows you to write granular egress policies based on FQDNs (like <code><em>.ubuntu.com</code>) for HTTP/S traffic with zero infrastructure to manage, representing the lowest operational overhead. 🌐</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> <strong>Secure Web Proxy</strong> is a managed, serverless egress proxy with FQDN/wildcard policies for HTTP/S. It gives granular domain filtering at the lowest operational overhead, with no per-VM proxy settings. 🌐</p>
           <ul>
-            <li><strong>A:</strong> Cloud NAT only filters traffic at Layer 4 (IP/port). It cannot perform FQDN or wildcard domain filtering (like <code></em>.github.com</code>), and mapping public IPs for SaaS/updates is unsustainable.</li>
-            <li><strong>C:</strong> Blocking <code>0.0.0.0/0</code> via standard firewall rules blocks <em>all</em> egress internet traffic, and Layer 4 firewall rules cannot parse or match dynamic update domain URLs.</li>
-            <li><strong>D:</strong> Managing a pool of squid proxy VMs introduces significant operational overhead (patching, scaling, configuration management) compared to the serverless Secure Web Proxy.</li>
+            <li><strong>B:</strong> Cloud NAT is Layer 4 only; it can't match FQDNs or wildcards, and chasing SaaS IP blocks is unsustainable.</li>
+            <li><strong>C:</strong> VPC firewall rules are L4 and can't match domains; denying <code>0.0.0.0/0</code> blocks all egress, and "source ranges" is the wrong control for egress <em>destinations</em>.</li>
+            <li><strong>D:</strong> A Squid VM fleet means patching, scaling, and config overhead plus per-VM proxy settings &mdash; the opposite of minimal.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You are managing a large GKE cluster with 1,000 microservice pods that frequently make outbound API calls to external payment gateways. During peak traffic hours, application logs report intermittent connection timeouts with <code>OUT_OF_RESOURCES</code> errors pointing to your Cloud NAT gateway. You inspect metrics and confirm SNAT port exhaustion. You want to resolve this immediately while minimizing the number of public IP addresses consumed by the gateway. What should you do?</p>
+        <p><strong>Question 3:</strong> A GKE cluster of ~1,000 pods makes heavy outbound calls to payment gateways. At peak, logs show <code>OUT_OF_RESOURCES</code> timeouts from Cloud NAT and you confirm SNAT port exhaustion. You want to fix it now while using as few public IPs as possible. What should you do?</p>
         <ul class="option-list">
-          <li data-option="A">A) Allocate 50 additional static public IP addresses to the Cloud NAT gateway pool, and set the static gateway behavior to round-robin address mapping.</li>
-          <li data-option="B">B) Enable <strong>Dynamic Port Allocation (DPA)</strong> on the Cloud NAT gateway, setting <code>--min-ports-per-vm=64</code> and <code>--max-ports-per-vm=1024</code>.</li>
-          <li data-option="C">C) Increase the static minimum ports per VM property to 4096 on the existing Cloud NAT configuration, and set the dynamic port scaling flag to disabled.</li>
-          <li data-option="D">D) Disable the Cloud NAT gateway entirely, assign public IP addresses to all GKE node VM interfaces, and configure dynamic VPC egress firewall rules to restrict node ports.</li>
+          <li data-option="A">A) Add 50 static public IPs to the NAT pool and switch the gateway to round-robin address mapping.</li>
+          <li data-option="B">B) Raise the static minimum ports-per-VM to 4096 on the gateway and disable dynamic port scaling.</li>
+          <li data-option="C">C) Disable Cloud NAT, give each GKE node a public IP, and restrict node ports with egress firewall rules.</li>
+          <li data-option="D">D) Enable Dynamic Port Allocation with <code>--min-ports-per-vm=64</code> and <code>--max-ports-per-vm=1024</code>.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> Enabling <strong>Dynamic Port Allocation (DPA)</strong> allows GKE nodes (VMs) that are experiencing heavy outbound connection spikes to dynamically double their port allocation (up to 1024), while keeping idle nodes at the minimum of 64 ports. This prevents SNAT port exhaustion (<code>OUT_OF_RESOURCES</code> errors) while maximizing the efficiency of your existing NAT IP pool! 💧</p>
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> <strong>Dynamic Port Allocation</strong> lets busy VMs scale up to 1024 ports while idle VMs stay at 64, ending SNAT exhaustion while squeezing the most out of the existing IP pool. 💧</p>
           <ul>
-            <li><strong>A:</strong> Adding 50 static IPs is expensive, wastes public IP resources, and represents a brute-force approach compared to dynamic scaling.</li>
-            <li><strong>C:</strong> Increasing the static minimum to 4096 forces Cloud NAT to allocate 4,096 ports to <em>every</em> VM, even idle ones, which will immediately exhaust your NAT IP pool and require buying dozens of additional public IPs.</li>
-            <li><strong>D:</strong> Assigning public IPs to GKE nodes exposes them directly to the internet, violating core security best practices and requiring massive IP address management overhead.</li>
+            <li><strong>A:</strong> 50 static IPs is costly and wasteful next to dynamic scaling.</li>
+            <li><strong>B:</strong> A static minimum of 4096 gives <em>every</em> VM (even idle ones) 4096 ports, immediately exhausting the IP pool.</li>
+            <li><strong>C:</strong> Public IPs on nodes expose them to the internet and add huge IP-management overhead.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 4 -->
       <div class="q-box">
-        <p><strong>Question 4:</strong> You are designing a secure VPC architecture for a government agency. The security team demands that all traffic entering or leaving your production VPC must undergo deep packet inspection to detect active malware exploits and spyware. The inspection must happen inline, and any detected threats must be blocked automatically. What is the recommended GCP native solution?</p>
+        <p><strong>Question 4:</strong> A government agency requires that all traffic into and out of the production VPC undergo inline deep packet inspection to detect malware, spyware, and exploits, with detected threats blocked automatically. Which native GCP solution fits?</p>
         <ul class="option-list">
-          <li data-option="A">A) Enable Cloud Armor on all external load balancers and configure deep packet payload inspection using custom WAF rules with regex signatures.</li>
-          <li data-option="B">B) Configure <strong>Cloud NGFW Enterprise</strong> and enable Layer 7 packet inspection with Intrusion Prevention System (IPS) security profiles.</li>
-          <li data-option="C">C) Deploy Packet Mirroring in the production VPC to mirror and clone bidirectional traffic, forwarding it to a pool of third-party Intrusion Detection System (IDS) VMs.</li>
-          <li data-option="D">D) Enable Cloud NGFW Essentials, configure hierarchical firewall policies at the folder level, and write rules with custom packet-filtering tags.</li>
+          <li data-option="A">A) Enable Cloud Armor on the external load balancers with custom WAF regex rules for deep payload inspection.</li>
+          <li data-option="B">B) Configure Cloud NGFW Enterprise and enable its Layer 7 inspection with Intrusion Prevention System (IPS) profiles.</li>
+          <li data-option="C">C) Deploy Packet Mirroring to clone bidirectional traffic to a pool of third-party IDS VMs for analysis.</li>
+          <li data-option="D">D) Enable Cloud NGFW Essentials with folder-level hierarchical firewall policies and custom packet-filter tags.</li>
         </ul>
         <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
           <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> <strong>Cloud NGFW Enterprise</strong> is Google's native solution for inline Layer 7 packet inspection. It integrates with an Intrusion Prevention System (IPS) powered by Palo Alto Networks threat signatures to detect and automatically block malware, spyware, and exploits inside packet payloads. 🔍</p>
+          <p><strong>Why Option B is correct:</strong> <strong>Cloud NGFW Enterprise</strong> performs inline Layer 7 inspection with an IPS (Palo Alto threat signatures), detecting and automatically blocking malware, spyware, and exploits inside packet payloads. 🔍</p>
           <ul>
-            <li><strong>A:</strong> Cloud Armor is a Web Application Firewall (WAF) that protects incoming HTTP/S web traffic at the load balancer; it does not perform inline bidirectional packet inspection for standard VPC VM-to-VM or non-web internet traffic.</li>
-            <li><strong>C:</strong> Packet Mirroring is out-of-band (passive). It can detect threats but <strong>cannot block them inline</strong> because it only inspects a clone of the traffic after it has been routed.</li>
-            <li><strong>D:</strong> Cloud NGFW Essentials only supports basic Layer 4 port/protocol rules and does not have Layer 7 packet inspection or IPS capabilities.</li>
+            <li><strong>A:</strong> Cloud Armor is a WAF for inbound HTTP/S at the load balancer, not inline bidirectional VPC packet inspection.</li>
+            <li><strong>C:</strong> Packet Mirroring is out-of-band &mdash; it can detect but can't block inline, since it only sees a copy of the traffic.</li>
+            <li><strong>D:</strong> NGFW Essentials is L4 port/protocol only, with no L7 inspection or IPS.</li>
           </ul>
         </div>
       </div>

@@ -10,15 +10,15 @@
       --bg-light: #f0fdf4;
       /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a;
-      /* Primary CGP Green */
-      --cgp-green-dark: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
-      --cgp-teal: #0d9488;
-      --cgp-orange: #ea580c;
+      --rev-green: #16a34a;
+      /* Primary Green */
+      --rev-green-dark: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
+      --rev-teal: #0d9488;
+      --rev-orange: #ea580c;
       --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
       --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
       --radius: 16px;
@@ -44,7 +44,7 @@
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -69,7 +69,7 @@
       border: 2px solid #000;
     }
 
-    .badge-cgp {
+    .badge-rev {
       background: #ef4444;
       color: white;
       display: inline-block;
@@ -110,7 +110,7 @@
     .intro-title {
       font-size: 1.5rem;
       margin-bottom: 15px;
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -142,7 +142,7 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     .grid-sections {
@@ -161,7 +161,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -211,48 +211,48 @@
     }
 
     .section-card.s1 {
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
     .section-card.s1:hover {
-      box-shadow: 6px 6px 0px var(--cgp-green);
+      box-shadow: 6px 6px 0px var(--rev-green);
     }
 
     .section-card.s2 {
-      border-color: var(--cgp-violet);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      border-color: var(--rev-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
     }
 
     .section-card.s2:hover {
-      box-shadow: 6px 6px 0px var(--cgp-violet);
+      box-shadow: 6px 6px 0px var(--rev-violet);
     }
 
     .section-card.s3 {
-      border-color: var(--cgp-teal);
-      box-shadow: 4px 4px 0px var(--cgp-teal);
+      border-color: var(--rev-teal);
+      box-shadow: 4px 4px 0px var(--rev-teal);
     }
 
     .section-card.s3:hover {
-      box-shadow: 6px 6px 0px var(--cgp-teal);
+      box-shadow: 6px 6px 0px var(--rev-teal);
     }
 
     .section-card.s4 {
-      border-color: var(--cgp-blue);
-      box-shadow: 4px 4px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 4px 4px 0px var(--rev-blue);
     }
 
     .section-card.s4:hover {
-      box-shadow: 6px 6px 0px var(--cgp-blue);
+      box-shadow: 6px 6px 0px var(--rev-blue);
     }
 
     .section-card.s5 {
-      border-color: var(--cgp-orange);
-      box-shadow: 4px 4px 0px var(--cgp-orange);
+      border-color: var(--rev-orange);
+      box-shadow: 4px 4px 0px var(--rev-orange);
     }
 
     .section-card.s5:hover {
-      box-shadow: 6px 6px 0px var(--cgp-orange);
+      box-shadow: 6px 6px 0px var(--rev-orange);
     }
 
     .sec-badge {
@@ -268,23 +268,23 @@
     }
 
     .s1 .sec-badge {
-      background: var(--cgp-green);
+      background: var(--rev-green);
     }
 
     .s2 .sec-badge {
-      background: var(--cgp-violet);
+      background: var(--rev-violet);
     }
 
     .s3 .sec-badge {
-      background: var(--cgp-teal);
+      background: var(--rev-teal);
     }
 
     .s4 .sec-badge {
-      background: var(--cgp-blue);
+      background: var(--rev-blue);
     }
 
     .s5 .sec-badge {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
     }
 
     .sec-title {
@@ -300,10 +300,10 @@
       flex-grow: 1;
     }
 
-    .btn-cgp {
+    .btn-rev {
       display: block;
       text-align: center;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 12px;
@@ -317,19 +317,19 @@
       max-width: 100%;
     }
 
-    .btn-cgp:hover {
-      background: var(--cgp-yellow-dark);
+    .btn-rev:hover {
+      background: var(--rev-yellow-dark);
       text-decoration: none;
     }
 
-    .btn-cgp:active {
+    .btn-rev:active {
       transform: translate(1px, 1px);
       box-shadow: 2px 2px 0px #000;
     }
 
     .study-tip {
       background: #faf5ff;
-      border: 3px dashed var(--cgp-violet);
+      border: 3px dashed var(--rev-violet);
       border-radius: var(--radius);
       padding: 20px;
       margin-top: 40px;
@@ -337,7 +337,7 @@
 
     .study-tip h3 {
       margin-top: 0;
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -361,7 +361,7 @@
     </div>
 
     <header>
-      <div class="badge-cgp">UK CGP Revision Style</div>
+      <div class="badge-rev">Exam Revision Style</div>
       <h1>Google Cloud Professional Network Engineer</h1>
       <p class="tagline">The ultimate study portal to master VPC design, hybrid routing, GKE networking, load balancing,
         and network security without losing your marbles!</p>
@@ -388,7 +388,7 @@
           <p class="sec-desc">Demystify CIDR math, RFC 1918 private IP ranges, TCP vs. UDP port mappings, and the
             GCP-specific global SDN routing mindset.</p>
         </div>
-        <a href="theme0_foundations.html" class="btn-cgp">Open Theme 0 Guide &rarr;</a>
+        <a href="theme0_foundations.html" class="btn-rev">Open Theme 0 Guide &rarr;</a>
       </div>
 
       <!-- Card 1 -->
@@ -399,7 +399,7 @@
           <p class="sec-desc">Master network service tiers (Premium vs Standard), Shared VPC permissions, subnet range
             expansion, MTU limits, and dynamic routing modes.</p>
         </div>
-        <a href="theme1_vpc_design.html" class="btn-cgp">Open Theme 1 Guide &rarr;</a>
+        <a href="theme1_vpc_design.html" class="btn-rev">Open Theme 1 Guide &rarr;</a>
       </div>
 
       <!-- Card 2 -->
@@ -410,7 +410,7 @@
           <p class="sec-desc">Explore Private Google Access, PSA vs PSC, Network Connectivity Center topologies (Mesh vs
             Star), and VPC Service Controls perimeters.</p>
         </div>
-        <a href="theme2_private_access.html" class="btn-cgp">Open Theme 2 Guide &rarr;</a>
+        <a href="theme2_private_access.html" class="btn-rev">Open Theme 2 Guide &rarr;</a>
       </div>
 
       <!-- Card 3 -->
@@ -421,7 +421,7 @@
           <p class="sec-desc">Deep dive into Dedicated vs Partner Interconnect, HA VPN SLAs, MACsec, Cloud Router BGP
             attributes, and Legacy vs Standard path selection.</p>
         </div>
-        <a href="theme3_hybrid.html" class="btn-cgp">Open Theme 3 Guide &rarr;</a>
+        <a href="theme3_hybrid.html" class="btn-rev">Open Theme 3 Guide &rarr;</a>
       </div>
 
       <!-- Card 4 -->
@@ -432,7 +432,7 @@
           <p class="sec-desc">Master VPC-native clusters, private control planes, DNS-based endpoints, Dataplane V2
             (eBPF), and container-native load balancing.</p>
         </div>
-        <a href="theme4_gke.html" class="btn-cgp">Open Theme 4 Guide &rarr;</a>
+        <a href="theme4_gke.html" class="btn-rev">Open Theme 4 Guide &rarr;</a>
       </div>
 
       <!-- Card 5 -->
@@ -443,7 +443,7 @@
           <p class="sec-desc">Understand the current LB taxonomy (Application, proxy, and passthrough), DNS routing
             policies (WRR, failover trickle ratio), and Cloud CDN.</p>
         </div>
-        <a href="theme5_lb_dns_cdn.html" class="btn-cgp">Open Theme 5 Guide &rarr;</a>
+        <a href="theme5_lb_dns_cdn.html" class="btn-rev">Open Theme 5 Guide &rarr;</a>
       </div>
 
       <!-- Card 6 -->
@@ -454,7 +454,7 @@
           <p class="sec-desc">Lock down your network with Cloud Armor WAF, Cloud NGFW tiers (Essentials, Standard,
             Enterprise), Secure Web Proxy, and Cloud NAT DPA.</p>
         </div>
-        <a href="theme6_security.html" class="btn-cgp">Open Theme 6 Guide &rarr;</a>
+        <a href="theme6_security.html" class="btn-rev">Open Theme 6 Guide &rarr;</a>
       </div>
 
       <!-- Card 7 -->
@@ -465,45 +465,45 @@
           <p class="sec-desc">Diagnose failures using Network Intelligence Center (Network Analyzer, Connectivity Tests,
             Firewall Insights) and troubleshoot BGP peering.</p>
         </div>
-        <a href="theme7_ops.html" class="btn-cgp">Open Theme 7 Guide &rarr;</a>
+        <a href="theme7_ops.html" class="btn-rev">Open Theme 7 Guide &rarr;</a>
       </div>
 
       <!-- Card 8 (Cheatsheet) -->
       <div class="section-card s3"
-        style="background: #fffbeb; border-color: var(--cgp-yellow-dark); box-shadow: 4px 4px 0px var(--cgp-yellow-dark);">
+        style="background: #fffbeb; border-color: var(--rev-yellow-dark); box-shadow: 4px 4px 0px var(--rev-yellow-dark);">
         <div>
-          <div class="sec-badge" style="background: var(--cgp-yellow-dark); color: #000;">Exam Deck</div>
+          <div class="sec-badge" style="background: var(--rev-yellow-dark); color: #000;">Exam Deck</div>
           <h2 class="sec-title">Exam Guide Cheat Sheet</h2>
           <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features
             high-yield fact cards, exam traps, and synthesis matrices.</p>
         </div>
-        <a href="cheatsheet.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Open Exam Cheat
+        <a href="cheatsheet.html" class="btn-rev" style="background: var(--rev-green); color: white;">Open Exam Cheat
           Sheet &rarr;</a>
       </div>
 
       <!-- Card 9 (Updated Sample Exam) -->
       <div class="section-card s1"
-        style="background: #eff6ff; border-color: var(--cgp-blue, #2563eb); box-shadow: 4px 4px 0px var(--cgp-blue, #2563eb);">
+        style="background: #eff6ff; border-color: var(--rev-blue, #2563eb); box-shadow: 4px 4px 0px var(--rev-blue, #2563eb);">
         <div>
-          <div class="sec-badge" style="background: var(--cgp-blue, #2563eb); color: #fff;">Exam Sim</div>
+          <div class="sec-badge" style="background: var(--rev-blue, #2563eb); color: #fff;">Exam Sim</div>
           <h2 class="sec-title">Updated Sample Exam (2026)</h2>
           <p class="sec-desc">The 25 official sample questions, with the out-of-date ones (passthrough NLB IPv6, GKE
             control-plane access) rewritten to today's GCP landscape. A 60-minute, closed-book simulator with
             flagging and per-option explanations.</p>
         </div>
-        <a href="sample_questions_updated.html" class="btn-cgp" style="background: var(--cgp-blue, #2563eb); color: white;">Official Sample Questions &rarr;</a>
+        <a href="sample_questions_updated.html" class="btn-rev" style="background: var(--rev-blue, #2563eb); color: white;">Official Sample Questions &rarr;</a>
       </div>
 
       <!-- Card 10 (Generated Practice) -->
       <div class="section-card s1"
-        style="background: #f0fdf4; border-color: var(--cgp-green); box-shadow: 4px 4px 0px var(--cgp-green);">
+        style="background: #f0fdf4; border-color: var(--rev-green); box-shadow: 4px 4px 0px var(--rev-green);">
         <div>
-          <div class="sec-badge" style="background: var(--cgp-green); color: #fff;">Generated</div>
+          <div class="sec-badge" style="background: var(--rev-green); color: #fff;">Generated</div>
           <h2 class="sec-title">Generated Practice (25 Questions)</h2>
           <p class="sec-desc">Original exam-style questions covering the whole exam guide &mdash; VPC, hybrid
             connectivity, GKE, load balancing, security, and operations &mdash; each with full per-option diagnostics.</p>
         </div>
-        <a href="practice_questions.html" class="btn-cgp" style="background: var(--cgp-green); color: white;">Start Generated Practice &rarr;</a>
+        <a href="practice_questions.html" class="btn-rev" style="background: var(--rev-green); color: white;">Start Generated Practice &rarr;</a>
       </div>
 
     </div>

@@ -92,6 +92,11 @@
       <h3>Programmatic access & IaC</h3>
       <p>Cloud Shell, Cloud Code, and Cloud Shell Editor for dev; SDKs <code>gcloud</code>, <code>gcloud storage</code> (formerly gsutil), and <code>bq</code>; Cloud Emulators (Bigtable, Spanner, Pub/Sub, Firestore) for local testing. Provision declaratively with <strong>Terraform</strong> or Infrastructure Manager — never click-ops for reproducible estates.</p>
     </section>
+    <section class="lesson">
+      <h3>Advising teams &amp; interacting with support</h3>
+      <p>An architect also shapes <em>how</em> teams work: recommend testing strategies (unit/integration/load), code-review and trunk-based development, and a clear environment promotion path. Know the operational levers too &mdash; <strong>Cloud Quotas</strong> (request increases before launch spikes), the right <strong>support tier</strong> for the SLA, and using <strong>Gemini Cloud Assist</strong> to accelerate troubleshooting and design reviews.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "A planned launch will exceed current API limits" = request a <strong>quota increase ahead of time</strong>, not retry-on-failure during the event.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +111,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Infrastructure as Code (Terraform / Infrastructure Manager).</strong></p>
           <p class="quiz-why">Declarative, repeatable, auditable — preferred over manual console changes.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A simple internal REST API on Cloud Functions just needs auth and basic routing &mdash; not a portal or monetization. Apigee or API Gateway?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>API Gateway.</strong></p>
+          <p class="quiz-why">It's the lightweight gateway for serverless backends; Apigee is overkill without portal/analytics/monetization needs.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A big product launch will far exceed your current API request limits. What do you do beforehand?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Request a quota increase in advance via Cloud Quotas.</strong></p>
+          <p class="quiz-why">Quotas should be raised ahead of a known spike, not discovered when requests start failing.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A company exposes APIs to external partners and needs quotas, API-key issuance, a self-service developer portal, monetization, and cross-backend analytics. Which product should the architecture use?</p>
+        <ul>
+          <li>A) API Gateway in front of the serverless backends.</li>
+          <li>B) Apigee API management.</li>
+          <li>C) A Global External Application Load Balancer with Cloud Armor.</li>
+          <li>D) Cloud Endpoints with an OpenAPI spec.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Apigee is full-lifecycle API management: developer portal, monetization, quotas, key management, and analytics across hybrid backends.</p>
+          <p class="quiz-why"><strong>A/D:</strong> API Gateway and Endpoints are lightweight and lack the portal/monetization/analytics suite. <strong>C:</strong> A load balancer routes and protects traffic but isn't API management.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A marketing event is expected to drive 20&times; normal traffic to a service that calls several Google Cloud APIs. The architect wants to avoid throttling during the event. What is the right action?</p>
+        <ul>
+          <li>A) Add aggressive client-side retries to ride through any limit errors.</li>
+          <li>B) Request the needed quota increases ahead of the event via Cloud Quotas.</li>
+          <li>C) Spread calls across several projects to multiply the quota.</li>
+          <li>D) Cache all API responses indefinitely to avoid calling the APIs.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Known spikes call for raising quotas in advance so the service isn't throttled during the event.</p>
+          <p class="quiz-why"><strong>A:</strong> Retries against an exceeded quota just amplify load. <strong>C:</strong> Splitting across projects to dodge limits is an abuse pattern. <strong>D:</strong> Indefinite caching serves stale data and doesn't fit dynamic calls.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Teams keep creating environments inconsistently by clicking in the console, causing drift between dev and prod. What should the architect mandate for reproducibility?</p>
+        <ul>
+          <li>A) A wiki page documenting the console steps to follow.</li>
+          <li>B) Declarative Infrastructure as Code (Terraform / Infrastructure Manager) in version control.</li>
+          <li>C) Screenshots of the correct console settings shared with teams.</li>
+          <li>D) Granting only senior staff console access.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> IaC makes environments declarative, versioned, and reproducible, eliminating console drift.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Docs and screenshots still rely on manual, drift-prone steps. <strong>D:</strong> Limiting who clicks doesn't make creation repeatable.</p>
         </details>
       </div>
     </section>

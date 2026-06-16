@@ -92,6 +92,18 @@
       <p>Prepare and clean data with <strong>Dataform</strong>, <strong>Dataflow</strong>, and <strong>Cloud Data Fusion</strong>; orchestrate and monitor pipelines; design for fault tolerance and DR; validate data and reason about ACID needs. Plan migrations with <strong>BigQuery Data Transfer Service</strong>, <strong>Database Migration Service</strong>, <strong>Datastream</strong> (CDC), and <strong>Transfer Appliance</strong> for offline bulk.</p>
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Continuous, low-downtime database replication to Google Cloud = Datastream (CDC) or DMS — not Storage Transfer Service (objects) or Data Fusion (batch ETL).</div>
     </section>
+    <section class="lesson">
+      <h3>The migration &amp; transfer tool picker</h3>
+      <p>The exam constantly asks "which mover?" &mdash; map the data shape to the tool:</p>
+      <ul>
+        <li><strong>Datastream</strong> &mdash; continuous CDC replication from operational databases with minimal downtime.</li>
+        <li><strong>Database Migration Service</strong> &mdash; homogeneous/heterogeneous database migrations (e.g. to Cloud SQL/AlloyDB).</li>
+        <li><strong>BigQuery Data Transfer Service</strong> &mdash; scheduled loads from SaaS and other warehouses into BigQuery.</li>
+        <li><strong>Storage Transfer Service</strong> &mdash; bulk object transfer (other clouds, on-prem) into Cloud Storage.</li>
+        <li><strong>Transfer Appliance</strong> &mdash; offline shipment of petabyte-scale data when the network can't.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">MOVE</span> Database &rarr; DMS/Datastream; Objects &rarr; Storage Transfer; Too big for the wire &rarr; Transfer Appliance.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +118,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Datastream (CDC).</strong></p>
           <p class="quiz-why">Streams change data continuously; STS is for objects, Data Fusion for batch.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> 800 TB of archives must move to Cloud Storage but the WAN link would take months. What do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Transfer Appliance.</strong></p>
+          <p class="quiz-why">Offline, shippable device for petabyte-scale data when the network is the bottleneck.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Which key model lets you control rotation and revocation of the keys protecting a dataset?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>CMEK via Cloud KMS.</strong></p>
+          <p class="quiz-why">Customer-managed keys give you rotation/revocation control; Google-managed keys don't.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> An operational MySQL database must be continuously replicated into BigQuery for near-real-time analytics, with minimal downtime and no application changes. Which service fits?</p>
+        <ul>
+          <li>A) Storage Transfer Service syncing exported dump files.</li>
+          <li>B) Cloud Data Fusion running a nightly batch ETL.</li>
+          <li>C) Datastream change-data-capture into BigQuery.</li>
+          <li>D) A scheduled BigQuery query that pulls from the database.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Datastream streams change data continuously with minimal source impact and downtime &mdash; the purpose-built CDC service into BigQuery.</p>
+          <p class="quiz-why"><strong>A:</strong> Storage Transfer moves objects, not live DB changes. <strong>B:</strong> Nightly batch isn't near-real-time. <strong>D:</strong> BigQuery can't directly poll an operational MySQL continuously like CDC.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Before analysts can access a customer dataset, the team must detect and redact PII at scale while keeping the rest of the records usable. What pipeline best achieves this?</p>
+        <ul>
+          <li>A) A Dataflow pipeline calling Cloud DLP to de-identify, writing results to BigQuery.</li>
+          <li>B) A BigQuery view that hides columns named like PII.</li>
+          <li>C) IAM that restricts who can read the raw dataset.</li>
+          <li>D) CMEK encryption applied to the dataset.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Dataflow + Cloud DLP detects many PII types (even in free text) and de-identifies at scale, producing analytics-safe data.</p>
+          <p class="quiz-why"><strong>B:</strong> Name-based column hiding misses PII in text and free fields. <strong>C/D:</strong> Access controls and encryption limit who/what but don't remove PII from the data analysts see.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A company must move 600 TB of archived files from an on-prem NAS to Cloud Storage, but their internet link would take many months to transfer it. What is the right approach?</p>
+        <ul>
+          <li>A) Storage Transfer Service over the existing internet connection.</li>
+          <li>B) gsutil/gcloud storage parallel uploads from the NAS.</li>
+          <li>C) Transfer Appliance shipped to Google for ingestion.</li>
+          <li>D) Datastream CDC from the file system.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> When the network can't move the volume in a reasonable time, Transfer Appliance ships the data physically for offline ingestion.</p>
+          <p class="quiz-why"><strong>A/B:</strong> Both still depend on the slow link. <strong>D:</strong> Datastream is database CDC, not bulk file transfer.</p>
         </details>
       </div>
     </section>

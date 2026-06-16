@@ -8,15 +8,15 @@
     :root {
       --bg-light: #f0fdf4; /* Light green background */
       --ink: #1e293b;
-      --cgp-green: #16a34a; /* Primary CGP Green */
-      --cgp-green-light: #dcfce7;
-      --cgp-green-border: #15803d;
-      --cgp-yellow: #fef08a;
-      --cgp-yellow-dark: #eab308;
-      --cgp-orange: #ea580c;
-      --cgp-red: #ef4444;
-      --cgp-blue: #2563eb;
-      --cgp-violet: #8b5cf6;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
       --radius: 12px;
     }
 
@@ -65,11 +65,11 @@
     }
 
     .nav-link:hover {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
     }
 
     header {
-      background: linear-gradient(135deg, #4ade80 0%, var(--cgp-green) 100%);
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
       border: 4px solid #000;
       border-radius: var(--radius);
       box-shadow: 6px 6px 0px #000;
@@ -114,7 +114,7 @@
       margin-top: 45px;
       margin-bottom: 20px;
       text-transform: uppercase;
-      color: var(--cgp-green-border);
+      color: var(--rev-green-border);
     }
 
     h3 {
@@ -128,7 +128,7 @@
       font-size: 1.05rem;
     }
 
-    .cgp-card {
+    .rev-card {
       background: #fff;
       border: 3px solid #000;
       border-radius: var(--radius);
@@ -138,31 +138,31 @@
       position: relative;
     }
 
-    .cgp-card.tip {
+    .rev-card.tip {
       background: #f0fdf4;
-      border-color: var(--cgp-green);
-      box-shadow: 4px 4px 0px var(--cgp-green);
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
     }
 
-    .cgp-card.tip h3 {
-      color: var(--cgp-green-border);
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
       margin-top: 0;
     }
 
-    .cgp-card.warn {
+    .rev-card.warn {
       background: #fef2f2;
-      border-color: var(--cgp-red);
-      box-shadow: 4px 4px 0px var(--cgp-red);
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
     }
 
-    .cgp-card.warn h3 {
-      color: var(--cgp-red);
+    .rev-card.warn h3 {
+      color: var(--rev-red);
       margin-top: 0;
     }
 
     .exam-trap {
       background: #fff7ed;
-      border: 3px dashed var(--cgp-orange);
+      border: 3px dashed var(--rev-orange);
       border-radius: var(--radius);
       padding: 18px;
       margin: 25px 0;
@@ -172,7 +172,7 @@
     .exam-trap::before {
       content: "⚠️ EXAM TRAP!";
       display: inline-block;
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       font-weight: bold;
       padding: 4px 10px;
@@ -227,7 +227,7 @@
     }
 
     th {
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -239,15 +239,15 @@
     /* Interactive Quiz styles */
     .warm-up {
       background: #faf5ff;
-      border: 3px solid var(--cgp-violet);
+      border: 3px solid var(--rev-violet);
       border-radius: var(--radius);
-      box-shadow: 4px 4px 0px var(--cgp-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
       padding: 22px;
       margin: 35px 0;
     }
 
     .warm-up h3 {
-      color: var(--cgp-violet);
+      color: var(--rev-violet);
       margin-top: 0;
       display: flex;
       align-items: center;
@@ -285,7 +285,7 @@
       display: none;
       margin-top: 10px;
       background: #f5f3ff;
-      border-left: 4px solid var(--cgp-violet);
+      border-left: 4px solid var(--rev-violet);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.95rem;
@@ -302,7 +302,7 @@
     }
 
     .practice-exam h2 {
-      color: var(--cgp-orange);
+      color: var(--rev-orange);
       border-bottom: 3px solid #000;
       margin-top: 0;
     }
@@ -337,7 +337,7 @@
       display: none;
       margin-top: 15px;
       background: #fff8f2;
-      border: 2px dashed var(--cgp-orange);
+      border: 2px dashed var(--rev-orange);
       padding: 15px;
       border-radius: 8px;
     }
@@ -398,8 +398,8 @@
 
     .option-list li.selected {
       background: #dbeafe;
-      border-color: var(--cgp-blue);
-      box-shadow: 2px 2px 0px var(--cgp-blue);
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
     }
 
     .option-list li.eliminated {
@@ -410,16 +410,16 @@
 
     .option-list li.correct-answer {
       background: #dcfce7;
-      border-color: var(--cgp-green);
+      border-color: var(--rev-green);
     }
 
     .option-list li.wrong-answer {
       background: #fee2e2;
-      border-color: var(--cgp-red);
+      border-color: var(--rev-red);
     }
 
     .submit-answer-btn {
-      background: var(--cgp-orange);
+      background: var(--rev-orange);
       color: white;
       border: 2px solid #000;
       border-radius: 6px;
@@ -459,7 +459,7 @@
       width: fit-content;
       max-width: 100%;
       margin: 30px auto 0;
-      background: var(--cgp-yellow);
+      background: var(--rev-yellow);
       color: #000;
       font-weight: bold;
       padding: 10px 20px;
@@ -637,7 +637,7 @@
       </li>
     </ul>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🚗 Advanced Traffic Management on Application Load Balancers</h3>
       <p>Global External Application Load Balancers support advanced Layer 7 routing rules configured in <strong>URL Maps</strong>:</p>
       <ul>
@@ -659,7 +659,7 @@
     <h2>5.4 Cloud DNS: The Global Address Book</h2>
     <p>Cloud DNS is a highly available, global managed DNS service. Let's look at the advanced routing policies that examiners absolutely love to test:</p>
 
-    <div class="cgp-card warn">
+    <div class="rev-card warn">
       <h3>🗺️ Advanced DNS Routing Policies</h3>
       <p>Cloud DNS allows you to configure dynamic traffic steering on your resource record sets:</p>
       <ul>
@@ -685,7 +685,7 @@
     <h2>5.5 Hybrid DNS Architecture: Resolving Across the Boundary</h2>
     <p>Routing policies steer traffic <em>within</em> a zone. Hybrid DNS is a different beast: it's about <strong>which resolver answers a query</strong> when names live on-premises, in another VPC, or in Google Cloud. Three building blocks do all the work — get the direction right and these questions become easy. 🧭</p>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🧭 The Three Building Blocks (and which way they point)</h3>
       <ul>
         <li><strong>Forwarding zone (outbound):</strong> A Cloud DNS private zone whose queries are <strong>forwarded out to a specific set of on-premises (or external) DNS servers</strong>. Scope it to the exact private zones you want resolved on-prem — not everything. This is how Google Cloud VMs resolve <em>on-premises</em> names.</li>
@@ -699,7 +699,7 @@
       </ul>
     </div>
 
-    <div class="cgp-card tip">
+    <div class="rev-card tip">
       <h3>🛰️ The Hub-and-Spoke Forwarding Pattern</h3>
       <p>Want VMs in <em>every</em> spoke VPC to resolve a specific set of private zones via on-premises DNS? Don't apply a forwarding zone to each spoke (that advertises the same DNS proxy range from every VPC and your on-prem router can't tell who asked → dropped queries). Instead:</p>
       <ul>
@@ -758,84 +758,84 @@
 
       <!-- Question 1 -->
       <div class="q-box">
-        <p><strong>Question 1:</strong> You are architecting a global, high-performance web application. The application must support path-based routing (e.g., <code>/api</code> to backend pool A, <code>/static</code> to Cloud Storage), automatic SSL offloading, and traffic mirroring for background testing. Which load balancer should you deploy?</p>
+        <p><strong>Question 1:</strong> A global web app needs path-based routing (<code>/api</code> to a backend pool, <code>/static</code> to Cloud Storage), TLS termination at the edge, and traffic mirroring for background testing. Which load balancer should you deploy?</p>
         <ul class="option-list">
-          <li data-option="A">A) Global External Proxy Network Load Balancer configured with TCP SSL offloading and a custom URL map header-routing rule.</li>
-          <li data-option="B">B) Global External Application Load Balancer</li>
-          <li data-option="C">C) Regional External Passthrough Network Load Balancer backed by an Internal Application Load Balancer transit layer in each regional subnet.</li>
-          <li data-option="D">D) Internal TCP/UDP Load Balancer integrated with an external Cloud NAT gateway running SNAT to handle traffic mirroring.</li>
+          <li data-option="A">A) Global External Proxy Network Load Balancer with TCP SSL offloading and a URL-map header-routing rule for the path splits.</li>
+          <li data-option="B">B) Internal passthrough Network Load Balancer paired with Cloud NAT doing SNAT to provide the public path and traffic mirroring.</li>
+          <li data-option="C">C) Global External Application Load Balancer, which provides URL-map path routing, SSL offload, and traffic mirroring at the edge.</li>
+          <li data-option="D">D) Regional External Passthrough Network Load Balancer fronting an internal Application Load Balancer transit layer in each region.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> The <strong>Global External Application Load Balancer (L7)</strong> is the only load balancer that supports advanced HTTP/S traffic management features like path-based routing (URL maps), SSL offloading, and traffic mirroring natively at the edge. 🌐</p>
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> The <strong>Global External Application Load Balancer</strong> is the L7 product. URL maps give path-based routing, it terminates TLS (SSL offload), and it supports traffic mirroring natively at Google's edge. 🌐</p>
           <ul>
-            <li><strong>A:</strong> Proxy NLB operates at Layer 4 (TCP) and does not understand HTTP paths or URLs, so it cannot perform path-based routing or URL mapping.</li>
-            <li><strong>C:</strong> Passthrough NLB is a Layer 4 regional load balancer with no L7 routing, SSL offloading, or native traffic mirroring capabilities; backing it with an internal load balancer is unnecessarily complex and breaks SSL offloading.</li>
-            <li><strong>D:</strong> Internal load balancers are for private VPC traffic only, and integrating them with Cloud NAT does not allow public-facing global routing, SSL termination, or native L7 traffic mirroring.</li>
+            <li><strong>A:</strong> Proxy NLB is Layer 4 (TCP) &mdash; it can't parse HTTP paths or URLs, so no path routing or URL maps.</li>
+            <li><strong>B:</strong> Internal passthrough NLB is private and L4; Cloud NAT doesn't turn it into a public global L7 with SSL termination.</li>
+            <li><strong>D:</strong> Passthrough NLB is L4 and regional; stacking an internal ALB behind it is needlessly complex and breaks single-point SSL offload.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="q-box">
-        <p><strong>Question 2:</strong> You are designing a multi-region active-passive disaster recovery architecture. You have a primary Application Load Balancer in <code>us-east1</code> and a standby Application Load Balancer in <code>europe-west1</code>. You want to configure Cloud DNS to automatically route users to the standby region if the primary region goes offline. However, you want to continuously send 1% of live production traffic to the standby region to ensure the standby servers are warm and functioning correctly. How should you configure this?</p>
+        <p><strong>Question 2:</strong> You run active-passive DR with a primary Application Load Balancer in <code>us-east1</code> and a standby in <code>europe-west1</code>. Cloud DNS must auto-route users to the standby if the primary fails, and you also want a steady 1% of live traffic hitting the standby so it stays warm and verified. How should you configure Cloud DNS?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a standard Geolocation DNS policy with geofencing enabled, set the European load balancer target as a dynamic fallback, and write a Cloud Run script to ping and check the primary region's availability.</li>
-          <li data-option="B">B) Configure a Geolocation DNS policy, manually adjust the primary and passive target weights every hour using a Cloud Scheduler job, and route 1% of queries via a separate weighted CNAME record.</li>
-          <li data-option="C">C) Configure a <strong>FAILOVER</strong> DNS routing policy with the primary set to the <code>us-east1</code> LB, the backup set to a <code>GEO</code> policy pointing to <code>europe-west1</code>, enable health checking, and set the <strong><code>--backup-data-trickle-ratio</code></strong> to <code>0.01</code>.</li>
-          <li data-option="D">D) Configure a Weighted Round Robin (WRR) routing policy with equal weights assigned to both load balancers, and disable DNS health checks on the passive region to prevent automatic traffic shifting.</li>
+          <li data-option="A">A) A FAILOVER routing policy with the primary on the <code>us-east1</code> LB and the backup a GEO policy to <code>europe-west1</code>, health checks on, and <code>--backup-data-trickle-ratio</code> set to <code>0.01</code>.</li>
+          <li data-option="B">B) A Geolocation policy with geofencing on, the European LB as a dynamic fallback, and a Cloud Run script polling the primary region's health.</li>
+          <li data-option="C">C) A Geolocation policy whose primary and passive weights a Cloud Scheduler job rewrites hourly, plus a separate weighted CNAME that sends 1% of queries over.</li>
+          <li data-option="D">D) A Weighted Round Robin policy with equal weights on both LBs and DNS health checks disabled on the passive region to avoid traffic shifting.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> This is the exact operational best practice for active-passive DR! The <strong>FAILOVER</strong> routing policy automatically switches traffic to the backup region if the primary fails health checks. Setting the <strong><code>--backup-data-trickle-ratio</code></strong> to <code>0.01</code> forces Cloud DNS to continuously route exactly 1% of queries to the standby region, keeping the standby environment warm and verified under live conditions! 💧</p>
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> The <strong>FAILOVER</strong> policy auto-switches to the backup on health-check failure, and <code>--backup-data-trickle-ratio 0.01</code> continuously sends exactly 1% of queries to the standby &mdash; keeping it warm and verified under live load. 💧</p>
           <ul>
-            <li><strong>A:</strong> Geolocation policies do not support active-passive failover with custom trickle ratios natively, and external Cloud Run scripts are not integrated with Cloud DNS automatic dynamic failover.</li>
-            <li><strong>B:</strong> Manual weight adjustment via Cloud Scheduler is slow, prone to delays, and does not support sub-minute automatic health-check-based failover.</li>
-            <li><strong>D:</strong> Equal weights without health checks represents an active-active setup and will route 50% of traffic to the passive site constantly, violating the active-passive constraint and sending traffic to unhealthy nodes if they fail.</li>
+            <li><strong>B:</strong> Geolocation doesn't do active-passive failover with a trickle ratio, and an external Cloud Run poller isn't wired into Cloud DNS's automatic failover.</li>
+            <li><strong>C:</strong> Hourly Cloud Scheduler reweighting is slow and lacks sub-minute, health-based failover.</li>
+            <li><strong>D:</strong> Equal weights with no health checks is active-active &mdash; it sends ~50% to the passive site and keeps sending even when it's unhealthy.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 3 -->
       <div class="q-box">
-        <p><strong>Question 3:</strong> You are deploying a high-performance multiplayer gaming backend on Compute Engine. The game client communicates over UDP and requires extremely low latency. The backend servers must be able to see the original public IP address of the players to perform geolocation-based matchmaking. Which load balancer should you choose?</p>
+        <p><strong>Question 3:</strong> A multiplayer game backend on Compute Engine talks UDP and needs very low latency, and the servers must see each player's original public IP for matchmaking. Which load balancer should you choose?</p>
         <ul class="option-list">
-          <li data-option="A">A) Global External Application Load Balancer configured with a Proxy Protocol v2 header to carry the client IP down to the backend Instance Group.</li>
-          <li data-option="B">B) Global External Proxy Network Load Balancer with SSL Session Ticket Resumption enabled to handle low-latency UDP encapsulation.</li>
-          <li data-option="C">C) Regional External Passthrough Network Load Balancer</li>
-          <li data-option="D">D) Regional Internal Application Load Balancer configured with Private Service Connect (PSC) endpoints in each regional subnet.</li>
+          <li data-option="A">A) Global External Application Load Balancer with a Proxy Protocol v2 header to carry the client IP to the instance group.</li>
+          <li data-option="B">B) Regional External Passthrough Network Load Balancer, which forwards UDP unchanged so backends see the real client IP.</li>
+          <li data-option="C">C) Global External Proxy Network Load Balancer with SSL session-ticket resumption to keep UDP latency low.</li>
+          <li data-option="D">D) Regional Internal Application Load Balancer with Private Service Connect endpoints in each regional subnet.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: C</span></p>
-          <p><strong>Why Option C is correct:</strong> The <strong>Regional External Passthrough Network Load Balancer</strong> operates at Layer 4 and does not terminate the connection. Packets are forwarded directly to the backend VMs with their source IP addresses unchanged, allowing the game servers to see the players' original public IPs natively. It also supports UDP, which is critical for gaming! ⚡</p>
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> The <strong>passthrough Network Load Balancer</strong> is L4 and doesn't terminate the connection; packets reach backends with the original source IP intact, and it supports UDP &mdash; exactly what low-latency matchmaking needs. ⚡</p>
           <ul>
-            <li><strong>A:</strong> Application Load Balancers only support HTTP/S traffic, not raw UDP, and they terminate the connection. Proxy Protocol v2 is only supported on certain Layer 4 proxies.</li>
-            <li><strong>B:</strong> Proxy NLBs terminate the connection, do not natively support UDP, and do not forward the original raw IP address natively without proxy headers.</li>
-            <li><strong>D:</strong> Internal load balancers are not accessible from the public internet, and PSC endpoints are for private consumption, not public game servers.</li>
+            <li><strong>A:</strong> ALBs handle HTTP/S only (not raw UDP) and terminate the connection; Proxy Protocol is a proxy-only feature.</li>
+            <li><strong>C:</strong> Proxy NLB terminates the connection and doesn't natively pass raw UDP or the unmodified client IP.</li>
+            <li><strong>D:</strong> Internal LBs aren't reachable from the public internet, and PSC is for private service consumption, not public game clients.</li>
           </ul>
         </div>
       </div>
 
       <!-- Question 4 -->
       <div class="q-box">
-        <p><strong>Question 4:</strong> You have configured a Geolocation DNS routing policy to route users to the nearest of three regional Application Load Balancers. To comply with strict European data privacy regulations (GDPR), you want to ensure that users located in Europe are strictly routed to the European load balancer, and their queries must never failover to US-based load balancers even if the European load balancer experiences an outage. How should you configure this?</p>
+        <p><strong>Question 4:</strong> A Geolocation DNS policy sends users to the nearest of three regional Application Load Balancers. For GDPR, European users must always be routed to the European LB and must never fail over to a US LB &mdash; even if the European LB is fully down. How should you configure this?</p>
         <ul class="option-list">
-          <li data-option="A">A) Configure a standard Geolocation policy with no extra flags, and use GCP IAM permissions to block US-based Compute Engine instances from resolving European IP ranges.</li>
-          <li data-option="B">B) Configure a Geolocation policy and enable <strong>Geofencing</strong> (<code>--enable-geo-fencing</code>) on the European record set.</li>
-          <li data-option="C">C) Switch the entire DNS record architecture to a Weighted Round Robin policy with 100% weight on Europe and 0% on the US, and configure a Cloud DNS forwarding zone.</li>
-          <li data-option="D">D) Disable health checking on the European load balancer and enable Cloud CDN caching globally to store European responses in US edge caches during local outages.</li>
+          <li data-option="A">A) A standard Geolocation policy with no extra flags, plus IAM rules to stop US instances from resolving the European IP ranges.</li>
+          <li data-option="B">B) A Weighted Round Robin policy with 100% weight on Europe and 0% on the US, backed by a Cloud DNS forwarding zone.</li>
+          <li data-option="C">C) Disable health checks on the European LB and enable global Cloud CDN so US edges serve European responses during an outage.</li>
+          <li data-option="D">D) A Geolocation policy with geofencing enabled (<code>--enable-geo-fencing</code>) on the European record set.</li>
         </ul>
-        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
         <div class="explanation-panel">
-          <p><span class="badge-check correct">Correct Answer: B</span></p>
-          <p><strong>Why Option B is correct:</strong> Enabling <strong>Geofencing</strong> (<code>--enable-geo-fencing</code>) on a Geolocation routing policy forces Cloud DNS to always route queries from that geographic region to the designated regional endpoints, <strong>even if all endpoints in that region are unhealthy</strong>. This guarantees compliance with strict data residency mandates (like GDPR) by preventing automatic failover to other jurisdictions! 🌍</p>
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> <strong>Geofencing</strong> pins queries from a region to that region's endpoints <em>even when they're all unhealthy</em> &mdash; no cross-jurisdiction failover, which is exactly what the data-residency rule requires. 🌍</p>
           <ul>
-            <li><strong>A:</strong> Standard Geolocation policies (without geofencing) will automatically failover and route European users to US load balancers if the European load balancer goes offline. IAM permissions cannot block or control public DNS resolution behavior.</li>
-            <li><strong>C:</strong> Weighted Round Robin does not evaluate the user's geographic location, so it cannot restrict US users from hitting Europe or vice versa.</li>
-            <li><strong>D:</strong> Disabling health checking prevents the system from detecting outages but does not guarantee geofenced routing boundaries, and caching in US edge locations violates the strict data residency requirements.</li>
+            <li><strong>A:</strong> Without geofencing, Geolocation fails European users over to the US on an outage, and IAM can't control public DNS resolution.</li>
+            <li><strong>B:</strong> WRR ignores the user's location, so it can't keep European users in Europe or US users out.</li>
+            <li><strong>C:</strong> Disabling health checks doesn't enforce a geofence, and caching European data in US edges breaks residency.</li>
           </ul>
         </div>
       </div>

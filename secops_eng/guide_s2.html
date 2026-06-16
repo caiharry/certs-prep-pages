@@ -92,6 +92,27 @@
       <h3>Event vs entity context</h3>
       <p>Distinguish <strong>event</strong> data (activity, e.g., Cloud Audit Logs) from <strong>entity</strong> data (context about users/assets, e.g., Active Directory org context). Enrich events with entity data using aliasing fields so detections and investigations have context.</p>
     </section>
+    <section class="lesson">
+      <h3>Parsers, parser extensions & the data pipeline</h3>
+      <p>Most common sources have a <strong>default (Google-managed) parser</strong> that maps raw logs to UDM automatically. When fields go missing or a source is bespoke, you have three escalating moves — and the exam wants the <em>least invasive</em> one that works:</p>
+      <ul>
+        <li><strong>Parser extension</strong> — a small overlay that adds or remaps a handful of fields on top of the default parser without forking it. Reach for this first.</li>
+        <li><strong>Custom parser</strong> — a full parser you author when there is no default (a truly bespoke app log format).</li>
+        <li><strong>Data normalisation fields</strong> — choose UDM field types deliberately (noun vs metadata, principal vs target) so detections match correctly.</li>
+      </ul>
+      <p>Validate parser changes against sample logs <em>before</em> promoting them, and remember mappings are <em>forward-looking</em> — only newly ingested logs pick up the change.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A parser edit does <strong>not</strong> retroactively reparse old data. If old logs are mis-mapped, you must reingest/backfill — editing the parser only fixes events ingested afterward.</div>
+    </section>
+    <section class="lesson">
+      <h3>Cost, retention & data tiers</h3>
+      <p>Ingestion is priced and capacity is finite, so data management is partly an economics exercise. Triage every prospective source by detection value versus volume:</p>
+      <ul>
+        <li>Prioritise high-signal logs (auth, audit, EDR, DNS) over chatty low-value noise (verbose debug/app logs).</li>
+        <li>Use <strong>data tiers</strong> to keep hot, frequently-searched data fast while pushing rarely-touched logs to cheaper retention.</li>
+        <li>Tune at the source — drop or filter fields you will never detect on rather than paying to store them.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">VALUE/VOLUME</span> Before adding a feed, ask: does its detection <strong>value</strong> justify its ingest <strong>volume</strong>? If not, filter at source.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -106,6 +127,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>The Unified Data Model (UDM).</strong></p>
           <p class="quiz-why">Detections and searches operate over UDM fields.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A Google-managed parser maps most of a source correctly but drops two fields you need. What's the least invasive fix?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A parser extension overlaying the default parser.</strong></p>
+          <p class="quiz-why">Extensions add/remap a few fields without forking the whole default parser.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You fixed a parser mapping, but yesterday's already-ingested logs are still wrong. Why?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Parser changes are forward-looking; they don't reparse historical data.</strong></p>
+          <p class="quiz-why">Only events ingested after the change pick up the new mapping — old data needs reingestion.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A new SaaS source ingests via its default parser, but the username lands in a generic text field instead of the principal, so your user-based detections never fire on it. You want the fix scoped to this one source without affecting other tenants of the same parser. What do you do?</p>
+        <ul>
+          <li>A) Author a brand-new custom parser for the source and disable the Google-managed default</li>
+          <li>B) Rewrite each affected YARA-L rule to read the generic text field instead of the principal</li>
+          <li>C) Create a parser extension that maps the username into the correct UDM principal field</li>
+          <li>D) Add the usernames to a reference list so detections can resolve them at match time</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> A parser extension overlays just the field mapping you need onto the existing default parser, fixing the principal mapping for this source without forking or replacing the managed parser.</p>
+          <p class="quiz-why"><strong>A:</strong> A full custom parser is heavy, throws away the working default mappings, and is more than this single-field gap requires. <strong>B:</strong> Rewriting rules to chase a mis-mapped field scatters the workaround across every detection and breaks portability of shared rules. <strong>D:</strong> Reference lists hold reusable values for matching; they cannot relocate a value into the correct UDM field.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Your SecOps ingest bill is dominated by verbose application debug logs that no detection or hunt has ever referenced, while you want to onboard high-value EDR telemetry within the same budget. What is the right data-management move?</p>
+        <ul>
+          <li>A) Shorten retention on every source uniformly so total stored volume drops across the board</li>
+          <li>B) Filter the unused debug logs at the source so they are not ingested, freeing budget for EDR</li>
+          <li>C) Move all logs into a cold data tier to cut cost, then onboard EDR into the same cold tier</li>
+          <li>D) Route the debug logs to Security Command Center instead so they no longer count against SIEM ingest</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Filtering low-value, never-referenced logs at the source removes their ingest cost directly, which is the textbook value-versus-volume trade that frees budget for high-signal EDR data.</p>
+          <p class="quiz-why"><strong>A:</strong> Blanket retention cuts also shorten your valuable logs' searchable history and don't target the actual cost driver. <strong>C:</strong> A cold tier slows the EDR telemetry you most want fast and still pays to ingest the useless debug logs. <strong>D:</strong> SCC is a posture tool, not a dumping ground for application logs, and this misroutes data rather than reducing it.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> During an investigation you must correlate a sign-in event with the user's department and manager — context that isn't in the auth log itself. Which kind of data do you bring in, and from where?</p>
+        <ul>
+          <li>A) More event data, by lowering the auth source's filtering so additional fields are ingested</li>
+          <li>B) A retrohunt over historical auth logs to reconstruct the department from past activity</li>
+          <li>C) A parser extension on the auth log to synthesise department and manager fields locally</li>
+          <li>D) Entity context data, such as identity/org records, enriched onto events via aliasing fields</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: D.</strong> Department and manager describe <em>who the user is</em>, which is entity context (from identity/org sources); SecOps joins it onto events through aliasing so investigations and detections gain that context.</p>
+          <p class="quiz-why"><strong>A:</strong> The auth log is event data about an action; it does not contain HR org attributes no matter how much filtering you relax. <strong>B:</strong> A retrohunt finds past matching events but cannot manufacture org context that was never logged. <strong>C:</strong> A parser maps fields that exist in the raw log; it cannot invent department/manager that the source never sent.</p>
         </details>
       </div>
     </section>

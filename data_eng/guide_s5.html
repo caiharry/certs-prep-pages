@@ -91,6 +91,11 @@
       <h3>Automation & resilience</h3>
       <p>Build repeatable <strong>Cloud Composer DAGs</strong> and schedule jobs idempotently. Observe pipelines with Cloud Monitoring/Logging and the BigQuery admin panel; troubleshoot errors, quotas, and billing. Design for fault tolerance: multi-region/zone jobs, restart handling, and replication/failover.</p>
     </section>
+    <section class="lesson">
+      <h3>Orchestration choice &amp; idempotency</h3>
+      <p>Pick the orchestrator by need: <strong>Cloud Composer</strong> (managed Airflow) for complex, dependency-rich DAGs across many systems; <strong>Workflows</strong> for lightweight serverless service-to-service sequencing; <strong>Cloud Scheduler</strong> for simple cron triggers; and <strong>Dataform</strong> for SQL-based BigQuery transformation pipelines. Make every step <strong>idempotent</strong> (e.g. <code>WRITE_TRUNCATE</code> partitions, MERGE upserts) so a retried run can't double-write.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Heavy cross-system DAG with dependencies and retries = Cloud Composer. A simple "run this at 2am" trigger = Cloud Scheduler, not a full Airflow environment.</div>
+    </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
       <div class="quiz-item">
@@ -105,6 +110,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>Cloud Composer (Airflow DAGs).</strong></p>
           <p class="quiz-why">Managed Airflow for repeatable orchestration.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You only need to trigger one job every night at 02:00 with no dependencies. Composer or Scheduler?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Scheduler.</strong></p>
+          <p class="quiz-why">A simple cron trigger doesn't justify a full managed Airflow environment.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Why design a daily load to overwrite the day's partition rather than append?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Idempotency &mdash; a retried run won't duplicate rows.</strong></p>
+          <p class="quiz-why">Truncating/replacing the target partition makes re-runs safe after failures.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team runs Spark jobs only a few times a day but pays for a Dataproc cluster around the clock. How do they cut cost without losing the ability to run jobs on demand?</p>
+        <ul>
+          <li>A) Keep the cluster running but on smaller machines.</li>
+          <li>B) Use ephemeral, job-scoped Dataproc clusters that spin up per job and tear down after.</li>
+          <li>C) Migrate the Spark jobs to BigQuery SQL.</li>
+          <li>D) Switch the cluster to preemptible nodes only and keep it always on.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Job-scoped ephemeral clusters exist only while a job runs, eliminating idle cost while preserving on-demand Spark.</p>
+          <p class="quiz-why"><strong>A:</strong> A smaller always-on cluster still pays for idle time. <strong>C:</strong> Rewriting to SQL is a large change, not a cost toggle. <strong>D:</strong> An always-on preemptible cluster still incurs idle cost and risks preemption mid-job.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A nightly pipeline coordinates ingestion, transformation, and load across several services with inter-step dependencies and automatic retries. Which orchestrator best fits?</p>
+        <ul>
+          <li>A) Cloud Scheduler firing each step at fixed times.</li>
+          <li>B) Cloud Composer (Airflow) DAGs modelling the dependencies and retries.</li>
+          <li>C) A cron job on a Compute Engine VM running a shell script.</li>
+          <li>D) Pub/Sub messages chained between Cloud Functions.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Composer/Airflow models complex DAGs with dependencies, retries, and monitoring &mdash; exactly this multi-step, cross-service workflow.</p>
+          <p class="quiz-why"><strong>A:</strong> Fixed-time Scheduler triggers don't express dependencies. <strong>C:</strong> A VM cron script is brittle and unmonitored. <strong>D:</strong> Hand-chained functions reinvent orchestration without DAG visibility or retry control.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A daily BigQuery load job occasionally retries after a transient failure, and you must guarantee the target table never ends up with duplicate rows. What design makes retries safe?</p>
+        <ul>
+          <li>A) Append each run's rows and de-duplicate manually later.</li>
+          <li>B) Write each day's data to its date partition with WRITE_TRUNCATE (or MERGE upserts).</li>
+          <li>C) Disable retries on the load job entirely.</li>
+          <li>D) Add a unique timestamp column to every row.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Truncating/replacing the day's partition (or using MERGE) makes the load idempotent, so a retried run produces the same result with no duplicates.</p>
+          <p class="quiz-why"><strong>A:</strong> Append-then-clean leaves a window of duplicates and manual toil. <strong>C:</strong> Disabling retries sacrifices reliability. <strong>D:</strong> A timestamp column doesn't prevent duplicate rows from a re-run.</p>
         </details>
       </div>
     </section>

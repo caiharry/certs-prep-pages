@@ -94,9 +94,34 @@
       <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Distributing service-account keys to clients or embedding API keys for IAM-protected services is a guaranteed wrong answer.</div>
     </section>
     <section class="lesson">
-      <h3>Storing & accessing data</h3>
-      <p>Pick by consistency and shape: <strong>Spanner</strong> (global strong consistency), <strong>AlloyDB</strong> (Postgres-compatible HTAP), <strong>Cloud SQL</strong> (regional managed MySQL/Postgres), <strong>Bigtable</strong> (high-throughput wide-column), <strong>Firestore</strong> (document/mobile sync). Grant time-limited object access with <strong>signed URLs</strong> rather than making buckets public.</p>
-      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To let a client upload/download one object for a limited time with no IAM change, use a <strong>signed URL</strong>.</div>
+      <h3>Storing &amp; accessing data</h3>
+      <p>Pick the data store by consistency and shape &mdash; the exam tests the boundaries:</p>
+      <ul>
+        <li><strong>Spanner</strong> &mdash; global, horizontally scalable, strong consistency (relational at planet scale).</li>
+        <li><strong>AlloyDB</strong> &mdash; Postgres-compatible, high-performance transactional + analytical (HTAP).</li>
+        <li><strong>Cloud SQL</strong> &mdash; regional managed MySQL/PostgreSQL/SQL Server for classic apps.</li>
+        <li><strong>Bigtable</strong> &mdash; massive-throughput, low-latency wide-column (time series, IoT).</li>
+        <li><strong>Firestore</strong> &mdash; serverless document store with mobile/web sync and offline support.</li>
+      </ul>
+      <p>Grant time-limited object access with <strong>signed URLs</strong> rather than making a bucket public.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Let a client upload/download one object for a limited time with no IAM change = a <strong>signed URL</strong>. Making the bucket public is the wrong answer.</div>
+    </section>
+    <section class="lesson">
+      <h3>Async &amp; messaging patterns</h3>
+      <p>Decouple components with the right primitive &mdash; they are <em>not</em> interchangeable:</p>
+      <ul>
+        <li><strong>Pub/Sub</strong> &mdash; fan-out, many-subscriber, high-throughput event streaming.</li>
+        <li><strong>Cloud Tasks</strong> &mdash; per-task queues with rate limiting and retries; dispatch work to a specific worker/endpoint.</li>
+        <li><strong>Workflows</strong> &mdash; orchestrate a defined sequence of service calls with branching and error handling.</li>
+        <li><strong>Eventarc</strong> &mdash; route events from Google sources (e.g. a GCS finalize) to a service via CloudEvents.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Throttle and retry individual outbound jobs to one endpoint" = Cloud Tasks. "Broadcast an event to many independent subscribers" = Pub/Sub. Don't swap them.</div>
+      <div class="callout mnemonic"><span class="hook">PTWE</span> <strong>P</strong>ub/Sub broadcasts, <strong>T</strong>asks throttle, <strong>W</strong>orkflows orchestrate, <strong>E</strong>ventarc routes.</div>
+    </section>
+    <section class="lesson">
+      <h3>Statelessness &amp; resilience</h3>
+      <p>Design services <strong>stateless</strong> (push session/state to Memorystore, Firestore, or a token) so any instance can serve any request and autoscaling works. Make write operations <strong>idempotent</strong> so safe retries don't double-charge or duplicate. Degrade gracefully (cache, fallbacks, circuit breakers) when a dependency is slow or down, and cap blast radius with timeouts.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Storing session state in local instance memory breaks autoscaling and rolling deploys &mdash; externalise it (e.g. Memorystore).</div>
     </section>
     <section class="warmup">
       <h3>🧠 Warm-Up Quiz</h3>
@@ -112,6 +137,62 @@
         <details><summary>Reveal answer</summary>
           <p class="quiz-a"><strong>An attached service account via Application Default Credentials.</strong></p>
           <p class="quiz-why">No keys to manage or rotate; library picks up ADC automatically.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You need globally consistent, horizontally scalable relational data across continents. Which database?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Spanner.</strong></p>
+          <p class="quiz-why">It's the only relational store offering global strong consistency with horizontal scale.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> One event must fan out to several independent subscribers at high volume. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Pub/Sub.</strong></p>
+          <p class="quiz-why">Built for high-throughput, many-subscriber fan-out; Cloud Tasks targets a single worker.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team must ship a stateless REST API fast, scale it to zero between bursts, and avoid managing nodes or clusters. Which platform best fits?</p>
+        <ul>
+          <li>A) GKE Standard with a Horizontal Pod Autoscaler and cluster autoscaler.</li>
+          <li>B) Cloud Run, deploying the container with request-based autoscaling.</li>
+          <li>C) A managed instance group of Compute Engine VMs behind a load balancer.</li>
+          <li>D) App Engine flexible environment with custom runtimes.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Run runs stateless containers, scales to zero, and needs no node management &mdash; the fastest, most managed fit.</p>
+          <p class="quiz-why"><strong>A:</strong> GKE Standard means managing nodes and won't scale to zero cheaply. <strong>C:</strong> MIGs need VM and image management. <strong>D:</strong> App Engine flex keeps at least one instance running and is heavier than Cloud Run.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A CI job on GitHub Actions must call Google Cloud APIs. Security policy forbids long-lived service-account keys. What is the recommended authentication method?</p>
+        <ul>
+          <li>A) Create a service-account JSON key and store it as a CI secret.</li>
+          <li>B) Use Workload Identity Federation so the external CI exchanges its token for short-lived credentials.</li>
+          <li>C) Embed an API key in the pipeline configuration.</li>
+          <li>D) Use a user's personal OAuth refresh token stored in CI.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Workload Identity Federation lets the external workload exchange its own identity token for short-lived Google credentials &mdash; keyless, exactly what the policy requires.</p>
+          <p class="quiz-why"><strong>A:</strong> A JSON key is the long-lived credential the policy bans. <strong>C:</strong> API keys don't authenticate IAM-protected APIs and leak easily. <strong>D:</strong> Personal tokens tie automation to an individual and are discouraged.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A payment endpoint occasionally retries on transient failures and you must ensure a retry never charges a customer twice. What design property must the endpoint have?</p>
+        <ul>
+          <li>A) It must store each session in the serving instance's local memory.</li>
+          <li>B) It must be idempotent, e.g. de-duplicating on a client-supplied idempotency key.</li>
+          <li>C) It must disable all retries on the client side.</li>
+          <li>D) It must run only on a single non-autoscaling instance.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Idempotency (e.g. keyed de-duplication) makes a repeated request safe, so retries can't double-charge.</p>
+          <p class="quiz-why"><strong>A:</strong> Local session state breaks autoscaling and doesn't address double charges. <strong>C:</strong> Disabling retries sacrifices reliability and still doesn't make the operation safe. <strong>D:</strong> A single instance hurts availability and doesn't guarantee exactly-once.</p>
         </details>
       </div>
     </section>
