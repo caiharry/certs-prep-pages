@@ -161,6 +161,24 @@
     }
     .study-tip h3 { margin-top: 0; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
 
+    .wip-banner {
+      background: repeating-linear-gradient(-45deg, #facc15, #facc15 14px, #1e293b 14px, #1e293b 28px);
+      border: 4px solid #000; border-radius: var(--radius); padding: 14px; margin-bottom: 28px;
+      box-shadow: 5px 5px 0px #000;
+    }
+    .wip-banner-inner {
+      background: rgba(255, 255, 255, 0.95); border: 3px solid #000; border-radius: 10px;
+      padding: 18px 20px; text-align: center;
+    }
+    .wip-banner h2 {
+      margin: 0 0 8px; font-size: clamp(1.2rem, 3vw, 1.6rem); text-transform: uppercase;
+      color: #b45309; letter-spacing: 0.04em;
+    }
+    .wip-banner p { margin: 0; font-size: 0.95rem; color: #334155; max-width: 680px; margin-inline: auto; }
+    header.wip-header::after {
+      content: "WIP!"; background: #facc15; color: #000;
+    }
+
     footer {
       text-align: center; margin-top: 50px; padding-top: 20px;
       border-top: 1px dashed #cbd5e1; color: #64748b; font-size: 0.9rem;
@@ -174,7 +192,14 @@
       <a href="../index.html" class="nav-link">&larr; Back to Main Certs Hub</a>
     </div>
 
-    <header>
+    <div class="wip-banner" role="status">
+      <div class="wip-banner-inner">
+        <h2>Work in Progress</h2>
+        <p>This study portal is still under construction. Sections, guides, and practice material may be incomplete or change without notice &mdash; but feel free to browse what&rsquo;s here so far!</p>
+      </div>
+    </div>
+
+    <header class="wip-header">
       <div class="badge-rev">Exam Revision Style</div>
       <h1>Google Cloud Security Operations Engineer</h1>
       <p class="tagline">Your study portal for Google SecOps (SIEM/SOAR), Security Command Center, YARA-L detection rules, threat hunting, and incident response — detect, hunt, and respond at scale!</p>

@@ -95,6 +95,14 @@
     .btn-disabled { background: #e5e7eb; color: #9ca3af; border-color: #9ca3af; box-shadow: 2px 2px 0px #9ca3af; cursor: not-allowed; }
     .btn-disabled:hover { transform: none; box-shadow: 2px 2px 0px #9ca3af; }
     .btn-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .btn-portal-wip {
+      display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    }
+    .wip-badge {
+      background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px);
+      color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000;
+      border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1;
+    }
     footer { text-align: center; margin-top: 40px; font-size: 0.85rem; color: #64748b; }
   </style>
 </head>
@@ -118,7 +126,7 @@
         <h3 class="cert-title">Professional Cloud Architect</h3>
         <p class="cert-desc">Designs, develops, and manages robust, secure, scalable, and cost-effective Google Cloud solutions that drive business objectives.</p>
         <div class="btn-group">
-          <a href="architect_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="architect_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="architect_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="architect_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a class="btn-rev btn-disabled" aria-disabled="true" title="Official sample questions to be added (extracted from the Google Form)">Official Sample &mdash; soon</a>
@@ -140,7 +148,7 @@
         <h3 class="cert-title">Professional Cloud Security Engineer</h3>
         <p class="cert-desc">Designs and manages secure workloads and infrastructure on Google Cloud using Google security technologies and best practices.</p>
         <div class="btn-group">
-          <a href="security_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="security_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="security_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="security_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a href="security_eng/sample_questions.html" class="btn-rev btn-official">Official Sample Questions</a>
@@ -151,7 +159,7 @@
         <h3 class="cert-title">Professional Security Operations Engineer</h3>
         <p class="cert-desc">Detects, investigates, and responds to enterprise security threats using Google SecOps and Security Command Center, writing detection rules and automating response.</p>
         <div class="btn-group">
-          <a href="secops_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="secops_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="secops_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="secops_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a class="btn-rev btn-disabled" aria-disabled="true" title="Official sample questions to be added (extracted from the Google Form)">Official Sample &mdash; soon</a>
@@ -173,7 +181,7 @@
         <h3 class="cert-title">Professional Data Engineer</h3>
         <p class="cert-desc">Empowers data-driven decisions by designing and building robust data infrastructure to collect, transform, store, and deliver data.</p>
         <div class="btn-group">
-          <a href="data_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="data_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="data_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="data_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a href="data_eng/sample_questions.html" class="btn-rev btn-official">Official Sample Questions</a>
@@ -184,7 +192,7 @@
         <h3 class="cert-title">Professional Cloud DevOps Engineer</h3>
         <p class="cert-desc">Implements processes across the software lifecycle to deliver software and infrastructure efficiently while balancing reliability with delivery speed.</p>
         <div class="btn-group">
-          <a href="devops_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="devops_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="devops_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="devops_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (35 Q)</a>
           <a href="devops_eng/sample_questions.html" class="btn-rev btn-official">Official Sample Questions</a>
@@ -195,7 +203,7 @@
         <h3 class="cert-title">Professional Cloud Developer</h3>
         <p class="cert-desc">Builds and configures scalable, secure cloud-native applications using Google-recommended tools, integrating ML and AI-powered development workflows.</p>
         <div class="btn-group">
-          <a href="developer_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="developer_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="developer_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="developer_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a class="btn-rev btn-disabled" aria-disabled="true" title="Official sample questions to be added (extracted from the Google Form)">Official Sample &mdash; soon</a>
@@ -206,7 +214,7 @@
         <h3 class="cert-title">Professional Machine Learning Engineer</h3>
         <p class="cert-desc">Builds, productionizes, and optimizes traditional and generative AI solutions on Google Cloud — from data and pipelines through serving and monitoring.</p>
         <div class="btn-group">
-          <a href="ml_eng/index.html" class="btn-rev btn-primary">Open Study Portal &rarr;</a>
+          <a href="ml_eng/index.html" class="btn-rev btn-primary btn-portal-wip">Open Study Portal <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="ml_eng/cheatsheet.html" class="btn-rev btn-secondary">Cheatsheet</a>
           <a href="ml_eng/practice_questions.html" class="btn-rev btn-exam">Generated Practice (25 Q)</a>
           <a class="btn-rev btn-disabled" aria-disabled="true" title="Official sample questions to be added (extracted from the Google Form)">Official Sample &mdash; soon</a>
