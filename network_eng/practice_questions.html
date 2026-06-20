@@ -890,357 +890,85 @@
   {
     "number": 1,
     "domain": "Network Engineer",
-    "scenario": "You need on-premises hosts to reach Google APIs (e.g., Cloud Storage) over your Cloud Interconnect using internal IPs only, with no traffic traversing the public internet. What should you configure?",
+    "scenario": "Your organization runs a Shared VPC in a host project. The platform team must retain sole control of firewall rules, routes, and VLAN attachments. A new service project, `proj-checkout`, will run a managed instance group, and its developers must be able to deploy VMs only into the existing `subnet-checkout` (in `europe-west2`) and nowhere else. The deployment is driven by the project's Compute Engine default service account, but developers also run `gcloud` deploys interactively. What is the least-privilege configuration?",
     "options": [
       {
         "id": "A",
-        "text": "Private Google Access for on-premises hosts with a route to the restricted VIP.",
+        "text": "Grant `roles/compute.networkUser` to both the developers and the `proj-checkout` Compute Engine service agent, scoped to `subnet-checkout` only.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud NAT on the VPC handling the Interconnect.",
+        "text": "Grant `roles/compute.networkUser` at the host project level to the developers and the service agent so deployments can resolve the subnet during scheduling.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A public NEG pointing at storage.googleapis.com.",
+        "text": "Grant `roles/compute.networkAdmin` on `subnet-checkout` to the developers so they manage their own subnet bindings without bothering the platform team.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Direct Peering with a default route to the internet.",
+        "text": "Grant `roles/compute.networkUser` to the developers on `subnet-checkout`, relying on the Google-managed service agent's default Shared VPC access for the automated deploy.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Private Google Access for on-premises hosts routes API requests to the restricted/private VIP over the Interconnect, keeping traffic off the public internet.",
-      "B": "Cloud NAT provides outbound internet for VMs without external IPs; it does not give on-prem hosts private API access.",
-      "C": "A public NEG still resolves to public endpoints reached over the internet.",
-      "D": "Direct Peering with an internet default route sends traffic over the public path, violating the requirement."
+      "A": "Both the human identity and the service account that actually creates instances need `compute.networkUser` on the specific subnet; binding at the subnet level confines deploys to `subnet-checkout` and keeps routing/firewall control with the platform team.",
+      "B": "Project-level `networkUser` lets the project deploy into *any* shared subnet, breaking the \"only `subnet-checkout`\" constraint — over-broad, not least privilege.",
+      "C": "`networkAdmin` lets the service team edit firewalls and routes in the host project, which is exactly the central control the platform team must keep.",
+      "D": "Service agents have no default access to Shared VPC subnets; the deploying service account must be granted `networkUser` explicitly or the automated MIG creation fails with a permission error."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/private-google-access-hybrid",
-        "text": "cloud.google.com/vpc/docs/private-google-access-hybrid"
+        "url": "https://cloud.google.com/vpc/docs/shared-vpc",
+        "text": "cloud.google.com/vpc/docs/shared-vpc"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/provisioning-shared-vpc#networkuser_role",
+        "text": "cloud.google.com/vpc/docs/provisioning-shared-vpc#network..."
       }
     ]
   },
   {
     "number": 2,
     "domain": "Network Engineer",
-    "scenario": "Your VPC uses custom dynamic routing on its Cloud Router. A new subnet is created in a different region. You need on-prem to learn the new subnet's routes automatically. What ensures this?",
+    "scenario": "Two companies merged. Both ran on-premises estates numbered out of `10.0.0.0/8`, and both now connect to one Google Cloud VPC over separate HA VPN tunnels. Hosts behind Tunnel A and hosts behind Tunnel B have overlapping `10.50.0.0/16` ranges, and a shared application in the VPC must reach servers on both sides without either company renumbering. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "Global (custom) dynamic routing mode on the VPC.",
-        "is_correct": true
+        "text": "Use Cloud NAT with manual IP assignment on the VPC so each tunnel's traffic is source-NATed to a unique public IP block.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Regional dynamic routing mode on the VPC.",
+        "text": "Switch the VPC to global dynamic routing so the Cloud Router can advertise both overlapping `10.50.0.0/16` ranges and let BGP pick the best path per flow.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static route on each on-prem device.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Enabling VPC Flow Logs on the subnet.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Global dynamic routing makes the Cloud Router advertise subnets from all regions to on-prem, so new subnets are learned automatically.",
-      "B": "Regional dynamic routing only advertises subnets in the Cloud Router's own region.",
-      "C": "Static routes defeat the goal of automatic learning and don't scale.",
-      "D": "Flow logs are for observability, not route propagation."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview",
-        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
-      }
-    ]
-  },
-  {
-    "number": 3,
-    "domain": "Network Engineer",
-    "scenario": "A workload in a Shared VPC service project must use a subnet in the host project. The application team can deploy VMs but cannot see the subnet. What is most likely missing?",
-    "options": [
-      {
-        "id": "A",
-        "text": "The user needs the Compute Network User role on the subnet/host project.",
+        "text": "Configure Private NAT so the overlapping on-premises ranges are translated to distinct, non-overlapping ranges as traffic enters Google Cloud.",
         "is_correct": true
       },
       {
-        "id": "B",
-        "text": "The host project must enable Private Google Access.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "The service project needs its own VPC.",
-        "is_correct": false
-      },
-      {
         "id": "D",
-        "text": "A firewall rule allowing egress to the subnet.",
+        "text": "Place each on-premises site behind its own Private Service Connect endpoint so the application reaches them through distinct local IPs.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Using a Shared VPC subnet requires `compute.networkUser` granted on the subnet (or host project) to the service-project principals.",
-      "B": "Private Google Access concerns API reachability, not subnet visibility/usage permissions.",
-      "C": "The whole point of Shared VPC is to use the host network, not create a separate VPC.",
-      "D": "Firewall egress doesn't grant the IAM permission needed to select the subnet."
+      "A": "Cloud NAT is *public* source NAT for egress to the internet; it doesn't translate private destination ranges reachable over VPN, and adds public IPs the scenario never needs.",
+      "B": "BGP cannot install two identical `10.50.0.0/16` prefixes as distinct destinations; the overlap makes the routes ambiguous, so one site becomes unreachable — global routing doesn't de-conflict addresses.",
+      "C": "Private NAT (private-to-private NAT) exists precisely to de-overlap colliding RFC 1918 ranges across hybrid/peered connections, translating them to distinct ranges so both sides are reachable without renumbering.",
+      "D": "PSC publishes *services* via service attachments behind a load balancer; it isn't a mechanism for reaching arbitrary on-premises server subnets, and it doesn't resolve IP overlap on the producer side."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/shared-vpc",
-        "text": "cloud.google.com/vpc/docs/shared-vpc"
-      }
-    ]
-  },
-  {
-    "number": 4,
-    "domain": "Network Engineer",
-    "scenario": "You must expose a global, HTTPS web application with a single anycast IP, TLS termination, and path-based routing to backends in multiple regions. Which load balancer?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Global external Application Load Balancer.",
-        "is_correct": true
+        "url": "https://cloud.google.com/nat/docs/private-nat",
+        "text": "cloud.google.com/nat/docs/private-nat"
       },
-      {
-        "id": "B",
-        "text": "Regional external passthrough Network Load Balancer.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Internal passthrough Network Load Balancer.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Regional external proxy Network Load Balancer.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "The global external Application Load Balancer provides a single anycast IP, TLS termination, and L7 URL/path-based routing to multi-region backends.",
-      "B": "A passthrough NLB is L4, regional, and offers no TLS termination or path routing.",
-      "C": "An internal LB is not internet-facing.",
-      "D": "A proxy NLB handles TCP/SSL at L4, not HTTP path-based routing."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/load-balancing/docs/application-load-balancer",
-        "text": "cloud.google.com/load-balancing/docs/application-load-bal..."
-      }
-    ]
-  },
-  {
-    "number": 5,
-    "domain": "Network Engineer",
-    "scenario": "You need private, one-way access from your VPC to a SaaS service published by a partner in their own VPC, without exposing your whole network or using public IPs. What do you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Private Service Connect endpoint to the published service.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "VPC Network Peering with the partner VPC.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A Shared VPC spanning both organizations.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud VPN between the two VPCs.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Private Service Connect creates a private endpoint in your VPC to consume a published service, without peering the networks.",
-      "B": "Peering connects entire VPCs bidirectionally and exposes more than needed.",
-      "C": "Shared VPC is within one organization, not for cross-org SaaS consumption.",
-      "D": "VPN connects networks broadly and requires overlapping-free addressing; it's heavier than PSC for service access."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
-        "text": "cloud.google.com/vpc/docs/private-service-connect"
-      }
-    ]
-  },
-  {
-    "number": 6,
-    "domain": "Network Engineer",
-    "scenario": "Two VPCs are peered. Subnet A (10.0.0.0/16) in VPC1 overlaps with a subnet in VPC2. What happens?",
-    "options": [
-      {
-        "id": "A",
-        "text": "The peering will fail to establish due to overlapping subnet ranges.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Traffic is automatically NATed between them.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Routes are merged and load balanced.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "The newer subnet silently wins.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "VPC Network Peering requires non-overlapping IP ranges; overlapping subnets prevent the peering from working.",
-      "B": "Peering does not perform NAT.",
-      "C": "Overlapping routes are not merged/balanced.",
-      "D": "There is no silent winner; the overlap is rejected."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/vpc/docs/vpc-peering",
-        "text": "cloud.google.com/vpc/docs/vpc-peering"
-      }
-    ]
-  },
-  {
-    "number": 7,
-    "domain": "Network Engineer",
-    "scenario": "You want to protect a global Application Load Balancer from SQL-injection and apply a rate limit per client IP. Which service?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Google Cloud Armor security policy.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud NGFW firewall policy.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "VPC Service Controls perimeter.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud IDS.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Cloud Armor provides WAF rules (preconfigured SQLi/XSS), rate limiting, and DDoS protection at the global LB edge.",
-      "B": "Cloud NGFW filters L3/L4 (and some L7) network traffic but isn't the LB WAF/rate-limiting layer.",
-      "C": "VPC Service Controls prevents data exfiltration from APIs, not web attacks.",
-      "D": "Cloud IDS detects threats but does not block/rate-limit at the LB."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/armor/docs/security-policy-overview",
-        "text": "cloud.google.com/armor/docs/security-policy-overview"
-      }
-    ]
-  },
-  {
-    "number": 8,
-    "domain": "Network Engineer",
-    "scenario": "A GKE cluster must use alias IPs so Pods get routable addresses from a secondary subnet range and integrate with VPC-native networking. What must the cluster be?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A VPC-native cluster with secondary ranges for Pods and Services.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A routes-based cluster.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A cluster with legacy networking enabled.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "An autopilot cluster with public endpoint only.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "VPC-native clusters use alias IP ranges (secondary ranges) for Pods and Services, enabling native VPC routing and features like NEG-based LB.",
-      "B": "Routes-based clusters use static routes per node, the older model lacking alias IPs.",
-      "C": "Legacy networking is deprecated and unsupported for this.",
-      "D": "Endpoint visibility is unrelated to alias-IP/VPC-native addressing."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips",
-        "text": "cloud.google.com/kubernetes-engine/docs/concepts/alias-ips"
-      }
-    ]
-  },
-  {
-    "number": 9,
-    "domain": "Network Engineer",
-    "scenario": "You need to give VMs without external IPs outbound access to the internet to download OS packages, with no inbound exposure. What do you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud NAT on the subnet's region.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "An external IP on each VM.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A public Application Load Balancer.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Identity-Aware Proxy TCP forwarding.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Cloud NAT provides outbound-only internet access for private VMs without assigning external IPs or allowing inbound connections.",
-      "B": "External IPs expose VMs to inbound traffic, the opposite of the requirement.",
-      "C": "An LB serves inbound traffic, not general outbound egress.",
-      "D": "IAP TCP forwarding provides inbound admin access, not general outbound internet."
-    },
-    "references": [
       {
         "url": "https://cloud.google.com/nat/docs/overview",
         "text": "cloud.google.com/nat/docs/overview"
@@ -1248,642 +976,1014 @@
     ]
   },
   {
-    "number": 10,
+    "number": 3,
     "domain": "Network Engineer",
-    "scenario": "Your design requires 99.99% availability for hybrid connectivity using HA VPN. What is the minimum tunnel/interface configuration?",
+    "scenario": "A VPC peered to a partner's VPC must reach a Cloud SQL instance the partner exposes. The partner provisioned the instance using Private Services Access, which created VPC Network Peering from the partner VPC to a Google-managed tenant project. Your VPC is peered to the partner VPC, but your VMs cannot reach the database. The partner is willing to make a one-line configuration change. What do you ask them to do?",
     "options": [
       {
         "id": "A",
-        "text": "Two tunnels, one from each of the two HA VPN gateway interfaces, to two peer addresses.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A single tunnel from one interface.",
+        "text": "Enable global dynamic routing on the partner's VPC so the PSA range propagates to all regions and across the peering to your VPC.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Export custom routes on the partner's peering with your VPC, since the PSA tenant routes must be re-advertised across the second peering hop.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Two tunnels from the same interface.",
+        "text": "Add a custom static route in your VPC for the Cloud SQL range with the peering connection as the next hop.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Four tunnels from one interface to one peer.",
+        "text": "Recreate the Cloud SQL instance with a Private Service Connect endpoint published into your subnet so peering is no longer involved.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Global vs regional routing governs Cloud Router/BGP propagation, not whether peered custom routes are exported; it doesn't make peering transitive.",
+      "B": "PSA reaches a database via peering, and VPC peering is non-transitive; the PSA range is a custom (imported) route on the partner VPC, so the partner must *export custom routes* on the peering toward your VPC for the route to cross the second hop.",
+      "C": "A static route can't make your VMs reach a range that lives behind two peering hops in a Google-managed tenant project; the next-hop peering won't carry traffic to an un-exported route.",
+      "D": "Re-creating as PSC is a real fix but it's the partner re-architecting their service, not the requested one-line change — and the question asks for the minimal config change."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/configure-private-services-access",
+        "text": "cloud.google.com/vpc/docs/configure-private-services-access"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/vpc-peering#transit-network",
+        "text": "cloud.google.com/vpc/docs/vpc-peering#transit-network"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Network Engineer",
+    "scenario": "You operate a VPC with hundreds of VMs across three teams. The security team wants to block all egress to a list of known-bad destination ranges for *every* VM in *every* project under the `prod` folder, in a way that individual project owners cannot override or delete. Project owners must keep the ability to manage their own per-project allow rules below that block. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A regional network firewall policy per region with deny-egress rules, attached to each VPC by the security team.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A global network firewall policy in each project's VPC with a deny-egress rule at priority 0.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "VPC firewall rules in each project denying egress to the bad ranges, locked with an organization policy constraint.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A hierarchical firewall policy on the `prod` folder with a high-priority deny-egress rule for the bad ranges.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Regional network firewall policies are also in-VPC, owner-editable, and would have to be replicated per region per project — neither centrally enforced nor override-proof.",
+      "B": "A global *network* firewall policy lives inside each project's VPC, so project owners with network admin can edit or remove it — it fails the \"cannot override\" requirement and must be set up per project.",
+      "C": "Per-project VPC firewall rules are owner-editable; an org policy constraint can't pin the *contents* of a firewall rule, so it doesn't deliver an un-deletable folder-wide block.",
+      "D": "Hierarchical firewall policies attach at the org/folder level, are evaluated before any VPC-level policy, and are managed by security admins — project owners cannot override or delete them, while lower-priority project rules still apply."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firewall/docs/firewall-policies-overview",
+        "text": "cloud.google.com/firewall/docs/firewall-policies-overview"
+      },
+      {
+        "url": "https://cloud.google.com/firewall/docs/firewall-policies",
+        "text": "cloud.google.com/firewall/docs/firewall-policies"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Network Engineer",
+    "scenario": "A latency-sensitive trading app runs across `us-east1` and `us-west1` in one VPC. All east-west traffic between these regions must be inspected by a pool of third-party NGFW appliances deployed as multi-NIC VMs. The inspection tier must be active/active with automatic health-based failover (not active/standby), and a VM-deleted appliance must stop receiving traffic immediately. How should you steer the traffic?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Put the NGFW VMs behind an internal Application Load Balancer and set it as the next hop in a policy-based route for the inter-region CIDRs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create two custom static routes to the inspection subnet at priorities 100 and 1000, each pointing at a different NGFW VM as the next hop.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy the NGFW VMs behind an internal passthrough Network Load Balancer set as the next hop in a policy-based route for the inter-region traffic.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Deploy the NGFW VMs behind a regional external passthrough Network Load Balancer and advertise its IP as the next hop over the VPC's Cloud Router.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A proxy load balancer (internal ALB) cannot be used as a route next hop, and it would terminate connections, breaking transparent L3/L4 inspection.",
+      "B": "Two priority routes give active/standby (only the lower-priority route is used) and have no health checking, so a dead appliance keeps attracting traffic until manually fixed.",
+      "C": "Only an internal passthrough NLB can be a route next hop, and behind a PBR it spreads traffic across all healthy appliances (active/active) with health-check-based removal — exactly the requirement.",
+      "D": "An *external* passthrough NLB isn't a valid internal route next hop, and it's the wrong product for private east-west VM-to-VM traffic that never touches the internet."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/internal/ilb-next-hop-overview",
+        "text": "cloud.google.com/load-balancing/docs/internal/ilb-next-ho..."
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/policy-based-routes",
+        "text": "cloud.google.com/vpc/docs/policy-based-routes"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Network Engineer",
+    "scenario": "A new VPC will host VMs that must communicate over an HA VPN to on-premises, where the on-premises MTU is locked at 1500 bytes. The application sends large UDP datagrams that must not be silently dropped. ICMP is filtered on the on-premises firewall, so path MTU discovery is unreliable. What MTU configuration avoids black-holed UDP traffic over the tunnel?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set the VPC MTU to 1500 to match on-premises, and rely on TCP MSS clamping to keep the UDP datagrams within tunnel limits.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set the VPC MTU to 1460 so packets fit within the HA VPN encapsulation ceiling end to end.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Set the VPC MTU to 8896 (jumbo frames) so the larger frames absorb the IPsec overhead before fragmentation occurs.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Keep the VPC MTU at 1500 and enable jumbo-frame negotiation on the HA VPN gateway to raise the tunnel ceiling above 1500.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "MSS clamping only applies to TCP; UDP has no MSS, so 1500-byte UDP datagrams still exceed the tunnel ceiling and, with ICMP filtered, get black-holed.",
+      "B": "HA VPN encapsulation imposes a 1460-byte effective MTU ceiling; setting the VPC MTU to 1460 keeps datagrams within that limit so oversized UDP packets aren't dropped.",
+      "C": "Jumbo frames make packets *larger*, worsening the fragmentation/drop problem over a 1460-ceiling tunnel.",
+      "D": "HA VPN has no jumbo-frame negotiation that raises the IPsec tunnel ceiling above ~1460; this capability does not exist."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations",
+        "text": "cloud.google.com/network-connectivity/docs/vpn/concepts/m..."
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/mtu",
+        "text": "cloud.google.com/vpc/docs/mtu"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Network Engineer",
+    "scenario": "Your enterprise needs 99.99% availability for connectivity between an on-premises data center and Google Cloud, using Dedicated Interconnect. You already have colocation presence in two metros. Cost matters, so you want the *minimum* topology that genuinely qualifies for the 99.99% SLA. Which design meets it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "One 100 Gbps Dedicated Interconnect in metro A and one 100 Gbps Dedicated Interconnect in metro B, each terminating on its own Cloud Router with the VPC in regional dynamic routing mode.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Four Dedicated Interconnect connections in a single metro, spread across two edge availability domains, terminating on two Cloud Routers with the VPC in global dynamic routing mode.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Two Dedicated Interconnect connections in metro A across two edge availability domains, backed by an HA VPN over the public internet as the redundant cross-metro path.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Two Dedicated Interconnect connections in metro A and two in metro B (separate edge availability domains), with four VLAN attachments to two Cloud Routers, global routing mode.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "One connection per metro is single points of failure within each metro (no second edge availability domain), so it doesn't meet 99.99%; regional routing also strands other regions.",
+      "B": "A single metro tops out at 99.9% no matter how many connections or domains; it cannot survive a metro-level outage, so it fails the 99.99% target.",
+      "C": "An HA VPN backup is good practice but doesn't raise the *Interconnect* topology to a 99.99% SLA; the SLA is defined by the Interconnect redundancy, not a VPN fallback.",
+      "D": "The 99.99% Interconnect SLA requires connections in *two metros*, at least two per metro in separate edge availability domains, terminating on two Cloud Routers, with global routing so any region can use either metro — this is the minimal qualifying design."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/t..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/c..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Network Engineer",
+    "scenario": "An HA VPN connects your VPC to on-premises with two tunnels (Tunnel A and Tunnel B) from the single HA VPN gateway. You want *inbound* traffic from on-premises into Google Cloud to strongly prefer Tunnel A, with Tunnel B used only when Tunnel A's BGP session drops. You administer only the Google Cloud side via Cloud Router. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "On Cloud Router, set a lower MED on Tunnel A's session and a higher MED on Tunnel B's so on-premises prefers Tunnel A.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "On Cloud Router, AS-path prepend (or raise the advertised route priority) on Tunnel B so on-premises prefers Tunnel A.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "On Cloud Router, advertise your prefixes only on Tunnel A and leave Tunnel B with no advertisements until failover.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Switch the VPC to global dynamic routing so Cloud Router can pin inbound traffic to a single preferred tunnel.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "MED that Cloud Router *advertises* is largely ignored by the receiver across the AS boundary for this purpose; MED is the lever for *outbound* (GCP→on-prem) preference based on what on-premises sends, not inbound.",
+      "B": "Inbound (on-prem→GCP) path selection is influenced by what Cloud Router advertises *to* on-premises; making Tunnel B's advertisement less attractive via AS-path prepend (or higher route priority) steers inbound traffic onto Tunnel A with automatic fallback.",
+      "C": "Advertising on only Tunnel A means Tunnel B has no learned path, so there's no automatic failover — it breaks redundancy rather than ordering preference.",
+      "D": "Regional vs global routing controls cross-region propagation, not preference between two tunnels in the same region; both tunnels stay equally in scope."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/how-to/advertising-overview",
+        "text": "cloud.google.com/network-connectivity/docs/router/how-to/..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview#bgp-best-path-selection",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Network Engineer",
+    "scenario": "You run redundant Cloud Routers in `us-east1` and `us-west1`, each peering with on-premises over separate hybrid links, in one VPC with global dynamic routing. During failover tests, traffic occasionally takes a route with a *longer* AS-path because the two routers evaluate their BGP sessions independently. You need consistent, RFC 4271-compliant best-path selection across the whole VPC. What should you change?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set the VPC's BGP best path selection mode to standard.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable Bidirectional Forwarding Detection on both routers at a 50 ms interval to synchronize their route tables.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Switch the VPC to regional dynamic routing so each router only considers its own region's routes.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Replace BGP with custom static routes carrying explicit metrics on both Cloud Routers.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "The 99.99% SLA requires HA VPN with tunnels on both gateway interfaces to redundant peer endpoints.",
-      "B": "A single tunnel has no redundancy and doesn't meet the SLA.",
-      "C": "Both tunnels on one interface lose interface-level redundancy.",
-      "D": "Piling tunnels on one interface still lacks the required dual-interface redundancy."
+      "A": "The default legacy best-path mode compares AS-path lengths only within a single BGP task and can choose a longer path; standard mode applies RFC 4271 comparison consistently across all the VPC's sessions and regions.",
+      "B": "BFD only speeds *failure detection*; it doesn't change which path the best-path algorithm selects, so the inconsistency persists.",
+      "C": "Regional routing limits propagation to each router's own region, breaking the intended cross-region redundancy rather than fixing path-selection consistency.",
+      "D": "Static routes discard dynamic failover and don't scale; they trade away the very BGP convergence the design relies on."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies",
-        "text": "cloud.google.com/network-connectivity/docs/vpn/concepts/t..."
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/best-path-selection-mode",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Network Engineer",
+    "scenario": "On-premises servers (no public IPs) must call Google Cloud APIs — Cloud Storage and BigQuery only — privately over a Dedicated Interconnect, and your security team requires that VPC Service Controls protect those APIs so nothing else on `googleapis.com` is reachable from on-premises. What must you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Private Service Connect endpoint for Google APIs in your VPC and have on-premises resolve `*.googleapis.com` to that endpoint's public IP.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Resolve `*.googleapis.com` to `private.googleapis.com` (`199.36.153.8/30`) on-premises and advertise that range over Cloud Router to the on-premises routers.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable Private Google Access on the on-premises router and add a default route to `storage.googleapis.com` over the Interconnect.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Resolve `*.googleapis.com` to `restricted.googleapis.com` (`199.36.153.4/30`) on-premises, advertise that range over Cloud Router, and route it through the Interconnect.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A PSC endpoint for Google APIs uses a private internal IP you assign (not a public IP), and resolving to a public IP defeats the private-path goal; the restricted VIP is the standard pattern here.",
+      "B": "The private VIP (`199.36.153.8/30`) reaches a broader set of Google APIs and does *not* enforce VPC Service Controls, so it fails the \"nothing else reachable / VPC-SC protected\" requirement.",
+      "C": "Private Google Access is a *subnet* setting for VMs without external IPs; it isn't something you \"enable on the on-premises router,\" and a default route to a public API name doesn't keep traffic private or VPC-SC-scoped.",
+      "D": "The restricted VIP (`199.36.153.4/30`) reaches only APIs that support VPC Service Controls and blocks everything else, so resolving `*.googleapis.com` to it and advertising the range over Interconnect satisfies the VPC-SC requirement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/private-google-access-hybrid",
+        "text": "cloud.google.com/vpc/docs/private-google-access-hybrid"
+      },
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/restricted-vip-services",
+        "text": "cloud.google.com/vpc-service-controls/docs/restricted-vip..."
       }
     ]
   },
   {
     "number": 11,
     "domain": "Network Engineer",
-    "scenario": "You must connect 30 VPCs and an on-prem site into a hub-and-spoke topology with transitive connectivity managed centrally. Which product fits best?",
+    "scenario": "A serverless team runs a Cloud Run service that must connect to a Memorystore for Redis instance reachable only on a private IP inside your VPC. The team wants outbound connectivity from Cloud Run into the VPC with the least operational overhead and the ability to scale without managing a connector VM fleet. Which approach fits?",
     "options": [
       {
         "id": "A",
-        "text": "Network Connectivity Center with VPC and hybrid spokes.",
-        "is_correct": true
+        "text": "Publish the Redis instance behind a Private Service Connect service attachment and have Cloud Run reach it over the public internet.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Full mesh of VPC peerings.",
+        "text": "Provision a Serverless VPC Access connector sized with a wide machine-type range and point Cloud Run at it.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single Shared VPC for all teams.",
-        "is_correct": false
+        "text": "Configure Cloud Run with Direct VPC egress to the VPC subnet hosting the Redis private IP.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Cloud DNS peering.",
+        "text": "Enable Private Google Access on the Cloud Run service so it can reach the Redis private IP directly.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Network Connectivity Center provides a hub with VPC/hybrid spokes and centralized, transitive connectivity at scale.",
-      "B": "VPC peering is non-transitive and a 30-VPC mesh is unmanageable.",
-      "C": "Forcing all teams into one Shared VPC doesn't address on-prem/transitive hub-spoke needs.",
-      "D": "DNS peering shares DNS resolution, not network connectivity."
+      "A": "PSC endpoints/attachments are for consuming *published services* across VPCs, not the simplest way for Cloud Run to reach a private IP in the *same* VPC, and \"over the public internet\" contradicts a private IP target.",
+      "B": "A Serverless VPC Access connector works but *is* the connector-VM fleet the team wants to avoid; it carries throughput limits and per-connector management overhead.",
+      "C": "Direct VPC egress attaches Cloud Run directly to a VPC subnet without a connector instance pool, giving lower latency, faster scaling, and less ops overhead — the modern recommended path to private VPC resources.",
+      "D": "Private Google Access governs reaching *Google APIs* from VMs without external IPs; it has nothing to do with Cloud Run reaching a private Redis IP."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview",
-        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
+        "url": "https://cloud.google.com/run/docs/configuring/vpc-direct-vpc",
+        "text": "cloud.google.com/run/docs/configuring/vpc-direct-vpc"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/connecting-vpc",
+        "text": "cloud.google.com/run/docs/configuring/connecting-vpc"
       }
     ]
   },
   {
     "number": 12,
     "domain": "Network Engineer",
-    "scenario": "A subnet is running out of IP addresses. You must add capacity without recreating the subnet or disrupting existing VMs. What do you do?",
+    "scenario": "A media company serves a single global website. Requests to `/static/*` should be cached and served from Google's edge, `/api/*` should route to a regional backend service, and the whole site must terminate TLS at the edge and support HTTP/2. The company is on Premium Tier. Which front-end design meets all of this with one anycast IP?",
     "options": [
       {
         "id": "A",
-        "text": "Expand the subnet's primary IP range (increase the prefix).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Delete and recreate the subnet with a larger range.",
+        "text": "A global external proxy Network Load Balancer with Cloud CDN enabled and a forwarding rule that path-matches `/static/*` to the bucket.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "A global external Application Load Balancer with a URL map sending `/static/*` to a CDN-enabled backend bucket and `/api/*` to the backend service.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Switch the VPC to legacy mode.",
+        "text": "A regional external Application Load Balancer per region, fronted by a Cloud DNS geolocation policy and Cloud CDN on the bucket origin.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Add the VMs to a different VPC.",
+        "text": "A global external passthrough Network Load Balancer with Cloud CDN, preserving the client IP while caching `/static/*` at the edge.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "You can expand a subnet's primary range non-disruptively (ranges can only grow, not shrink), preserving existing VMs.",
-      "B": "Deleting the subnet disrupts all attached resources.",
-      "C": "Legacy mode is deprecated and irrelevant.",
-      "D": "Moving VMs across VPCs is disruptive and unnecessary."
+      "A": "A proxy NLB is L4 (TCP/SSL) and cannot parse URL paths, so it can't split `/static/*` from `/api/*`; URL maps are an ALB feature.",
+      "B": "The global external ALB is the L7 product that does URL-map path routing, edge TLS termination, HTTP/2, a single anycast IP, and Cloud CDN on a backend bucket for `/static/*` — all requirements met in one front end.",
+      "C": "Regional ALBs plus DNS geo-routing give multiple regional IPs and slower DNS-based steering, not a single anycast IP with native edge content-based routing.",
+      "D": "A passthrough NLB is L4, doesn't terminate TLS or do path routing, and there is no *global* external passthrough NLB with edge CDN of this kind."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/create-modify-vpc-networks#expand-subnet",
-        "text": "cloud.google.com/vpc/docs/create-modify-vpc-networks#expa..."
+        "url": "https://cloud.google.com/load-balancing/docs/application-load-balancer",
+        "text": "cloud.google.com/load-balancing/docs/application-load-bal..."
+      },
+      {
+        "url": "https://cloud.google.com/cdn/docs/setting-up-cdn-with-bucket",
+        "text": "cloud.google.com/cdn/docs/setting-up-cdn-with-bucket"
       }
     ]
   },
   {
     "number": 13,
     "domain": "Network Engineer",
-    "scenario": "You want DNS resolution of an on-prem domain from within your VPC, forwarding queries to your on-prem DNS servers. What do you configure in Cloud DNS?",
+    "scenario": "An internal microservices platform exposes a gRPC service over HTTP/2 that other teams' VMs in the *same* region and same VPC must reach by a stable internal VIP. The service runs on a managed instance group, needs path-based routing across two backend versions, and must not be reachable from the internet. Which load balancer should you deploy?",
     "options": [
       {
         "id": "A",
-        "text": "A forwarding (outbound) zone targeting the on-prem DNS servers.",
+        "text": "A regional internal Application Load Balancer, with a `REGIONAL_MANAGED_PROXY` proxy-only subnet provisioned in the region.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A public managed zone.",
+        "text": "An internal passthrough Network Load Balancer fronting the instance group, with session affinity set to client IP.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A reverse lookup zone only.",
+        "text": "A regional internal proxy Network Load Balancer with an SNI-based routing rule to split the two backend versions.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "DNSSEC on the VPC.",
+        "text": "A global external Application Load Balancer restricted with a Cloud Armor policy allowing only the VPC's internal ranges.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A Cloud DNS forwarding zone sends queries for the on-prem domain to specified on-prem name servers.",
-      "B": "A public zone serves internet resolution, not private on-prem forwarding.",
-      "C": "A reverse zone handles PTR lookups, not general on-prem name resolution.",
-      "D": "DNSSEC signs records; it doesn't forward queries on-prem."
+      "A": "A regional internal ALB is the L7 internal product that gives a stable internal VIP, HTTP/2/gRPC support, and URL-map path/version routing; it requires a proxy-only subnet (`REGIONAL_MANAGED_PROXY`) in the region as a prerequisite.",
+      "B": "An internal passthrough NLB is L4 — no URL/path-based routing and no native HTTP/2 content routing — so it can't split traffic across the two versions by path.",
+      "C": "A proxy NLB is L4 and routes by SNI/port, not URL path, so it can't do the L7 path-based version split this scenario needs.",
+      "D": "A global external ALB is internet-facing; bolting on Cloud Armor to fake \"internal\" is the wrong tool and leaves an external surface the requirement forbids."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/dns/docs/policies-overview",
-        "text": "cloud.google.com/dns/docs/policies-overview"
+        "url": "https://cloud.google.com/load-balancing/docs/l7-internal",
+        "text": "cloud.google.com/load-balancing/docs/l7-internal"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/proxy-only-subnets",
+        "text": "cloud.google.com/load-balancing/docs/proxy-only-subnets"
       }
     ]
   },
   {
     "number": 14,
     "domain": "Network Engineer",
-    "scenario": "Your team needs to diagnose why packets between two VMs are dropped, identifying the specific firewall rule or route responsible, without sending real traffic. Which tool?",
+    "scenario": "You publish an internal analytics API from a producer VPC to dozens of independent consumer VPCs using Private Service Connect. Some consumers report that, although their PSC endpoint resolves, connections intermittently fail under load while others on the same service work fine. You suspect the producer side cannot keep up with new connections. Which producer-side setting most directly governs this?",
     "options": [
       {
         "id": "A",
-        "text": "Connectivity Tests in Network Intelligence Center.",
-        "is_correct": true
+        "text": "The dynamic routing mode of the producer VPC, which must be set to global for a Private Service Connect attachment to scale to many consumers.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "VPC Flow Logs.",
+        "text": "The MTU of the consumer VPC subnets hosting the failing PSC endpoints, which throttles new connection setup once it is exceeded.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Trace.",
-        "is_correct": false
+        "text": "The number of NAT subnet IP addresses allocated to the PSC service attachment, which caps concurrent consumer connections.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Packet Mirroring.",
+        "text": "The proxy-only subnet size in the consumer VPCs where the PSC endpoints live, which bounds how many endpoints can connect.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Connectivity Tests simulate the path and report the matching firewall rule/route causing a drop, without live traffic.",
-      "B": "Flow logs record real traffic after the fact and won't pinpoint a config-based drop proactively.",
-      "C": "Cloud Trace profiles application latency, not network reachability.",
-      "D": "Packet Mirroring copies live traffic for inspection; it doesn't analyze config reachability."
+      "A": "Dynamic routing mode affects cross-region BGP propagation, not the PSC attachment's connection limits — PSC doesn't rely on it for capacity.",
+      "B": "Subnet MTU governs packet size, not connection capacity; it wouldn't cause load-dependent connection failures isolated to some consumers.",
+      "C": "A PSC service attachment uses NAT subnet(s) to source-NAT consumer traffic; if those NAT IPs are too few, the attachment runs out of port/connection capacity and new consumer connections fail under load — sizing the NAT subnets fixes it.",
+      "D": "PSC consumer endpoints are forwarding-rule IPs, not proxy load balancers, so they don't consume a proxy-only subnet; that subnet is irrelevant here."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview",
-        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
+        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
+        "text": "cloud.google.com/vpc/docs/private-service-connect"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/about-accessing-vpc-hosted-services-endpoints",
+        "text": "cloud.google.com/vpc/docs/about-accessing-vpc-hosted-serv..."
       }
     ]
   },
   {
     "number": 15,
     "domain": "Network Engineer",
-    "scenario": "You must enforce that only specific instances (by service account) can receive traffic on port 8080, regardless of IP. Which firewall targeting should you use?",
+    "scenario": "You front a public web app with a global external Application Load Balancer. The compliance team requires that traffic from a list of embargoed countries be dropped at Google's network edge *before* it reaches your backends or consumes any WAF/L7 processing, while still allowing full WAF inspection for everyone else. How should you configure Cloud Armor?",
     "options": [
       {
         "id": "A",
-        "text": "A firewall rule targeting a service account.",
+        "text": "Attach an edge security policy with a geo-based deny rule for the embargoed countries; keep the backend policy for WAF.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A rule targeting the 0.0.0.0/0 source range.",
+        "text": "Add an OWASP preconfigured WAF rule on the backend security policy that denies the embargoed country codes.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A rule based solely on instance internal IPs.",
+        "text": "Configure a rate-limiting rule on the backend security policy that throttles the embargoed countries to zero requests per minute.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A route with a custom priority.",
+        "text": "Use a hierarchical firewall policy with geo-IP match to drop the embargoed countries before they reach the load balancer.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Firewall rules can target instances by service account, applying regardless of the instances' IPs and surviving autoscaling.",
-      "B": "A broad source range controls who can connect, not which instances are targeted.",
-      "C": "IP-based targeting is brittle as instances scale and change addresses.",
-      "D": "Routes direct traffic paths; they don't enforce per-instance allow rules."
+      "A": "Edge security policies are enforced at Google's PoPs before traffic reaches the load balancer or backend policy, and they support geography/IP-based filtering — perfect for dropping embargoed regions early while the backend policy still does full WAF for the rest.",
+      "B": "A backend security policy runs *at* the load balancer, after edge, so the embargoed traffic still consumes L7/WAF processing — it doesn't drop \"before backends\" as required.",
+      "C": "Rate-limiting to zero is a hacky deny that still happens at the backend layer (not the edge) and isn't the intended geo-block mechanism.",
+      "D": "VPC/hierarchical firewall rules don't see the original client geo for proxied external ALB traffic (the LB is the source to backends), and they don't act at Google's edge PoPs."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firewall/docs/firewalls#serviceaccounts",
-        "text": "cloud.google.com/firewall/docs/firewalls#serviceaccounts"
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview#edge-security-policies",
+        "text": "cloud.google.com/armor/docs/security-policy-overview#edge..."
+      },
+      {
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview",
+        "text": "cloud.google.com/armor/docs/security-policy-overview"
       }
     ]
   },
   {
     "number": 16,
     "domain": "Network Engineer",
-    "scenario": "A Cloud Interconnect carries sensitive data and compliance requires encryption in transit at layer 2 on the connection itself. What should you enable?",
+    "scenario": "Your VPC has a private zone `corp.internal` in Cloud DNS. On-premises clients (reachable over HA VPN) must be able to resolve names in `corp.internal`, and Google Cloud VMs must be able to resolve on-premises names in `onprem.example.com`. You want each direction configured once, cleanly. What do you set up?",
     "options": [
       {
         "id": "A",
-        "text": "MACsec for Cloud Interconnect.",
-        "is_correct": true
+        "text": "DNS peering in both directions between the VPC and an on-premises Cloud DNS hub, with `--enable-geo-fencing` on both zones.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "HA VPN only, with no Interconnect.",
+        "text": "An outbound server policy with alternative name servers listing the on-premises DNS servers, plus DNS peering from on-premises into the VPC.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "TLS on the application.",
+        "text": "A forwarding zone for `corp.internal` pointing at on-premises, plus an inbound server policy so VMs can resolve `onprem.example.com`.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Armor.",
-        "is_correct": false
+        "text": "An inbound server policy on the VPC (for inbound forwarder IPs) plus a forwarding zone for `onprem.example.com` pointing at the on-premises DNS servers.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "MACsec encrypts traffic at layer 2 on the Dedicated Interconnect link itself, meeting in-transit encryption requirements.",
-      "B": "Removing Interconnect changes the design; the question is about encrypting the existing Interconnect.",
-      "C": "App-layer TLS doesn't satisfy a link-layer encryption mandate for all traffic.",
-      "D": "Cloud Armor is a web WAF, unrelated to Interconnect encryption."
+      "A": "DNS peering is a VPC-to-VPC feature (on-premises isn't a Cloud DNS hub), and geo-fencing is a routing-policy flag unrelated to hybrid resolution.",
+      "B": "An outbound server policy with alternative name servers is a blunt instrument that sends *all* VPC queries to those servers (breaking internal resolution), and DNS peering is VPC↔VPC, not for on-premises.",
+      "C": "The directions are swapped — a forwarding zone for `corp.internal` would push your *own* zone out to on-premises, and an inbound policy doesn't let VMs resolve external names; this configuration does neither job.",
+      "D": "The two directions are independent: an *inbound* server policy exposes forwarder IPs so on-premises can resolve Google Cloud private names, and a *forwarding zone* for `onprem.example.com` lets VMs resolve on-premises names — one config each, correctly scoped."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/macsec",
-        "text": "cloud.google.com/network-connectivity/docs/interconnect/c..."
+        "url": "https://cloud.google.com/dns/docs/policies",
+        "text": "cloud.google.com/dns/docs/policies"
+      },
+      {
+        "url": "https://cloud.google.com/dns/docs/zones/forwarding-zones",
+        "text": "cloud.google.com/dns/docs/zones/forwarding-zones"
       }
     ]
   },
   {
     "number": 17,
     "domain": "Network Engineer",
-    "scenario": "You need internal clients to reach a set of backend VMs via a stable internal IP with L4 load balancing and client IP preservation. Which load balancer?",
+    "scenario": "In a hub-and-spoke design, every spoke VPC must resolve a specific set of partner zones via on-premises DNS servers reachable from the hub over Interconnect. A junior engineer configured an identical forwarding zone in each spoke pointing at the on-premises servers, and resolution is now flaky: on-premises occasionally drops the forwarded queries. What is the correct fix?",
     "options": [
       {
         "id": "A",
-        "text": "Internal passthrough Network Load Balancer.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Global external Application Load Balancer.",
+        "text": "Keep the per-spoke forwarding zones but switch them to an outbound server policy with alternative name servers on each spoke.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Create the forwarding zone only on the hub VPC and configure each spoke with a DNS peering zone to the hub.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Internal Application Load Balancer.",
+        "text": "Advertise `169.254.169.254` from the hub Cloud Router so the on-premises servers can identify the forwarding source.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "External proxy Network Load Balancer.",
+        "text": "Create the forwarding zone on every spoke but disable global dynamic routing so the queries don't loop.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "The internal passthrough NLB offers an internal VIP, L4 load balancing, and preserves the original client IP (no proxying).",
-      "B": "It's external and L7, not internal L4 with client-IP preservation.",
-      "C": "The internal ALB is a proxy (L7) and does not preserve client IP the same way.",
-      "D": "A proxy NLB terminates connections and is external in this context."
+      "A": "Alternative name servers send *all* spoke queries out, breaking resolution of everything else, and it doesn't solve the duplicate-source-range problem — it makes scoping worse.",
+      "B": "Each spoke's forwarding zone advertises the same `35.199.192.0/19` DNS proxy source range, so on-premises can't tell which VPC asked and drops replies; configuring forwarding once on the hub and using DNS peering from each spoke fixes it cleanly.",
+      "C": "`169.254.169.254` is the metadata DNS server, not the forwarding source range; advertising it doesn't help on-premises identify or return forwarded queries.",
+      "D": "Disabling global dynamic routing breaks cross-region route propagation and has nothing to do with the duplicated DNS proxy source range causing drops."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/load-balancing/docs/internal",
-        "text": "cloud.google.com/load-balancing/docs/internal"
+        "url": "https://cloud.google.com/dns/docs/zones/zones-overview#peering-zones",
+        "text": "cloud.google.com/dns/docs/zones/zones-overview#peering-zones"
+      },
+      {
+        "url": "https://cloud.google.com/dns/docs/best-practices#hub-and-spoke",
+        "text": "cloud.google.com/dns/docs/best-practices#hub-and-spoke"
       }
     ]
   },
   {
     "number": 18,
     "domain": "Network Engineer",
-    "scenario": "Your organization wants to centrally define firewall rules that apply across an entire folder of projects and cannot be overridden by project admins. What do you use?",
+    "scenario": "A private GKE Standard cluster in a Shared VPC service project will host a payments API. The control plane must have no public IP and no bastion or jump host in the VPC, yet on-call engineers working from home (and from a second spoke VPC) must run `kubectl` against it. Master Authorized Networks are considered too brittle for home IPs. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Hierarchical firewall policies at the folder/org level.",
+        "text": "Enable the DNS-based control-plane endpoint, disable the IP-based endpoint, and authorize engineers with `container.clusters.connect` IAM plus VPC Service Controls.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Per-project VPC firewall rules.",
+        "text": "Keep the IP-based private endpoint and reach it from home and the spoke VPC by exporting custom routes across the VPC peering and adding the home ranges to Master Authorized Networks.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Network tags on each VM.",
+        "text": "Front the control plane with an internal passthrough Network Load Balancer published via Private Service Connect to the spoke VPC and the internet.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Armor edge policies.",
+        "text": "Make the cluster public but disable node public IPs, then restrict the control plane to the corporate VPN egress range with Master Authorized Networks.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Hierarchical firewall policies attach at org/folder level and are enforced across child projects, above project-level rules.",
-      "B": "Project firewall rules can be changed by project admins and aren't centrally enforced.",
-      "C": "Tags select targets but don't centrally enforce policy.",
-      "D": "Cloud Armor protects LBs, not VPC-wide L3/L4 policy inheritance."
+      "A": "The DNS-based endpoint resolves to Google's API frontend, gated by IAM (`container.clusters.connect`) and VPC Service Controls; it gives bastion-free access from anywhere and sidesteps non-transitive peering between the spoke and the cluster's tenant network.",
+      "B": "The managed control plane lives in a Google tenant project reached via non-transitive peering, so exported routes don't reach it from a second-hop spoke, and home IPs in MAN are exactly the brittleness ruled out.",
+      "C": "You can't place your own ILB or PSC attachment in front of GKE's Google-managed control plane; it isn't a resource you can load-balance.",
+      "D": "A public cluster exposes a control-plane public IP (forbidden), and home-IP MAN is the brittle approach the scenario rejects."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/firewall/docs/firewall-policies-overview",
-        "text": "cloud.google.com/firewall/docs/firewall-policies-overview"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/network-..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/network-isolation",
+        "text": "cloud.google.com/kubernetes-engine/docs/how-to/network-is..."
       }
     ]
   },
   {
     "number": 19,
     "domain": "Network Engineer",
-    "scenario": "You must mirror production traffic from specific subnets to an out-of-band IDS appliance for inspection without affecting the original flows. Which feature?",
+    "scenario": "You're sizing IP ranges for a VPC-native GKE cluster expected to grow to 200 nodes with up to 2,000 ClusterIP Services over its lifetime, using the default per-node Pod allocation, while minimizing address consumption. You cannot resize Pod/Service ranges after creation. Which secondary-range plan is correct?",
     "options": [
       {
         "id": "A",
-        "text": "Packet Mirroring to an instance-group collector.",
-        "is_correct": true
+        "text": "Pods `/14` (262,144) and Services `/16` (65,536) to leave maximum headroom.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "VPC Flow Logs export to BigQuery.",
+        "text": "Pods `/18` (16,384) and Services `/21` (2,048), expanding the Pod range later if needed.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud NAT logging.",
-        "is_correct": false
+        "text": "Pods `/16` (65,536) and Services `/20` (4,096), with a small primary node range.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Firewall Insights.",
+        "text": "Pods `/17` (32,768) and Services `/23` (512), relying on Service IP reuse across namespaces.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Packet Mirroring copies full packets from selected sources to a collector (e.g., IDS) without disrupting production traffic.",
-      "B": "Flow logs are sampled metadata, not full packet copies for IDS.",
-      "C": "NAT logging records translations, not mirrored packets.",
-      "D": "Firewall Insights analyzes rule usage, not packet capture."
+      "A": "A `/14` Pods and `/16` Services vastly over-allocate, contradicting the \"minimize address consumption\" constraint and risking overlap with other subnets.",
+      "B": "A `/18` holds only 16,384 Pod IPs (≈64 nodes' worth), far short of 200 nodes, and secondary ranges *cannot* be resized after creation, so \"expand later\" is impossible.",
+      "C": "At the default `/24` (256 Pod IPs) per node, 200 nodes need 51,200 Pod IPs → a `/16` (65,536) is the smallest power-of-two fit; 2,000 Services need a `/20` (4,096) — correctly sized and minimal.",
+      "D": "A `/23` Services range (512) can't hold 2,000 Services, and Service IPs aren't reused across namespaces within a cluster — it would exhaust immediately."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/packet-mirroring",
-        "text": "cloud.google.com/vpc/docs/packet-mirroring"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/alias-ips"
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr",
+        "text": "cloud.google.com/kubernetes-engine/docs/how-to/flexible-p..."
       }
     ]
   },
   {
     "number": 20,
     "domain": "Network Engineer",
-    "scenario": "A global Application Load Balancer should serve cacheable static content from the closest edge to reduce latency and origin load. What do you enable?",
+    "scenario": "A GKE Ingress currently routes external traffic to nodes, which then forward to Pods via `kube-proxy`. You observe an extra network hop, uneven Pod load distribution, and difficulty draining individual Pods during rollouts. You want the Google Cloud load balancer to send traffic straight to Pod IPs. What should you enable?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud CDN on the backend service.",
-        "is_correct": true
+        "text": "An internal passthrough Network Load Balancer in front of the cluster to preserve the client IP to Pods.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A second regional LB.",
+        "text": "NodePort services with externalTrafficPolicy set to `Local` so traffic skips the second node hop.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Premium Tier only, with no CDN.",
+        "text": "GKE Dataplane V2 so eBPF replaces `kube-proxy` and the load balancer addresses Pods directly.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A larger machine type for backends.",
-        "is_correct": false
+        "text": "Container-native load balancing using standalone or Ingress-managed zonal Network Endpoint Groups that hold Pod IPs.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Enabling Cloud CDN on the LB backend service caches content at Google's edge, cutting latency and origin load.",
-      "B": "Adding another LB doesn't provide edge caching.",
-      "C": "Premium Tier improves routing but isn't edge caching by itself.",
-      "D": "Bigger backends don't reduce edge latency for static content."
+      "A": "An internal passthrough NLB is L4/private and about client-IP preservation, not making an external Ingress route directly to Pod IPs.",
+      "B": "`externalTrafficPolicy: Local` reduces a hop but still routes to *nodes* (not Pod IPs directly) and can cause imbalanced traffic across nodes with uneven Pod counts.",
+      "C": "Dataplane V2 (eBPF) improves in-cluster policy/routing performance but doesn't make the *external* Google Cloud load balancer target Pod IPs — that's what NEGs do.",
+      "D": "Container-native load balancing uses NEGs that contain Pod IPs as endpoints, so the Google Cloud load balancer routes directly to Pods — eliminating the `kube-proxy` node hop, evening out distribution, and enabling Pod-level health/draining."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/cdn/docs/overview",
-        "text": "cloud.google.com/cdn/docs/overview"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/containe..."
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/negs",
+        "text": "cloud.google.com/load-balancing/docs/negs"
       }
     ]
   },
   {
     "number": 21,
     "domain": "Network Engineer",
-    "scenario": "You need to advertise only a specific summarized prefix to on-prem via BGP, not all VPC subnets. What do you configure on the Cloud Router?",
+    "scenario": "A regional fleet of private VMs (no external IPs) makes a very high volume of short-lived outbound HTTPS connections to many different SaaS endpoints. Under peak load, Cloud NAT logs show `OUT_OF_RESOURCES` drops. You must stop the drops while using as few external NAT IP addresses as possible. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "A custom route advertisement (custom IP ranges).",
+        "text": "Enable Dynamic Port Allocation on the Cloud NAT gateway with a low minimum (e.g., 64) and a high maximum (e.g., 8192) ports per VM.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Regional dynamic routing.",
+        "text": "Set a high static minimum of 8192 ports per VM so every VM is guaranteed enough ports during the peak.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A static route on the VPC.",
+        "text": "Add 30 static external IP addresses to the NAT gateway and switch it to round-robin IP mapping to spread the connection load.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A firewall egress rule.",
+        "text": "Reduce the Cloud NAT TCP TIME_WAIT timeout to zero so source ports are reclaimed instantly after each connection closes.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud Router custom route advertisements let you advertise specific summarized prefixes instead of the default of all subnets.",
-      "B": "Routing mode controls scope of subnet advertisement, not custom summarization.",
-      "C": "A static VPC route doesn't control BGP advertisements to on-prem.",
-      "D": "Firewall rules don't affect route advertisement."
+      "A": "Dynamic Port Allocation lets busy VMs scale up to a high maximum while idle VMs stay near the minimum, ending exhaustion without statically reserving huge port blocks — the most IP-efficient fix.",
+      "B": "A high *static* minimum gives *every* VM (even idle ones) 8192 ports, so the gateway burns through IP/port capacity far faster — it triggers exhaustion sooner, not later.",
+      "C": "Adding 30 static IPs throws addresses at the problem, directly violating \"as few external IPs as possible,\" and is wasteful next to DPA.",
+      "D": "A zero TIME_WAIT timeout isn't a valid/safe setting and risks port reuse collisions; tuning timeouts is a secondary lever, not the IP-efficient fix for exhaustion."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-connectivity/docs/router/how-to/advertising-custom-ip",
-        "text": "cloud.google.com/network-connectivity/docs/router/how-to/..."
+        "url": "https://cloud.google.com/nat/docs/ports-and-addresses",
+        "text": "cloud.google.com/nat/docs/ports-and-addresses"
+      },
+      {
+        "url": "https://cloud.google.com/nat/docs/dynamic-port-allocation",
+        "text": "cloud.google.com/nat/docs/dynamic-port-allocation"
       }
     ]
   },
   {
     "number": 22,
     "domain": "Network Engineer",
-    "scenario": "Your private GKE cluster's nodes have no external IPs and must pull images from Artifact Registry and reach Google APIs privately. What enables this?",
+    "scenario": "Your security team must investigate a suspected data exfiltration: they need a full, lossless copy of *all* bidirectional packets (headers and payloads) to and from a specific set of sensitive VMs, delivered to a third-party IDS appliance, without sitting inline in the traffic path or adding latency. Sampled metadata is not sufficient — they need actual packet payloads. What should you deploy?",
     "options": [
       {
         "id": "A",
-        "text": "Private Google Access on the node subnet.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud NAT only, with no Private Google Access.",
+        "text": "VPC Flow Logs at a 100% sampling rate on the sensitive VMs' subnet, exported to BigQuery for the IDS appliance to query.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Packet Mirroring, selecting the sensitive VMs and forwarding mirrored traffic to a collector behind an internal load balancer.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A public endpoint on the cluster.",
+        "text": "Cloud NGFW Enterprise with Layer 7 packet inspection enabled inline on the subnet hosting the sensitive VMs.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "External IPs on nodes.",
+        "text": "Firewall Rules Logging enabled on the allow rules for the sensitive VMs, streamed to the third-party IDS appliance.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Private Google Access lets nodes without external IPs reach Google APIs (including Artifact Registry) over internal routing.",
-      "B": "Cloud NAT enables general egress but Private Google Access is the intended path for Google APIs; relying on NAT alone routes via the internet.",
-      "C": "A public control-plane endpoint doesn't give nodes API egress.",
-      "D": "Adding external IPs contradicts the private-cluster requirement."
+      "A": "VPC Flow Logs capture sampled *metadata* (the 5-tuple plus counts), never full packet payloads even at higher sampling — it can't deliver the actual packets needed for payload forensics.",
+      "B": "Packet Mirroring clones full packets (headers and payloads) out-of-band from selected instances/subnets to a collector, giving the IDS lossless copies without being inline or adding latency — exactly the requirement.",
+      "C": "Cloud NGFW Enterprise inspects *inline* and would sit in the traffic path (potential latency), and it's a blocking control, not a lossless packet-copy feed to a third-party IDS.",
+      "D": "Firewall Rules Logging records rule-match *events*, not packet contents, so it gives no payloads for exfiltration analysis."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/private-google-access",
-        "text": "cloud.google.com/vpc/docs/private-google-access"
+        "url": "https://cloud.google.com/vpc/docs/packet-mirroring",
+        "text": "cloud.google.com/vpc/docs/packet-mirroring"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/about-packet-mirroring",
+        "text": "cloud.google.com/vpc/docs/about-packet-mirroring"
       }
     ]
   },
   {
     "number": 23,
     "domain": "Network Engineer",
-    "scenario": "You must give an internal HTTP(S) service a private DNS name resolvable only inside your VPC. Which Cloud DNS zone type?",
+    "scenario": "After a firewall cleanup, an app team complains that VMs in `subnet-app` can't reach a database VM in `subnet-db` across the same VPC. You need to determine, without sending live traffic, whether a route or firewall rule is blocking the path and exactly which rule is responsible, before scheduling any change. Which tool gives you this fastest?",
     "options": [
       {
         "id": "A",
-        "text": "A private managed zone attached to the VPC.",
-        "is_correct": true
+        "text": "VPC Flow Logs on both subnets, queried in BigQuery to see which flows are missing.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A public managed zone.",
+        "text": "Network Topology in Network Intelligence Center, inspecting the live throughput graph between the two subnets.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A forwarding zone to the internet.",
-        "is_correct": false
+        "text": "Connectivity Tests in Network Intelligence Center, simulating the path from a `subnet-app` VM to the `subnet-db` VM.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "A reverse public zone.",
+        "text": "Firewall Insights, reviewing the shadowed-rule and unused-rule metrics for the VPC.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "A private managed zone is visible only to the attached VPC networks, providing internal-only name resolution.",
-      "B": "A public zone is internet-resolvable.",
-      "C": "A forwarding zone delegates resolution elsewhere; not an internal authoritative zone.",
-      "D": "A reverse public zone handles public PTR records."
+      "A": "Flow Logs only show traffic that *did* flow (sampled); a blocked flow simply doesn't appear, so they can't tell you which rule blocked it.",
+      "B": "Network Topology visualizes observed throughput/flows; it won't simulate a path or pinpoint the blocking rule, and there may be no traffic to show because it's already blocked.",
+      "C": "Connectivity Tests run a *configuration simulation* of the packet path — evaluating routes, firewall rules, and perimeters — and name the specific rule that drops the packet, all without sending live traffic.",
+      "D": "Firewall Insights finds shadowed/unused rules for cleanup, but doesn't trace a specific source-to-destination path or identify the rule blocking *this* connection."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/dns/docs/zones",
-        "text": "cloud.google.com/dns/docs/zones"
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview",
+        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
+      },
+      {
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/how-to/running-connectivity-tests",
+        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
       }
     ]
   },
   {
     "number": 24,
     "domain": "Network Engineer",
-    "scenario": "Traffic to your global external Application Load Balancer should route over Google's premium backbone for the lowest latency from users to Google's edge. Which network service tier?",
+    "scenario": "You connect three VPCs (shared services, app, data) plus two on-premises sites (over HA VPN) and need full any-to-any reachability with central route management, while avoiding the non-transitivity of VPC peering and the pairwise-mesh sprawl it creates. The on-premises sites must also be able to reach each other through Google's backbone. What should you build?",
     "options": [
       {
         "id": "A",
-        "text": "Premium Tier.",
-        "is_correct": true
+        "text": "A transit VPC running a self-managed fleet of router-appliance VMs that all five networks peer with over BGP, with no NCC hub at all.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Standard Tier.",
+        "text": "A full mesh of VPC peerings between the three VPCs with custom route export on each link, and separate HA VPNs terminated on each VPC.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "There is no tier choice for global LBs.",
+        "text": "A Network Connectivity Center hub in star topology with the data VPC in the center group and the other VPCs and on-premises sites on edge spokes.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Spot Tier.",
-        "is_correct": false
+        "text": "A Network Connectivity Center mesh hub with the three VPCs as VPC spokes and the two HA VPNs as hybrid spokes with site-to-site transfer on.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Premium Tier carries traffic on Google's global backbone, entering/exiting close to the user for lowest latency; global external ALBs require Premium Tier.",
-      "B": "Standard Tier uses the public internet for more of the path, with higher latency and regional scope.",
-      "C": "Tier selection does exist and matters for global LBs.",
-      "D": "\"Spot Tier\" is not a network service tier."
+      "A": "A self-managed router-appliance transit VPC is far more operational overhead and a scaling/HA risk compared with the native NCC hub built for exactly this.",
+      "B": "A peering mesh is the sprawl you're trying to avoid, remains non-transitive (on-prem can't reach on-prem through it), and needs N×(N-1)/2 links plus per-link route export.",
+      "C": "Star topology *isolates* edge spokes from each other, which blocks the required any-to-any reachability and on-prem-to-on-prem transit between edge sites.",
+      "D": "NCC mesh gives any-to-any reachability across VPC spokes and hybrid spokes from one central hub (no pairwise peering), and enabling site-to-site data transfer on the hybrid spokes lets the two on-premises sites transit Google's backbone to reach each other."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/network-tiers/docs/overview",
-        "text": "cloud.google.com/network-tiers/docs/overview"
+        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/hybrid",
+        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
       }
     ]
   },
   {
     "number": 25,
     "domain": "Network Engineer",
-    "scenario": "You need to restrict which Google APIs VMs can reach and ensure they only use the restricted VIP (199.36.153.4/30) for Private Google Access with VPC Service Controls. What DNS configuration is required?",
+    "scenario": "A VPC hosts an internal-facing service whose external presence is published via a global external Application Load Balancer with Cloud CDN. The product team wants `/downloads/*` (large, immutable installer files in a Cloud Storage bucket) cached aggressively at the edge, but after every release they must guarantee users immediately receive the new binaries. They are wary of overloading the origin. What is the correct release-time action?",
     "options": [
       {
         "id": "A",
-        "text": "Create private DNS zones for googleapis.com mapping to the restricted VIP.",
+        "text": "Issue a targeted cache invalidation for the `/downloads/*` path prefix after each release, rather than purging the entire cache.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Use only public DNS resolution.",
+        "text": "Disable Cloud CDN on the bucket backend before each release and re-enable it afterward so the edge re-fetches everything.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disable DNS in the VPC.",
+        "text": "Set the bucket objects' Cache-Control to `no-store` so the CDN never caches `/downloads/*`, guaranteeing freshness.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Point googleapis.com at a Cloud NAT IP.",
+        "text": "Issue a full cache invalidation (`/*`) on every release so nothing stale can possibly be served.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "With restricted VIP access, you configure private DNS zones (e.g., for googleapis.com / *.googleapis.com) resolving to 199.36.153.4/30 so requests use the restricted path.",
-      "B": "Public DNS would resolve to standard public VIPs, bypassing the restricted/VPC-SC path.",
-      "C": "Disabling DNS breaks resolution entirely.",
-      "D": "Cloud NAT IPs are for general egress, not the restricted Google API VIP."
+      "A": "A path-scoped invalidation (`/downloads/*`) purges only the changed content, forcing a fresh fetch for those objects while leaving the rest of the cache intact and the origin lightly loaded.",
+      "B": "Toggling CDN off/on flushes all cached content and sends a flood of cache-miss requests to the origin for *everything*, the exact origin overload they're wary of, plus a latency hit.",
+      "C": "`no-store` defeats the whole point of caching large immutable installers at the edge — every user request hits the origin, maximizing load and latency.",
+      "D": "A `/*` invalidation purges the entire cache, causing a thundering-herd of misses against the origin across the whole site, not just the new binaries."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc-service-controls/docs/set-up-private-connectivity",
-        "text": "cloud.google.com/vpc-service-controls/docs/set-up-private..."
+        "url": "https://cloud.google.com/cdn/docs/invalidating-cached-content",
+        "text": "cloud.google.com/cdn/docs/invalidating-cached-content"
+      },
+      {
+        "url": "https://cloud.google.com/cdn/docs/caching",
+        "text": "cloud.google.com/cdn/docs/caching"
       }
     ]
   }

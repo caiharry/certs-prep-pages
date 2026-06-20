@@ -890,77 +890,41 @@
   {
     "number": 1,
     "domain": "DevOps Engineer",
-    "scenario": "Your platform team owns network administration for all production projects. Application teams should deploy resources into their own projects but must use centrally managed subnets, firewall policy, and routes. You need the lowest-operational-overhead Google Cloud design. What should you use?",
+    "scenario": "Your platform team owns networking for the production estate. Forty application teams deploy into their own projects but must use centrally administered subnets, firewall policies, and routes, with the platform team retaining sole control over IP ranges. Application teams must still own their own compute and IAM within their projects. You want the lowest-operational-overhead design that keeps a single network administration boundary. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "VPC Network Peering between every application project and a central networking project",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Shared VPC with a host project managed by the platform team and service projects for application teams",
+        "text": "Create a Shared VPC host project owned by the platform team and attach the 40 application projects as service projects",
         "is_correct": true
       },
       {
+        "id": "B",
+        "text": "Peer each application project's VPC to a central networking VPC using VPC Network Peering, and manage firewall rules centrally",
+        "is_correct": false
+      },
+      {
         "id": "C",
-        "text": "Private Service Connect endpoints in each application project",
+        "text": "Publish the centrally managed subnets to each application project through Private Service Connect endpoints",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A separate VPC in each project with Terraform-managed duplicate firewall rules",
+        "text": "Replicate the platform team's Terraform network module into each application project so every VPC is identical",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "A",
     "explanations": {
-      "A": "A creates peering sprawl and does not centralize subnet ownership in the same way. C is for private service/API access, not shared subnet administration. D duplicates policy and increases drift.",
-      "B": "Shared VPC is designed for centralized network administration with separate service projects.",
-      "C": "A creates peering sprawl and does not centralize subnet ownership in the same way. C is for private service/API access, not shared subnet administration. D duplicates policy and increases drift.",
-      "D": "A creates peering sprawl and does not centralize subnet ownership in the same way. C is for private service/API access, not shared subnet administration. D duplicates policy and increases drift."
+      "A": "Shared VPC is purpose-built for exactly this split — the host project centralises subnets, firewall, and routes under the platform team, while service projects keep their own compute and IAM, all under one network administration boundary with minimal overhead.",
+      "B": "Peering connects whole VPCs but each project still owns its own subnets and firewall rules, so it does not centralise IP-range or firewall administration; with 40 projects it also creates non-transitive peering sprawl.",
+      "C": "Private Service Connect publishes a private endpoint to a producer service or API — it is not a mechanism for sharing managed subnets and firewall policy across projects for general compute.",
+      "D": "Duplicating the module gives 40 independent VPCs that drift over time and there is no single administration boundary — the platform team cannot enforce one IP plan or firewall policy across separate networks."
     },
     "references": [
       {
         "url": "https://cloud.google.com/vpc/docs/shared-vpc",
         "text": "cloud.google.com/vpc/docs/shared-vpc"
-      }
-    ]
-  },
-  {
-    "number": 2,
-    "domain": "DevOps Engineer",
-    "scenario": "A team needs private access from a consumer VPC to a managed producer service without exposing traffic to the public internet and without peering entire networks. Which option best fits?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Shared VPC",
-        "is_correct": false
       },
-      {
-        "id": "B",
-        "text": "VPC Network Peering",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Private Service Connect",
-        "is_correct": true
-      },
-      {
-        "id": "D",
-        "text": "Cloud NAT",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "C",
-    "explanations": {
-      "A": "A shares subnets across projects. B peers networks and has broader routing implications. D gives private resources outbound internet access; it does not publish a private service endpoint.",
-      "B": "A shares subnets across projects. B peers networks and has broader routing implications. D gives private resources outbound internet access; it does not publish a private service endpoint.",
-      "C": "Private Service Connect provides private endpoints from consumers to producer services without full network peering.",
-      "D": "A shares subnets across projects. B peers networks and has broader routing implications. D gives private resources outbound internet access; it does not publish a private service endpoint."
-    },
-    "references": [
       {
         "url": "https://cloud.google.com/vpc/docs/private-service-connect",
         "text": "cloud.google.com/vpc/docs/private-service-connect"
@@ -968,119 +932,131 @@
     ]
   },
   {
-    "number": 3,
+    "number": 2,
     "domain": "DevOps Engineer",
-    "scenario": "Your security team wants to prevent future creation of user-managed service account keys across the organization. They also want workloads to authenticate without long-lived keys. What should you do?",
+    "scenario": "A teammate manually enabled the `cloudsql.enable_pgaudit` flag on a production instance through the console during an incident. The instance is one of 12 managed with Terraform, and the next `terraform apply` will strip the flag because it is not in the configuration. You need the flag to persist and you want to stop this whole class of console drift from recurring across the team. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Create a weekly Cloud Asset Inventory report for service account keys and delete any keys found",
+        "text": "Run `terraform import` on the production instance so the manually set flag is captured into state and future applies preserve it",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Apply an organization policy constraint to disable service account key creation and use Workload Identity Federation or attached service accounts",
-        "is_correct": true
+        "text": "Add `lifecycle { ignore_changes = [settings.0.database_flags] }` to the instance resource so Terraform stops reconciling flags",
+        "is_correct": false
       },
       {
         "id": "C",
-        "text": "Store all service account keys in Secret Manager and grant access to CI/CD systems",
+        "text": "Add the flag to the Terraform configuration and apply, and restrict `cloudsql.instances.update` in production to the CI/CD service account",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Run `terraform state rm` followed by `terraform import` to refresh state and adopt the console change as the new baseline",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "`terraform import` only links an existing resource to state — `apply` still reconciles state toward configuration, so the flag missing from config is stripped on the next run; it also does nothing to prevent recurrence.",
+      "B": "Ignoring `database_flags` makes the flag persist but abandons Terraform's management of every flag on the instance, so future drift becomes invisible — you have surrendered to click-ops rather than fixed it.",
+      "C": "Putting the flag in config makes Terraform the source of truth so it persists, and restricting `instances.update` to the CI/CD identity forces all 12 instances' changes through code review, killing the console-drift class of problem.",
+      "D": "Removing and re-importing refreshes state, but `apply` reconciles toward config not the reverse, so the flag is still removed; it also leaves the human-console path wide open."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/docs/terraform/best-practices-for-terraform",
+        "text": "cloud.google.com/docs/terraform/best-practices-for-terraform"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/flags",
+        "text": "cloud.google.com/sql/docs/postgres/flags"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "DevOps Engineer",
+    "scenario": "You run a legacy GKE workload that holds long-lived in-memory session state and cannot tolerate Pod evictions during the upcoming holiday peak. The cluster is enrolled in the Regular release channel. You must guarantee that no automatic node upgrades evict Pods for a defined two-week window, while accepting the upgrades afterward. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Switch the cluster to the Stable release channel so node upgrades are deferred during the peak",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set the node pool's surge upgrade settings to `max-surge=0` and `max-unavailable=0` for the window",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Apply a PodDisruptionBudget with `minAvailable: 100%` to the workload's Deployment",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Rotate service account keys every 24 hours using Cloud Scheduler",
-        "is_correct": false
+        "text": "Configure a maintenance exclusion with the \"No minor or node upgrades\" scope covering the two-week window",
+        "is_correct": true
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "D",
     "explanations": {
-      "A": "A is detective and allows violations before cleanup. C still uses long-lived keys. D reduces exposure but keeps the key-management anti-pattern.",
-      "B": "Org policy prevents key creation up front, and keyless identity avoids long-lived credentials.",
-      "C": "A is detective and allows violations before cleanup. C still uses long-lived keys. D reduces exposure but keeps the key-management anti-pattern.",
-      "D": "A is detective and allows violations before cleanup. C still uses long-lived keys. D reduces exposure but keeps the key-management anti-pattern."
+      "A": "The Stable channel only slows how new a version is; it does not freeze node upgrades, so automatic upgrades and evictions can still occur during the peak.",
+      "B": "`max-surge=0`/`max-unavailable=0` is an invalid combination that stalls rather than prevents upgrades, and surge settings shape how an upgrade rolls, not whether it happens — they do not reliably stop eviction.",
+      "C": "A 100% PDB blocks voluntary disruptions but GKE node upgrades can still proceed and a too-strict PDB can be overridden or simply stall the node drain; it is not the supported way to freeze upgrades for a window.",
+      "D": "Only the \"No minor or node upgrades\" exclusion scope blocks node upgrades and therefore the Pod evictions they cause, and it is bounded to the defined window so normal upgrades resume afterward — exactly the requirement."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/iam/docs/workload-identity-federation",
-        "text": "cloud.google.com/iam/docs/workload-identity-federation"
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/maintena..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/release-..."
       }
     ]
   },
   {
     "number": 4,
     "domain": "DevOps Engineer",
-    "scenario": "Your Kubernetes platform team wants to manage Google Cloud resources using Kubernetes-style manifests and reconciliation. They already run a control cluster and want cloud resources to be declarative objects. Which tool should they use?",
+    "scenario": "Your enterprise runs GKE clusters in several Google Cloud projects plus a GKE-on-AWS cluster. Operators must reach the Kubernetes API of all of them for `kubectl` operations through a single consistent path, without exposing any cluster's control plane to the public internet, and with access governed by Google Cloud IAM. What should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Config Connector",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud Deploy",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Packer",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud Shell",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Config Connector lets teams manage Google Cloud resources as Kubernetes resources.",
-      "B": "B is for delivery pipelines. C builds machine images. D is an interactive shell, not an IaC reconciler.",
-      "C": "B is for delivery pipelines. C builds machine images. D is an interactive shell, not an IaC reconciler.",
-      "D": "B is for delivery pipelines. C builds machine images. D is an interactive shell, not an IaC reconciler."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/config-connector/docs/overview",
-        "text": "cloud.google.com/config-connector/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 5,
-    "domain": "DevOps Engineer",
-    "scenario": "Your enterprise operates GKE clusters in multiple projects and regions. You need consistent policy and service management across clusters, including hybrid clusters. What should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A single regional GKE cluster and multiple namespaces",
+        "text": "Establish VPC Network Peering between every cluster's VPC and a central operations VPC",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "A fleet with registered clusters",
-        "is_correct": true
+        "text": "Assign each cluster control plane a public endpoint protected by authorized networks listing the operators' IPs",
+        "is_correct": false
       },
       {
         "id": "C",
-        "text": "VPC Network Peering between all cluster VPCs",
-        "is_correct": false
+        "text": "Register all clusters into a fleet and reach them through the Connect gateway",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "One Cloud Build trigger per cluster",
+        "text": "Deploy a bastion host in each cluster's network and require operators to SSH in before running `kubectl`",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "C",
     "explanations": {
-      "A": "A does not address multi-cluster enterprise management. C is networking, not cluster policy management. D only triggers builds.",
-      "B": "Fleets group Kubernetes clusters for unified management, policy, identity, and multi-cluster features.",
-      "C": "A does not address multi-cluster enterprise management. C is networking, not cluster policy management. D only triggers builds.",
-      "D": "A does not address multi-cluster enterprise management. C is networking, not cluster policy management. D only triggers builds."
+      "A": "Peering provides network reachability but not a unified, IAM-controlled API access path, is non-transitive and awkward across many clusters, and does not extend cleanly to the AWS-hosted cluster.",
+      "B": "Public endpoints with authorized networks expose the control plane to the internet (violating the requirement) and become brittle IP-list maintenance across many clusters and clouds.",
+      "C": "A fleet plus the Connect gateway gives one IAM-governed path to every registered cluster's API — including hybrid and multi-cloud GKE — without any cluster exposing a public control-plane endpoint.",
+      "D": "Per-cluster bastions add a VM fleet to manage, give an inconsistent path per cluster, and tie access to SSH rather than Google Cloud IAM."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/fleet-management/docs/connect-gateway",
+        "text": "cloud.google.com/kubernetes-engine/fleet-management/docs/..."
+      },
       {
         "url": "https://cloud.google.com/kubernetes-engine/fleet-management/docs/fleet-concepts",
         "text": "cloud.google.com/kubernetes-engine/fleet-management/docs/..."
@@ -1088,39 +1064,43 @@
     ]
   },
   {
-    "number": 6,
+    "number": 5,
     "domain": "DevOps Engineer",
-    "scenario": "A team occasionally needs a browser-based terminal with Google Cloud CLI preinstalled for ad-hoc administration. They do not need a persistent, standardized IDE environment. What should they use?",
+    "scenario": "Your developers each maintain their own laptops, and security has flagged that toolchain versions and patch levels drift between engineers, occasionally causing \"works on my machine\" build failures. You need a consistent, centrally patchable development environment that the platform team controls by template, while developers keep a full IDE rather than just a shell. What should you adopt?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Workstations",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Cloud Shell",
+        "text": "Standardise on Cloud Workstations with a shared configuration that defines the image and tools, patched centrally",
         "is_correct": true
       },
       {
+        "id": "B",
+        "text": "Standardise on Cloud Shell for all development so everyone gets the preinstalled Cloud SDK",
+        "is_correct": false
+      },
+      {
         "id": "C",
-        "text": "A managed instance group of bastion VMs",
+        "text": "Distribute a golden VM image and a quarterly checklist for developers to re-image their laptops",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A custom laptop image",
+        "text": "Run a managed instance group of developer VMs that engineers RDP into for their work",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "A",
     "explanations": {
-      "A": "A is better for standardized, centrally managed development workstations. C adds VM management overhead. D does not meet browser-based ad-hoc access.",
-      "B": "Cloud Shell is the lightweight browser shell for ad-hoc tasks with the SDK available.",
-      "C": "A is better for standardized, centrally managed development workstations. C adds VM management overhead. D does not meet browser-based ad-hoc access.",
-      "D": "A is better for standardized, centrally managed development workstations. C adds VM management overhead. D does not meet browser-based ad-hoc access."
+      "A": "Cloud Workstations configurations centrally define the image, machine type, and tools and apply updates on the next workstation start, giving a consistent, patchable, full-IDE environment under platform-team control.",
+      "B": "Cloud Shell is an ephemeral browser shell for ad-hoc tasks, not a standardised full-IDE team environment, and it is not the central templating mechanism the requirement calls for.",
+      "C": "A golden image plus a manual checklist still depends on each developer re-imaging on schedule, so versions drift again — the exact problem you are trying to remove.",
+      "D": "A MIG of developer VMs adds OS and image management overhead and is not a managed, templated dev-environment service; patch consistency still falls back to manual VM maintenance."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/workstations/docs/overview",
+        "text": "cloud.google.com/workstations/docs/overview"
+      },
       {
         "url": "https://cloud.google.com/shell/docs",
         "text": "cloud.google.com/shell/docs"
@@ -1128,39 +1108,43 @@
     ]
   },
   {
-    "number": 7,
+    "number": 6,
     "domain": "DevOps Engineer",
-    "scenario": "Your production target must require human approval before promotion. Images should also be blocked if they are not signed by an approved builder. Which pairing best matches these requirements?",
+    "scenario": "Your release flows through `test`, `staging`, and `prod` GKE clusters. The same artifact must be promoted unchanged across all three, production promotion needs a human approval gate, and you want a managed Google Cloud service rather than a hand-built pipeline per environment. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Deploy approvals for promotion; Binary Authorization for signed-image enforcement",
+        "text": "A single Cloud Deploy delivery pipeline with ordered targets and a required approval on the prod target",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Binary Authorization for approval; Cloud Deploy for vulnerability scanning",
+        "text": "Three Cloud Build triggers, one per environment, each rebuilding and deploying the image to its cluster",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Audit Logs for approval; Artifact Registry for deployment enforcement",
+        "text": "A Config Sync repo per cluster, promoting by copying manifests from the staging repo to the prod repo",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Secret Manager for approval; Cloud Deploy for signed-image enforcement",
+        "text": "A Cloud Deploy pipeline per environment, each promoting its own freshly rendered release",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud Deploy approvals handle human promotion gates; Binary Authorization enforces deploy-time image policy.",
-      "B": "Binary Authorization is not a human approval workflow. Artifact Registry stores artifacts but does not replace deployment policy. Secret Manager stores secrets.",
-      "C": "Binary Authorization is not a human approval workflow. Artifact Registry stores artifacts but does not replace deployment policy. Secret Manager stores secrets.",
-      "D": "Binary Authorization is not a human approval workflow. Artifact Registry stores artifacts but does not replace deployment policy. Secret Manager stores secrets."
+      "A": "One Cloud Deploy delivery pipeline defines ordered targets and promotes a single release through them, and a required approval on the prod target adds the human gate — the managed, single-artifact promotion model the scenario asks for.",
+      "B": "Rebuilding per environment produces a different image at each stage, breaking the \"promote the same artifact unchanged\" requirement and reintroducing the per-stage pipeline you want to avoid.",
+      "C": "Config Sync reconciles cluster state from Git but copying manifests between repos is not a managed promotion-with-approval workflow and risks divergence between what was tested and what ships.",
+      "D": "A separate pipeline per environment renders a separate release each time, so you lose single-release promotion and the clean cross-target approval flow."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/deploy/docs/overview",
+        "text": "cloud.google.com/deploy/docs/overview"
+      },
       {
         "url": "https://cloud.google.com/deploy/docs/promote-release#require_approval",
         "text": "cloud.google.com/deploy/docs/promote-release#require_appr..."
@@ -1168,519 +1152,439 @@
     ]
   },
   {
-    "number": 8,
+    "number": 7,
     "domain": "DevOps Engineer",
-    "scenario": "Your organization deploys to GKE clusters running in several environments. Developers want Git to remain the desired-state source of truth, and clusters should continuously reconcile to that state. Which approach best fits?",
+    "scenario": "A high-traffic checkout service is about to receive a risky rewrite of its pricing logic. You must expose the new version to roughly 5% of real production traffic, watch error-rate and latency SLO telemetry, and automatically widen or roll back based on those metrics. Double-running two full-size environments is too expensive to justify. Which deployment strategy fits best?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Deploy only, with manual promotions to each cluster",
+        "text": "A blue/green deployment that stands up a full parallel environment and cuts all traffic over at once",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Config Sync or Argo CD as a GitOps reconciler",
-        "is_correct": true
+        "text": "A rolling update that gradually replaces instances in place with the new version",
+        "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Scheduler jobs that run kubectl apply hourly",
+        "text": "A feature-flag release that ships the new pricing code dark and toggles it on for everyone at once",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Binary Authorization in dry-run mode",
+        "text": "A canary rollout that shifts a small traffic percentage first and expands based on SLO telemetry",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Blue/green requires a full second environment (the cost the scenario rules out) and switches 100% of traffic at once, so it never gives the gradual, metric-gated 5% exposure you need.",
+      "B": "A rolling update replaces instances in place without splitting traffic by percentage, so you cannot hold the new version at 5% and decide based on its telemetry before going further.",
+      "C": "A feature flag decouples deploy from release but toggling it on for everyone is an all-at-once exposure, not a metric-gated 5% canary; flags complement, but don't provide, percentage traffic control.",
+      "D": "A canary sends a small slice (≈5%) of real traffic to the new version, lets you gate expansion or rollback on error-rate and latency SLOs, and needs only a little extra capacity — matching every constraint."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/deploy/docs/deployment-strategies",
+        "text": "cloud.google.com/deploy/docs/deployment-strategies"
+      },
+      {
+        "url": "https://cloud.google.com/deploy/docs/deploy-app-canary",
+        "text": "cloud.google.com/deploy/docs/deploy-app-canary"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "DevOps Engineer",
+    "scenario": "A small group of beta testers must exercise a new revision of a Cloud Run service inside the real production environment — same project, same dependencies, same config — before any real customer can reach it. You need the testers to hit the new revision deterministically while live users continue to be served entirely by the current revision. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Split traffic so the new revision receives 1% and direct testers to keep retrying until they land on it",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy the new revision with a revision tag and `--no-traffic`, and share the tagged URL with the testers",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Add the testers' source IP ranges to an allowlist and route only those IPs to the new revision",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy the new revision to a separate staging project that mirrors the production configuration",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "A is a promotion workflow, not continuous reconciliation. C is a brittle script loop. D audits deployment policy but does not reconcile manifests.",
-      "B": "GitOps reconcilers continuously compare cluster state with Git and apply drift correction.",
-      "C": "A is a promotion workflow, not continuous reconciliation. C is a brittle script loop. D audits deployment policy but does not reconcile manifests.",
-      "D": "A is a promotion workflow, not continuous reconciliation. C is a brittle script loop. D audits deployment policy but does not reconcile manifests."
+      "A": "A 1% split sends real users to the new revision too and makes testers gamble on retries to reach it — neither deterministic for testers nor safe for users.",
+      "B": "A tagged revision deployed with `--no-traffic` gets its own stable URL while receiving 0% of production traffic, so testers hit it deterministically in real prod and live users stay on the current revision entirely.",
+      "C": "Cloud Run traffic is split by revision percentage or tag, not by client source IP, so an IP allowlist is brittle and not the native mechanism for routing specific users to a revision.",
+      "D": "A separate staging project is not the production environment, so it fails the explicit \"in real prod, same dependencies\" requirement even if config is mirrored."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/kubernetes-engine/enterprise/config-sync/docs/overview",
-        "text": "cloud.google.com/kubernetes-engine/enterprise/config-sync..."
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/managing/revisions",
+        "text": "cloud.google.com/run/docs/managing/revisions"
       }
     ]
   },
   {
     "number": 9,
     "domain": "DevOps Engineer",
-    "scenario": "A new version is risky, and the team wants to expose it to a small percentage of production traffic, watch SLO telemetry, then gradually increase traffic if healthy. Which rollout strategy is best?",
+    "scenario": "Your CI/CD pipeline runs in GitHub Actions and must deploy to Google Cloud. Security policy forbids storing any long-lived service account key material in GitHub, but the workflow still needs to authenticate as a service account with deploy permissions. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Blue/green",
+        "text": "Create a service account key, store it as an encrypted GitHub repository secret, and rotate it weekly",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Canary",
+        "text": "Configure Workload Identity Federation so the GitHub OIDC token is exchanged for short-lived Google Cloud credentials",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "Big bang",
+        "text": "Have the workflow authenticate as a human user account that has Owner and 2-step verification enabled",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Manual rebuild",
+        "text": "Place a self-hosted GitHub runner inside the VPC and let it inherit the attached service account of its VM",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "Blue/green swaps between full environments. Big bang maximizes blast radius. Manual rebuild is not a rollout strategy.",
-      "B": "Canary releases start with a small slice of traffic and expand based on telemetry.",
-      "C": "Blue/green swaps between full environments. Big bang maximizes blast radius. Manual rebuild is not a rollout strategy.",
-      "D": "Blue/green swaps between full environments. Big bang maximizes blast radius. Manual rebuild is not a rollout strategy."
+      "A": "Encrypting and rotating a key in a repo secret is still a long-lived downloaded key in GitHub, which the policy explicitly forbids.",
+      "B": "Workload Identity Federation lets GitHub's OIDC token impersonate a service account and receive short-lived credentials, so no key material is ever stored in GitHub — exactly what the policy requires.",
+      "C": "Using a human Owner account for automation violates least privilege and 2-step verification cannot be satisfied non-interactively by a pipeline; it is not a keyless service-account path.",
+      "D": "A self-hosted runner with an attached service account can work for runners on Google Cloud VMs, but it abandons the hosted GitHub-Actions model and adds runner infrastructure to manage — WIF is the recommended keyless answer for the existing GitHub-hosted workflow."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/deploy/docs/deployment-strategies",
-        "text": "cloud.google.com/deploy/docs/deployment-strategies"
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation-wi..."
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions",
+        "text": "cloud.google.com/blog/products/identity-security/enabling..."
       }
     ]
   },
   {
     "number": 10,
     "domain": "DevOps Engineer",
-    "scenario": "Your GitHub Actions workflow needs to deploy to Google Cloud. Security prohibits storing service account keys in GitHub. What should you configure?",
+    "scenario": "Your security team mandates that only container images that have passed vulnerability scanning and been cryptographically attested by your build system may run in the production GKE cluster. You must roll this out without breaking existing deployments on day one, and you want to see which currently running images would be blocked before any enforcement begins. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Workload Identity Federation from GitHub OIDC to a Google Cloud service account",
-        "is_correct": true
+        "text": "Enable Binary Authorization in enforced mode immediately and let blocked deployments reveal the non-compliant images",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A service account key encrypted with a GitHub repository secret",
+        "text": "Configure a Cloud Deploy approval gate on the prod target so a human checks each image's scan results before promotion",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A user account with Owner permissions and 2-step verification",
-        "is_correct": false
+        "text": "Create a Binary Authorization policy requiring the attestation and run it in dry-run mode, reviewing the policy-evaluation entries in Cloud Logging",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "A Cloud NAT gateway for the GitHub runner",
+        "text": "Schedule Artifact Analysis to scan the registry nightly and delete any image that lacks an attestation",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Workload Identity Federation lets external CI/CD systems exchange OIDC tokens for short-lived Google Cloud credentials.",
-      "B": "B still uses a long-lived key. C violates least privilege and is not suitable for automation. D handles network egress, not identity.",
-      "C": "B still uses a long-lived key. C violates least privilege and is not suitable for automation. D handles network egress, not identity.",
-      "D": "B still uses a long-lived key. C violates least privilege and is not suitable for automation. D handles network egress, not identity."
+      "A": "Enforced mode from the start blocks non-compliant deployments immediately, which is exactly the production breakage the scenario tells you to avoid.",
+      "B": "A Cloud Deploy approval is a human promotion gate, not a deploy-time cryptographic-attestation check, and it cannot enforce that only attested images can ever run on the cluster.",
+      "C": "A Binary Authorization policy in dry-run mode evaluates and logs what would be allowed or blocked without actually blocking, so you can find non-compliant images in Cloud Logging before flipping to enforcement — no day-one breakage.",
+      "D": "Deleting unattested images is a destructive registry action that does not safely preview enforcement impact and can break legitimate deployments that depend on those images."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines",
-        "text": "cloud.google.com/iam/docs/workload-identity-federation-wi..."
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/run-dry",
+        "text": "cloud.google.com/binary-authorization/docs/run-dry"
       }
     ]
   },
   {
     "number": 11,
     "domain": "DevOps Engineer",
-    "scenario": "A container image is built once and promoted through dev, staging, and production. Each environment has different database credentials. You need to avoid baking secrets into image layers. What should you do?",
+    "scenario": "Your production services depend on several open-source Java and Python packages. The security team wants those dependencies to come from a source that is continuously scanned, fuzzed, and built in a secured pipeline meeting SLSA level 3, and they want to minimise the cost and effort of running that assurance yourselves. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Inject the database credential at runtime from Secret Manager using environment-specific IAM",
-        "is_correct": true
+        "text": "Pull the dependencies' `latest` tags from public registries and rely on Artifact Analysis to flag CVEs",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Add the production credential to the Dockerfile and rebuild for production",
+        "text": "Build every dependency from upstream source in your own Cloud Build private pool on each release",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Store the credential in the source repository encrypted with a shared key",
+        "text": "Mirror the public packages into Artifact Registry and scan and delete any package with a finding on every build",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Pass the credential as a Docker build argument and rely on image vulnerability scanning",
-        "is_correct": false
+        "text": "Consume the dependencies from Assured OSS through Artifact Registry",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Runtime secret injection keeps the image environment-neutral and avoids persisting secrets in layers.",
-      "B": "B and D can leak secrets into images or build metadata. C puts secrets in source control and weakens least privilege.",
-      "C": "B and D can leak secrets into images or build metadata. C puts secrets in source control and weakens least privilege.",
-      "D": "B and D can leak secrets into images or build metadata. C puts secrets in source control and weakens least privilege."
+      "A": "Pulling `latest` and scanning afterward still ships packages that may carry undiscovered CVEs, and it provides none of the SLSA-3 secured-build provenance the team requires.",
+      "B": "Building every dependency from source yourself is exactly the costly, high-effort assurance burden the requirement says to avoid, and it does not by itself reach SLSA-3 without substantial pipeline hardening.",
+      "C": "Scanning and deleting on every build is operationally expensive, breaks builds when a finding appears, and still lacks the secured-build provenance Assured OSS supplies.",
+      "D": "Assured OSS provides open-source packages built in Google's secured, SLSA-3 pipeline and continuously scanned and fuzzed, so you get the assurance level required without operating that pipeline — the cost-effective fit."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/secret-manager/docs/overview",
-        "text": "cloud.google.com/secret-manager/docs/overview"
+        "url": "https://cloud.google.com/assured-open-source-software/docs/overview",
+        "text": "cloud.google.com/assured-open-source-software/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/software-supply-chain-security/docs/slsa",
+        "text": "cloud.google.com/software-supply-chain-security/docs/slsa"
       }
     ]
   },
   {
     "number": 12,
     "domain": "DevOps Engineer",
-    "scenario": "You want to test a new Binary Authorization policy and identify false positives before blocking production deployments. What should you do first?",
+    "scenario": "A Cloud Build pipeline builds container images in a private pool with no public IP for exfiltration protection. The pipeline is expected to generate build provenance so that Binary Authorization can require verified-by-Cloud-Build attestations, but the attestations are missing and the policy blocks deployment. The image builds succeed and pass vulnerability scanning. What should you check first?",
     "options": [
       {
         "id": "A",
-        "text": "Enable dry-run mode and review Cloud Logging policy evaluation results",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Disable all deployments until every team has manually approved the policy",
+        "text": "Whether Cloud NAT is attached to the private pool so the build can reach the attestation API",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Whether build provenance / requested verification is enabled in the private-pool build configuration",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Delete unsigned images from Artifact Registry",
+        "text": "Whether the image is tagged `latest` rather than pinned to a digest in the build step",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Replace Binary Authorization with Cloud Deploy approvals",
+        "text": "Whether the Cloud Deploy delivery pipeline has an approval gate on the production target",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Dry-run mode audits policy decisions without blocking deployments.",
-      "B": "B creates unnecessary downtime. C removes artifacts without validating policy behavior. D confuses human promotion approvals with deploy-time image policy.",
-      "C": "B creates unnecessary downtime. C removes artifacts without validating policy behavior. D confuses human promotion approvals with deploy-time image policy.",
-      "D": "B creates unnecessary downtime. C removes artifacts without validating policy behavior. D confuses human promotion approvals with deploy-time image policy."
+      "A": "The builds succeed and scan, so connectivity is not the failure; attestation generation is a build-config feature, not something Cloud NAT enables, and the pool is deliberately private.",
+      "B": "Cloud Build private pools require provenance/verification to be explicitly enabled when you rely on the generated attestations for Binary Authorization, so a missing attestation points first at that build configuration setting.",
+      "C": "A `latest` tag is a tagging hygiene issue but does not stop provenance attestations from being generated; Binary Authorization verifies by image digest regardless.",
+      "D": "A Cloud Deploy approval governs human promotion, not attestation generation, so it cannot explain why the verified-build attestation is absent."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/binary-authorization/docs/overview",
-        "text": "cloud.google.com/binary-authorization/docs/overview"
+        "url": "https://cloud.google.com/build/docs/securing-builds/generate-validate-build-provenance",
+        "text": "cloud.google.com/build/docs/securing-builds/generate-vali..."
+      },
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/cloud-build",
+        "text": "cloud.google.com/binary-authorization/docs/cloud-build"
       }
     ]
   },
   {
     "number": 13,
     "domain": "DevOps Engineer",
-    "scenario": "Your Cloud Build private pool builds container images that must satisfy Binary Authorization attestation requirements. Builds complete, but expected attestations are missing. What should you check?",
+    "scenario": "A 30-day rolling SLO targets 99.9% availability. The on-call team needs one alert that pages within minutes when a severe outage is burning the budget extremely fast, and a separate alert that warns them when a slow, persistent error rate will exhaust the budget before the window ends — without paging on every transient blip. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Whether provenance or requested verification is enabled in the private-pool build configuration",
+        "text": "A fast-burn alert on a short lookback at a high burn-rate threshold, plus a slow-burn alert on a long lookback at a lower threshold",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Whether Cloud NAT is enabled for the private pool",
+        "text": "A single alert that fires whenever the measured availability over the last 5 minutes drops below 99.9%",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Whether the image tag is named `latest`",
+        "text": "A CPU-utilisation alert at 90% on the backing instances as a proxy for service health",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Whether Cloud Deploy has an approval gate",
+        "text": "A log-based metric counting HTTP 500 responses with an alert that fires when the count exceeds zero",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Private-pool builds need verification/provenance configured when generated attestations are required.",
-      "B": "B is networking, not attestation generation. C is a tagging practice issue but not the attestation setting. D affects promotion, not provenance.",
-      "C": "B is networking, not attestation generation. C is a tagging practice issue but not the attestation setting. D affects promotion, not provenance.",
-      "D": "B is networking, not attestation generation. C is a tagging practice issue but not the attestation setting. D affects promotion, not provenance."
+      "A": "Pairing a fast-burn alert (short window, high burn-rate multiple) with a slow-burn alert (long window, lower multiple) catches both rapid outages and gradual budget drain while suppressing transient noise — the standard multi-window burn-rate design.",
+      "B": "A single 5-minute threshold on the raw SLI fires on brief blips and misses a low-grade error rate that quietly drains the budget over days, giving both false pages and missed slow burns.",
+      "C": "CPU is a cause, not the user-facing SLI; high CPU may not affect users and an outage can occur with normal CPU, so it neither catches budget burn reliably nor reduces noise.",
+      "D": "\"Alert when 500s exceed zero\" pages on the outage already in progress rather than on the rate of budget burn, and it is noisy because a few transient 500s are normal."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/build/docs/securing-builds/use-provenance-and-binary-authorization",
-        "text": "cloud.google.com/build/docs/securing-builds/use-provenanc..."
+        "url": "https://cloud.google.com/stackdriver/docs/solutions/slo-monitoring/alerting-on-budget-burn-rate",
+        "text": "cloud.google.com/stackdriver/docs/solutions/slo-monitorin..."
+      },
+      {
+        "url": "https://sre.google/workbook/alerting-on-slos/",
+        "text": "sre.google/workbook/alerting-on-slos"
       }
     ]
   },
   {
     "number": 14,
     "domain": "DevOps Engineer",
-    "scenario": "A team stores container images in Artifact Registry and wants automatic vulnerability information about operating-system packages and language dependencies. Which service should they use?",
+    "scenario": "Your team is defining the primary SLI for a mobile checkout API. Successful HTTP responses are returned, but a meaningful fraction take 8+ seconds, after which mobile clients abandon the purchase. Leadership wants the SLI to reflect the experience that actually drives users away, and to be the metric an error budget is computed against. Which SLI should you choose?",
     "options": [
       {
         "id": "A",
-        "text": "Artifact Analysis",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud Trace",
+        "text": "The proportion of requests that return a non-5xx HTTP status code",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "The proportion of requests served faster than a defined latency threshold (e.g. under 2 seconds)",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Cloud Deploy",
+        "text": "The average CPU utilisation of the backend instances serving the API",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Profiler",
+        "text": "The number of application deployments completed per week without a rollback",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Artifact Analysis provides vulnerability scanning and metadata for artifacts.",
-      "B": "B traces latency, C manages deployment, and D profiles running code.",
-      "C": "B traces latency, C manages deployment, and D profiles running code.",
-      "D": "B traces latency, C manages deployment, and D profiles running code."
+      "A": "An availability/success-rate SLI counts the slow-but-successful responses as good, so it completely misses the latency that is actually driving abandonment.",
+      "B": "The pain is latency-driven abandonment despite \"successful\" responses, so a latency-threshold SLI (fraction of requests under, say, 2 s) captures the experience that loses users and is a sound basis for an error budget.",
+      "C": "CPU utilisation is an internal cause metric, not a user-facing SLI, and high or low CPU does not directly reflect whether checkout was fast enough for the user.",
+      "D": "Deployment frequency is a delivery/DORA metric, not a measure of user-experienced checkout quality, and cannot anchor a user-facing error budget."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/artifact-analysis/docs/artifact-analysis",
-        "text": "cloud.google.com/artifact-analysis/docs/artifact-analysis"
+        "url": "https://sre.google/sre-book/service-level-objectives/",
+        "text": "sre.google/sre-book/service-level-objectives"
+      },
+      {
+        "url": "https://cloud.google.com/stackdriver/docs/solutions/slo-monitoring",
+        "text": "cloud.google.com/stackdriver/docs/solutions/slo-monitoring"
       }
     ]
   },
   {
     "number": 15,
     "domain": "DevOps Engineer",
-    "scenario": "Your service has a 30-day availability SLO. The team wants alerts that catch both severe outages quickly and slower budget drain before the end of the window. What should you configure?",
+    "scenario": "A service has consumed its entire monthly error budget against a 99.9% SLO with a week left in the window. The product team is pressing to ship a sizeable, risky feature now to hit a marketing date. As the DevOps lead following SRE practice, what should you recommend?",
     "options": [
       {
         "id": "A",
-        "text": "Only a CPU utilization alert at 90%",
+        "text": "Lower the customer SLA so the service is contractually compliant and then ship the feature",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Fast-burn and slow-burn error-budget alerts",
-        "is_correct": true
+        "text": "Raise the SLO to 99.99% so there is more headroom and the launch is no longer blocked",
+        "is_correct": false
       },
       {
         "id": "C",
-        "text": "A monthly report after the SLO window closes",
+        "text": "Ship the feature behind a feature flag that is enabled for all users immediately to limit code risk",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A log-based alert for every HTTP 500 response",
-        "is_correct": false
+        "text": "Freeze risky launches and prioritise reliability work until the budget recovers in the next window",
+        "is_correct": true
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "D",
     "explanations": {
-      "A": "CPU is not the user-facing SLI. A monthly report is too late. Alerting on every 500 is noisy and not budget-aware.",
-      "B": "Multi-window burn-rate alerts catch rapid and gradual error-budget consumption.",
-      "C": "CPU is not the user-facing SLI. A monthly report is too late. Alerting on every 500 is noisy and not budget-aware.",
-      "D": "CPU is not the user-facing SLI. A monthly report is too late. Alerting on every 500 is noisy and not budget-aware."
+      "A": "Quietly loosening the customer SLA to dodge the budget is dishonest, conflates the internal SLO with the external contract, and does nothing to improve actual reliability.",
+      "B": "Raising the SLO to 99.99% makes the budget situation worse, not better (a stricter target gives less budget), and gaming the number does not address the real reliability gap.",
+      "C": "A flag enabled for everyone immediately is still a full-risk launch into a service with no budget; the flag controls code paths, not the error-budget decision to defer.",
+      "D": "An exhausted error budget is precisely the signal to stop shipping risk and invest in reliability until the budget regenerates — the core mechanism that lets SRE balance velocity against reliability."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/stackdriver/docs/solutions/slo-monitoring/alerting-on-budget-burn-rate",
-        "text": "cloud.google.com/stackdriver/docs/solutions/slo-monitorin..."
+        "url": "https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos",
+        "text": "cloud.google.com/blog/products/devops-sre/sre-fundamental..."
+      },
+      {
+        "url": "https://sre.google/workbook/error-budget-policy/",
+        "text": "sre.google/workbook/error-budget-policy"
       }
     ]
   },
   {
     "number": 16,
     "domain": "DevOps Engineer",
-    "scenario": "An API returns successful responses but sometimes takes 8 seconds, causing mobile clients to abandon checkout. Which SLI best captures the user pain?",
+    "scenario": "Every week, on-call engineers spend several hours manually restarting a stuck worker service and clearing a backed-up queue after the same recurring failure. The work is repetitive, follows a fixed runbook, and scales with traffic. You want the SRE-aligned response that both reduces operational load now and prevents the recurrence. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Percentage of requests below a latency threshold",
-        "is_correct": true
+        "text": "Add two more engineers to the on-call rotation so the manual workload is spread across more people",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Average VM CPU utilization",
+        "text": "Schedule the worker to restart automatically every hour to pre-empt the failure before it backs up the queue",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Number of deployments per week",
+        "text": "Increase the SLA penalty clause so the team is financially motivated to keep the service healthy",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Artifact Registry storage growth",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "The symptom is user-visible latency; a threshold-based latency SLI captures whether users get timely responses.",
-      "B": "CPU might be a cause but is not the user experience. Deployment frequency and storage growth do not measure checkout pain.",
-      "C": "CPU might be a cause but is not the user experience. Deployment frequency and storage growth do not measure checkout pain.",
-      "D": "CPU might be a cause but is not the user experience. Deployment frequency and storage growth do not measure checkout pain."
-    },
-    "references": [
-      {
-        "url": "https://sre.google/sre-book/service-level-objectives/",
-        "text": "sre.google/sre-book/service-level-objectives"
-      }
-    ]
-  },
-  {
-    "number": 17,
-    "domain": "DevOps Engineer",
-    "scenario": "Your team must run a large GPU training job next month. The workload can start within a defined time window, but capacity is scarce and must be planned. Which option is most relevant?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Dynamic Workload Scheduler",
+        "text": "Treat the work as toil: automate the remediation, and run a blameless postmortem to drive out the root cause",
         "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud Logging exclusion filters",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Armor rate limiting",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud Deploy approval gates",
-        "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Dynamic Workload Scheduler helps obtain scarce accelerator resources for flexible, scheduled workloads.",
-      "B": "The others handle logging cost, edge security, or deployment approvals, not planned accelerator capacity.",
-      "C": "The others handle logging cost, edge security, or deployment approvals, not planned accelerator capacity.",
-      "D": "The others handle logging cost, edge security, or deployment approvals, not planned accelerator capacity."
+      "A": "Adding people to absorb toil does not scale and leaves the underlying failure in place — it just spreads the same manual burden more widely.",
+      "B": "A scheduled hourly restart treats the symptom on a timer, masking the defect and risking restarts mid-work; it does not eliminate the root cause.",
+      "C": "An SLA penalty is a commercial lever, not an engineering fix; it neither reduces the manual toil nor addresses why the worker keeps failing.",
+      "D": "Repetitive, runbook-driven, traffic-scaling manual work is the definition of toil; SRE automates the remediation to cut load and uses a blameless postmortem to fix the underlying defect so it stops recurring."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/blog/products/compute/introducing-dynamic-workload-scheduler",
-        "text": "cloud.google.com/blog/products/compute/introducing-dynami..."
-      }
-    ]
-  },
-  {
-    "number": 18,
-    "domain": "DevOps Engineer",
-    "scenario": "A Cloud Run service has bursty traffic and should scale to zero when idle. The team wants to tune how many concurrent requests one instance handles before scaling out. What should they configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Run concurrency and autoscaling settings",
-        "is_correct": true
+        "url": "https://sre.google/sre-book/eliminating-toil/",
+        "text": "sre.google/sre-book/eliminating-toil"
       },
-      {
-        "id": "B",
-        "text": "GKE cluster autoscaler only",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A managed instance group target CPU policy",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Compute Engine sole-tenancy",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Cloud Run supports request-driven autoscaling, scale-to-zero, and concurrency controls.",
-      "B": "GKE and MIG autoscaling apply to different platforms. Sole-tenancy is placement isolation, not serverless scaling.",
-      "C": "GKE and MIG autoscaling apply to different platforms. Sole-tenancy is placement isolation, not serverless scaling.",
-      "D": "GKE and MIG autoscaling apply to different platforms. Sole-tenancy is placement isolation, not serverless scaling."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/run/docs/about-instance-autoscaling",
-        "text": "cloud.google.com/run/docs/about-instance-autoscaling"
-      }
-    ]
-  },
-  {
-    "number": 19,
-    "domain": "DevOps Engineer",
-    "scenario": "A newly deployed version causes elevated errors in one region. The previous version is healthy, and the issue is affecting users now. What is the best immediate action?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Roll back or shift traffic to the last known-good version/region",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Wait for the next postmortem before acting",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Increase the SLA target",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Disable all monitoring alerts to reduce noise",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "During an incident, reduce user impact first by rollback, traffic shift, capacity addition, or draining.",
-      "B": "Postmortems happen after mitigation. Changing the SLA does not help users. Disabling alerts hides signals.",
-      "C": "Postmortems happen after mitigation. Changing the SLA does not help users. Disabling alerts hides signals.",
-      "D": "Postmortems happen after mitigation. Changing the SLA does not help users. Disabling alerts hides signals."
-    },
-    "references": [
-      {
-        "url": "https://sre.google/workbook/incident-response/",
-        "text": "sre.google/workbook/incident-response"
-      }
-    ]
-  },
-  {
-    "number": 20,
-    "domain": "DevOps Engineer",
-    "scenario": "After an outage, leadership asks for the engineer who made the triggering change to be named in a corrective-action document. You want to follow SRE practice. What should you recommend?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A blameless postmortem focused on contributing factors and system fixes",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A policy forbidding changes outside office hours",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A written warning for the engineer",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A requirement that the same engineer cannot make future changes",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Blameless postmortems improve systems and learning without focusing on individual blame.",
-      "B": "They target a person or create brittle process constraints instead of addressing systemic causes.",
-      "C": "They target a person or create brittle process constraints instead of addressing systemic causes.",
-      "D": "They target a person or create brittle process constraints instead of addressing systemic causes."
-    },
-    "references": [
       {
         "url": "https://sre.google/sre-book/postmortem-culture/",
         "text": "sre.google/sre-book/postmortem-culture"
@@ -1688,602 +1592,398 @@
     ]
   },
   {
-    "number": 21,
+    "number": 17,
     "domain": "DevOps Engineer",
-    "scenario": "Your microservices run across Google Cloud and another cloud provider. You want portable application instrumentation for traces and metrics that can be exported to Google Cloud Observability. What should you use?",
+    "scenario": "You must run a large, fault-tolerant batch rendering job that splits cleanly into thousands of independent tasks and can checkpoint and resume if a worker disappears. The job has no fixed deadline and the dominant requirement is the lowest possible compute cost. Which compute option should you choose?",
     "options": [
       {
         "id": "A",
-        "text": "OpenTelemetry",
+        "text": "Run the workers on Spot VMs in a managed instance group",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud NAT logs only",
+        "text": "Run the workers on on-demand VMs covered by a 3-year committed use discount",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "VM Manager",
+        "text": "Run the workers on sole-tenant nodes to isolate the batch from other tenants",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Deploy",
+        "text": "Run the workers on an autohealing MIG of standard on-demand VMs",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "OpenTelemetry is a vendor-neutral instrumentation standard for traces, metrics, and logs.",
-      "B": "NAT logs are network egress logs, VM Manager manages VM patching, and Cloud Deploy handles releases.",
-      "C": "NAT logs are network egress logs, VM Manager manages VM patching, and Cloud Deploy handles releases.",
-      "D": "NAT logs are network egress logs, VM Manager manages VM patching, and Cloud Deploy handles releases."
+      "A": "Spot VMs are deeply discounted (up to ~91% off) and the workload is fault-tolerant and checkpointable, so preemptions are tolerable — the cheapest fit for deadline-free parallel batch.",
+      "B": "A 3-year CUD commits you to steady spend for a discount on on-demand rates, which is far more expensive than Spot and overkill for a one-off, interruption-tolerant batch.",
+      "C": "Sole-tenant nodes add a premium for physical isolation the batch does not need, increasing rather than minimising cost.",
+      "D": "Autohealing keeps on-demand VMs healthy but they are billed at full price; autohealing is a reliability feature, not a cost optimisation, so it misses the cheapest-compute cue."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/learn/what-is-opentelemetry",
-        "text": "cloud.google.com/learn/what-is-opentelemetry"
+        "url": "https://cloud.google.com/compute/docs/instances/spot",
+        "text": "cloud.google.com/compute/docs/instances/spot"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/create-use-spot",
+        "text": "cloud.google.com/compute/docs/instances/create-use-spot"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "DevOps Engineer",
+    "scenario": "Your team needs to know within seconds when any production VM is stopped, because an unexpected stop is the leading indicator of a recurring incident. The stop event appears in Cloud Audit Logs as a `v1.compute.instances.stop` entry, but there is no native metric for it. The notification must page the on-call channel quickly and cheaply. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A log-based alert that matches the `v1.compute.instances.stop` audit log entry and notifies the on-call channel",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "An hourly BigQuery scheduled query over exported audit logs that emails results when a stop is found",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Monitoring uptime check against each VM's application endpoint with a 1-minute interval",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A synthetic monitor that periodically probes the VM and alerts when the probe fails",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A log-based alert fires directly off the matching audit log entry within seconds and routes to a notification channel, which is the fast, low-cost way to alert on a discrete event that has no native metric.",
+      "B": "An hourly scheduled query is far too slow for a seconds-level requirement and adds export and BigQuery cost for what a log-based alert does natively and immediately.",
+      "C": "An uptime check infers health from endpoint reachability and reacts only after the app is already unreachable; it does not detect the specific stop event and lags the actual stop.",
+      "D": "A synthetic monitor probes a workflow on an interval and detects failure after the fact, not the precise audit event, so it is both slower and not event-driven for this signal."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/logging/docs/alerting/log-based-alerts",
+        "text": "cloud.google.com/logging/docs/alerting/log-based-alerts"
+      },
+      {
+        "url": "https://cloud.google.com/logging/docs/audit",
+        "text": "cloud.google.com/logging/docs/audit"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "DevOps Engineer",
+    "scenario": "A request flows through frontend, cart, inventory, and payment microservices, and users report intermittent slowness on checkout. You need to identify which single downstream service call contributes the most latency for the slow requests, and then jump straight to the logs for that exact request to see why. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud Profiler, opening the heap flame graph for each service to find where memory is allocated",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cloud Monitoring, charting each service's average request latency on a shared dashboard",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Cloud Trace, reading the trace waterfall to find the slow span, then following the correlated `trace_id` into structured logs",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Error Reporting, grouping the deduplicated exceptions across the four services by frequency",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Profiler finds CPU/heap hotspots inside one process, not which service-to-service call adds latency across a distributed request, and a heap graph does not tie back to a single slow request's logs.",
+      "B": "A dashboard of average latencies shows aggregate trends but cannot attribute one slow request to a specific span, and averages hide the intermittent tail you are chasing.",
+      "C": "Cloud Trace's waterfall shows per-span timing across the four services so you can pinpoint the slow downstream hop, and correlating the `trace_id` jumps directly to that request's structured logs — exactly the cross-service latency-then-logs workflow.",
+      "D": "Error Reporting groups exceptions, but the symptom here is latency on otherwise-successful requests, so error grouping does not reveal the slow call or its timing."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/trace/docs/trace-log-integration",
+        "text": "cloud.google.com/trace/docs/trace-log-integration"
+      },
+      {
+        "url": "https://cloud.google.com/trace/docs/finding-traces",
+        "text": "cloud.google.com/trace/docs/finding-traces"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "DevOps Engineer",
+    "scenario": "Multiple analyst teams want to run ad-hoc SQL across recent application logs to investigate incidents, quickly and without paying to re-ingest the data into a separate store. The logs already land in a Cloud Logging bucket. You want the lowest-cost, lowest-friction way to give them SQL access to those logs in place. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a sink that exports all matching logs to a new BigQuery dataset and grant the teams query access there",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Schedule a daily export of the logs to CSV files in Cloud Storage for the analysts to download and query",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Stream the logs through Pub/Sub into a self-managed analytics database the analysts can connect to",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Upgrade the log bucket to use Log Analytics and let teams query the logs with SQL in place",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A sink to a new BigQuery dataset re-ingests and stores a second copy of the data, adding storage cost and pipeline maintenance for something Log Analytics does in place.",
+      "B": "Daily CSV export is slow, stale by up to a day, and gives no real SQL engine — analysts cannot do quick ad-hoc incident queries against it.",
+      "C": "Streaming into a self-managed database adds the most operational overhead and cost of all the options, the opposite of the lowest-friction requirement.",
+      "D": "Upgrading the bucket to Log Analytics lets teams run SQL directly over the stored logs with no re-ingestion, which is the lowest-cost, lowest-friction in-place query path; a linked BigQuery dataset can be added later if BigQuery-side joins are needed."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/logging/docs/log-analytics",
+        "text": "cloud.google.com/logging/docs/log-analytics"
+      },
+      {
+        "url": "https://cloud.google.com/logging/docs/analyze/query-linked-dataset",
+        "text": "cloud.google.com/logging/docs/analyze/query-linked-dataset"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "DevOps Engineer",
+    "scenario": "A revenue-critical checkout journey only breaks late at night when almost no real users are active, so failures are discovered hours later from customer complaints. You need to proactively exercise the full multi-step journey (load page, add to cart, check out) on a schedule from Google's perspective and alert when any step fails, even at 3 a.m. with zero live traffic. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Monitoring uptime check that issues an HTTP GET to the checkout landing page every minute",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A synthetic monitor that runs the multi-step checkout journey on a schedule and alerts on step failure",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A log-based metric that counts checkout error log entries, with an alerting policy on its rate",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A burn-rate alert on the checkout availability SLO computed from real user request telemetry",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A basic uptime check only verifies a single endpoint responds; it does not exercise the add-to-cart-and-check-out workflow, so a broken multi-step journey can pass it.",
+      "B": "A synthetic monitor scripts and runs the full multi-step user journey on a schedule independent of real traffic, so it catches a broken checkout flow at any hour and alerts on the failing step — exactly the proactive probe needed.",
+      "C": "A log-based metric is reactive — it only fires once real failures have already been logged, which cannot happen overnight when there is no traffic to generate the errors.",
+      "D": "An SLO burn-rate alert is computed from real user requests, so with near-zero overnight traffic there is nothing to measure and the break goes undetected until users return."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/monitoring/uptime-checks/synthetic-monitors",
+        "text": "cloud.google.com/monitoring/uptime-checks/synthetic-monitors"
+      },
+      {
+        "url": "https://cloud.google.com/monitoring/uptime-checks/introduction",
+        "text": "cloud.google.com/monitoring/uptime-checks/introduction"
       }
     ]
   },
   {
     "number": 22,
     "domain": "DevOps Engineer",
-    "scenario": "Your teams already use Prometheus exporters and PromQL dashboards across Kubernetes and VM workloads. They want a managed Google Cloud service without operating Prometheus at scale. What should they use?",
+    "scenario": "On-call engineers are burning out because they are paged dozens of times a night by short CPU and memory spikes on backend VMs that, on review, almost never correlate with any user-visible degradation. Leadership wants to cut the page volume without going blind to incidents that actually hurt customers. How should you redesign the alerting?",
     "options": [
       {
         "id": "A",
-        "text": "Google Cloud Managed Service for Prometheus",
+        "text": "Replace the resource-spike pages with alerts on user-facing SLO burn rate, keeping low-level signals for dashboards only",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Cloud Profiler",
+        "text": "Raise the CPU and memory thresholds and keep paging on them so only larger spikes wake the on-call",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Asset Inventory",
+        "text": "Add more granular per-resource alerts so every subsystem is individually covered for completeness",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Workstations",
+        "text": "Route all the existing alerts to email instead of paging so the on-call is no longer woken at night",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Managed Service for Prometheus collects Prometheus metrics and supports PromQL without self-managing the backend.",
-      "B": "Profiler finds code hotspots, Asset Inventory catalogs resources, and Workstations provides dev environments.",
-      "C": "Profiler finds code hotspots, Asset Inventory catalogs resources, and Workstations provides dev environments.",
-      "D": "Profiler finds code hotspots, Asset Inventory catalogs resources, and Workstations provides dev environments."
+      "A": "Paging on user-facing SLO burn rate fires only when customers are actually affected, eliminating cause-based noise, while keeping CPU/memory as dashboard signals preserves diagnostic visibility — cutting pages without going blind.",
+      "B": "Higher thresholds still page on resource spikes that the scenario says rarely affect users, so the fundamental cause-based noise problem remains.",
+      "C": "More per-resource alerts increase the page volume and worsen the exact fatigue you are trying to reduce.",
+      "D": "Routing everything to email risks missing genuine, customer-impacting incidents entirely, trading alert fatigue for dangerous blind spots."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/stackdriver/docs/managed-prometheus",
-        "text": "cloud.google.com/stackdriver/docs/managed-prometheus"
+        "url": "https://cloud.google.com/stackdriver/docs/solutions/slo-monitoring/alerting-on-budget-burn-rate",
+        "text": "cloud.google.com/stackdriver/docs/solutions/slo-monitorin..."
+      },
+      {
+        "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+        "text": "sre.google/sre-book/monitoring-distributed-systems"
       }
     ]
   },
   {
     "number": 23,
     "domain": "DevOps Engineer",
-    "scenario": "You need to proactively verify that a checkout workflow works from a user perspective, even when no customers are active. Which observability feature is best?",
+    "scenario": "A latency-sensitive Go service spends most of its CPU in one suspect aggregation function. You want to compare two candidate implementations under real production load, with continuous, low-overhead sampling that visualises exactly which functions and call paths consume CPU, so you can pick the faster one. Adding timing log statements distorts the measurement. Which tool should you use?",
     "options": [
       {
         "id": "A",
-        "text": "Synthetic monitor",
-        "is_correct": true
+        "text": "Cloud Trace, comparing request latency waterfalls across the service's spans",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Billing export",
+        "text": "Cloud Monitoring, charting the service's CPU utilisation metric over the deployment window",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Deploy rollout",
-        "is_correct": false
+        "text": "Cloud Profiler, comparing CPU flame graphs of the two implementations under production load",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "IAM recommender",
+        "text": "Cloud Logging, emitting start/stop timestamps around the function and computing the delta",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Synthetic monitors actively probe endpoints and workflows.",
-      "B": "Billing export tracks cost, Cloud Deploy releases software, and IAM recommender suggests permission changes.",
-      "C": "Billing export tracks cost, Cloud Deploy releases software, and IAM recommender suggests permission changes.",
-      "D": "Billing export tracks cost, Cloud Deploy releases software, and IAM recommender suggests permission changes."
+      "A": "Trace measures latency across services and spans, not which functions inside one process consume CPU, so it cannot benchmark the two aggregation implementations at the code level.",
+      "B": "A CPU utilisation metric shows aggregate load over time but not the function-level breakdown needed to attribute cost to one implementation versus the other.",
+      "C": "Cloud Profiler does continuous, low-overhead production profiling and its flame graphs show exactly which functions and call paths burn CPU, making it the right tool to compare two implementations and choose the faster one.",
+      "D": "Logging timestamps is exactly the approach the scenario rules out — it distorts the timing it measures and gives no call-path visualisation."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/monitoring/uptime-checks/synthetic-monitors",
-        "text": "cloud.google.com/monitoring/uptime-checks/synthetic-monitors"
+        "url": "https://cloud.google.com/profiler/docs/concepts-profiling",
+        "text": "cloud.google.com/profiler/docs/concepts-profiling"
+      },
+      {
+        "url": "https://cloud.google.com/profiler/docs",
+        "text": "cloud.google.com/profiler/docs"
       }
     ]
   },
   {
     "number": 24,
     "domain": "DevOps Engineer",
-    "scenario": "Security engineers need to analyze communication patterns between VM subnets to investigate suspicious network traffic. Application logs do not include the network-level detail they need. What should they enable?",
+    "scenario": "A new release on GKE managed by Cloud Deploy has caused elevated error rates for users in one region for the past several minutes. The previous release is known-good, the rollout's prior rollout artifact still exists, and customers are being affected right now. As the on-call engineer, what is the correct immediate action?",
     "options": [
       {
         "id": "A",
-        "text": "VPC Flow Logs",
-        "is_correct": true
+        "text": "Open a blameless postmortem document and begin reconstructing the timeline before changing anything in production",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Cloud Profiler",
+        "text": "Raise the service's SLA target so the current error rate falls within the contractual allowance",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Deploy",
-        "is_correct": false
+        "text": "Roll back the Cloud Deploy release to the previous known-good rollout to restore service, then investigate root cause afterward",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Secret Manager",
+        "text": "Increase the GKE cluster autoscaler's maximum node count to add capacity for the failing release",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "VPC Flow Logs record network flow metadata for VPC traffic analysis.",
-      "B": "Profiler is code-level performance, Cloud Deploy is release management, and Secret Manager stores secrets.",
-      "C": "Profiler is code-level performance, Cloud Deploy is release management, and Secret Manager stores secrets.",
-      "D": "Profiler is code-level performance, Cloud Deploy is release management, and Secret Manager stores secrets."
+      "A": "A postmortem is essential but happens after mitigation — pausing to write one while customers are impacted prolongs the outage.",
+      "B": "Changing the SLA target is a contractual sleight of hand that does nothing to stop the errors users are experiencing right now.",
+      "C": "During an active incident the priority is mitigating user impact, and rolling back to the known-good rollout is the fastest restoration path; root-cause analysis follows once users are protected.",
+      "D": "Adding capacity helps when the cause is saturation, but here the cause is a bad release; more nodes just scale out the broken version without fixing the errors."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/vpc/docs/flow-logs",
-        "text": "cloud.google.com/vpc/docs/flow-logs"
+        "url": "https://cloud.google.com/deploy/docs/roll-back",
+        "text": "cloud.google.com/deploy/docs/roll-back"
+      },
+      {
+        "url": "https://sre.google/workbook/incident-response/",
+        "text": "sre.google/workbook/incident-response"
       }
     ]
   },
   {
     "number": 25,
     "domain": "DevOps Engineer",
-    "scenario": "An application logs request payloads that may contain PII. Multiple teams need query access to logs. What should you do before broadening access?",
+    "scenario": "A globally distributed web application has strict latency requirements for users on every continent, and user experience is the explicit top priority while cost is secondary. You must choose how traffic from users reaches your Google Cloud load balancer to minimise round-trip latency for the furthest-away users. Which choice best meets the requirement?",
     "options": [
       {
         "id": "A",
-        "text": "Redact or transform sensitive fields using log processors or Sensitive Data Protection",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Grant all teams Logs Viewer and rely on training",
+        "text": "Use the Standard network tier to keep egress costs down while still using a global load balancer",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Use the Premium network tier so traffic rides Google's global backbone from the nearest edge",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "Export all logs to public Cloud Storage buckets",
+        "text": "Provision a 3-year committed use discount on the backend VMs to fund extra regional capacity",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable Cloud Audit Logs",
+        "text": "Enable Cloud CDN in front of the load balancer and serve all responses from cache",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Sensitive fields should be removed or protected before logs are widely queryable.",
-      "B": "Training alone is not a control. Public buckets expose data. Disabling audit logs weakens security visibility.",
-      "C": "Training alone is not a control. Public buckets expose data. Disabling audit logs weakens security visibility.",
-      "D": "Training alone is not a control. Public buckets expose data. Disabling audit logs weakens security visibility."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/sensitive-data-protection/docs",
-        "text": "cloud.google.com/sensitive-data-protection/docs"
-      }
-    ]
-  },
-  {
-    "number": 26,
-    "domain": "DevOps Engineer",
-    "scenario": "Your on-call process uses PagerDuty and an internal incident bot. A Cloud Monitoring alert should notify both. What should you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Notification channels, such as PagerDuty and webhook/Pub/Sub integrations",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A BigQuery scheduled query only",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A Cloud Workstations configuration",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A Binary Authorization policy",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Alerting policies route notifications through configured channels and integrations.",
-      "B": "BigQuery scheduled queries are not the primary alert-routing mechanism. Workstations and Binary Authorization solve unrelated problems.",
-      "C": "BigQuery scheduled queries are not the primary alert-routing mechanism. Workstations and Binary Authorization solve unrelated problems.",
-      "D": "BigQuery scheduled queries are not the primary alert-routing mechanism. Workstations and Binary Authorization solve unrelated problems."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/monitoring/support/notification-options",
-        "text": "cloud.google.com/monitoring/support/notification-options"
-      }
-    ]
-  },
-  {
-    "number": 27,
-    "domain": "DevOps Engineer",
-    "scenario": "Responders often receive alerts but waste time finding the right runbook. What should you add to improve response?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Playbook links or documentation attached to alerting policies/dashboards",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "More CPU alerts for every VM",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A new Cloud Build trigger",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A service account key in the runbook",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Playbooks attached to alerts and dashboards guide responders to the right action quickly.",
-      "B": "More alerts can increase noise. Build triggers do not help incident response. Keys in runbooks are insecure.",
-      "C": "More alerts can increase noise. Build triggers do not help incident response. Keys in runbooks are insecure.",
-      "D": "More alerts can increase noise. Build triggers do not help incident response. Keys in runbooks are insecure."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/monitoring/alerts",
-        "text": "cloud.google.com/monitoring/alerts"
-      }
-    ]
-  },
-  {
-    "number": 28,
-    "domain": "DevOps Engineer",
-    "scenario": "A request touches frontend, checkout, inventory, and payment services. You need to find which service call adds most latency and then inspect logs for that same request. What should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Trace waterfall with trace IDs correlated to structured logs",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Cloud Profiler heap view only",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Artifact Registry vulnerability scanning",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "IAM Conditions",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Trace waterfalls show span timing across services, and trace IDs link to request-specific logs.",
-      "B": "Profiler is process-level performance, scanning finds vulnerabilities, and IAM Conditions control access.",
-      "C": "Profiler is process-level performance, scanning finds vulnerabilities, and IAM Conditions control access.",
-      "D": "Profiler is process-level performance, scanning finds vulnerabilities, and IAM Conditions control access."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/trace/docs/trace-log-integration",
-        "text": "cloud.google.com/trace/docs/trace-log-integration"
-      }
-    ]
-  },
-  {
-    "number": 29,
-    "domain": "DevOps Engineer",
-    "scenario": "Users report intermittent 500 errors. You want grouped, deduplicated exception information to identify the most common application errors. Which tool should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Error Reporting",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Network Service Tiers",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Workstations",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Dynamic Workload Scheduler",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Error Reporting groups application errors and exceptions for triage.",
-      "B": "They address networking cost/latency, developer environments, and accelerator scheduling.",
-      "C": "They address networking cost/latency, developer environments, and accelerator scheduling.",
-      "D": "They address networking cost/latency, developer environments, and accelerator scheduling."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/error-reporting/docs",
-        "text": "cloud.google.com/error-reporting/docs"
-      }
-    ]
-  },
-  {
-    "number": 30,
-    "domain": "DevOps Engineer",
-    "scenario": "Your SRE team wants to reduce Cloud Logging ingestion costs while retaining security and error logs. What should you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Log exclusion or sampling filters for noisy low-value logs",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Disable all logs for the organization",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Export every log to BigQuery and never set retention",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Replace logs with Cloud Trace",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Exclusion and sampling filters reduce ingestion cost while preserving high-value logs.",
-      "B": "Disabling all logs destroys visibility. Exporting everything can increase cost. Trace is not a replacement for logs.",
-      "C": "Disabling all logs destroys visibility. Exporting everything can increase cost. Trace is not a replacement for logs.",
-      "D": "Disabling all logs destroys visibility. Exporting everything can increase cost. Trace is not a replacement for logs."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/logging/docs/routing/overview#exclusions",
-        "text": "cloud.google.com/logging/docs/routing/overview#exclusions"
-      }
-    ]
-  },
-  {
-    "number": 31,
-    "domain": "DevOps Engineer",
-    "scenario": "Your service has steady baseline Compute Engine usage for the next three years. You want lower cost, but you do not need a capacity guarantee in a specific zone. What should you consider first?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Committed use discounts",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Reservations only",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Spot VMs for all baseline workloads",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud Trace",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "CUDs reduce cost for predictable committed usage.",
-      "B": "Reservations guarantee capacity but are not the discount mechanism by themselves. Spot VMs can be preempted and are not ideal for non-fault-tolerant baseline service. Trace is observability.",
-      "C": "Reservations guarantee capacity but are not the discount mechanism by themselves. Spot VMs can be preempted and are not ideal for non-fault-tolerant baseline service. Trace is observability.",
-      "D": "Reservations guarantee capacity but are not the discount mechanism by themselves. Spot VMs can be preempted and are not ideal for non-fault-tolerant baseline service. Trace is observability."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/docs/cuds",
-        "text": "cloud.google.com/docs/cuds"
-      }
-    ]
-  },
-  {
-    "number": 32,
-    "domain": "DevOps Engineer",
-    "scenario": "You must ensure that a critical workload can start in a specific zone during a launch event. The workload has predictable capacity needs. Which option addresses capacity availability most directly?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Compute Engine reservation",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Sustained use discount",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Logging exclusion",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Artifact Analysis",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Reservations reserve capacity for VM resources in a zone.",
-      "B": "SUDs are automatic discounts, not capacity guarantees. Logging exclusions reduce observability cost. Artifact Analysis scans artifacts.",
-      "C": "SUDs are automatic discounts, not capacity guarantees. Logging exclusions reduce observability cost. Artifact Analysis scans artifacts.",
-      "D": "SUDs are automatic discounts, not capacity guarantees. Logging exclusions reduce observability cost. Artifact Analysis scans artifacts."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/compute/docs/instances/reservations-overview",
-        "text": "cloud.google.com/compute/docs/instances/reservations-over..."
-      }
-    ]
-  },
-  {
-    "number": 33,
-    "domain": "DevOps Engineer",
-    "scenario": "An internet-facing application has global users and strict latency requirements. Cost matters, but user experience is the priority. Which network tier is more appropriate?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Premium Tier",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Standard Tier only",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud NAT without a load balancer",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "VPC Network Peering",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Premium Tier uses Google's global network for lower latency and higher performance.",
-      "B": "Standard Tier can be cheaper but is less optimized for global performance. Cloud NAT and peering solve different connectivity problems.",
-      "C": "Standard Tier can be cheaper but is less optimized for global performance. Cloud NAT and peering solve different connectivity problems.",
-      "D": "Standard Tier can be cheaper but is less optimized for global performance. Cloud NAT and peering solve different connectivity problems."
+      "A": "Standard tier routes over the public internet for more of the path and is regional, increasing latency for distant users; it optimises cost, which the scenario explicitly subordinates to experience.",
+      "B": "Premium tier carries user traffic onto Google's global backbone at the nearest edge point of presence and keeps it on Google's network end to end, minimising latency for far-flung users — the right call when experience trumps cost.",
+      "C": "A CUD is a billing-discount lever for steady compute spend; it does nothing to shorten the network path or reduce user-facing latency.",
+      "D": "Cloud CDN accelerates cacheable content but the choice here is about the network tier carrying traffic, and not all of a web app's responses (dynamic, personalised) are cacheable, so it does not address the underlying transport-latency decision."
     },
     "references": [
       {
         "url": "https://cloud.google.com/network-tiers/docs/overview",
         "text": "cloud.google.com/network-tiers/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 34,
-    "domain": "DevOps Engineer",
-    "scenario": "A GKE cluster runs many small services with low average CPU utilization. You want to reduce waste while preserving reliability. Which combination is most relevant?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Right-size requests, improve bin packing, and use cluster autoscaler/node auto-provisioning where appropriate",
-        "is_correct": true
       },
       {
-        "id": "B",
-        "text": "Disable all readiness probes",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Move all workloads to sole-tenant nodes",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Store container images in Cloud Storage instead of Artifact Registry",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "GKE cost optimization often starts with resource requests, bin packing, and autoscaling.",
-      "B": "Disabling probes hurts reliability. Sole-tenant nodes usually increase cost. Cloud Storage does not replace Artifact Registry for container image management.",
-      "C": "Disabling probes hurts reliability. Sole-tenant nodes usually increase cost. Cloud Storage does not replace Artifact Registry for container image management.",
-      "D": "Disabling probes hurts reliability. Sole-tenant nodes usually increase cost. Cloud Storage does not replace Artifact Registry for container image management."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler",
-        "text": "cloud.google.com/kubernetes-engine/docs/concepts/cluster-..."
-      }
-    ]
-  },
-  {
-    "number": 35,
-    "domain": "DevOps Engineer",
-    "scenario": "Active Assist reports that several VMs are idle and one service account has broad permissions. Which statement is most accurate?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Recommenders can surface cost, security, performance, reliability, and manageability insights, but humans should review changes before applying",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Active Assist automatically deletes all idle VMs without approval",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Recommenders only apply to billing accounts, not resources",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Active Assist replaces SLO monitoring",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Recommenders provide actionable insights across categories, but production changes should be reviewed.",
-      "B": "Automatic deletion is not the default assumption. Recommenders apply to many resource types. They do not replace service-level monitoring.",
-      "C": "Automatic deletion is not the default assumption. Recommenders apply to many resource types. They do not replace service-level monitoring.",
-      "D": "Automatic deletion is not the default assumption. Recommenders apply to many resource types. They do not replace service-level monitoring."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/recommender/docs/overview",
-        "text": "cloud.google.com/recommender/docs/overview"
+        "url": "https://cloud.google.com/network-tiers/docs/using-network-service-tiers",
+        "text": "cloud.google.com/network-tiers/docs/using-network-service..."
       }
     ]
   }

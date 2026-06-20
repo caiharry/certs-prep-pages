@@ -890,37 +890,41 @@
   {
     "number": 1,
     "domain": "Cloud Developer",
-    "scenario": "You are deploying a stateless image-thumbnailing service packaged as a container. It must scale to zero when idle, scale out automatically under bursts, and require no node management. Which deployment target should you choose?",
+    "scenario": "Your team is launching a webhook receiver for a payments partner. Traffic is spiky: long idle stretches punctuated by short bursts of a few thousand requests. The endpoint is a stateless container, must scale to zero to control cost, and the partner enforces a hard requirement that 99% of responses complete within 800 ms — including the first request after an idle period. The team has no Kubernetes expertise and wants the least operational overhead. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "A GKE Standard cluster with the cluster autoscaler.",
+        "text": "Deploy to Cloud Run with the default settings and rely on request-based autoscaling from zero.",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "A managed instance group of Compute Engine VMs with autoscaling.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Run with request-based autoscaling.",
+        "text": "Deploy to Cloud Run with a minimum number of instances configured to keep warmed capacity available.",
         "is_correct": true
       },
       {
+        "id": "C",
+        "text": "Deploy to GKE Autopilot with a Horizontal Pod Autoscaler tuned to scale on requests per second.",
+        "is_correct": false
+      },
+      {
         "id": "D",
-        "text": "App Engine flexible environment with manual scaling.",
+        "text": "Deploy to App Engine standard environment with automatic scaling and a low `min_idle_instances`.",
         "is_correct": false
       }
     ],
-    "correct_answer": "C",
+    "correct_answer": "B",
     "explanations": {
-      "A": "GKE Standard requires you to manage and pay for nodes; it does not scale to zero and adds operational overhead.",
-      "B": "A managed instance group keeps minimum VMs running (no scale-to-zero) and requires OS/image management.",
-      "C": "Cloud Run runs stateless containers, scales to zero when idle, autoscales on request load, and needs no node management.",
-      "D": "App Engine flex runs on VMs that do not scale to zero, and manual scaling keeps instances always on."
+      "A": "Default Cloud Run scales to zero with no warm pool, so the first request after idle pays a cold start that routinely breaches an 800 ms p99 for the partner.",
+      "B": "Cloud Run is the lowest-overhead managed fit, and setting minimum instances keeps warm capacity so the post-idle request avoids a cold start that would blow the 800 ms p99 — the configuration directly targets the binding latency constraint.",
+      "C": "GKE Autopilot can meet the latency target but contradicts the \"no Kubernetes expertise / least overhead\" constraint and does not scale to zero, so you pay for idle nodes.",
+      "D": "App Engine standard works but is a more constrained runtime than a partner-supplied container expects, and the team's container-first design and least-overhead goal point to Cloud Run."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/min-instances",
+        "text": "cloud.google.com/run/docs/configuring/min-instances"
+      },
       {
         "url": "https://cloud.google.com/run/docs/about-instance-autoscaling",
         "text": "cloud.google.com/run/docs/about-instance-autoscaling"
@@ -930,237 +934,173 @@
   {
     "number": 2,
     "domain": "Cloud Developer",
-    "scenario": "A Cloud Run service must process Pub/Sub messages reliably, retrying failures and eventually dead-lettering poison messages. What should you configure?",
+    "scenario": "A browser-based photo app must let an authenticated end user upload one specific object directly to a Cloud Storage bucket for the next 15 minutes. The bytes must not pass through your backend, the user must not be granted any IAM role on the bucket, and the upload must be limited to that single object and time window. Your service runs on Cloud Run with an attached service account. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "A Pub/Sub push (or pull) subscription with retry policy and a dead-letter topic.",
-        "is_correct": true
+        "text": "Grant the user's Google identity the Storage Object Creator role on the bucket, scoped with an IAM Condition that expires in 15 minutes.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A Cloud Scheduler job that polls a database.",
+        "text": "Mint a downscoped Credential Access Boundary token for the bucket and pass it to the browser to call the JSON API.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A single synchronous HTTP call with no retries.",
-        "is_correct": false
+        "text": "Generate a V4 signed URL for the target object with a 15-minute expiry and return it to the client.",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "Cloud Storage notifications only.",
+        "text": "Enable uniform bucket-level access and make the bucket publicly writable for the duration of the upload.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "Pub/Sub subscriptions support retry policies and dead-letter topics to handle transient and poison messages.",
-      "B": "Polling a database is not the event-driven Pub/Sub pattern and lacks DLQ semantics.",
-      "C": "No-retry synchronous calls lose messages on failure.",
-      "D": "GCS notifications don't provide message retry/DLQ for arbitrary events."
+      "A": "This grants an IAM role on the bucket, which the scenario explicitly forbids, and a Condition still scopes to the whole bucket rather than one object.",
+      "B": "Credential Access Boundaries downscope a service account's own token and are designed for backend/proxy use, not for handing browser clients direct upload access to one object — it is heavier and broader than a signed URL.",
+      "C": "A V4 signed URL grants time-limited, single-object, single-operation access with no IAM change and no proxying — exactly matching every constraint, and Cloud Run's service account can sign it via the IAM Credentials API.",
+      "D": "A publicly writable bucket exposes write access to everyone, not just the one user, and grossly violates the no-broad-access intent."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/pubsub/docs/handling-failures",
-        "text": "cloud.google.com/pubsub/docs/handling-failures"
+        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
+        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers",
+        "text": "cloud.google.com/storage/docs/access-control/signing-urls..."
       }
     ]
   },
   {
     "number": 3,
     "domain": "Cloud Developer",
-    "scenario": "A frontend must allow an authenticated user to upload a single large file directly to a Cloud Storage bucket for the next 15 minutes, without granting the user any IAM role on the bucket and without proxying the bytes through your service. What should you implement?",
+    "scenario": "Two internal microservices on GKE exchange a very high volume of small messages and need the lowest possible per-call latency plus a strongly typed, versioned contract enforced at build time. The team already generates client and server stubs from a shared schema in CI. A third requirement is server-streaming of incremental results. Which inter-service style should you standardize on?",
     "options": [
       {
         "id": "A",
-        "text": "Make the bucket public for writes temporarily.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Generate a V4 signed URL with a 15-minute expiry for the object.",
+        "text": "gRPC over HTTP/2 with Protocol Buffers.",
         "is_correct": true
       },
       {
+        "id": "B",
+        "text": "REST over HTTP/1.1 with JSON and an OpenAPI specification checked in CI.",
+        "is_correct": false
+      },
+      {
         "id": "C",
-        "text": "Grant the user the Storage Object Creator role on the bucket.",
+        "text": "GraphQL over HTTP/1.1 with a schema-registry validation step.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Return the service account key to the client so it can call the API.",
+        "text": "Pub/Sub with Protocol Buffer schemas attached to the topic.",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "A",
     "explanations": {
-      "A": "A public-write bucket is a severe security risk and grants access to everyone, not just the one user for a limited time.",
-      "B": "A V4 signed URL grants time-limited, operation-scoped access to a specific object with no IAM change and no proxying through your app.",
-      "C": "Granting an IAM role is broader and longer-lived than needed and violates the \"no IAM role on the bucket\" constraint.",
-      "D": "Distributing a service account key to clients is a critical credential-exposure anti-pattern."
+      "A": "gRPC multiplexes over HTTP/2, uses compact protobuf with compile-time-checked contracts, and natively supports server streaming — the best fit for chatty, low-latency, strongly typed internal calls.",
+      "B": "OpenAPI documents a contract but does not enforce it at compile time, and JSON over HTTP/1.1 carries more serialization and connection overhead for high-volume small messages.",
+      "C": "GraphQL optimizes flexible client-shaped queries, not minimal-latency machine-to-machine RPC, and adds resolver overhead the scenario does not need.",
+      "D": "Pub/Sub is asynchronous fan-out messaging; it adds delivery latency and is not a request/response RPC mechanism for synchronous streaming results."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
-        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
+        "url": "https://cloud.google.com/blog/products/api-management/understanding-grpc-openapi-and-rest",
+        "text": "cloud.google.com/blog/products/api-management/understandi..."
+      },
+      {
+        "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+        "text": "grpc.io/docs/what-is-grpc/core-concepts"
       }
     ]
   },
   {
     "number": 4,
     "domain": "Cloud Developer",
-    "scenario": "You must store a database password used by a Cloud Run service and rotate it without redeploying code. What should you use?",
+    "scenario": "A globally used SaaS app stores user-generated documents that must remain readable and writable with strong consistency from three continents, with a relational schema and SQL access. The team expects unbounded horizontal growth and cannot tolerate a single regional write bottleneck. Operational simplicity matters more than squeezing single-region cost. Which data store should you choose?",
     "options": [
       {
         "id": "A",
-        "text": "Secret Manager, referenced by the service at runtime.",
-        "is_correct": true
+        "text": "AlloyDB for PostgreSQL with cross-region read replicas.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A plaintext environment variable in the image.",
+        "text": "Cloud SQL for PostgreSQL with HA and cross-region read replicas.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A hardcoded constant.",
+        "text": "Firestore in Native mode with multi-region replication.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A public Cloud Storage object.",
-        "is_correct": false
+        "text": "Cloud Spanner in a multi-region configuration.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Secret Manager stores and versions secrets; Cloud Run reads them at runtime, enabling rotation without code changes.",
-      "B": "Baking secrets into images is insecure and not rotatable without rebuild.",
-      "C": "Hardcoding secrets is a serious vulnerability.",
-      "D": "Public storage exposes the secret."
+      "A": "AlloyDB scales reads via replicas but has a single regional primary for writes, so multi-continent strongly consistent writes still funnel through one region.",
+      "B": "Cloud SQL cross-region replicas are asynchronous and read-only; the primary is a single regional write point, which is the bottleneck the scenario forbids.",
+      "C": "Firestore is a document store, not a relational SQL store, so it fails the relational-schema-with-SQL requirement despite scaling globally.",
+      "D": "Spanner is the only relational store offering global, horizontally scalable, strongly consistent reads and writes across continents with no single-region write bottleneck — exactly the stated need."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/run/docs/configuring/services/secrets",
-        "text": "cloud.google.com/run/docs/configuring/services/secrets"
+        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
+        "text": "cloud.google.com/spanner/docs/instance-configurations"
+      },
+      {
+        "url": "https://cloud.google.com/spanner/docs/replication",
+        "text": "cloud.google.com/spanner/docs/replication"
       }
     ]
   },
   {
     "number": 5,
     "domain": "Cloud Developer",
-    "scenario": "Two internal microservices on GKE exchange high volumes of small messages and need the lowest possible latency with strongly typed contracts. Which inter-service API style should you use?",
+    "scenario": "Your Cloud Run service calls the Cloud Storage and Pub/Sub APIs. Security policy bans long-lived service-account keys, requires least privilege, and requires that access is revoked the moment the workload is decommissioned. You want the smallest credential-management burden. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "REST over HTTP/1.1 with JSON payloads.",
+        "text": "Create a service-account key, store it in Secret Manager, mount it at runtime, and rotate it on a 90-day schedule.",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "gRPC over HTTP/2 with protocol buffers.",
+        "text": "Attach a dedicated, minimally scoped service account to the service and use Application Default Credentials.",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "GraphQL over HTTP/1.1.",
+        "text": "Use Workload Identity Federation so the Cloud Run service exchanges an external token for short-lived credentials.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Pub/Sub pull subscriptions between the services.",
+        "text": "Run the service under the broadly privileged default Compute Engine service account, relying on Application Default Credentials.",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "REST/JSON over HTTP/1.1 has higher serialization overhead and no enforced schema, increasing latency and contract drift for chatty internal calls.",
-      "B": "gRPC uses HTTP/2 multiplexing and compact protobuf messages with strongly typed contracts — ideal for low-latency internal service-to-service calls.",
-      "C": "GraphQL targets flexible client queries, not minimal-latency strongly typed service-to-service messaging.",
-      "D": "Pub/Sub is asynchronous decoupled messaging; it adds latency and is not a request/response RPC mechanism."
+      "A": "A service-account key is exactly the long-lived credential the policy bans; storing it in Secret Manager does not change its nature and adds rotation burden.",
+      "B": "An attached, least-privileged service account gives the libraries short-lived credentials via ADC with zero keys to manage, and deleting the service or its bindings instantly removes access — meeting every constraint.",
+      "C": "Workload Identity Federation is for external/non-Google workloads (e.g. CI, AWS, on-prem); a Cloud Run service already has a Google identity, so federation is unnecessary indirection here.",
+      "D": "The default Compute Engine service account is broadly privileged and shared, violating least privilege even though it avoids keys."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/blog/products/api-management/understanding-grpc-openapi-and-rest",
-        "text": "cloud.google.com/blog/products/api-management/understandi..."
-      }
-    ]
-  },
-  {
-    "number": 6,
-    "domain": "Cloud Developer",
-    "scenario": "Your gRPC microservice on GKE must expose a strongly typed contract and stream responses efficiently to internal clients. What protocol/transport is appropriate?",
-    "options": [
-      {
-        "id": "A",
-        "text": "gRPC over HTTP/2 with protocol buffers.",
-        "is_correct": true
+        "url": "https://cloud.google.com/run/docs/securing/service-identity",
+        "text": "cloud.google.com/run/docs/securing/service-identity"
       },
-      {
-        "id": "B",
-        "text": "SOAP over HTTP/1.1.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Plain text TCP.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Email-based messaging.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "gRPC over HTTP/2 supports streaming and strongly typed protobuf contracts for internal services.",
-      "B": "SOAP is heavyweight and not the recommended internal RPC here.",
-      "C": "Raw TCP lacks a typed contract and tooling.",
-      "D": "Email isn't a service RPC mechanism."
-    },
-    "references": [
-      {
-        "url": "https://grpc.io/docs/",
-        "text": "grpc.io/docs"
-      }
-    ]
-  },
-  {
-    "number": 7,
-    "domain": "Cloud Developer",
-    "scenario": "Your application running on Cloud Run must call the Cloud Storage API. You want to follow Google-recommended practices for authentication with the least credential-management burden. What should you do?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Create a service account key, store it in Secret Manager, and load it at startup.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Assign a dedicated service account to the Cloud Run service and use Application Default Credentials.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Embed an API key in an environment variable.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Use the default Compute Engine service account with broad project editor rights.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Service account keys are long-lived credentials that must be rotated and protected; avoiding them entirely is the recommended practice.",
-      "B": "Attaching a least-privileged service account to the Cloud Run service lets the client library use ADC automatically — no keys to manage or rotate.",
-      "C": "API keys do not authenticate as an identity for IAM-protected services like Cloud Storage and are easily leaked.",
-      "D": "The default service account with broad editor rights violates least privilege."
-    },
-    "references": [
       {
         "url": "https://cloud.google.com/docs/authentication/application-default-credentials",
         "text": "cloud.google.com/docs/authentication/application-default-..."
@@ -1168,159 +1108,615 @@
     ]
   },
   {
-    "number": 8,
+    "number": 6,
     "domain": "Cloud Developer",
-    "scenario": "You want to run a containerized batch job to completion on a schedule with retries, not a long-running service. Which option fits best?",
+    "scenario": "A retail API runs on Cloud Run and serves a product-catalog endpoint that reads the same reference data on nearly every request. Each read hits Cloud SQL, and under burst traffic Cloud SQL CPU climbs and tail latency spikes. The catalog changes a few times per day, and brief staleness of up to a minute is acceptable. You want the cheapest fix that cuts both latency and database load. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Cloud Run jobs triggered by Cloud Scheduler.",
+        "text": "Cache the catalog in Memorystore for Redis with a short TTL and read through it from the service.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A Cloud Run service kept always-on.",
+        "text": "Add a Cloud SQL read replica and route catalog reads to it.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A GKE Service of type LoadBalancer.",
+        "text": "Increase the Cloud SQL instance tier so it has more CPU during bursts.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "App Engine standard with manual scaling.",
+        "text": "Raise the Cloud Run concurrency setting so fewer instances open fewer connections to Cloud SQL.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Cloud Run jobs run a task to completion with retries; Cloud Scheduler triggers them on a schedule.",
-      "B": "An always-on service wastes resources for a periodic batch task.",
-      "C": "A LoadBalancer Service exposes a long-running app, not a batch job.",
-      "D": "App Engine manual scaling keeps instances running and isn't a batch-to-completion model."
+      "A": "An in-memory cache with a short TTL absorbs the repeated identical reads, cutting both latency and Cloud SQL load, and the acceptable one-minute staleness makes a TTL cache the cheapest correct fit.",
+      "B": "A read replica adds standing cost and still serves each read from disk/CPU; it scales read capacity but does not eliminate the redundant work that caching removes.",
+      "C": "Scaling up the instance pays continuously for peak capacity and treats a caching problem with raw CPU — the opposite of the cheapest fix.",
+      "D": "Higher concurrency reduces instance count and connection count but does nothing to remove the repeated identical queries driving the CPU and latency."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/run/docs/create-jobs",
-        "text": "cloud.google.com/run/docs/create-jobs"
+        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
+        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
+      },
+      {
+        "url": "https://cloud.google.com/memorystore/docs/redis/about-caching",
+        "text": "cloud.google.com/memorystore/docs/redis/about-caching"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Cloud Developer",
+    "scenario": "An order-processing service publishes an `OrderPlaced` event. Three independent teams must each react to it at their own pace — billing, inventory, and analytics — and a new fourth consumer will be added later without changing the producer. Each consumer must be able to fall behind and catch up without losing events. Which integration should the producer use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enqueue one Cloud Tasks task per consumer with the consumer's endpoint as the target.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Define a Workflows execution that calls billing, inventory, and analytics in sequence.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Publish to a single Pub/Sub topic and give each consumer its own subscription.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Make synchronous HTTP calls from the producer to each consumer's endpoint.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Cloud Tasks dispatches to a specific worker endpoint per task; the producer would have to know and enumerate every consumer, defeating the \"add a consumer without changing the producer\" requirement.",
+      "B": "Workflows orchestrates a defined ordered sequence with the producer coupled to each step, the opposite of independent, self-paced fan-out.",
+      "C": "One Pub/Sub topic with per-consumer subscriptions is the canonical fan-out pattern: each subscription buffers and tracks its own backlog, consumers run at independent paces, and adding a fifth subscription needs no producer change.",
+      "D": "Synchronous calls couple the producer to every consumer's availability and offer no buffering, so a slow consumer blocks or drops events."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/pubsub/docs/overview",
+        "text": "cloud.google.com/pubsub/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/subscriber",
+        "text": "cloud.google.com/pubsub/docs/subscriber"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service stores a counter of \"likes\" for trending posts in a single Firestore document. During viral spikes the app sees repeated `RESOURCE_EXHAUSTED` errors and contention on that one document, because per-document sustained write throughput is limited. Reads of the total must stay simple and fast. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Wrap each increment in a Firestore transaction so concurrent writes serialize safely.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Move the counter to a Firestore field with a server-side `increment` transform to avoid read-modify-write.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Batch increments client-side and flush them to the single document once per second.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Shard the counter across N documents, write increments to a random shard, and sum the shards on read.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Transactions serialize the conflicting writes onto the same hot document, which increases contention and retries rather than relieving the per-document throughput ceiling.",
+      "B": "The atomic `increment` transform removes the read-modify-write race but every write still lands on the one document, so the per-document write limit is still the bottleneck.",
+      "C": "Client-side batching to one document reduces write rate but caps the counter's accuracy and still funnels all updates through the single hot document under heavy load.",
+      "D": "A sharded/distributed counter spreads writes across N documents so aggregate throughput scales past the single-document limit, while a read sums the shards — the documented Firestore high-write-counter pattern."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firestore/docs/solutions/counters",
+        "text": "cloud.google.com/firestore/docs/solutions/counters"
+      },
+      {
+        "url": "https://cloud.google.com/firestore/docs/best-practices",
+        "text": "cloud.google.com/firestore/docs/best-practices"
       }
     ]
   },
   {
     "number": 9,
     "domain": "Cloud Developer",
-    "scenario": "A pod on GKE occasionally deadlocks and stops serving while the process keeps running. You want Kubernetes to automatically restart the container when this happens, without removing healthy pods from rotation prematurely. Which probe configuration is correct?",
+    "scenario": "A Java team must produce container images for Cloud Run from their existing Maven project. Security requires reproducible, small, non-root images, and the team does not want to write or maintain a Dockerfile. Images must land in Artifact Registry and be referenced by immutable digest in the deploy step. What should they use?",
     "options": [
       {
         "id": "A",
-        "text": "Configure only a readiness probe.",
+        "text": "Write a multi-stage Dockerfile and build it with Cloud Build using the `latest` tag.",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Configure a liveness probe that restarts the container on failure.",
+        "text": "Build images with Jib from the Maven build, pushing to Artifact Registry.",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "Configure a startup probe with a very short timeout.",
+        "text": "Use Cloud Native Buildpacks but pin every image to the `latest` tag for simplicity.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Disable probes and rely on the Horizontal Pod Autoscaler.",
+        "text": "Use `docker build` locally and push the image tagged with the developer's username.",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "A readiness probe only removes a pod from Service endpoints; it never restarts a deadlocked container.",
-      "B": "A liveness probe detects the hung process and triggers a container restart, which is exactly the desired recovery behavior.",
-      "C": "A startup probe only gates initial startup; a too-short timeout would kill slow-starting containers and does not address runtime deadlocks.",
-      "D": "The HPA scales replica count based on metrics; it does not detect or restart a deadlocked container."
+      "A": "A Dockerfile contradicts the no-Dockerfile requirement, and deploying by the moving `latest` tag breaks the immutable-digest requirement.",
+      "B": "Jib builds optimized, reproducible, non-root images straight from a Maven build with no Dockerfile, pushes to Artifact Registry, and emits a digest the deploy step can pin — satisfying every stated constraint.",
+      "C": "Buildpacks would satisfy the no-Dockerfile goal, but pinning to `latest` violates the immutable-digest requirement, so this option fails on the binding constraint.",
+      "D": "Local builds tagged by username are not reproducible across machines and are not pinned by digest, failing the reproducibility and immutability requirements."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/liveness-readiness-probes",
-        "text": "cloud.google.com/kubernetes-engine/docs/concepts/liveness..."
+        "url": "https://cloud.google.com/java/getting-started/jib",
+        "text": "cloud.google.com/java/getting-started/jib"
+      },
+      {
+        "url": "https://cloud.google.com/artifact-registry/docs/docker/names",
+        "text": "cloud.google.com/artifact-registry/docs/docker/names"
       }
     ]
   },
   {
     "number": 10,
     "domain": "Cloud Developer",
-    "scenario": "A client app must upload large files to Cloud Storage without those bytes flowing through your backend. What should you implement?",
+    "scenario": "Compliance requires that only container images built by your official Cloud Build pipeline and signed by an approved attestor may run in the production GKE cluster. A developer must not be able to deploy an arbitrary image pulled from a public registry, even if they have `roles/container.developer`. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "A resumable upload via a signed URL.",
+        "text": "Enable Binary Authorization on the cluster with a policy requiring an attestation from the approved attestor.",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "Base64-encoding files through your API.",
+        "text": "Restrict Artifact Registry push permissions to the Cloud Build service account only.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A public write bucket.",
+        "text": "Apply a `Pod Security Admission` restricted policy to the production namespaces.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Email attachments to a service account.",
+        "text": "Configure Artifact Analysis to scan images and block any with known vulnerabilities at deploy time.",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A signed URL (resumable) lets the client upload directly to Cloud Storage without proxying through your backend.",
-      "B": "Routing bytes through your API adds load and cost.",
-      "C": "Public write buckets are a severe security risk.",
-      "D": "Email isn't an upload mechanism for large files."
+      "A": "Binary Authorization enforces a deploy-time admission policy that admits only images carrying a valid attestation from the approved attestor — blocking arbitrary or unsigned images regardless of the deployer's RBAC.",
+      "B": "Restricting push controls who can upload to your registry but does nothing to stop a developer deploying an image from a different public registry.",
+      "C": "Pod Security Admission constrains pod security context (privileges, capabilities), not image provenance or signing.",
+      "D": "Artifact Analysis surfaces vulnerabilities but does not by itself enforce that an image came from your trusted, signed pipeline; an unsigned but clean image would still pass."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
-        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/setting-up-cli",
+        "text": "cloud.google.com/binary-authorization/docs/setting-up-cli"
       }
     ]
   },
   {
     "number": 11,
     "domain": "Cloud Developer",
-    "scenario": "When calling a Google Cloud API, your service intermittently receives HTTP 429 and 503 responses during traffic spikes. What is the recommended client behavior?",
+    "scenario": "Your CI pipeline runs unit tests for code that uses Firestore. The tests are flaky and occasionally corrupt each other's data because they all hit one shared development Firestore database, and the team is being billed for the test reads and writes. You need fast, isolated, free, and faithful test runs. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Retry immediately in a tight loop until the call succeeds.",
+        "text": "Create and tear down a dedicated real Firestore database per CI run to isolate data.",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Fail fast and surface the error to the user without retrying.",
+        "text": "Replace all Firestore calls in tests with hand-written mocks of the client library.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Retry with exponential backoff and jitter.",
+        "text": "Run the tests against the Firestore emulator started by the Google Cloud CLI in each CI job.",
         "is_correct": true
       },
       {
         "id": "D",
-        "text": "Switch all calls to a second project to bypass the limit.",
+        "text": "Serialize the test suite so only one test touches the shared database at a time.",
         "is_correct": false
       }
     ],
     "correct_answer": "C",
     "explanations": {
-      "A": "Immediate tight-loop retries amplify the overload and can trigger further throttling.",
-      "B": "429/503 are transient; failing fast for retryable errors degrades reliability unnecessarily.",
-      "C": "Exponential backoff with jitter spaces out retries, relieving pressure and maximizing the chance of eventual success — the documented best practice.",
-      "D": "Spreading load across projects to dodge quotas is an abuse pattern and does not address the transient-error handling requirement."
+      "A": "Spinning a real database per run still incurs cost and provisioning latency and is slower and more fragile than the emulator.",
+      "B": "Hand-written mocks drift from real Firestore behavior, so passing tests can hide query/transaction bugs — they verify the mock, not the logic.",
+      "C": "The Firestore emulator runs locally per job, is free, fully isolated, and reproduces real Firestore semantics (transactions, queries), fixing flakiness, cost, and cross-test contamination at once.",
+      "D": "Serializing avoids contention but leaves the suite slow, still billable, and still pointed at shared mutable state."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/firestore/docs/emulator",
+        "text": "cloud.google.com/firestore/docs/emulator"
+      },
+      {
+        "url": "https://cloud.google.com/sdk/gcloud/reference/emulators/firestore",
+        "text": "cloud.google.com/sdk/gcloud/reference/emulators/firestore"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Cloud Developer",
+    "scenario": "You are releasing a new revision of a Cloud Run service. You want to send 5% of production traffic to it, watch error rates, then ramp to 100% over an hour — and be able to revert all traffic instantly if metrics degrade. The team wants the simplest approach with no extra infrastructure. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy a second Cloud Run service for the new version and switch users over with DNS weighting.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Replace the running revision in place and roll back by redeploying the old image if metrics degrade.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Put both revisions behind an external HTTP(S) Load Balancer with weighted serverless NEG backends.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy the new revision with `--no-traffic`, then shift 5% to it and gradually increase the split.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "DNS weighting is coarse and slow to revert because of resolver/TTL caching, so an \"instant\" rollback is not achievable.",
+      "B": "In-place replacement exposes 100% of traffic to the new code immediately and rolling back means a fresh redeploy, not an instant flip.",
+      "C": "An external load balancer with serverless NEGs can split traffic but adds plumbing Cloud Run already provides natively, violating the \"no extra infrastructure\" goal.",
+      "D": "Cloud Run's native revision traffic splitting lets you deploy with no traffic, shift a 5% canary, ramp the percentage, and revert by reassigning 100% to the old revision instantly — no extra infrastructure."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/managing/revisions",
+        "text": "cloud.google.com/run/docs/managing/revisions"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Cloud Developer",
+    "scenario": "A GKE pod runs a service that occasionally deadlocks: the process stays alive and the port stays open, but it stops making progress and returns errors. You want Kubernetes to automatically restart the container when this happens, while not pulling healthy-but-slow-starting pods out of rotation during their 60-second boot. Which probe setup is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A readiness probe only, so the deadlocked pod is removed from the Service endpoints.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A liveness probe to restart the hung container, plus a startup probe to defer liveness checks during boot.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A single liveness probe with a 5-second `initialDelaySeconds` value and no other probes configured.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A readiness probe plus a Horizontal Pod Autoscaler to add replicas when the pod stops responding.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A readiness probe only de-registers the pod from the Service; it never restarts the container, so the deadlock is never cleared.",
+      "B": "A liveness probe restarts the deadlocked container, and a startup probe holds off liveness checks until the 60-second boot finishes so slow starters are not killed prematurely — addressing both requirements.",
+      "C": "A liveness probe with a fixed 5-second initial delay would fire during the 60-second boot and kill healthy starting pods, which is the failure mode the startup probe exists to prevent.",
+      "D": "The HPA changes replica count on metrics; it neither detects a logical deadlock nor restarts the affected container."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/liveness-readiness-probes",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/liveness..."
+      },
+      {
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+        "text": "kubernetes.io/docs/tasks/configure-pod-container/configur..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Cloud Developer",
+    "scenario": "The same container image must be promoted unchanged through dev, staging, and prod on Cloud Run, each using a different database password. Security forbids credentials in the image or in source control and requires rotation without redeploying or rebuilding. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Store each environment's password in Secret Manager and reference it from the Cloud Run service at runtime.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Bake the per-environment password into a separate image variant that is built and promoted for each environment.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Commit an encrypted `.env` file per environment and decrypt it in the container entrypoint at startup.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Pass the password as a Cloud Build substitution and set it as a plaintext environment variable at deploy time.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Secret Manager keeps credentials out of the image and source, is referenced per service at runtime, and supports rotation by adding a new version with no rebuild — satisfying every constraint.",
+      "B": "Per-environment images break the \"one image promoted unchanged\" rule and embed the secret in the image, which is forbidden.",
+      "C": "Committing secrets, even encrypted, puts them in source control and creates key-management sprawl, violating the no-secrets-in-source rule.",
+      "D": "A plaintext substitution lands the password in build logs and deploy config, and rotating it requires a redeploy — both forbidden."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/services/secrets",
+        "text": "cloud.google.com/run/docs/configuring/services/secrets"
+      },
+      {
+        "url": "https://cloud.google.com/secret-manager/docs/best-practices",
+        "text": "cloud.google.com/secret-manager/docs/best-practices"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service receives Pub/Sub push messages to process uploaded invoices. Some messages reference a malformed file and fail every time, and the team is seeing the same poison message redelivered indefinitely, blocking throughput. Transient failures should still be retried for a while. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Have the service acknowledge every message immediately on receipt, then process it asynchronously.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Lower the subscription's acknowledgement deadline so failing messages are redelivered faster.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure the subscription with a retry policy plus a dead-letter topic after a max delivery-attempts threshold.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Set the subscription to never expire and increase the push endpoint's timeout to allow more retries.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Acknowledging on receipt drops Pub/Sub's at-least-once guarantee, so any in-flight processing failure silently loses the invoice entirely.",
+      "B": "A shorter ack deadline just redelivers the poison message faster, amplifying the redelivery loop rather than ending it.",
+      "C": "A retry policy keeps retrying transient failures, and a dead-letter topic with a max-delivery-attempts threshold moves a poison message aside after N tries so it stops blocking throughput — the standard failure-handling pattern.",
+      "D": "A longer push timeout and non-expiring subscription do nothing to retire a message that fails deterministically; it still redelivers forever."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/pubsub/docs/handling-failures",
+        "text": "cloud.google.com/pubsub/docs/handling-failures"
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/dead-letter-topics",
+        "text": "cloud.google.com/pubsub/docs/dead-letter-topics"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Cloud Developer",
+    "scenario": "Service A on Cloud Run must call private Service B, also on Cloud Run, which has unauthenticated invocations disabled. The call must be authenticated as Service A's own identity, with no shared secrets and no public exposure of Service B. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Grant Service A's service account `roles/run.invoker` on Service B, and have A attach an OAuth 2.0 access token to each request.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Put a shared API key in a request header that Service B validates against Secret Manager.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Allow unauthenticated invocations on Service B and restrict it with an ingress setting of internal only.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Grant Service A's service account `roles/run.invoker` on Service B, and have A attach a Google-signed OIDC ID token to each request.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Cloud Run's IAM check for invocation expects an ID token, not an OAuth access token; an access token is for calling Google APIs, so this call is rejected.",
+      "B": "A shared API key is a shared secret with no per-caller identity, contradicting the \"authenticated as A's identity, no shared secrets\" requirement.",
+      "C": "Internal-only ingress limits the network path but allowing unauthenticated invocations removes identity-based authorization, which the scenario requires.",
+      "D": "Cloud Run service-to-service auth requires a Google-signed OIDC ID token whose audience is the target service, and granting the caller's service account `run.invoker` authorizes it — keyless and identity-based."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/authenticating/service-to-service",
+        "text": "cloud.google.com/run/docs/authenticating/service-to-service"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/securing/managing-access",
+        "text": "cloud.google.com/run/docs/securing/managing-access"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Cloud Developer",
+    "scenario": "A containerized data-cleanup job must run nightly, process a batch to completion, retry on failure, and then exit — it is not a long-running server and should consume no resources between runs. The team wants the most fitting managed primitive with the least standing cost. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Run service kept warm with one minimum instance, invoked by a nightly Cloud Scheduler HTTP call.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Cloud Run job triggered nightly by Cloud Scheduler, with task retries configured.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A GKE `CronJob` running on a small always-on node pool.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Cloud Scheduler job that publishes to Pub/Sub, which pushes to an always-on Cloud Run service.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A Cloud Run service models a long-running request handler, and a minimum instance keeps capacity warm 24/7, incurring standing cost the batch model is meant to avoid.",
+      "B": "Cloud Run jobs run a containerized task to completion with built-in task retries and consume nothing between runs; Cloud Scheduler triggers them nightly — the lowest-standing-cost managed fit for a run-to-completion batch.",
+      "C": "A GKE CronJob fits the batch shape but an always-on node pool carries continuous cost and cluster overhead the serverless job avoids.",
+      "D": "An always-on Cloud Run service plus Pub/Sub adds standing cost and indirection for what is simply a scheduled run-to-completion job."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/create-jobs",
+        "text": "cloud.google.com/run/docs/create-jobs"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/execute/jobs-on-schedule",
+        "text": "cloud.google.com/run/docs/execute/jobs-on-schedule"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service reads from and writes to a Cloud SQL for PostgreSQL instance that has only a private IP. Connections must be encrypted and authenticated with IAM, the database must not be exposed publicly, and under autoscaling the service must not exhaust the database's connection limit. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Direct VPC egress (or a VPC connector) with the Cloud SQL language connector for IAM auth, and pool connections.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Assign the Cloud SQL instance a public IP, add authorized networks for Cloud Run's egress, and connect over TLS.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use the Cloud SQL Auth Proxy as a sidecar and open a fresh connection per request to keep things simple.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Connect through a bastion VM inside the VPC that the serverless service opens an SSH tunnel to on each request.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "VPC egress gives the serverless service a private route into the VPC, the Cloud SQL connector provides encrypted IAM-based auth with no public IP, and application-side pooling prevents connection exhaustion under autoscaling — covering every constraint.",
+      "B": "A public IP plus authorized networks exposes the database publicly, violating the no-public-exposure requirement; Cloud Run egress IPs are also not stable to allowlist reliably.",
+      "C": "A fresh connection per request under autoscaling is the exact pattern that exhausts the connection limit the scenario warns about, even though the Auth Proxy itself is fine.",
+      "D": "Per-request SSH tunneling through a bastion is fragile, high-latency, and not how serverless services are meant to reach private Cloud SQL."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/connect-run",
+        "text": "cloud.google.com/sql/docs/postgres/connect-run"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/connect-auth-proxy",
+        "text": "cloud.google.com/sql/docs/postgres/connect-auth-proxy"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Cloud Developer",
+    "scenario": "A microservice lists thousands of resources from a Google Cloud API on every dashboard load and is hitting both high latency and occasional `429` responses. You must make the calls efficient and resilient without architectural changes. Which combination of techniques should you apply?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Fetch all resources in one unpaginated request to minimize round trips, and disable retries to avoid worsening the overload.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Open a fresh API client on every request to spread load, and retry any failures immediately in a tight loop until they succeed.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Paginate results, restrict fields with a field mask, reuse one client, and retry `429`/`503` with exponential backoff.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Switch the calls to a second project to obtain separate quota, and cache the `429` error responses to return quickly.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A single unpaginated call risks timeouts and memory blowups and may not be supported, and disabling retries sacrifices resilience to the transient `429`s.",
+      "B": "A new client per request wastes connection setup, and tight-loop immediate retries amplify the overload that caused the `429`s.",
+      "C": "Pagination plus field masks shrink payloads and work, client reuse avoids per-call connection setup, and exponential backoff with jitter is the documented handling for `429`/`503` — together cutting latency and surviving throttling.",
+      "D": "Spreading calls across projects to dodge quota is an abuse pattern, and caching error responses serves users broken data instead of fixing the throttling."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/apis/design/design_patterns",
+        "text": "cloud.google.com/apis/design/design_patterns"
+      },
       {
         "url": "https://cloud.google.com/storage/docs/retry-strategy",
         "text": "cloud.google.com/storage/docs/retry-strategy"
@@ -1328,79 +1724,219 @@
     ]
   },
   {
-    "number": 12,
+    "number": 20,
     "domain": "Cloud Developer",
-    "scenario": "You need to invoke a private Cloud Run service from another service securely using the caller's identity. What should you use?",
+    "scenario": "A request that spans an API gateway, a Cloud Run frontend, and two backend services is intermittently slow, but each service's own logs look fine. You need to see where the time goes across the whole request path and pinpoint which downstream span is responsible, with the least custom code. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "An ID token from the calling service account, with the invoker IAM role granted.",
-        "is_correct": true
+        "text": "Add millisecond timing log lines around each external call in every service and correlate them by timestamp in Cloud Logging.",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A shared API key in a header.",
+        "text": "Enable Cloud Profiler on each service to find the function consuming the most wall-clock time.",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Allow unauthenticated invocations.",
+        "text": "Create a log-based metric on request duration and alert when the frontend's p99 latency exceeds a threshold.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Basic auth with a static password.",
-        "is_correct": false
+        "text": "Instrument the services with OpenTelemetry, propagate the trace context across calls, and analyze the spans in Cloud Trace.",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "The caller presents a Google-signed ID token; granting `run.invoker` to its service account authorizes the call.",
-      "B": "API keys don't authenticate IAM identities for Cloud Run invocation.",
-      "C": "Unauthenticated access removes security.",
-      "D": "Static basic auth is insecure and not the recommended pattern."
+      "A": "Manual timing logs are the custom instrumentation you want to avoid, and timestamp correlation across services is error-prone compared with a shared trace ID.",
+      "B": "Cloud Profiler finds CPU/heap hotspots within one process; it does not show latency contributed by waiting on downstream services across the request path.",
+      "C": "A latency alert tells you the frontend is slow but not which downstream span causes it, so it does not localize the bottleneck.",
+      "D": "Distributed tracing with propagated context stitches spans from gateway through both backends into one Cloud Trace view, showing exactly which span is slow with minimal code — the purpose-built tool for cross-service latency."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/run/docs/authenticating/service-to-service",
-        "text": "cloud.google.com/run/docs/authenticating/service-to-service"
+        "url": "https://cloud.google.com/trace/docs/setup",
+        "text": "cloud.google.com/trace/docs/setup"
+      },
+      {
+        "url": "https://cloud.google.com/trace/docs/trace-context",
+        "text": "cloud.google.com/trace/docs/trace-context"
       }
     ]
   },
   {
-    "number": 13,
+    "number": 21,
     "domain": "Cloud Developer",
-    "scenario": "You need to run a function whenever an object is finalized in a Cloud Storage bucket, delivering the event to a containerized service on Cloud Run with minimal custom plumbing. Which integration should you use?",
+    "scenario": "Your team wants to expose a public REST API for a Cloud Run backend with per-developer API keys, request quotas, and an OpenAPI-defined contract, with minimal operational overhead. You do not need a monetized developer portal, granular productization, or analytics across dozens of backends. Which product should you choose?",
     "options": [
       {
         "id": "A",
-        "text": "Poll the bucket every minute from a Cloud Scheduler job.",
+        "text": "Apigee with API products, developer apps, and quota policies.",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "An Eventarc trigger for the Cloud Storage event routed to the Cloud Run service.",
+        "text": "API Gateway with an OpenAPI configuration in front of the Cloud Run service.",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "A Cloud Build trigger on bucket changes.",
+        "text": "Cloud Endpoints with an ESPv2 sidecar deployed alongside the service.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A Cloud Tasks queue that the upload client populates manually.",
+        "text": "An external HTTP(S) Load Balancer with Cloud Armor rate-limiting rules.",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "Polling adds latency, cost, and complexity, and can miss or duplicate events compared to native eventing.",
-      "B": "Eventarc delivers Cloud Storage events (via Cloud Audit Logs / Pub/Sub) directly to Cloud Run with minimal configuration — the recommended pattern.",
-      "C": "Cloud Build is a CI system, not an event router for application object events.",
-      "D": "Cloud Tasks requires the producer to enqueue tasks explicitly; it does not natively observe bucket finalize events."
+      "A": "Apigee delivers the full lifecycle platform (portal, monetization, deep analytics) the scenario explicitly does not need, making it over-engineered and costlier here.",
+      "B": "API Gateway is the lightweight managed gateway that provides API keys, quotas, and OpenAPI-based config for serverless backends with the least overhead — matching the requirement set without Apigee's heavier feature set.",
+      "C": "Cloud Endpoints with ESPv2 requires running and operating the proxy sidecar yourself, which is more operational overhead than the managed API Gateway.",
+      "D": "A load balancer with Cloud Armor handles routing and rate limiting but provides no API-key issuance, per-developer quotas, or OpenAPI contract management."
     },
     "references": [
+      {
+        "url": "https://cloud.google.com/api-gateway/docs/about-api-gateway",
+        "text": "cloud.google.com/api-gateway/docs/about-api-gateway"
+      },
+      {
+        "url": "https://cloud.google.com/endpoints/docs/openapi/about-cloud-endpoints",
+        "text": "cloud.google.com/endpoints/docs/openapi/about-cloud-endpo..."
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Cloud Developer",
+    "scenario": "An online store must, in one operation, debit a customer's wallet balance and create an order record, with the guarantee that either both succeed or neither does, even under concurrent purchases of the same item. The data lives in Cloud SQL for PostgreSQL. The endpoint may be retried by clients on timeout. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Perform the debit and order insert in one database transaction, and make the endpoint idempotent via a client idempotency key.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Debit the wallet first, return success, then insert the order asynchronously via a Cloud Tasks queue for resilience.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Wrap the two writes in a Saga: debit in one service, insert the order in another, and compensate on failure.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a Firestore transaction spanning the wallet and order collections to obtain atomicity across both of the writes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A single SQL transaction gives all-or-nothing atomicity for the two writes against one Cloud SQL database, and an idempotency key makes a retried request safe so a client timeout-retry cannot double-debit — exactly the two guarantees required.",
+      "B": "Returning success after only the debit breaks atomicity; if the async insert later fails, money is gone with no order, the precise outcome to avoid.",
+      "C": "A Saga is for atomicity across separate services/databases and adds compensation complexity that is unnecessary when both writes already share one Cloud SQL database.",
+      "D": "The data lives in Cloud SQL, not Firestore; a Firestore transaction cannot span data held in PostgreSQL."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/best-practices",
+        "text": "cloud.google.com/sql/docs/postgres/best-practices"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/application-development/idempotency",
+        "text": "cloud.google.com/architecture/application-development/ide..."
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service shows acceptable median latency but a heavy p99 tail under load. CPU graphs show instances are not saturated, yet some requests queue. The handler does meaningful CPU work per request, and the team set `concurrency` to the default of 80. They want to cut tail latency cost-effectively without rewriting the app. What is the most likely effective change?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Raise the per-instance concurrency above 80 so fewer instances handle more requests and reduce cold starts.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set a high minimum number of instances so large warm capacity is kept available at all times, even when idle.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Lower the per-instance concurrency so each instance serves fewer simultaneous requests and the autoscaler scales out.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Switch the service to request-based billing only and reduce the amount of CPU allocated to each instance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Raising concurrency packs even more contending requests onto each instance, worsening the CPU contention that is driving the tail.",
+      "B": "A large warm pool addresses cold-start latency, but the symptom is queuing under load on CPU-bound work, not cold starts, so this mostly adds cost.",
+      "C": "With CPU-heavy handlers, packing 80 requests onto one instance causes contention and queuing that inflates the tail; lowering concurrency spreads load so the autoscaler scales out, directly cutting p99 without code changes.",
+      "D": "Reducing allocated CPU per instance starves the already CPU-bound handler, making per-request work slower and the tail worse."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/about-concurrency",
+        "text": "cloud.google.com/run/docs/about-concurrency"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/tips/general",
+        "text": "cloud.google.com/run/docs/tips/general"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Cloud Developer",
+    "scenario": "A new feature must run a single task whenever a file is finalized in a specific Cloud Storage bucket, delivering the event to an existing Cloud Run service with minimal custom plumbing and no polling. The team wants Google's recommended event-routing approach. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Scheduler job that runs every minute and lists new objects in the bucket, invoking the service for each.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Cloud Build trigger that fires on bucket changes and calls the service.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Tasks queue that the upload client must populate with a task after each upload.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "An Eventarc trigger for the Cloud Storage `object.finalized` event routed to the Cloud Run service.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Polling on a schedule adds latency and cost, can miss or duplicate events, and is the anti-pattern the scenario rules out.",
+      "B": "Cloud Build is a CI/CD system, not an application event router, so it is the wrong tool for delivering object events to a service.",
+      "C": "Cloud Tasks requires the producer to enqueue work explicitly; it does not observe bucket finalize events, so it adds client-side plumbing the scenario wants to avoid.",
+      "D": "Eventarc natively routes the Cloud Storage finalize event to Cloud Run as a CloudEvent with minimal configuration and no polling — the recommended event-driven pattern."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/eventarc/docs/run/quickstart-storage",
+        "text": "cloud.google.com/eventarc/docs/run/quickstart-storage"
+      },
       {
         "url": "https://cloud.google.com/eventarc/docs/overview",
         "text": "cloud.google.com/eventarc/docs/overview"
@@ -1408,482 +1944,46 @@
     ]
   },
   {
-    "number": 14,
-    "domain": "Cloud Developer",
-    "scenario": "Your service occasionally exceeds Firestore write limits on a single document due to a hot counter. What pattern resolves this?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Distributed counters (sharded counter document).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Write all increments to one document faster.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Disable Firestore security rules.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Move the counter to a label.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Sharding the counter across multiple documents spreads writes beyond the single-document limit.",
-      "B": "Faster writes to one document still hit the per-document write ceiling.",
-      "C": "Security rules are unrelated to write throughput.",
-      "D": "Labels aren't a data store for counters."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/firestore/docs/solutions/counters",
-        "text": "cloud.google.com/firestore/docs/solutions/counters"
-      }
-    ]
-  },
-  {
-    "number": 15,
-    "domain": "Cloud Developer",
-    "scenario": "A team wants to guarantee that only container images built by their trusted Cloud Build pipeline and signed by an approved attestor can be deployed to their GKE cluster. What should they enable?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Pod Security Admission in restricted mode.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Binary Authorization with an attestation requirement.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Workload Identity for all namespaces.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A private Artifact Registry repository.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Pod Security Admission enforces pod security context constraints, not image provenance/signing.",
-      "B": "Binary Authorization enforces a deploy-time policy that admits only images with valid attestations from approved attestors — exactly the requirement.",
-      "C": "Workload Identity governs how pods authenticate to Google APIs, not which images may run.",
-      "D": "A private repository controls where images live, but does not by itself block unsigned or untrusted images from deploying."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/binary-authorization/docs/overview",
-        "text": "cloud.google.com/binary-authorization/docs/overview"
-      }
-    ]
-  },
-  {
-    "number": 16,
-    "domain": "Cloud Developer",
-    "scenario": "You need to expose a public API with API keys, quotas, and OpenAPI-based management for a serverless backend with minimal overhead. Which product?",
-    "options": [
-      {
-        "id": "A",
-        "text": "API Gateway.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A self-managed NGINX proxy.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Armor only.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A second Cloud Run service acting as a proxy you build.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "API Gateway provides managed API keys, quotas, and OpenAPI config for serverless backends with little ops.",
-      "B": "Self-managed NGINX is operational overhead.",
-      "C": "Cloud Armor is edge WAF/rate-limiting, not API key/quota management.",
-      "D": "Building your own proxy reinvents API Gateway."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/api-gateway/docs/about-api-gateway",
-        "text": "cloud.google.com/api-gateway/docs/about-api-gateway"
-      }
-    ]
-  },
-  {
-    "number": 17,
-    "domain": "Cloud Developer",
-    "scenario": "During local development and CI, you must run unit tests against Firestore logic without incurring cost or affecting production data. What is the recommended approach?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Create a separate Firestore database in production and clean it after each run.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Use the Firestore emulator from the Google Cloud CLI.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Mock the entire Firestore client library by hand.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Point tests at a colleague's project to isolate data.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Running tests against a real production database risks data contamination and incurs cost; cleanup is fragile.",
-      "B": "The Firestore emulator runs locally, is free, and lets unit/integration tests exercise real Firestore semantics offline.",
-      "C": "Hand-mocking the whole client is brittle and won't faithfully reproduce Firestore behavior (transactions, queries).",
-      "D": "Using another live project still hits billable services and couples your tests to someone else's environment."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/firestore/docs/emulator",
-        "text": "cloud.google.com/firestore/docs/emulator"
-      }
-    ]
-  },
-  {
-    "number": 18,
-    "domain": "Cloud Developer",
-    "scenario": "A deployment introduced a regression. You must instantly revert all traffic to the previous Cloud Run revision. What do you do?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Route 100% of traffic back to the previous revision.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Redeploy from scratch and wait for build.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Delete the service and recreate it.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Scale the new revision to zero only.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Cloud Run keeps prior revisions; you can instantly shift 100% traffic back for a fast rollback.",
-      "B": "Rebuilding is slow during an incident.",
-      "C": "Deleting/recreating causes downtime and loses revision history.",
-      "D": "Scaling the new revision to zero doesn't redirect traffic to the good revision."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
-        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
-      }
-    ]
-  },
-  {
-    "number": 19,
-    "domain": "Cloud Developer",
-    "scenario": "You are releasing a new revision of a Cloud Run service and want to send 10% of traffic to it while keeping 90% on the current revision, then increase gradually. How should you do this?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Deploy the new revision with `--no-traffic`, then split traffic 10/90 across revisions.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Deploy a second Cloud Run service and use DNS round-robin.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Set the new revision's max instances to 10% of the old one.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Use a GKE canary Deployment instead.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Cloud Run supports revision-based traffic splitting; deploying with no traffic then assigning 10% to the new revision enables a controlled canary you can ramp up.",
-      "B": "DNS round-robin gives coarse, cache-dependent splitting with no precise percentage control or instant rollback.",
-      "C": "Max instances limits concurrency, not the percentage of traffic routed to a revision.",
-      "D": "Moving to GKE is unnecessary; Cloud Run already provides native percentage traffic splitting."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
-        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
-      }
-    ]
-  },
-  {
-    "number": 20,
-    "domain": "Cloud Developer",
-    "scenario": "You must ensure only container images that passed your CI and were signed can be deployed to GKE. What do you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Binary Authorization with attestations from your pipeline.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A private bucket for images.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Network policies only.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Pod resource limits.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Binary Authorization enforces that only images with valid attestations (from your CI) deploy.",
-      "B": "A private bucket controls storage, not deploy-time verification.",
-      "C": "Network policies govern traffic, not image provenance.",
-      "D": "Resource limits don't verify image trust."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/binary-authorization/docs",
-        "text": "cloud.google.com/binary-authorization/docs"
-      }
-    ]
-  },
-  {
-    "number": 21,
-    "domain": "Cloud Developer",
-    "scenario": "An application must store user session data that is read and written on nearly every request, requiring sub-millisecond latency. The data is ephemeral and can be reconstructed if lost. Which service should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud SQL with a sessions table.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Memorystore for Redis.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Firestore in Native mode.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "BigQuery with a session table.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "A relational database adds query and connection overhead far above sub-millisecond and is overkill for ephemeral session data.",
-      "B": "Memorystore for Redis is an in-memory cache delivering sub-millisecond reads/writes — ideal for ephemeral, high-frequency session data.",
-      "C": "Firestore offers low-latency document access but not in-memory sub-millisecond performance for per-request session reads/writes.",
-      "D": "BigQuery is an analytical warehouse with high per-query latency, wholly unsuited to per-request session storage."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
-        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
-      }
-    ]
-  },
-  {
-    "number": 22,
-    "domain": "Cloud Developer",
-    "scenario": "A latency-critical read path repeatedly fetches the same reference data from a database. What is the most effective improvement?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Add a Memorystore cache in front of the database.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Add more database replicas for every read.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Increase request timeouts.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Log every read to BigQuery.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Caching frequently-read reference data in Memorystore cuts latency and database load.",
-      "B": "Replicas help read scale but add cost and still exceed cache latency.",
-      "C": "Longer timeouts don't reduce latency.",
-      "D": "Logging reads adds overhead and doesn't speed them up."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
-        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
-      }
-    ]
-  },
-  {
-    "number": 23,
-    "domain": "Cloud Developer",
-    "scenario": "Your team must expose a public API with per-developer quotas, API key issuance, a developer portal, and detailed usage analytics across multiple backend services. Which Google Cloud product should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Cloud Endpoints with an ESPv2 container.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "API Gateway in front of each backend.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Apigee.",
-        "is_correct": true
-      },
-      {
-        "id": "D",
-        "text": "A Cloud Load Balancer with Cloud Armor.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "C",
-    "explanations": {
-      "A": "Cloud Endpoints provides basic API management and auth but lacks Apigee's full developer portal, monetization, and rich cross-backend analytics.",
-      "B": "API Gateway is a lightweight managed gateway for serverless backends without a developer portal or advanced analytics.",
-      "C": "Apigee delivers full lifecycle API management: quotas, API key issuance, developer portal, and analytics across many backends.",
-      "D": "A load balancer with Cloud Armor handles routing and WAF/rate limiting, not API product management or developer portals."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee",
-        "text": "cloud.google.com/apigee/docs/api-platform/get-started/wha..."
-      }
-    ]
-  },
-  {
-    "number": 24,
-    "domain": "Cloud Developer",
-    "scenario": "You want to make a series of Google API calls efficiently when listing thousands of resources. Which techniques apply?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Paginate results, request only needed fields, and reuse a client.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Fetch everything in one unpaginated call.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Open a new client per call.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Disable retries entirely.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Pagination, field masks, and client reuse reduce payloads, memory, and connection overhead.",
-      "B": "Unpaginated bulk calls can fail or exhaust memory and may not be supported.",
-      "C": "New clients per call waste resources.",
-      "D": "Disabling retries hurts reliability for transient errors."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/apis/design/design_patterns",
-        "text": "cloud.google.com/apis/design/design_patterns"
-      }
-    ]
-  },
-  {
     "number": 25,
     "domain": "Cloud Developer",
-    "scenario": "Your service must publish domain events that multiple independent consumers process at their own pace, decoupled from the producer. Which service?",
+    "scenario": "A Cloud Run service backed by Cloud SQL for MySQL intermittently throws \"Too many connections\" errors during traffic spikes. You must alert the on-call engineer before the limit is reached and reduce how often the limit is hit, with minimal application changes. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Pub/Sub topics with multiple subscriptions.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A synchronous REST call to each consumer.",
+        "text": "Create a log-based metric counting \"Too many connections\" errors, alert when the count exceeds zero, and then raise the `max_connections` flag.",
         "is_correct": false
       },
       {
+        "id": "B",
+        "text": "Alert on the `database/network/connections` metric at 90% of `max_connections`, and add a managed connection pooler before the database.",
+        "is_correct": true
+      },
+      {
         "id": "C",
-        "text": "A shared database table consumers poll tightly.",
+        "text": "Enable Query Insights to identify the queries holding connections open, and alert whenever query p99 latency exceeds its baseline.",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Scheduler.",
+        "text": "Set a `maxPoolSize` in the connection string and rely on Cloud SQL automatically scaling available connections during spikes.",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "B",
     "explanations": {
-      "A": "Pub/Sub fan-out (one topic, many subscriptions) lets independent consumers process at their own pace, fully decoupled.",
-      "B": "Synchronous calls couple producer to every consumer's availability.",
-      "C": "Tight DB polling is inefficient and couples consumers to the schema.",
-      "D": "Cloud Scheduler triggers jobs; it isn't a pub/sub fan-out bus."
+      "A": "Alerting at the first error fires only after the outage has begun, not before, and raising `max_connections` without pooling just moves the cliff while each connection consumes more memory.",
+      "B": "The native `connections` metric supports a threshold alert that fires before exhaustion (90% of max), and a connection pooler in front of the database flattens spike-driven connection demand with little app change — meeting both requirements.",
+      "C": "Query Insights diagnoses queries but does not mitigate exhaustion, and a latency alert does not fire specifically on connection saturation.",
+      "D": "\"Cloud SQL automatically scaling connections during spikes\" is not a real feature; connection capacity is bounded by `max_connections`, so this offers no actual mitigation."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/pubsub/docs/overview",
-        "text": "cloud.google.com/pubsub/docs/overview"
+        "url": "https://cloud.google.com/sql/docs/mysql/manage-connections",
+        "text": "cloud.google.com/sql/docs/mysql/manage-connections"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/connection-org-policy",
+        "text": "cloud.google.com/sql/docs/mysql/connection-org-policy"
       }
     ]
   }

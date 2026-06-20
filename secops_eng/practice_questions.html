@@ -890,515 +890,115 @@
   {
     "number": 1,
     "domain": "SecOps Engineer",
-    "scenario": "Your SOC wants to write a custom detection that fires when the same user fails authentication more than 20 times within 5 minutes across ingested telemetry, and assigns a risk score to the result. Which capability should you use?",
+    "scenario": "Your SOC already ingests Cloud Audit Logs, VPC Flow, and Cloud DNS natively into Google SecOps via the Google Cloud integration. The team now needs Okta sign-in events and AWS CloudTrail in the same SIEM, with the least operational overhead and explicitly no agents to build or patch. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "A Security Command Center Security Health Analytics detector.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "A YARA-L detection rule in Google SecOps SIEM.",
+        "text": "Managed `feeds` that pull Okta and AWS CloudTrail events over their first-party connectors into SecOps",
         "is_correct": true
       },
       {
+        "id": "B",
+        "text": "A SecOps `forwarder` on a VM in each cloud, with the providers' syslog output pointed at it",
+        "is_correct": false
+      },
+      {
         "id": "C",
-        "text": "A Cloud Monitoring alerting policy on a log-based metric.",
+        "text": "An export of both log sets to Cloud Storage, then ingestion of the bucket into Security Command Center",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A SOAR playbook triggered on a schedule.",
+        "text": "A YARA-L rule that references the Okta and CloudTrail APIs directly at detection time",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "A",
     "explanations": {
-      "A": "SCC Security Health Analytics finds misconfigurations and posture issues, not custom behavioral detections over ingested security telemetry.",
-      "B": "YARA-L rules in Google SecOps SIEM match UDM events, group by entity over a time window, and emit an outcome risk score — exactly this use case.",
-      "C": "Cloud Monitoring alerts on infrastructure metrics; it is not the SecOps detection engine for security telemetry with risk scoring.",
-      "D": "A scheduled SOAR playbook automates response actions; it is not how you author a threshold-based detection."
+      "A": "Okta and AWS CloudTrail are cloud/SaaS sources with first-party connectors, so managed feeds pull them over API with zero agents — the lowest-overhead intake for SaaS telemetry.",
+      "B": "A forwarder is the right tool for on-prem syslog/packet/file logs, but it is exactly the VM agent the scenario forbids, and it is the wrong intake for managed SaaS APIs.",
+      "C": "SCC is a posture/CSPM tool, not the SIEM where these logs are searched and detected on, and the bucket round-trip adds latency and cost for no benefit.",
+      "D": "YARA-L runs over already-normalised UDM events; it is a detection construct that cannot pull data from external APIs, so it ingests nothing."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-overview",
-        "text": "cloud.google.com/chronicle/docs/detection/yara-l-2-0-over..."
+        "url": "https://cloud.google.com/chronicle/docs/ingestion/ingestion-methods",
+        "text": "cloud.google.com/chronicle/docs/ingestion/ingestion-methods"
       }
     ]
   },
   {
     "number": 2,
     "domain": "SecOps Engineer",
-    "scenario": "You must detect when a service account suddenly accesses resources it has never touched before, using prior behavior as a baseline. Which capability?",
+    "scenario": "Compliance requires that only the 6-person fraud team can read payment-system logs, even though all 45 analysts share one Google SecOps tenant and use SIEM search daily for hunting. You must not stop the wider team from searching everything else. What should you implement?",
     "options": [
       {
         "id": "A",
-        "text": "Google SecOps Risk Analytics / UEBA-style anomaly detection.",
-        "is_correct": true
+        "text": "Remove the SIEM feature-access IAM role from everyone except the fraud team so others cannot open search",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A static deny list of IPs.",
+        "text": "Move the payment-system logs into a separate Google Cloud project with its own IAM bindings",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud CDN logs.",
+        "text": "Build a YARA-L reference list of payment hostnames and exclude other analysts from matching it",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A firewall rule.",
-        "is_correct": false
+        "text": "Apply data RBAC so the payment-system log scope (by label) is readable only within the fraud team's scope",
+        "is_correct": true
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "D",
     "explanations": {
-      "A": "Risk Analytics models normal entity behavior and flags anomalous deviations like first-time access patterns.",
-      "B": "A static IP list can't model behavioral baselines.",
-      "C": "CDN logs are about content delivery, not identity behavior.",
-      "D": "A firewall rule blocks traffic; it doesn't detect behavioral anomalies."
+      "A": "Stripping feature access blocks all 45 analysts from search entirely, breaking the requirement that the wider team keeps hunting.",
+      "B": "Splitting projects fragments the single SIEM tenant and does not map to how SecOps data-access controls work; the logs would no longer be in the shared analysis surface.",
+      "C": "Reference lists tune detection logic, not who may read raw log data during search; they grant no data-access control at all.",
+      "D": "SecOps data RBAC scopes which labelled log slices a group can read while leaving feature access intact, so the fraud team alone sees payment logs and everyone else keeps searching the rest."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/chronicle/docs/detection/risk-analytics-overview",
-        "text": "cloud.google.com/chronicle/docs/detection/risk-analytics-..."
+        "url": "https://cloud.google.com/chronicle/docs/administration/datarbac-overview",
+        "text": "cloud.google.com/chronicle/docs/administration/datarbac-o..."
       }
     ]
   },
   {
     "number": 3,
     "domain": "SecOps Engineer",
-    "scenario": "A new threat advisory lists several malicious file hashes and IP addresses. You need to determine whether those indicators appeared anywhere in your environment over the past six months of ingested logs. What should you do?",
+    "scenario": "You are onboarding 30 external SOC contractors from a managed-security partner. Policy says they must authenticate with the partner's own corporate IdP, no Google accounts may be provisioned for them, and access must drop automatically when the partner offboards someone. What should you configure?",
     "options": [
       {
         "id": "A",
-        "text": "Create a new YARA-L rule and wait for it to match future events.",
+        "text": "Create one shared Google account for the contractor pool and rotate its password monthly",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Run a retrohunt of the new indicators against historical ingested data.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Open a SOAR case and assign it to an analyst.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Enable a new ingestion feed for the affected systems.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "A forward-looking rule only matches new events; it won't reveal past presence of the indicators.",
-      "B": "A retrohunt applies the indicators/rule to historical event data, revealing earlier compromise across the retained logs.",
-      "C": "Opening a case is premature before you've established whether the indicators are present.",
-      "D": "Adding a feed affects future ingestion, not historical detection of the indicators."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/detection/manage-retrohunts",
-        "text": "cloud.google.com/chronicle/docs/detection/manage-retrohunts"
-      }
-    ]
-  },
-  {
-    "number": 4,
-    "domain": "SecOps Engineer",
-    "scenario": "Analysts need to query a year of normalized telemetry quickly to investigate an incident. Which Google SecOps concept makes cross-source queries consistent?",
-    "options": [
-      {
-        "id": "A",
-        "text": "The Unified Data Model (UDM).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Raw unparsed text search only.",
+        "text": "Issue each contractor a service account key scoped to the SecOps API",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Cloud Monitoring metrics.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A spreadsheet export.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "UDM normalizes diverse logs into one schema so analysts query consistently across sources.",
-      "B": "Raw text search is inconsistent and slow across heterogeneous logs.",
-      "C": "Cloud Monitoring metrics aren't the SecOps investigation telemetry store.",
-      "D": "Spreadsheets don't scale to a year of telemetry."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/reference/udm-field-list",
-        "text": "cloud.google.com/chronicle/docs/reference/udm-field-list"
-      }
-    ]
-  },
-  {
-    "number": 5,
-    "domain": "SecOps Engineer",
-    "scenario": "Leadership asks you to identify Google Cloud resources that are misconfigured against benchmarks — for example, public Cloud Storage buckets and overly permissive firewall rules — without writing custom detection logic. Which tool should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Google SecOps SIEM search.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Security Command Center Security Health Analytics.",
+        "text": "Provision the contractors through Workforce Identity Federation against the partner's IdP",
         "is_correct": true
       },
       {
-        "id": "C",
-        "text": "A SOAR enrichment playbook.",
-        "is_correct": false
-      },
-      {
         "id": "D",
-        "text": "Google Threat Intelligence IOC lookups.",
+        "text": "Add each contractor as a Google Cloud guest user and assign SecOps viewer roles individually",
         "is_correct": false
       }
     ],
-    "correct_answer": "B",
+    "correct_answer": "C",
     "explanations": {
-      "A": "SecOps SIEM searches ingested telemetry for threats; it is not the posture/misconfiguration scanner.",
-      "B": "SCC Security Health Analytics continuously scans Google Cloud configuration against benchmarks and flags misconfigurations like public buckets — no custom logic required.",
-      "C": "A SOAR playbook automates response steps, not configuration benchmarking.",
-      "D": "GTI provides external threat indicators, not internal configuration posture findings."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/security-command-center/docs/concepts-security-health-analytics-overview",
-        "text": "cloud.google.com/security-command-center/docs/concepts-se..."
-      }
-    ]
-  },
-  {
-    "number": 6,
-    "domain": "SecOps Engineer",
-    "scenario": "You want SCC to automatically detect cryptomining and other threats from Google Cloud logs without writing rules. What do you enable?",
-    "options": [
-      {
-        "id": "A",
-        "text": "SCC Event Threat Detection.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A custom YARA-L rule for every threat.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "VPC Flow Logs only.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Cloud NAT logging.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "SCC Event Threat Detection ships built-in detectors (e.g., cryptomining, brute force) over Cloud logs.",
-      "B": "Writing rules for every threat is unnecessary when built-in detectors exist.",
-      "C": "Flow logs are raw data, not detections.",
-      "D": "NAT logging records translations, not threats."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/security-command-center/docs/concepts-event-threat-detection-overview",
-        "text": "cloud.google.com/security-command-center/docs/concepts-ev..."
-      }
-    ]
-  },
-  {
-    "number": 7,
-    "domain": "SecOps Engineer",
-    "scenario": "After tuning, one detection rule still generates dozens of benign alerts daily for known service accounts performing expected automation. You must cut the false positives without losing genuine detections. What is the best approach?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Delete the detection rule entirely.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Add the known service accounts to a reference list and exclude them in the rule logic.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Lower the rule severity to informational.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Stop ingesting the logs that trigger the rule.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Deleting the rule removes coverage entirely, allowing real threats of that type to go undetected.",
-      "B": "A reference list of known-good entities, excluded in the rule, suppresses the benign cases while keeping the detection active for everything else.",
-      "C": "Lowering severity hides the noise but the alerts still fire and real threats are now also downgraded.",
-      "D": "Dropping the logs creates a detection blind spot and may break other rules and hunts."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/detection/reference-lists",
-        "text": "cloud.google.com/chronicle/docs/detection/reference-lists"
-      }
-    ]
-  },
-  {
-    "number": 8,
-    "domain": "SecOps Engineer",
-    "scenario": "A YARA-L rule must only alert when a process is rare in the environment and absent from threat intel. Which inputs help express this?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Reference lists / prevalence data plus entity context in the rule.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A single static string match.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Disabling the rule on weekends.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Increasing ingestion quota.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Reference lists, prevalence, and entity context let the rule fire on rare, un-intel'd processes with fewer false positives.",
-      "B": "A static string match lacks rarity/context logic.",
-      "C": "Time-based disabling doesn't express rarity.",
-      "D": "Quota changes don't affect detection logic."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax",
-        "text": "cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax"
-      }
-    ]
-  },
-  {
-    "number": 9,
-    "domain": "SecOps Engineer",
-    "scenario": "Your team wants to automate the first response to phishing alerts: enrich the sender and URLs with threat intelligence, disable the affected user session, and notify the analyst — consistently and without manual steps. Which Google SecOps capability should you use?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A YARA-L detection rule.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "A SOAR playbook.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "A SIEM dashboard.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A Security Health Analytics custom module.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "YARA-L rules detect the activity; they do not orchestrate multi-step response actions.",
-      "B": "Google SecOps SOAR playbooks orchestrate enrichment, containment actions, and notifications automatically — the definition of automated response.",
-      "C": "A dashboard visualizes data; it does not take response actions.",
-      "D": "SHA custom modules extend posture scanning, not incident response automation."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
-        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
-      }
-    ]
-  },
-  {
-    "number": 10,
-    "domain": "SecOps Engineer",
-    "scenario": "After a phishing incident, you must consistently enrich, contain, and notify on every similar alert without manual steps. What do you build?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A Google SecOps SOAR playbook.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A YARA-L rule only.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A Looker Studio dashboard.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A reference list.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "A SOAR playbook automates enrichment, containment, and notification consistently.",
-      "B": "A rule detects; it doesn't orchestrate response.",
-      "C": "A dashboard visualizes; it doesn't act.",
-      "D": "A reference list is data, not automation."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
-        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
-      }
-    ]
-  },
-  {
-    "number": 11,
-    "domain": "SecOps Engineer",
-    "scenario": "Analysts complain that one critical log source stopped sending data three days ago, and no one noticed because the related detections simply produced no alerts. What should you configure to catch this in future?",
-    "options": [
-      {
-        "id": "A",
-        "text": "More aggressive YARA-L rules on that source.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Silent source detection / ingestion-health monitoring with threshold alerts.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "A retrohunt scheduled weekly.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A higher data retention period.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Content rules can't fire on a source that has gone silent — they only see absence of data, not an alert.",
-      "B": "Silent source detection (ingestion health monitoring) alerts when an expected feed stops sending data, closing the blind spot.",
-      "C": "Retrohunts analyze existing data; they don't detect that a feed has stopped.",
-      "D": "Longer retention stores more data but does nothing to flag a feed outage."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/administration/silent-host-monitoring",
-        "text": "cloud.google.com/chronicle/docs/administration/silent-hos..."
-      }
-    ]
-  },
-  {
-    "number": 12,
-    "domain": "SecOps Engineer",
-    "scenario": "Two analysts are duplicating work on the same threat. What SecOps capability ensures clean ownership and progress tracking?",
-    "options": [
-      {
-        "id": "A",
-        "text": "The case management lifecycle (assignment, stages, handoffs).",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Disabling one analyst's account.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A shared email inbox only.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "More YARA-L rules.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Case management assigns ownership, tracks stages, and structures handoffs to avoid duplication.",
-      "B": "Disabling accounts isn't a workflow solution.",
-      "C": "A shared inbox lacks structured ownership/tracking.",
-      "D": "More rules don't fix case ownership."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/soar/investigate/working-with-cases/the-cases-page",
-        "text": "cloud.google.com/chronicle/docs/soar/investigate/working-..."
-      }
-    ]
-  },
-  {
-    "number": 13,
-    "domain": "SecOps Engineer",
-    "scenario": "You need to grant external SOC contractors access to Google SecOps using their existing corporate identity provider, without creating Google accounts for each contractor. What should you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Service account keys shared with the contractors.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Workforce Identity Federation.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "A single shared Google account.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "API keys per contractor.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Sharing service account keys is insecure and not a user-identity mechanism for analysts.",
-      "B": "Workforce Identity Federation lets external workforce identities from a third-party IdP access Google Cloud/SecOps without provisioning Google accounts.",
-      "C": "A shared account destroys per-user accountability and audit trails.",
-      "D": "API keys identify applications/projects, not individual federated users, and lack proper authentication controls."
+      "A": "A shared account destroys per-analyst accountability and audit trails, and a rotated password is still not tied to the partner's IdP or its offboarding lifecycle.",
+      "B": "Service account keys authenticate workloads, not human analysts, and a leaked key has no link to corporate identity or automatic revocation on offboarding.",
+      "C": "Workforce Identity Federation lets external workforce identities from a third-party IdP access SecOps without Google accounts, and access follows the partner's IdP, so deprovisioning there revokes access automatically.",
+      "D": "Creating Google guest identities per contractor is exactly the per-user Google-account provisioning the policy forbids, and manual role grants must be manually revoked."
     },
     "references": [
       {
@@ -1408,237 +1008,77 @@
     ]
   },
   {
-    "number": 14,
+    "number": 4,
     "domain": "SecOps Engineer",
-    "scenario": "A compromised GKE workload is exfiltrating data. You must stop it while preserving evidence for forensics. What is the best containment?",
+    "scenario": "A new SaaS source ingests under its Google-managed default parser, but the username lands in a generic text field instead of the UDM principal, so all your user-based detections silently miss it. You want the fix scoped to this one source and you must not disturb other tenants of the same shared default parser. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Network-isolate the workload (restrict egress) and snapshot for forensics.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "Delete the cluster immediately.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Ignore until business hours.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Restart the node and move on.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Isolating egress stops exfiltration while snapshots preserve forensic evidence.",
-      "B": "Deleting destroys evidence needed for RCA.",
-      "C": "Delay allows continued exfiltration.",
-      "D": "A restart may wipe volatile evidence and not stop the threat."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/architecture/security-incident-response",
-        "text": "cloud.google.com/architecture/security-incident-response"
-      }
-    ]
-  },
-  {
-    "number": 15,
-    "domain": "SecOps Engineer",
-    "scenario": "During an investigation you must build a behavioral detection that considers a user's normal pattern and flags meaningful deviations, automatically raising the user's risk if multiple suspicious behaviors stack up. Which Google SecOps feature is designed for this?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Google SecOps Risk Analytics with entity risk scoring.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A static reference list of bad IPs.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Cloud Monitoring uptime checks.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A Looker Studio report.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Google SecOps Risk Analytics aggregates detections against an entity and computes a rising risk score as suspicious behaviors accumulate — exactly the requirement.",
-      "B": "A static IP list is a simple match, not behavioral analysis or cumulative risk scoring.",
-      "C": "Uptime checks monitor availability, not user behavior risk.",
-      "D": "A report visualizes data after the fact; it does not compute live entity risk."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/detection/risk-analytics-overview",
-        "text": "cloud.google.com/chronicle/docs/detection/risk-analytics-..."
-      }
-    ]
-  },
-  {
-    "number": 16,
-    "domain": "SecOps Engineer",
-    "scenario": "You must alert when an expected daily log feed from a critical firewall stops arriving. What do you configure?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Silent source / ingestion-health monitoring.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A YARA-L content rule on the firewall logs.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "A SOAR playbook with no trigger.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "A longer retention window.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "Silent source detection alerts when an expected feed goes quiet — content rules can't fire on absent data.",
-      "B": "A content rule sees nothing when the feed stops, so it won't alert on the outage.",
-      "C": "A playbook without a trigger doesn't detect the gap.",
-      "D": "Retention stores data; it doesn't detect missing feeds."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/administration/silent-host-monitoring",
-        "text": "cloud.google.com/chronicle/docs/administration/silent-hos..."
-      }
-    ]
-  },
-  {
-    "number": 17,
-    "domain": "SecOps Engineer",
-    "scenario": "SCC reports several individually low-severity findings on one workload — a public IP, an over-privileged service account, and a known vulnerability — that together form a viable path for an attacker to reach sensitive data. Which SCC concept surfaces this combined risk?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Event Threat Detection.",
+        "text": "Author a brand-new custom parser for the source and disable the Google-managed default",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Toxic combinations (attack path / risk engine).",
+        "text": "Create a parser extension that maps the username into the correct UDM principal field",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "A YARA-L correlation rule.",
+        "text": "Rewrite each affected YARA-L rule to read the generic text field instead of the principal",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Sensitive Data Protection.",
+        "text": "Add the usernames to a reference list so detections can resolve them at match time",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "Event Threat Detection finds threats in logs, not chained configuration risks that form an attack path.",
-      "B": "SCC toxic combinations identify when multiple issues chain into a real, exploitable attack path to high-value assets.",
-      "C": "YARA-L operates in SecOps SIEM over telemetry, not on SCC posture-finding combinations.",
-      "D": "Sensitive Data Protection discovers and classifies sensitive data; it does not compute attack-path risk."
+      "A": "A full custom parser throws away the working default mappings, is far more to maintain, and replaces the managed parser for far more than this one-field gap needs.",
+      "B": "A parser extension overlays just the field mapping you need on top of the existing default parser, fixing the principal mapping for this source without forking or replacing the managed parser.",
+      "C": "Chasing a mis-mapped field inside every rule scatters the workaround across all detections and breaks portability of shared and curated rules.",
+      "D": "Reference lists hold reusable values for matching; they cannot relocate a value into the correct UDM field, so the principal stays empty."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/security-command-center/docs/how-to-remediate-toxic-combinations",
-        "text": "cloud.google.com/security-command-center/docs/how-to-reme..."
+        "url": "https://cloud.google.com/chronicle/docs/event-processing/manage-parser-extensions",
+        "text": "cloud.google.com/chronicle/docs/event-processing/manage-p..."
       }
     ]
   },
   {
-    "number": 18,
+    "number": 5,
     "domain": "SecOps Engineer",
-    "scenario": "You need to give an automation pipeline programmatic, least-privilege access to the SecOps API. What is the recommended approach?",
+    "scenario": "A vendor changed a custom application's log format last week. You corrected the parser yesterday and validated it against sample logs, but an analyst reports that events from the affected three-day gap still land in the wrong UDM fields and dodge detections. What do you tell them, and what is the fix?",
     "options": [
       {
         "id": "A",
-        "text": "A dedicated service account with minimal IAM roles (and keyless auth where possible).",
+        "text": "Parser changes are forward-only; reingest or backfill the affected window to remap the old events",
         "is_correct": true
       },
       {
         "id": "B",
-        "text": "A human analyst's personal credentials.",
+        "text": "The parser edit reparses all stored data on save, so they should just refresh the search results",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A shared API key with broad scope.",
+        "text": "The historical events are unrecoverable, so the only option is to extend the data retention period",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Org admin rights for the pipeline.",
+        "text": "Add a reference list of the affected hostnames so detections can resolve the old events on the fly",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "A purpose-built service account with least-privilege roles (preferably keyless) is the secure pattern for automation.",
-      "B": "Using personal credentials breaks accountability and least privilege.",
-      "C": "A broad shared key over-permissions and is leak-prone.",
-      "D": "Org admin grossly violates least privilege."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/iam/docs/service-account-overview",
-        "text": "cloud.google.com/iam/docs/service-account-overview"
-      }
-    ]
-  },
-  {
-    "number": 19,
-    "domain": "SecOps Engineer",
-    "scenario": "You are onboarding a new custom application's logs into Google SecOps, but its fields don't map to the standard schema, so detections can't reference them. What should you do?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Store the raw logs in Cloud Storage and ignore them in SecOps.",
-        "is_correct": false
-      },
-      {
-        "id": "B",
-        "text": "Create or extend a parser to normalize the logs into the UDM.",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Write a YARA-L rule against the raw text.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Increase ingestion quota for the source.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Parking logs in Cloud Storage means they're never usable for SecOps detections or hunts.",
-      "B": "Building or extending a parser maps the custom fields into the Unified Data Model so rules and searches can reference them consistently.",
-      "C": "Writing rules against unparsed raw text is brittle and unsupported by the structured detection engine.",
-      "D": "More quota ingests more volume but does nothing to make the fields queryable in UDM."
+      "A": "Parser changes apply only to logs ingested after the change, so to fix the three-day gap you must reingest/backfill that window so the events are reparsed under the corrected mapping.",
+      "B": "Saving a parser does not retroactively reparse stored data; refreshing search shows the same mis-mapped historical events.",
+      "C": "The raw data is not lost and retention length is irrelevant; the events simply need reparsing, not longer storage.",
+      "D": "A reference list supplies values for matching; it cannot relocate fields already parsed into the wrong UDM locations."
     },
     "references": [
       {
@@ -1648,197 +1088,157 @@
     ]
   },
   {
-    "number": 20,
+    "number": 6,
     "domain": "SecOps Engineer",
-    "scenario": "A new threat report provides IOCs in real time. You want detections to incorporate the latest indicators automatically. What do you leverage?",
+    "scenario": "Your SecOps ingest bill is dominated by verbose application debug logs that no detection or hunt has referenced in 12 months, while you need to onboard high-value EDR telemetry inside the same fixed budget. You want the cleanest data-management move that frees budget without slowing searches on valuable data. What should you do?",
     "options": [
       {
         "id": "A",
-        "text": "Google Threat Intelligence (GTI) feeds integrated with detections.",
-        "is_correct": true
+        "text": "Uniformly shorten retention across every source so total stored volume drops across the board",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "A manually edited text file updated quarterly.",
+        "text": "Move all logs, including the new EDR feed, into a cheaper cold data tier to cut overall cost",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "Disabling existing rules.",
+        "text": "Route the debug logs to Security Command Center so they stop counting against SIEM ingestion",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Cloud Monitoring uptime checks.",
+        "text": "Filter the unused debug logs at the source so they are never ingested, freeing budget for EDR",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Blanket retention cuts also shorten your valuable logs' searchable history and don't target the actual cost driver, which is ingest volume of the debug logs.",
+      "B": "A cold tier slows searches on the EDR telemetry you most want fast and still pays to ingest the useless debug logs.",
+      "C": "SCC is a posture tool, not a dumping ground for application logs; this misroutes data rather than reducing volume or cost.",
+      "D": "Filtering low-value, never-referenced logs at the source removes their ingest cost directly — the textbook value-versus-volume trade — and the recovered budget funds the high-signal EDR data."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/manage-ingestion",
+        "text": "cloud.google.com/chronicle/docs/administration/manage-ing..."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "SecOps Engineer",
+    "scenario": "During an investigation you must enrich each sign-in event with the user's department and manager so you can spot which logins are anomalous for that person's role. That context is not in the auth log itself. What kind of data do you bring in, and how?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Entity context data from identity/org records, enriched onto events via aliasing fields",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "More event data, by relaxing the auth source's filtering so additional fields are ingested",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A retrohunt over historical auth logs to reconstruct each user's department from past activity",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A parser extension on the auth log to synthesise the department and manager fields locally",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "GTI supplies current IOCs/actor intel that detections and hunts can use automatically.",
-      "B": "Manual quarterly files are stale and error-prone.",
-      "C": "Disabling rules reduces coverage.",
-      "D": "Uptime checks monitor availability, not threats."
+      "A": "Department and manager describe who the user is — entity context from identity/org sources — and SecOps joins it onto events through aliasing fields so detections and investigations gain that context.",
+      "B": "The auth log is event data about an action; relaxing its filtering cannot surface HR org attributes the log never contained.",
+      "C": "A retrohunt finds past matching events but cannot manufacture org context that was never logged in the first place.",
+      "D": "A parser maps fields that exist in the raw log; it cannot invent a department or manager the source never sent."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/security/products/threat-intelligence",
-        "text": "cloud.google.com/security/products/threat-intelligence"
+        "url": "https://cloud.google.com/chronicle/docs/investigation/view-entity-context",
+        "text": "cloud.google.com/chronicle/docs/investigation/view-entity..."
       }
     ]
   },
   {
-    "number": 21,
+    "number": 8,
     "domain": "SecOps Engineer",
-    "scenario": "An incident is confirmed on a Compute Engine instance actively communicating with a known command-and-control server. What is the most appropriate immediate containment action?",
+    "scenario": "Threat intel says a financially motivated actor is active in your sector but provides no concrete indicators — only that they abuse valid accounts and living-off-the-land binaries. You have one working day to hunt productively before the next shift. What is the most effective approach?",
     "options": [
       {
         "id": "A",
-        "text": "Delete the instance immediately to stop the attack.",
+        "text": "Wait for the intel team to publish file hashes and IPs, then retrohunt those across historical logs",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Isolate the instance (restrict its network) to stop the spread while preserving it for forensics.",
+        "text": "Form ATT&CK-mapped hypotheses for the named techniques and run UDM searches for rare process behaviour",
         "is_correct": true
       },
       {
         "id": "C",
-        "text": "Reboot the instance and continue monitoring.",
+        "text": "Block all of the actor's known domains at the firewall and monitor for renewed connection attempts",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "Lower the severity of the related alerts.",
+        "text": "Raise the severity of every existing detection so more of the actor's activity gets escalated to analysts",
         "is_correct": false
       }
     ],
     "correct_answer": "B",
     "explanations": {
-      "A": "Deleting the instance destroys forensic evidence needed for root cause analysis and scope assessment.",
-      "B": "Network isolation halts C2 communication and lateral movement while preserving the instance and its memory/disk for forensic investigation.",
-      "C": "A reboot may wipe volatile evidence and does not stop the malicious communication if the threat persists.",
-      "D": "Lowering severity hides the incident rather than containing it."
+      "A": "Waiting for hashes/IPs forfeits the day and pins the hunt to the most evadable, lowest-value indicators an actor swaps trivially.",
+      "B": "With only TTPs to go on, hypothesis-driven hunting mapped to ATT&CK techniques (valid-account abuse, LOLBins) and run as UDM searches for rare behaviour is the high-value hunt this situation demands.",
+      "C": "You were given no domains to block, and blocking is a control action, not a hunt for compromise that may already be present.",
+      "D": "Cranking severity on existing rules creates alert noise without searching for the unknown activity those rules were never built to catch."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/architecture/security-incident-response",
-        "text": "cloud.google.com/architecture/security-incident-response"
+        "url": "https://cloud.google.com/chronicle/docs/investigation/udm-search",
+        "text": "cloud.google.com/chronicle/docs/investigation/udm-search"
       }
     ]
   },
   {
-    "number": 22,
+    "number": 9,
     "domain": "SecOps Engineer",
-    "scenario": "You must restrict which analysts can view sensitive raw logs versus just using the console features. How do you implement this?",
+    "scenario": "A threat advisory drops at 14:00 listing 30 fresh file hashes tied to a newly observed loader. Leadership wants to know within the hour whether any of these hashes touched the estate at any point over the past quarter of retained telemetry. What do you do in Google SecOps?",
     "options": [
       {
         "id": "A",
-        "text": "Separate IAM grants for data access vs feature access.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "One role for everyone.",
-        "is_correct": false
-      },
-      {
-        "id": "C",
-        "text": "Share a single login.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Turn off audit logging.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "A",
-    "explanations": {
-      "A": "SecOps distinguishes data-access from feature-access IAM, so you can let analysts use features without seeing all raw data.",
-      "B": "A single role can't separate these concerns.",
-      "C": "Shared logins remove accountability.",
-      "D": "Disabling audit logging harms security."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/administration/manage-feature-and-data-access",
-        "text": "cloud.google.com/chronicle/docs/administration/manage-fea..."
-      }
-    ]
-  },
-  {
-    "number": 23,
-    "domain": "SecOps Engineer",
-    "scenario": "Your SOC manager wants a single view that visualizes ingestion volume, active detections, open cases, and top IOCs for daily standups, plus exportable weekly reports for leadership. Which approach fits best?",
-    "options": [
-      {
-        "id": "A",
-        "text": "Query BigQuery manually each morning and paste results into a doc.",
+        "text": "Add the 30 hashes to a reference list and let live detections fire on any future match",
         "is_correct": false
       },
       {
         "id": "B",
-        "text": "Build Google SecOps SOAR/SIEM dashboards and scheduled reports (optionally Looker Studio).",
-        "is_correct": true
-      },
-      {
-        "id": "C",
-        "text": "Forward all alerts to email.",
-        "is_correct": false
-      },
-      {
-        "id": "D",
-        "text": "Rely on individual YARA-L rule outputs.",
-        "is_correct": false
-      }
-    ],
-    "correct_answer": "B",
-    "explanations": {
-      "A": "Manual querying is slow, error-prone, and not a sustainable operational dashboard.",
-      "B": "Google SecOps dashboards (SOAR/SIEM, optionally Looker Studio) centralize ingestion, detections, cases, and IOCs and support scheduled, exportable reports — the observability requirement.",
-      "C": "Emailing alerts provides no aggregated, visual operational view or trend reporting.",
-      "D": "Raw rule outputs are inputs to dashboards, not a consolidated leadership-ready view."
-    },
-    "references": [
-      {
-        "url": "https://cloud.google.com/chronicle/docs/reports/dashboards",
-        "text": "cloud.google.com/chronicle/docs/reports/dashboards"
-      }
-    ]
-  },
-  {
-    "number": 24,
-    "domain": "SecOps Engineer",
-    "scenario": "You want to apply a brand-new detection rule to the last 90 days of telemetry to find earlier compromise. What do you run?",
-    "options": [
-      {
-        "id": "A",
-        "text": "A retrohunt.",
-        "is_correct": true
-      },
-      {
-        "id": "B",
-        "text": "A live rule going forward only.",
+        "text": "Open an interactive UDM search and manually scroll today's process-execution events for the hashes",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A new ingestion feed.",
-        "is_correct": false
+        "text": "Run a retrohunt of the hashes against the last quarter of historical telemetry",
+        "is_correct": true
       },
       {
         "id": "D",
-        "text": "A dashboard refresh.",
+        "text": "Build a Looker Studio dashboard that trends hash prevalence across the quarter",
         "is_correct": false
       }
     ],
-    "correct_answer": "A",
+    "correct_answer": "C",
     "explanations": {
-      "A": "A retrohunt executes a rule against historical data to surface past matches.",
-      "B": "A forward-only rule won't examine past events.",
-      "C": "A new feed affects future ingestion, not history.",
-      "D": "Refreshing a dashboard doesn't run detections over history."
+      "A": "A reference list plus live detection only catches future matches and ignores the historical \"did this already touch us\" question that was actually asked.",
+      "B": "Manually scrolling today's events neither covers the quarter of history nor scales to 30 hashes within the hour.",
+      "C": "Applying brand-new indicators to past data to find earlier compromise is exactly what a retrohunt does, and it answers the quarter-long historical question directly.",
+      "D": "A dashboard visualises trends but does not search history for specific indicators to confirm or rule out prior compromise."
     },
     "references": [
       {
@@ -1848,42 +1248,642 @@
     ]
   },
   {
-    "number": 25,
+    "number": 10,
     "domain": "SecOps Engineer",
-    "scenario": "Leadership wants weekly KPIs on mean-time-to-detect, open cases, and ingestion health, exportable as a report. What should you build?",
+    "scenario": "You want curated, prioritised indicators of compromise from Google Threat Intelligence to automatically match against your ingested telemetry and rank the resulting hits by confidence, rather than analysts pasting indicator lists into searches by hand. Which SecOps capability provides this?",
     "options": [
       {
         "id": "A",
-        "text": "SecOps SOAR/SIEM dashboards with scheduled reports (optionally Looker Studio).",
-        "is_correct": true
+        "text": "A static reference list of known-bad IPs and hashes, updated manually each quarter",
+        "is_correct": false
       },
       {
         "id": "B",
-        "text": "Manual screenshots each week.",
+        "text": "SCC Security Health Analytics, which scans your cloud configuration against benchmarks",
         "is_correct": false
       },
       {
         "id": "C",
-        "text": "A YARA-L rule.",
+        "text": "Applied Threat Intelligence, which auto-matches prioritised GTI indicators against your UDM events",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A scheduled SOAR playbook that queries the GTI API and writes findings into a case each night",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A manually updated reference list is stale by design, carries no confidence prioritisation, and is the very hand-maintained approach the scenario wants to replace.",
+      "B": "SHA evaluates cloud posture/misconfiguration, not IoC matching against ingested security telemetry.",
+      "C": "Applied Threat Intelligence continuously matches curated, prioritised GTI indicators against your telemetry and scores the hits, removing the manual indicator-paste workflow entirely.",
+      "D": "A nightly playbook is batchy, bespoke to build and maintain, and reinvents the auto-matching and prioritisation that Applied Threat Intelligence already provides."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/about-applied-threat-intelligence",
+        "text": "cloud.google.com/chronicle/docs/detection/about-applied-t..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "SecOps Engineer",
+    "scenario": "A hunter notices a service account authenticate from a new country, then enumerate storage buckets it has never touched, then read a secret it has never accessed. They want the platform to keep surfacing accounts behaving this anomalously and to escalate when several weak signals stack on one entity — without hand-writing a rule for every pattern. What should they rely on?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single high-severity YARA-L rule that fires on any authentication from a new country",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "SCC Security Health Analytics to flag the bucket and secret configuration as misconfigurations",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The entity risk score, which aggregates anomalous signals on an entity and floats high-risk ones up",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A SOAR playbook that auto-disables any account seen authenticating outside its usual region",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A blunt new-country rule fires on legitimate travel constantly and captures only one of the three suspicious behaviours, missing the cumulative picture.",
+      "B": "SHA checks standing posture/configuration, not anomalous account behaviour accumulating over time.",
+      "C": "SecOps Risk Analytics aggregates multiple anomalous behaviours into a single rising entity risk score, surfacing accounts that stack weak signals without a bespoke rule per pattern.",
+      "D": "Auto-disabling on geography is a heavy-handed response that locks out legitimate travel and is a containment action, not the anomaly-surfacing mechanism requested."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/risk-analytics-overview",
+        "text": "cloud.google.com/chronicle/docs/detection/risk-analytics-..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "SecOps Engineer",
+    "scenario": "Leadership wants a single finding proving that a Cloud Storage bucket is publicly exposed AND chained to an over-privileged service account that can reach customer data. Each issue is individually low severity; they want the combined exposure surfaced as a posture risk, not as a log-based detection. Where does this belong?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A multi-event YARA-L correlation rule joining IAM and storage UDM events over a time window",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A scheduled UDM search in the SIEM that pivots from bucket access to service-account activity",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A SOAR playbook that periodically queries the storage and IAM APIs and opens a case on a match",
         "is_correct": false
       },
       {
         "id": "D",
-        "text": "A firewall policy.",
+        "text": "Security Command Center toxic-combination analysis, which chains posture issues into attack paths",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "YARA-L correlates activity events for detections; standing posture exposure is not an event stream it watches, so it would not surface a configuration attack path.",
+      "B": "A UDM search inspects logged activity, not the standing configuration state of buckets and IAM bindings.",
+      "C": "A playbook can react to a finding but is response automation, not the engine that evaluates posture risk and computes the attack path in the first place.",
+      "D": "Chaining individually-minor misconfigurations into a viable path to sensitive data is a posture/attack-path problem, which SCC's toxic-combination analysis is purpose-built to surface."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/toxic-combinations-overview",
+        "text": "cloud.google.com/security-command-center/docs/toxic-combi..."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "SecOps Engineer",
+    "scenario": "You must detect when a single user account produces more than 15 failed logins followed by a successful login within a 10-minute window, and assign a risk score to the result so it feeds entity risk. How should the YARA-L 2.0 rule be structured?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single-event rule whose condition counts failed logins, since each login is one event",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A reference-list lookup that flags users whose failed-login count exceeds a static threshold",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A multi-event rule with a `match` section grouping by user over a time window, plus an `outcome` score",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A curated detection enabled as-is, because brute-force success is a standard built-in scenario",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A single-event rule evaluates one event at a time and has no `match` section, so it cannot count or sequence failures-then-success across a window.",
+      "B": "Reference lists store reusable values for matching; they cannot count events or evaluate a time-windowed sequence.",
+      "C": "Correlating many failures then a success for the same user inside a window requires a `match` section with a group-by user variable and a time window, and the risk score comes from the `outcome` block.",
+      "D": "Even where a curated brute-force rule exists, this scenario specifies a bespoke threshold and a custom outcome score, so you author or tune a rule — and it still needs a `match` section."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax",
+        "text": "cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "SecOps Engineer",
+    "scenario": "You need a detection that fires on a single event: any process connecting to an IP that appears on your curated command-and-control watchlist, with no correlation across events required. You want the rule to stay accurate as the watchlist changes weekly, with no rule edits each time. How should you build it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A multi-event YARA-L rule with a `match` section grouping connections by host over a 1-hour window",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A single-event YARA-L rule whose condition tests the destination IP against a reference list",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A scheduled retrohunt that re-runs the watchlist against the last week of telemetry every Monday",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A SOAR playbook triggered hourly that pulls the watchlist and searches the SIEM for matches",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A `match` section is for correlating several events over a window; forcing it here adds needless grouping logic for what is a single-event IoC match.",
+      "B": "One connection to a watchlisted IP is a per-event condition, so a single-event rule (no `match` section) referencing a reference list fires correctly, and updating the list updates the rule with no edits.",
+      "C": "A retrohunt looks backward at historical data on a schedule; it does not provide the live, forward-looking detection the scenario asks for.",
+      "D": "An hourly playbook is batchy and bespoke, reinventing detection that a live single-event rule does continuously and natively."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/reference-lists",
+        "text": "cloud.google.com/chronicle/docs/detection/reference-lists"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "SecOps Engineer",
+    "scenario": "A high-value YARA-L rule is accurate but fires dozens of times a day on three known CI/CD service accounts running legitimate automated deployments. You must eliminate those false positives while keeping the rule's full coverage for every other identity. What is the correct tuning?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Delete the rule and rely on the entity risk score to surface the same activity when it matters",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Lower the rule's severity so the CI/CD alerts sink below the analysts' triage threshold",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Exclude the three service accounts via a reference list referenced in the rule condition",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Shorten the rule's `match` window so the automated deployment bursts no longer satisfy it",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Deleting the rule removes coverage for every identity, not just the three benign accounts — the classic over-correction trap.",
+      "B": "Lowering severity hides all of the rule's alerts, including genuine threats it catches, rather than suppressing only the three known-good accounts.",
+      "C": "A reference list of the known-good service accounts, excluded in the condition, suppresses exactly the benign cases while the rule keeps full coverage against everything else.",
+      "D": "Shrinking the window degrades the detection logic globally and risks missing slower, genuine attacks that the original window was sized to catch."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/reference-lists",
+        "text": "cloud.google.com/chronicle/docs/detection/reference-lists"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "SecOps Engineer",
+    "scenario": "A newly authored YARA-L rule looks correct, but you fear it will bury analysts in false positives once live. Before promoting it to production, what is the best validation step in Google SecOps?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy it straight to production at informational severity and watch the alert queue for a week",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Pre-load every conceivable benign entity into a reference list so nothing can false-positive at launch",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set the rule's `outcome` risk score low so any false positives are automatically de-prioritised",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Run the rule against historical telemetry in a test run to measure true- versus false-positive volume",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Shipping to production first is precisely the risk you are trying to avoid, and informational severity still floods the queue with noise.",
+      "B": "Pre-loading every imaginable benign entity is guesswork that risks over-suppression and detection blind spots, all without measuring the real false-positive rate.",
+      "C": "Lowering the score hides noise rather than validating accuracy, and you still do not know how often the rule actually misfires.",
+      "D": "Running the rule against historical data shows exactly what it would have matched, letting you measure and tune the false-positive rate before it ever touches the live queue."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/manage-rules",
+        "text": "cloud.google.com/chronicle/docs/detection/manage-rules"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "SecOps Engineer",
+    "scenario": "A common cloud-platform attack technique — for example, anomalous IAM grants and service-account key abuse — is already covered by a Google-authored, continuously-updated rule set in SecOps. Your team needs coverage fast and wants to minimise long-term rule maintenance. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Write and maintain your own YARA-L rules replicating the technique so you fully control the logic",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Build a SOAR playbook that queries the IAM API hourly and opens a case on suspicious grants",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Rely solely on SCC Event Threat Detection and skip authoring any SecOps detection content",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable the relevant curated detection rule set and tune it with reference-list exclusions",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Hand-building rules for a threat Google already maintains duplicates effort and saddles you with ongoing upkeep the curated set would handle for you.",
+      "B": "An hourly API-polling playbook is batchy, bespoke, and high-maintenance, reinventing detection the curated rules already perform natively over UDM.",
+      "C": "ETD finds threats in Google Cloud logs and is complementary, but leaning on it alone leaves the SecOps SIEM detection coverage this technique needs unaddressed.",
+      "D": "Curated detections are Google-authored and continuously updated, so enabling and lightly tuning the relevant set gives fast coverage with minimal maintenance."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/about-curated-detections",
+        "text": "cloud.google.com/chronicle/docs/detection/about-curated-d..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "SecOps Engineer",
+    "scenario": "A compromised Compute Engine VM is beaconing to a known command-and-control endpoint and may be moving laterally. Forensics will need its disk and memory afterward, and the workload owner has not yet been reached. What is the correct first containment step?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply a deny-all firewall policy to isolate the instance's network while leaving it running",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Delete the instance immediately so the attacker loses the foothold and the beaconing stops",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Shut the instance down so it stops communicating until the owner approves further action",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Rotate the service-account keys the VM uses and leave its network connectivity in place",
         "is_correct": false
       }
     ],
     "correct_answer": "A",
     "explanations": {
-      "A": "Dashboards plus scheduled, exportable reports deliver recurring KPI visibility for leadership.",
-      "B": "Manual screenshots don't scale or stay consistent.",
-      "C": "A detection rule isn't a reporting mechanism.",
-      "D": "Firewall policy is unrelated to KPI reporting."
+      "A": "Network isolation via a deny-all policy halts C2 and lateral movement instantly while keeping the running instance and its volatile memory intact for forensics.",
+      "B": "Deleting the VM destroys the very disk and memory evidence forensics needs, and is irreversible.",
+      "C": "Shutting down loses volatile memory artifacts and can trigger anti-forensic or destructive malware that runs on halt.",
+      "D": "Rotating keys may limit some credential abuse but leaves the C2 channel and lateral movement fully open, so it does not contain the incident."
     },
     "references": [
       {
-        "url": "https://cloud.google.com/chronicle/docs/reports/dashboards",
-        "text": "cloud.google.com/chronicle/docs/reports/dashboards"
+        "url": "https://cloud.google.com/architecture/security-incident-response",
+        "text": "cloud.google.com/architecture/security-incident-response"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "SecOps Engineer",
+    "scenario": "Your SOC handles dozens of identical low-risk malware-quarantine cases daily. Each requires the same deterministic steps: enrich the file hash with GTI, confirm the EDR already quarantined the file, tag the case, and close it. Analysts are drowning in this toil and you want to cut it without losing visibility. What should you build, and how far should automation go?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A SOAR playbook that auto-enriches and tags but routes every case to an analyst for a manual close decision",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A SOAR playbook that auto-enriches, confirms the EDR quarantine, tags, and closes these cases end to end",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A YARA-L rule that suppresses these alerts entirely so they never create cases in the first place",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A dashboard that counts the alerts so leadership can decide whether to hire more analysts",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Forcing a manual close on a fully deterministic, already-contained workflow keeps the analyst burden the scenario is explicitly trying to remove.",
+      "B": "These steps are deterministic, low-risk, and the threat is already remediated by the EDR, so full enrich-confirm-tag-close automation is the textbook hands-off SOAR case, freeing analysts for judgement work while the cases still exist for visibility.",
+      "C": "Suppressing the alerts blinds you to the malware activity and its trend entirely, trading toil for a visibility gap.",
+      "D": "A dashboard measures the problem but does nothing to reduce the repetitive toil itself."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
+        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "SecOps Engineer",
+    "scenario": "You are designing a SOAR playbook for ransomware response. One of its steps would wipe and rebuild a production host from a golden image. Leadership demands fast response but is adamant that this irreversible, high-blast-radius action must never run unattended. How should the playbook handle that step?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Fully automate the wipe-and-rebuild so MTTR is minimised whenever the trigger fires",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Insert a human approval gate before the wipe step, automating the enrichment and notification around it",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Move the wipe step into a separate scheduled playbook that runs nightly regardless of triggers",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Replace the wipe with a network-isolation step and never offer rebuild from the playbook at all",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Fully automating an irreversible, high-blast-radius wipe is exactly what leadership forbids and risks destroying a healthy production host on a false positive.",
+      "B": "The expected design automates the deterministic enrichment and notification but inserts a human-in-the-loop approval gate before the destructive wipe, balancing speed with the no-unattended-destruction requirement.",
+      "C": "A nightly scheduled wipe decouples the action from the incident entirely and would wipe hosts on a timer rather than in response to a real, approved decision.",
+      "D": "Dropping rebuild capability altogether removes a legitimate recovery action the team may need; the requirement was a control on it, not its removal."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
+        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "SecOps Engineer",
+    "scenario": "Two tier-1 analysts have independently begun investigating what turns out to be the same threat, duplicating enrichment and contacting the same asset owner. Your SOC lead wants clean ownership, visible investigation stages, and auditable handoffs as work escalates to tier-2. Which SecOps capability addresses this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The SOAR case management lifecycle, with assignment, stages, and tracked escalation handoffs",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A shared team email inbox that both tiers monitor for new threat reports",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Additional YARA-L correlation rules so duplicate activity is detected and merged automatically",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Disabling one analyst's account during active investigations to prevent concurrent work",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Case management assigns a single owner, moves the case through defined response stages, and records escalation handoffs for audit — exactly the ownership and traceability the lead wants.",
+      "B": "A shared inbox has no concept of ownership, stage, or handoff, so it does nothing to stop two analysts grabbing the same work.",
+      "C": "More detection rules generate more alerts; they do not assign ownership or structure the investigation workflow.",
+      "D": "Disabling an analyst's account is a crude blunt instrument that harms capacity and accountability rather than coordinating the work."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/investigate/working-with-cases/the-cases-page",
+        "text": "cloud.google.com/chronicle/docs/soar/investigate/working-..."
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "SecOps Engineer",
+    "scenario": "After a contained ransomware near-miss, the incident commander wants the response made repeatable and the lessons captured so the next occurrence is faster and cheaper. Which action best closes the incident lifecycle?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Immediately raise the severity of all ransomware-related detections to maximum across the tenant",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run a post-incident review and feed findings into new detections, reference lists, and playbook updates",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Archive the case and move on, since containment succeeded and no data was lost",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Network-isolate the affected hosts again to confirm the threat has not returned",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Blanket-maxing severity creates alert fatigue across the SOC and is not a structured, lasting improvement.",
+      "B": "The lessons-learned phase turns a single response into durable improvement by feeding detections, reference lists, and playbooks, which is precisely what makes the next incident faster and cheaper.",
+      "C": "Archiving without review discards the most valuable output of an incident — the lessons that make the next response cheaper.",
+      "D": "Re-isolating already-contained hosts is redundant containment, not lifecycle closure or process improvement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/security-incident-response",
+        "text": "cloud.google.com/architecture/security-incident-response"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "SecOps Engineer",
+    "scenario": "You need automation to call the Google SecOps API on a schedule to pull case statistics into an external reporting system. Security requires least privilege and prohibits embedding long-lived credentials in the pipeline. How should the pipeline authenticate?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A personal analyst's OAuth credentials, reused by the pipeline so actions inherit their access",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A single broadly-scoped API key shared across this and other automations for convenience",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A service account granted the SecOps administrator role so the pipeline never hits a permission error",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A dedicated service account with a minimal SecOps role, authenticated via keyless workload identity",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Reusing a human's credentials breaks accountability and least privilege, and ties the pipeline's access to one person's lifecycle.",
+      "B": "A broad shared API key over-permissions the pipeline, is a long-lived secret the policy forbids, and is leak-prone across the automations sharing it.",
+      "C": "Granting the administrator role grossly over-privileges a read-only reporting pipeline, violating least privilege even if it authenticates cleanly.",
+      "D": "A purpose-built service account scoped to a minimal role and authenticated keylessly via workload identity meets both least privilege and the no-long-lived-credentials requirement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "SecOps Engineer",
+    "scenario": "A firewall feed keeps streaming events at its normal daily volume, but after the vendor pushed a firmware update last night, none of your firewall detections fire anymore. Your ingestion-volume dashboards look completely healthy. What is the most likely root cause, and where would you have caught it earliest?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The vendor format changed and the parser now mis-maps fields, caught by monitoring parser error rates",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "The source went silent, so silent-source detection should already have raised an alert",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Ingestion latency spiked, so the events arrive too late for the detections to evaluate them in time",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "The detections were accidentally disabled during the firmware change-management window",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Steady volume plus dead detections right after a vendor format change is the signature of a broken parser — events still ingest but land in the wrong UDM fields, so rules no longer match — and rising parser error rates would have flagged it earliest.",
+      "B": "Silent-source detection only triggers when a feed goes quiet, but volume here is normal, so the source is not silent.",
+      "C": "Latency would show as lag or backlog, not normal-volume ingestion with healthy dashboards.",
+      "D": "A disable is unrelated to a format change and is speculative; the timing points squarely at parsing, not at the detection rules' enabled state."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/parser-troubleshooting",
+        "text": "cloud.google.com/chronicle/docs/administration/parser-tro..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "SecOps Engineer",
+    "scenario": "You want early warning before detections silently degrade: a notification when any expected source stops sending, when ingestion lags by hours, or when parser error rates climb. These pipeline-health alerts must reach the on-call engineer without polluting the analysts' security alert queue. Where should they be wired?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Through Cloud Monitoring threshold alerts routed to the on-call channel, away from security alerts",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "As high-severity YARA-L rules in the SIEM so they surface alongside threat detections",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Into the SOAR case queue so each ingestion hiccup opens a case for an analyst to triage",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Onto the executive trend report so leadership sees ingestion health each reporting cycle",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Pipeline-health signals (silent sources, latency, parser errors) belong in Cloud Monitoring with notifications routed to on-call, keeping operational health distinct from the security alert queue.",
+      "B": "YARA-L watches ingested UDM events for threats; it cannot natively alert on the pipeline's own health and would mix operational and security queues.",
+      "C": "Opening a SOAR case per ingestion hiccup floods case management with operational, non-incident work for analysts.",
+      "D": "A monthly trend report is far too slow to act as early warning before detections degrade."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/silent-host-monitoring",
+        "text": "cloud.google.com/chronicle/docs/administration/silent-hos..."
       }
     ]
   }
