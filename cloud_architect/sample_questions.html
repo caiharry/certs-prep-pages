@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Architect - Official Sample Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #0b0f19; --dark-card: #151d30; --dark-border: rgba(255,255,255,0.08);
+            --dark-accent: #3b82f6; --dark-accent-hover: #2563eb; --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af; --dark-correct: #10b981; --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b; --dark-header: #0e1626;
+            --classic-bg: #f3f4f6; --classic-card: #ffffff; --classic-border: #d1d5db;
+            --classic-accent: #1e3a8a; --classic-accent-hover: #172554; --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563; --classic-correct: #15803d; --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309; --classic-header: #e5e7eb;
+            --font-display: 'Outfit', sans-serif; --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg: var(--dark-bg); --card: var(--dark-card); --border: var(--dark-border);
+            --accent: var(--dark-accent); --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary); --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct); --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged); --header: var(--dark-header);
+        }
+        body.classic-mode {
+            --bg: var(--classic-bg); --card: var(--classic-card); --border: var(--classic-border);
+            --accent: var(--classic-accent); --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary); --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct); --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged); --header: var(--classic-header);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        .selectable, code, pre { user-select: text; }
+        body { background-color: var(--bg); color: var(--text-primary); font-family: var(--font-sans);
+               transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column;
+               min-height: 100vh; overflow-x: hidden; }
+        code { font-family: var(--font-mono); background-color: rgba(255,255,255,0.08); padding: 2px 6px;
+               border-radius: 4px; font-size: 0.9em; color: var(--text-primary);
+               border: 1px solid rgba(255,255,255,0.04); word-break: break-all;
+               overflow-wrap: break-word; white-space: pre-wrap; }
+        body.classic-mode code { background-color: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        header { background-color: var(--header); border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+                 display: flex; justify-content: space-between; align-items: center; position: sticky;
+                 top: 0; z-index: 50; backdrop-filter: blur(10px);
+                 transition: background-color 0.3s, border-color 0.3s; }
+        .logo-section { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+                      width: 32px; height: 32px; border-radius: 8px; display: flex;
+                      align-items: center; justify-content: center; color: white; font-weight: bold;
+                      font-family: var(--font-display); }
+        .title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .portal-link { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;
+                       text-decoration: none; padding: 6px 12px; border: 1px solid var(--border);
+                       border-radius: 6px; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+        .portal-link:hover { color: var(--accent); border-color: var(--accent); }
+        .timer-box { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+                     font-weight: bold; font-size: 1.2rem; background: rgba(0,0,0,0.15);
+                     padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+                     color: var(--text-primary); }
+        .timer-box.warning { color: var(--incorrect); animation: pulse 1s infinite alternate; border-color: var(--incorrect); }
+        @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.02); } }
+        .btn { background-color: var(--card); border: 1px solid var(--border); color: var(--text-primary);
+               padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+               font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+               transition: all 0.2s ease; }
+        .btn:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        main { display: flex; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; position: relative; }
+        .content-area { flex: 1; padding: 2.5rem; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
+        .progress-bar-container { width: 100%; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #10b981); width: 0%; transition: width 0.3s ease; }
+        .question-meta { display: flex; justify-content: space-between; align-items: center; }
+        .question-number { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--text-primary); }
+        .multi-badge { background-color: rgba(245,158,11,0.15); color: var(--flagged);
+                       border: 1px solid rgba(245,158,11,0.3); padding: 4px 12px; border-radius: 99px;
+                       font-size: 0.8rem; font-weight: 600; display: none; }
+        .question-box { background-color: var(--card); border: 1px solid var(--border); border-radius: 12px;
+                        padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .question-text { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
+        .question-text p { margin-bottom: 1rem; }
+        .question-text ul, .question-text ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .question-text li { margin-bottom: 0.3rem; }
+        .case-study-note { background-color: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);
+                           border-left: 4px solid var(--accent); border-radius: 6px; padding: 10px 14px;
+                           font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .case-study-note a { color: var(--accent); text-decoration: none; }
+        .case-study-note a:hover { text-decoration: underline; }
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-item { display: flex; align-items: flex-start; gap: 14px; padding: 1rem;
+                       background-color: rgba(0,0,0,0.02); border: 1px solid var(--border);
+                       border-radius: 8px; cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .option-item:hover { border-color: var(--accent); background-color: rgba(59,130,246,0.03); }
+        .option-item.selected { border-color: var(--accent); background-color: rgba(59,130,246,0.08); box-shadow: 0 0 0 1px var(--accent); }
+        .option-item.struck-out { text-decoration: line-through; opacity: 0.35; background-color: rgba(0,0,0,0.05) !important; border-color: var(--border) !important; box-shadow: none !important; }
+        .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+                        display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                        flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-radio { border-color: var(--accent); background-color: var(--accent); }
+        .option-radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: white; display: none; }
+        .option-item.selected .option-radio-dot { display: block; }
+        .option-checkbox { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border);
+                           display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                           flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-checkbox { border-color: var(--accent); background-color: var(--accent); }
+        .option-checkbox-mark { width: 12px; height: 12px; display: none; color: white; }
+        .option-item.selected .option-checkbox-mark { display: block; }
+        .option-text { flex: 1; min-width: 0; word-break: break-word; overflow-wrap: break-word;
+                       font-size: 1rem; line-height: 1.5; color: var(--text-primary); }
+        .sidebar { width: 320px; border-left: 1px solid var(--border); background-color: var(--header);
+                   padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+                   position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto;
+                   transition: background-color 0.3s, border-color 0.3s; }
+        .sidebar-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+                         display: flex; justify-content: space-between; align-items: center; }
+        .grid-navigation { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .grid-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border); display: flex;
+                     align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;
+                     cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .grid-cell:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .grid-cell.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .grid-cell.answered { background-color: rgba(16,185,129,0.15); border-color: var(--correct); color: var(--correct); }
+        .grid-cell.flagged { background-color: rgba(245,158,11,0.15); border-color: var(--flagged); color: var(--flagged); }
+        .grid-cell.post-correct { background-color: rgba(16,185,129,0.3) !important; border-color: #059669 !important; color: #34d399 !important; font-weight: 700; }
+        .grid-cell.post-incorrect { background-color: rgba(239,68,68,0.3) !important; border-color: #dc2626 !important; color: #fca5a5 !important; font-weight: 700; }
+        body.classic-mode .grid-cell.post-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        body.classic-mode .grid-cell.post-incorrect { background-color: #fee2e2 !important; border-color: #f87171 !important; color: #991b1b !important; }
+        .grid-cell.flagged::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background-color: var(--flagged); border-radius: 50%; }
+        .stats-summary { display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; }
+        .flag-checkbox-container { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+        .flag-icon { color: var(--text-secondary); transition: color 0.2s; }
+        .flag-checkbox-container input:checked ~ .flag-icon { color: var(--flagged); }
+        .explanation-box { margin-top: 2rem; border-top: 2px solid var(--border); padding-top: 2rem; display: none; flex-direction: column; gap: 1.5rem; }
+        .explanation-title { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); }
+        .exp-item { padding: 1rem; border-radius: 8px; border-left: 4px solid var(--border); background-color: rgba(0,0,0,0.02); font-size: 0.95rem; line-height: 1.6; }
+        .exp-item.correct-exp { border-left-color: var(--correct); background-color: rgba(16,185,129,0.03); }
+        .exp-item.incorrect-exp { border-left-color: var(--incorrect); background-color: rgba(239,68,68,0.03); }
+        .exp-badge { font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .references-box { margin-top: 1rem; }
+        .references-title { font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .ref-link { color: var(--accent); text-decoration: none; display: inline-block; margin-right: 15px; font-size: 0.85rem; word-break: break-all; }
+        .ref-link:hover { text-decoration: underline; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                         background: rgba(0,0,0,0.85); z-index: 1000; align-items: center;
+                         justify-content: center; backdrop-filter: blur(8px); }
+        .results-card { background-color: var(--card); border: 1px solid var(--border); padding: 3rem;
+                        border-radius: 16px; max-width: 600px; width: 90%; display: flex; flex-direction: column;
+                        align-items: center; text-align: center; gap: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--border);
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        font-family: var(--font-display); margin-bottom: 1rem; }
+        .score-percentage { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .score-label { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .option-item.post-correct { border-color: var(--correct) !important; background-color: rgba(16,185,129,0.08) !important; box-shadow: 0 0 0 1px var(--correct) !important; }
+        .option-item.post-incorrect { border-color: var(--incorrect) !important; background-color: rgba(239,68,68,0.08) !important; box-shadow: 0 0 0 1px var(--incorrect) !important; }
+        .badge-correct { color: var(--correct); font-weight: bold; margin-left: auto; }
+        .badge-incorrect { color: var(--incorrect); font-weight: bold; margin-left: auto; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+                 background: #1e2937; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem;
+                 font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;
+                 transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .scroll-top-btn { display: block; width: fit-content; max-width: 100%; margin: 16px auto 24px;
+                          background: var(--accent); color: white; font-weight: 600; padding: 10px 18px;
+                          border: none; border-radius: 6px; font-size: 0.85rem; font-family: var(--font-sans); cursor: pointer; }
+        .scroll-top-btn:hover { background: var(--accent-hover); }
+        @media (max-width: 1024px) {
+            main { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-left: none; border-top: 1px solid var(--border); }
+            .content-area { padding: 1.5rem; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Architect</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);">OFFICIAL SAMPLE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">45:36</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                </svg>
+                <span>Classic Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+                <div class="multi-badge" id="multi-badge">Select all that apply</div>
+            </div>
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text"></div>
+                <div class="options-list" id="options-list"></div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations &amp; Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display:flex;flex-direction:column;gap:1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References &amp; Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display:none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size:0.8rem;font-weight:500;color:var(--text-secondary);" id="review-counter">0/19 Answered</span>
+            </div>
+            <div class="grid-navigation" id="grid-navigation"></div>
+            <div class="stats-summary">
+                <div class="stat-row"><span>Answered:</span><span class="stat-value" id="stat-answered">0</span></div>
+                <div class="stat-row"><span>Flagged:</span><span class="stat-value" id="stat-flagged">0</span></div>
+                <div class="stat-row"><span>Remaining:</span><span class="stat-value" id="stat-remaining">19</span></div>
+            </div>
+            <button id="submit-exam-btn" class="btn btn-primary" style="width:100%;margin-top:auto;padding:12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;">Exam Completed</h1>
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">—</span>
+            </div>
+            <p style="color:var(--text-secondary);line-height:1.5;" id="results-detailed-stats">You answered 0 out of 19 questions correctly.</p>
+            <div style="display:flex;gap:15px;width:100%;">
+                <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex:1;padding:12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Tip: Left-click selects. Right-click crosses out an option.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "Anonymous users from all over the world access a public health information website hosted in an on-premises EHR data center. The servers that host this website are older, and users are complaining about sluggish response times. There has also been a recent increase of distributed denial-of-service attacks toward the website. The attacks always come from the same IP address ranges. EHR management has identified the public health information website as an easy, low risk application to migrate to Google Cloud. You need to improve access latency and provide a security solution that will prevent the denial-of-service traffic from entering your Virtual Private Cloud (VPC) network. What should you do?",
+    "options": [
+      { "id": "A", "text": "Deploy an external HTTP(S) load balancer, configure VPC firewall rules, and move the applications onto Compute Engine virtual machines.", "is_correct": false },
+      { "id": "B", "text": "Deploy an external HTTP(S) load balancer, configure Google Cloud Armor, and move the application onto Compute Engine virtual machines.", "is_correct": true },
+      { "id": "C", "text": "Containerize the application and move it into Google Kubernetes Engine (GKE). Create a GKE service to expose the pods within the cluster, and set up a GKE network policy.", "is_correct": false },
+      { "id": "D", "text": "Containerize the application and move it into Google Kubernetes Engine (GKE). Create an internal load balancer to expose the pods outside the cluster, and configure Identity-Aware Proxy (IAP) for access.", "is_correct": false }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "VPC firewall rules operate on IP/port at the VM level and cannot block traffic before it enters the VPC the way Cloud Armor can. Firewall rules also don't provide the geo-blocking and rate-limiting capabilities needed to stop targeted DDoS from known IP ranges at the load balancer layer.",
+      "B": "B is correct. Cloud Armor attaches to the external HTTP(S) load balancer and enforces security policies — including IP allow/deny rules — before traffic reaches the VPC backend. This stops the DDoS IP ranges at the edge while the LB reduces latency by distributing traffic globally.",
+      "C": "GKE network policies control pod-to-pod traffic inside the cluster, not external DDoS traffic. Containerizing the application also adds significant complexity for what the question asks — a low-risk, easy migration with DDoS protection.",
+      "D": "An internal load balancer is not reachable from the public internet, so this would make the public website inaccessible. IAP is for identity-based access control, not DDoS protection."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/armor/docs/cloud-armor-overview", "text": "Cloud Armor overview" },
+      { "url": "https://cloud.google.com/armor/docs/security-policy-concepts", "text": "Cloud Armor security policies" }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Cloud Architect",
+    "case_study": "EHR Healthcare",
+    "scenario": "EHR wants to connect one of their data centers to Google Cloud. The data center is in a remote location over 100 kilometers from a Google-owned point of presence. They can't afford new hardware, but their existing firewall can accommodate future throughput growth. They also shared these data points:\n- Servers in their on-premises data center need to talk to Google Kubernetes Engine (GKE) resources in the cloud.\n- Both on-premises servers and cloud resources are configured with private RFC 1918 IP addresses.\n- The service provider has informed the customer that basic Internet connectivity is a best-effort service with no SLA.\n\nYou need to recommend a connectivity option. What should you recommend?",
+    "options": [
+      { "id": "A", "text": "Provision Carrier Peering.", "is_correct": false },
+      { "id": "B", "text": "Provision a new Internet connection.", "is_correct": false },
+      { "id": "C", "text": "Provision a Partner Interconnect connection.", "is_correct": true },
+      { "id": "D", "text": "Provision a Dedicated Interconnect connection.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Carrier Peering provides access to Google Workspace and Google APIs over a carrier's network but does not provide private VPC connectivity. EHR needs to reach RFC 1918 GKE resources inside their VPC — Carrier Peering cannot do this.",
+      "B": "The scenario explicitly states that basic Internet connectivity has no SLA and is best-effort. Using a new internet connection would not meet enterprise reliability requirements and still cannot provide private RFC 1918 connectivity to the VPC.",
+      "C": "C is correct. Partner Interconnect provides private VPC connectivity through a Google Cloud partner's network and does not require a physical cross-connect at a Google colocation facility. Because the data center is over 100 km from a Google PoP and EHR can't afford new hardware, Partner Interconnect is the right choice — it routes private RFC 1918 traffic and comes with an SLA.",
+      "D": "Dedicated Interconnect requires a physical cross-connect at a Google colocation facility. The data center is over 100 km from a Google PoP and EHR cannot afford new hardware, so they cannot meet the co-location requirement for Dedicated Interconnect."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-overview", "text": "Partner Interconnect overview" },
+      { "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/choosing-colocation-facilities", "text": "Choosing a colocation facility" }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Cloud Architect",
+    "case_study": "EHR Healthcare",
+    "scenario": "One of EHR's healthcare customers is an internationally renowned research and hospital facility. Many of their patients are well-known public personalities. Sources both inside and outside have tried many times to obtain health information on these patients for malicious purposes. The hospital requires that patient information stored in Cloud Storage buckets not leave the geographic areas in which the buckets are hosted. You need to ensure that information stored in Cloud Storage buckets in the \"europe-west2\" region does not leave that area. What should you do?",
+    "options": [
+      { "id": "A", "text": "Encrypt the data in the application on-premises before the data is stored in the \"europe-west2\" region.", "is_correct": false },
+      { "id": "B", "text": "Enable Virtual Private Cloud Service Controls, and create a service perimeter around the Cloud Storage resources.", "is_correct": true },
+      { "id": "C", "text": "Assign the Identity and Access Management (IAM) \"storage.objectViewer\" role only to users and service accounts that need to use the data.", "is_correct": false },
+      { "id": "D", "text": "Create an access control list (ACL) that limits access to the bucket to authorized users only, and apply it to the buckets in the \"europe-west2\" region.", "is_correct": false }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "Encrypting data before storage protects it from being read if exfiltrated, but it does not prevent the data from leaving the geographic area. An authorised user could still copy the encrypted data out of the region.",
+      "B": "B is correct. VPC Service Controls create a service perimeter that prevents data from being moved outside the boundary — even by authorised users with valid IAM permissions. This is the only control that enforces geographic data residency at the API level for Cloud Storage.",
+      "C": "IAM roles control who can access the data, but they do not prevent an authorised user from copying the data to a location outside the europe-west2 region. A user with objectViewer could exfiltrate the data to another project or region.",
+      "D": "Bucket ACLs restrict who can access the bucket, similar to IAM. They do not enforce that data cannot leave the region. Authorised users can still read and copy the data elsewhere."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/vpc-service-controls/docs/overview", "text": "VPC Service Controls overview" },
+      { "url": "https://cloud.google.com/vpc-service-controls/docs/supported-products", "text": "Supported products and limitations" }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Cloud Architect",
+    "case_study": "EHR Healthcare",
+    "scenario": "The EHR sales employees are a remote-based workforce that travels to different locations to do their jobs. Regardless of their location, the sales employees need to access web-based sales tools located in the EHR data center. EHR is retiring their current Virtual Private Network (VPN) infrastructure, and you need to move the web-based sales tools to a BeyondCorp access model. Each sales employee has a Google Workspace account and uses that account for single sign-on (SSO). What should you do?",
+    "options": [
+      { "id": "A", "text": "Create an Identity-Aware Proxy (IAP) connector that points to the sales tool application.", "is_correct": true },
+      { "id": "B", "text": "Create a Google group for the sales tool application, and upgrade that group to a security group.", "is_correct": false },
+      { "id": "C", "text": "Deploy an external HTTP(S) load balancer and create a custom Cloud Armor policy for the sales tool application.", "is_correct": false },
+      { "id": "D", "text": "For every sales employee who needs access to the sales tool application, give their Google Workspace user account the predefined AppEngine Viewer role.", "is_correct": false }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is correct. IAP is Google's BeyondCorp-native access control layer. The IAP connector (for on-premises apps) proxies access to the sales tool through Google's identity infrastructure using the existing Google Workspace accounts for SSO, with no VPN required. This is the canonical BeyondCorp replacement for VPN.",
+      "B": "Security groups control access in Cloud Identity but do not by themselves create a BeyondCorp access path to an on-premises application or replace the VPN. A group is needed to manage IAP access, but it is not the solution on its own.",
+      "C": "Cloud Armor provides WAF and DDoS protection at the external load balancer — not identity-aware application access. It cannot enforce per-user BeyondCorp authentication or replace VPN for employee access.",
+      "D": "AppEngine Viewer grants read access to App Engine resources in Google Cloud, not to an on-premises sales tool. This role is irrelevant and would not grant any access to the application in the EHR data center."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/iap/docs/enabling-on-prem-howto", "text": "Enabling IAP for on-premises apps" },
+      { "url": "https://cloud.google.com/beyondcorp-enterprise/docs/overview", "text": "BeyondCorp Enterprise overview" }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Cloud Architect",
+    "case_study": "Mountkirk Games",
+    "scenario": "You are the data compliance officer for Mountkirk Games and must protect customers' personally identifiable information (PII). Mountkirk Games wants to make sure they can generate anonymized usage reports about their new game and delete PII data after a specific period of time. The solution should have minimal cost. You need to ensure compliance while meeting business and technical requirements. What should you do?",
+    "options": [
+      { "id": "A", "text": "Archive audit logs in Cloud Storage, and manually generate reports.", "is_correct": false },
+      { "id": "B", "text": "Write a Cloud Logging filter to export specific date ranges to Pub/Sub.", "is_correct": false },
+      { "id": "C", "text": "Archive audit logs in BigQuery, and generate reports using Google Data Studio.", "is_correct": true },
+      { "id": "D", "text": "Archive user logs on a locally attached persistent disk, and cat them to a text file for auditing.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Manually generating reports from Cloud Storage is labour-intensive, prone to error, and does not scale. There is also no built-in mechanism in Cloud Storage alone to enforce automatic PII deletion after a specific retention period without additional tooling.",
+      "B": "Exporting to Pub/Sub is a streaming pipeline step, not an archive or reporting solution. Pub/Sub messages are ephemeral and not designed for long-term log retention or SQL-based anonymized reporting.",
+      "C": "C is correct. BigQuery supports table partition expiration for automatic PII deletion after a defined period, and queries can be written to produce anonymized aggregated reports. Data Studio (now Looker Studio) is free and connects directly to BigQuery for self-service reporting. This is the most cost-effective fully managed approach.",
+      "D": "Storing logs on a locally attached persistent disk is not a cloud-managed solution, creates operational overhead, and provides no automatic PII expiry mechanism. This conflicts with the minimal-cost and compliance requirements."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/bigquery/docs/best-practices-performance-input#use_expiration_settings_to_remove_unneeded_tables_and_partitions", "text": "BigQuery partition expiration" },
+      { "url": "https://cloud.google.com/looker-studio/", "text": "Looker Studio (Data Studio)" }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Cloud Architect",
+    "case_study": "Mountkirk Games",
+    "scenario": "Mountkirk Games wants you to make sure their new gaming platform is being operated according to Google best practices. You want to verify that Google-recommended security best practices are being met while also providing the operations teams with the metrics they need. What should you do? (Choose two)",
+    "options": [
+      { "id": "A", "text": "Ensure that you aren't running privileged containers.", "is_correct": true },
+      { "id": "B", "text": "Ensure that you are using obfuscated Tags on workloads.", "is_correct": false },
+      { "id": "C", "text": "Ensure that you are using the native logging mechanisms.", "is_correct": true },
+      { "id": "D", "text": "Ensure that workloads are not using securityContext to run as a group.", "is_correct": false },
+      { "id": "E", "text": "Ensure that each cluster is running GKE metering so each team can be charged for their usage.", "is_correct": false }
+    ],
+    "correct_answer": ["A", "C"],
+    "multi_select": true,
+    "explanations": {
+      "A": "A is correct. Running privileged containers bypasses all Linux kernel security mechanisms and gives the container full host access — a critical security risk. Google explicitly recommends not running privileged containers in GKE.",
+      "B": "Obfuscated tags is not a Google security best practice for GKE. Tags are used for targeting firewall rules and network policies, and obfuscating them would make infrastructure harder to manage without a security benefit.",
+      "C": "C is correct. Using GKE's native logging integration with Cloud Logging ensures structured, tamper-resistant log collection that operations teams can query and alert on. Building custom log aggregation instead introduces complexity and gaps.",
+      "D": "Using securityContext to specify a runAsGroup is actually permitted and recommended (running as a non-root group is better than root). The real recommendation is to avoid running as root user (runAsUser: 0), not to avoid groups.",
+      "E": "GKE metering (resource usage metering) is a cost-visibility feature that helps with chargeback to teams, but it is not a security best practice. The question asks about security best practices and operational metrics, and metering addresses cost attribution, not security."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster", "text": "Hardening your cluster's security" },
+      { "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview", "text": "GKE security overview" }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Cloud Architect",
+    "case_study": "Mountkirk Games",
+    "scenario": "You need to implement Virtual Private Cloud (VPC) Service Controls for Mountkirk Games. Mountkirk Games wants to allow Cloud Shell usage by its developers. Developers should not have full access to managed services. You need to balance these conflicting goals with Mountkirk Games' business requirements. What should you do?",
+    "options": [
+      { "id": "A", "text": "Use VPC Service Controls for the entire platform.", "is_correct": false },
+      { "id": "B", "text": "Prioritize VPC Service Controls implementation over Cloud Shell usage for the entire platform.", "is_correct": false },
+      { "id": "C", "text": "Include all developers in an access level associated with the service perimeter, and allow them to use Cloud Shell.", "is_correct": false },
+      { "id": "D", "text": "Create a service perimeter around only the projects that handle sensitive data, and do not grant your developers access to it.", "is_correct": true }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "Applying VPC Service Controls to the entire platform would include the projects developers use, blocking Cloud Shell access to those managed services — which directly conflicts with the requirement to allow Cloud Shell usage.",
+      "B": "Prioritizing VPC SC over Cloud Shell usage would prevent developers from using Cloud Shell entirely, violating the stated business requirement. This discards the balance the question asks for.",
+      "C": "Including all developers in the perimeter's access level would grant them access to sensitive services inside the perimeter, violating the requirement that developers should not have full access to managed services. This is the opposite of least-privilege.",
+      "D": "D is correct. By scoping the perimeter to only the sensitive-data projects and excluding developers from it, sensitive services are protected from developer access while developers can continue to use Cloud Shell in non-perimeter projects. This achieves the balance: protection for sensitive data, Cloud Shell freedom for developers."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/vpc-service-controls/docs/service-perimeters", "text": "Service perimeters overview" },
+      { "url": "https://cloud.google.com/vpc-service-controls/docs/access-levels", "text": "Access levels" }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Cloud Architect",
+    "case_study": "Mountkirk Games",
+    "scenario": "Your new game running on Google Cloud is in public beta, and you want to design meaningful service level objectives (SLOs) before the game becomes generally available. What should you do?",
+    "options": [
+      { "id": "A", "text": "Define one SLO as 99.9% game server availability. Define the other SLO as less than 100-ms latency.", "is_correct": false },
+      { "id": "B", "text": "Define one SLO as service availability that is the same as Google Cloud's availability. Define the other SLO as 100-ms latency.", "is_correct": false },
+      { "id": "C", "text": "Define one SLO as 99% HTTP requests return the 2xx status code. Define the other SLO as 99% requests return within 100 ms.", "is_correct": true },
+      { "id": "D", "text": "Define one SLO as total uptime of the game server within a week. Define the other SLO as the mean response time of all HTTP requests that are less than 100 ms.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "\"Game server availability\" is an internal resource metric, not a user-facing SLI. SLOs should be defined in terms of the user experience (did the request succeed? was it fast?). An SLO stated as availability of the server doesn't capture whether users' requests actually succeeded.",
+      "B": "Using Google Cloud's availability SLA as your own SLO is an anti-pattern. Your service SLO must account for your own application logic, dependencies, and deployment configuration — it will always be at or below the platform SLA, but shouldn't simply mirror it.",
+      "C": "C is correct. Both SLOs are user-facing, measurable SLIs: the percentage of successful HTTP responses (2xx status codes) captures availability from the user's perspective, and the percentile request latency captures performance. These are directly observable and actionable.",
+      "D": "\"Total uptime within a week\" is a binary, hard-to-act-on aggregate. The \"mean\" response time hides tail latency — a mean under 100ms is compatible with 10% of users experiencing 500ms+ responses. Google SRE recommends percentile-based latency SLOs (e.g., 99th percentile), not means."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/blog/products/management-tools/practical-guide-to-setting-slos", "text": "Practical guide to setting SLOs" },
+      { "url": "https://sre.google/sre-book/service-level-objectives/", "text": "SRE Book: Service Level Objectives" }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Cloud Architect",
+    "case_study": "Helicopter Racing League (HRL)",
+    "scenario": "HRL wants you to help them bring existing recorded video content to new fans in emerging regions. Considering the HRL business and technical requirements, what should you do?",
+    "options": [
+      { "id": "A", "text": "Serve the video content directly from a multi-region Cloud Storage bucket.", "is_correct": true },
+      { "id": "B", "text": "Use Cloud CDN to cache the video content from HRL's existing public cloud provider.", "is_correct": false },
+      { "id": "C", "text": "Use Apigee Edge to cache the video content from HRL's existing public cloud provider.", "is_correct": false },
+      { "id": "D", "text": "Replicate the video content in Google Kubernetes Engine clusters in regions close to the fans.", "is_correct": false }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is correct. Multi-region Cloud Storage buckets replicate objects across multiple Google Cloud regions, serving content from the nearest region with low latency. This is the simplest, most cost-effective way to distribute static recorded video globally without building custom infrastructure.",
+      "B": "Caching from HRL's existing public cloud provider keeps their data on the old platform and creates an ongoing dependency on a third party. The goal is to migrate to Google Cloud, not to add Google CDN as a caching layer in front of another provider.",
+      "C": "Apigee Edge is an API management platform designed for managing, securing, and analysing API traffic. It is not designed for large-scale video content caching or delivery.",
+      "D": "Running GKE clusters solely to serve static video files is significant over-engineering. GKE adds operational complexity (cluster management, pod scheduling, updates) with no benefit over Cloud Storage for this use case. Video content is a static asset workload, not a containerised compute workload."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/storage/docs/locations#location-mr", "text": "Cloud Storage multi-region locations" },
+      { "url": "https://cloud.google.com/storage/docs/serving-content", "text": "Serving content from Cloud Storage" }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Cloud Architect",
+    "case_study": "TerramEarth",
+    "scenario": "You are the data compliance officer for TerramEarth and must protect customers' personally identifiable information (PII), like credit card information. TerramEarth wants to personalize product recommendations for its large industrial customers. You need to respect data privacy and deliver a solution. What should you do?",
+    "options": [
+      { "id": "A", "text": "Use AutoML to provide data to the recommendation service.", "is_correct": false },
+      { "id": "B", "text": "Process PII data on-premises to keep the private information more secure.", "is_correct": false },
+      { "id": "C", "text": "Use the Cloud Data Loss Prevention (DLP) API to provide data to the recommendation service.", "is_correct": true },
+      { "id": "D", "text": "Manually build, train, and test machine learning models to provide product recommendations anonymously.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "AutoML can train a custom recommendation model, but it does not address the PII protection requirement. Training a model directly on raw PII violates the data privacy constraint — the data must be de-identified before it can be used.",
+      "B": "Keeping PII processing on-premises does not help build a cloud-based recommendation service and prevents TerramEarth from using Google Cloud's AI capabilities. This is a step backwards from cloud adoption rather than a privacy-compliant cloud solution.",
+      "C": "C is correct. Cloud DLP can inspect and de-identify (mask, tokenise, or redact) PII such as credit card numbers before the data is passed to a recommendation service. This allows TerramEarth to build personalised recommendations in the cloud without exposing raw PII.",
+      "D": "Manually building ML models is time-consuming and expensive, and 'manually' doing so does not inherently anonymise the training data. This option does not address the root problem of how to safely use PII in a recommendation workflow."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data", "text": "De-identifying sensitive data with Cloud DLP" },
+      { "url": "https://cloud.google.com/sensitive-data-protection/docs/concepts-infotypes-categories", "text": "Built-in infoTypes (PII categories)" }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Cloud Architect",
+    "case_study": "TerramEarth",
+    "scenario": "You are designing a future-proof hybrid environment that will require network connectivity between Google Cloud and your on-premises environment. You want to ensure that the Google Cloud environment you are designing is compatible with your on-premises networking environment. What should you do?",
+    "options": [
+      { "id": "A", "text": "Use the default VPC in your Google Cloud project. Use a Cloud VPN connection between your on-premises environment and Google Cloud.", "is_correct": false },
+      { "id": "B", "text": "Create a custom VPC in Google Cloud in auto mode. Use a Cloud VPN connection between your on-premises environment and Google Cloud.", "is_correct": false },
+      { "id": "C", "text": "Create a network plan for your VPC in Google Cloud that uses CIDR ranges that overlap with your on-premises environment. Use a Cloud Interconnect connection between your on-premises environment and Google Cloud.", "is_correct": false },
+      { "id": "D", "text": "Create a network plan for your VPC in Google Cloud that uses non-overlapping CIDR ranges with your on-premises environment. Use a Cloud Interconnect connection between your on-premises environment and Google Cloud.", "is_correct": true }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "The default VPC is created in auto mode with predefined /20 subnet ranges (10.128.0.0/9 block). These ranges frequently overlap with on-premises networks, making hybrid routing impossible without NAT workarounds. Default VPCs are not recommended for production hybrid environments.",
+      "B": "Auto-mode VPCs still use the same predefined 10.128.0.0/9 block for subnets across regions. While they are custom VPCs in other respects, they carry the same risk of overlapping with on-premises RFC 1918 ranges.",
+      "C": "Overlapping CIDR ranges between Cloud VPC and on-premises break routing entirely — you cannot route traffic between two networks that share the same address space without NAT, which adds complexity and defeats the purpose of a hybrid network.",
+      "D": "D is correct. Planning non-overlapping CIDR ranges ensures that routing works cleanly in both directions. Cloud Interconnect (Dedicated or Partner) provides enterprise-grade private connectivity with higher bandwidth and lower latency than VPN, which is appropriate for a future-proof, high-capacity hybrid design."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/vpc/docs/vpc#auto-mode-considerations", "text": "Auto mode VPC considerations" },
+      { "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/overview", "text": "Cloud Interconnect overview" }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "Your company wants to track whether someone is present in a meeting room reserved for a scheduled meeting. There are 1000 meeting rooms across 5 offices on 3 continents. Each room is equipped with a motion sensor that reports its status every second. You want to support the data ingestion needs of this sensor network. The receiving infrastructure needs to account for the possibility that the devices may have inconsistent connectivity. Which solution should you design?",
+    "options": [
+      { "id": "A", "text": "Have each device create a persistent connection to a Compute Engine instance and write messages to a custom application.", "is_correct": false },
+      { "id": "B", "text": "Have devices poll for connectivity to Cloud SQL and insert the latest messages on a regular interval to a device specific table.", "is_correct": false },
+      { "id": "C", "text": "Have devices poll for connectivity to Pub/Sub and publish the latest messages on a regular interval to a shared topic for all devices.", "is_correct": true },
+      { "id": "D", "text": "Have devices create a persistent connection to an App Engine application fronted by Cloud Endpoints, which ingest messages and write them to Datastore.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Persistent connections to Compute Engine require the devices to maintain open sockets. With inconsistent connectivity across 1000 global devices, connections will drop and messages will be lost. Managing a custom application to handle reconnection logic at scale adds significant operational overhead.",
+      "B": "Cloud SQL is a transactional relational database optimised for structured application data, not high-frequency IoT ingestion from 1000 devices. Polling-based inserts at 1 message/device/second (1000 msg/s) would overwhelm a Cloud SQL instance, and device-specific tables create an unmanageable schema.",
+      "C": "C is correct. Pub/Sub is designed for exactly this pattern: devices poll for connectivity and publish when connected, without requiring persistent connections. A shared topic scales automatically to handle 1000+ devices at high message rates, and Pub/Sub handles reconnects and at-least-once delivery transparently.",
+      "D": "Like option A, requiring a persistent connection to App Engine doesn't tolerate intermittent connectivity. App Engine + Datastore also adds unnecessary architectural layers — the problem is message ingestion, not serving a web application."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/pubsub/docs/overview", "text": "Pub/Sub overview" },
+      { "url": "https://cloud.google.com/solutions/iot/iot-reference-architecture", "text": "IoT reference architecture" }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "Your company wants to try out the cloud with low risk. They want to archive approximately 100 TB of their log data to the cloud and test the serverless analytics features available to them there, while also retaining that data as a long-term disaster recovery backup. Which two steps should they take? (Choose two)",
+    "options": [
+      { "id": "A", "text": "Load logs into BigQuery.", "is_correct": true },
+      { "id": "B", "text": "Load logs into Cloud SQL.", "is_correct": false },
+      { "id": "C", "text": "Import logs into Cloud Logging.", "is_correct": false },
+      { "id": "D", "text": "Insert logs into Cloud Bigtable.", "is_correct": false },
+      { "id": "E", "text": "Upload log files into Cloud Storage.", "is_correct": true }
+    ],
+    "correct_answer": ["A", "E"],
+    "multi_select": true,
+    "explanations": {
+      "A": "A is correct. BigQuery is a serverless analytics warehouse that supports SQL queries across large datasets — exactly the \"serverless analytics\" the question asks for. It handles 100 TB comfortably and integrates with the GCP ecosystem for further analysis.",
+      "B": "Cloud SQL is a managed OLTP relational database. It is not designed for 100 TB log archives or serverless analytics workloads; it would require significant provisioning and would be expensive for this volume.",
+      "C": "Cloud Logging is designed for real-time log ingestion and short-to-medium term retention, not as a 100 TB long-term disaster recovery archive. The cost at this scale would be prohibitive, and it lacks the DR storage characteristics of Cloud Storage.",
+      "D": "Cloud Bigtable is a high-throughput NoSQL database for operational workloads with low-latency requirements. It is not suited for ad-hoc SQL analytics on log archives and is significantly more expensive than Cloud Storage for long-term backup.",
+      "E": "E is correct. Cloud Storage (particularly with Coldline or Archive storage classes) provides durable, cost-effective long-term storage for 100 TB of log files. It serves as the disaster recovery backup and can also be queried by BigQuery using external table definitions."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/bigquery/docs/introduction", "text": "BigQuery overview" },
+      { "url": "https://cloud.google.com/storage/docs/storage-classes", "text": "Cloud Storage classes" }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "You set up an autoscaling managed instance group to serve web traffic for an upcoming launch. After configuring the instance group as a backend service to an HTTP(S) load balancer, you notice that virtual machine (VM) instances are being terminated and re-launched every minute. The instances do not have a public IP address. You have verified that the appropriate web response is coming from each instance using the curl command. You want to ensure that the backend is configured correctly. What should you do?",
+    "options": [
+      { "id": "A", "text": "Ensure that a firewall rule exists to allow source traffic on HTTP/HTTPS to reach the load balancer.", "is_correct": false },
+      { "id": "B", "text": "Assign a public IP to each instance, and configure a firewall rule to allow the load balancer to reach the instance public IP.", "is_correct": false },
+      { "id": "C", "text": "Ensure that a firewall rule exists to allow load balancer health checks to reach the instances in the instance group.", "is_correct": true },
+      { "id": "D", "text": "Create a tag on each instance with the name of the load balancer. Configure a firewall rule with the name of the load balancer as the source and the instance tag as the destination.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "The load balancer's frontend already receives traffic from users (this is working). The issue is that VMs are being cycled — this is caused by health checks failing, not by user traffic being blocked. A firewall rule for user traffic to the LB frontend would not fix health check failures.",
+      "B": "Google's HTTP(S) load balancer communicates with backend instances over private IP addresses inside the VPC — assigning a public IP to the instances is unnecessary and would add cost and attack surface. The health check probes come from Google's health check IP ranges, not a public IP.",
+      "C": "C is correct. When health checks fail, the MIG marks instances as unhealthy and replaces them — causing the restart loop. GCE health check probes originate from 35.191.0.0/16 and 130.211.0.0/22. If a firewall rule does not allow traffic from these ranges to reach the backend port, health checks silently fail and VMs are continuously recycled.",
+      "D": "Health check firewall rules use the specific Google health check IP source ranges (35.191.0.0/16 and 130.211.0.0/22), not the name of the load balancer as a source. This configuration would not create a valid firewall rule and would not fix the health check failures."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules", "text": "Firewall rules for health checks" },
+      { "url": "https://cloud.google.com/load-balancing/docs/health-check-concepts", "text": "Health check concepts" }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "Your organization has a 3-tier web application deployed in the same Google Cloud Virtual Private Cloud (VPC). Each tier (web, API, and database) scales independently of the others. Network traffic should flow through the web to the API tier, and then on to the database tier. Traffic should not flow between the web and the database tier. How should you configure the network with minimal steps?",
+    "options": [
+      { "id": "A", "text": "Add each tier to a different subnetwork.", "is_correct": false },
+      { "id": "B", "text": "Set up software-based firewalls on individual VMs.", "is_correct": false },
+      { "id": "C", "text": "Add tags to each tier and set up routes to allow the desired traffic flow.", "is_correct": false },
+      { "id": "D", "text": "Add tags to each tier and set up firewall rules to allow the desired traffic flow.", "is_correct": true }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "Adding tiers to different subnetworks does not by itself restrict traffic between them. In a VPC, all subnets can communicate by default; you still need firewall rules or VPC peering policies to deny cross-tier traffic. This adds network complexity without completing the isolation.",
+      "B": "Installing and managing software firewalls (iptables, nftables, etc.) on individual VMs is operationally expensive, error-prone, and does not scale with autoscaling instance groups. GCP firewall rules are the managed, scalable, native solution.",
+      "C": "Routes in GCP determine the path packets take to a destination (next hop); they cannot allow or deny traffic. Setting up routes does not implement the allow/deny traffic flow policy the question describes — that requires firewall rules.",
+      "D": "D is correct. Network tags are the lightest-weight mechanism to apply firewall rules to groups of instances regardless of IP address, and they work naturally with autoscaling MIGs. You create: allow web→API (source tag: web, target tag: api), allow API→database (source tag: api, target tag: db), and the implicit deny-all blocks web→database. Minimal steps, maximum flexibility."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/vpc/docs/firewalls", "text": "VPC firewall rules overview" },
+      { "url": "https://cloud.google.com/vpc/docs/add-remove-network-tags", "text": "Adding and removing network tags" }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "You are designing a large distributed application with 30 microservices. Each of your distributed microservices needs to connect to a database backend. You want to store the credentials securely. Where should you store the credentials?",
+    "options": [
+      { "id": "A", "text": "In the source code", "is_correct": false },
+      { "id": "B", "text": "In an environment variable", "is_correct": false },
+      { "id": "C", "text": "In a secret management system", "is_correct": true },
+      { "id": "D", "text": "In a config file that has restricted access through ACLs", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Storing credentials in source code is one of the most common and critical security mistakes. Source code is checked into version control, shared broadly, and difficult to revoke. If the repo is ever exposed, all credentials are compromised permanently — and removing them from history is complex.",
+      "B": "Environment variables are better than source code but are not secure: they can be exposed through process listings, crash dumps, debug logs, and container inspection. With 30 microservices and many deployment environments, managing env vars consistently also becomes error-prone.",
+      "C": "C is correct. A dedicated secret management system (such as Google Cloud Secret Manager) provides centralised storage, versioning, audit logging, fine-grained IAM access, and automatic rotation support. Microservices fetch credentials at runtime, and access is controlled and auditable — this is the Google-recommended approach.",
+      "D": "Config files with ACLs rely on filesystem permissions, which are fragile and hard to manage consistently across 30 microservices running in containers or VMs. ACLs don't provide audit trails, secret versioning, or rotation. If a file is copied or a system is compromised, the credentials are exposed."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/secret-manager/docs/overview", "text": "Secret Manager overview" },
+      { "url": "https://cloud.google.com/secret-manager/docs/best-practices", "text": "Secret Manager best practices" }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "Your customer is moving their corporate applications to Google Cloud. The security team wants detailed visibility of all resources in the organization. You use Resource Manager to set yourself up as the Organization Administrator. Which Identity and Access Management (IAM) roles should you give to the security team while following Google recommended practices?",
+    "options": [
+      { "id": "A", "text": "Organization viewer, Project owner", "is_correct": false },
+      { "id": "B", "text": "Organization viewer, Project viewer", "is_correct": true },
+      { "id": "C", "text": "Organization administrator, Project browser", "is_correct": false },
+      { "id": "D", "text": "Project owner, Network administrator", "is_correct": false }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "Project owner is a highly privileged role that grants full control over projects, including the ability to modify IAM policies, delete resources, and change billing. Giving the security team owner access violates the principle of least privilege — they need read access, not administrative control.",
+      "B": "B is correct. Organization viewer grants read access to the organization node (visibility of the org structure and org-level policies). Project viewer grants read-only access to all resources within projects. Together, these give the security team the comprehensive read visibility they need across the entire organisation without any write permissions.",
+      "C": "Organization administrator is one of the most powerful roles in GCP, granting the ability to change org policies, assign roles across the org, and create/delete folders. This is far more than the security team needs for visibility and violates least privilege.",
+      "D": "Project owner and Network administrator are both write-enabled roles. Network administrator alone grants control over networking resources. Neither provides org-wide read visibility, and both grant significantly more power than needed for a security monitoring function."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles", "text": "Resource Manager IAM roles" },
+      { "url": "https://cloud.google.com/iam/docs/job-functions/security", "text": "IAM roles for security" }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "To reduce costs, the Director of Engineering has required all developers to move their development infrastructure resources from on-premises virtual machines (VMs) to Google Cloud. These resources go through multiple start/stop events during the day and require state to persist. You have been asked to design the process of running a development environment in Google Cloud while providing cost visibility to the finance department. Which two steps should you take? (Choose two)",
+    "options": [
+      { "id": "A", "text": "Use persistent disks to store the state. Start and stop the VM as needed.", "is_correct": true },
+      { "id": "B", "text": "Use the \"gcloud --auto-delete\" flag on all persistent disks before stopping the VM.", "is_correct": false },
+      { "id": "C", "text": "Apply VM CPU utilization label and include it in the BigQuery billing export.", "is_correct": false },
+      { "id": "D", "text": "Use BigQuery billing export and labels to relate cost to groups.", "is_correct": true },
+      { "id": "E", "text": "Store all state in a Local SSD, snapshot the persistent disks, and terminate the VM.", "is_correct": false }
+    ],
+    "correct_answer": ["A", "D"],
+    "multi_select": true,
+    "explanations": {
+      "A": "A is correct. Persistent disks survive VM stop/start cycles — state is preserved when the VM is stopped and the disk persists until explicitly deleted. Stopping VMs when not in use (overnight, weekends) avoids compute charges while keeping the development environment intact.",
+      "B": "The --auto-delete flag tells GCE to delete the persistent disk when the VM is deleted or stopped. Using this flag before stopping would destroy the developer's state on every stop event — exactly the opposite of what's needed.",
+      "C": "CPU utilization is a performance/utilization metric, not a cost attribution label. Adding it to billing exports doesn't help the finance department understand which team or developer incurred which costs. Labels on resources (e.g., team=backend, env=dev) are the right mechanism for cost attribution.",
+      "D": "D is correct. Billing export to BigQuery combined with meaningful labels (project, team, environment) allows the finance department to run SQL queries on cost data, build dashboards, and attribute development environment costs to specific groups — exactly the cost visibility requirement.",
+      "E": "Local SSDs are physically attached to the VM host and do not persist across VM stops or VM migrations — data is lost when the VM is stopped or terminated. Snapshots of persistent disks (not local SSDs) could work, but this option describes snapshotting persistent disks while storing state on local SSDs, which is contradictory and loses the local SSD state."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/compute/docs/disks/persistent-disks", "text": "Persistent disks overview" },
+      { "url": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery", "text": "Billing export to BigQuery" }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Cloud Architect",
+    "case_study": null,
+    "scenario": "The database administration team has asked you to help them improve the performance of their new database server running on Compute Engine. The database is used for importing and normalizing the company's performance statistics. It is built with MySQL running on Debian Linux. They have an n1-standard-8 virtual machine with 80 GB of SSD zonal persistent disk which they can't restart until the next maintenance event. What should they change to get better performance from this system as soon as possible and in a cost-effective manner?",
+    "options": [
+      { "id": "A", "text": "Increase the virtual machine's memory to 64 GB.", "is_correct": false },
+      { "id": "B", "text": "Create a new virtual machine running PostgreSQL.", "is_correct": false },
+      { "id": "C", "text": "Dynamically resize the SSD persistent disk to 500 GB.", "is_correct": true },
+      { "id": "D", "text": "Migrate their performance metrics warehouse to BigQuery.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Adding memory to a Compute Engine VM requires stopping the instance to change the machine type — which the team explicitly cannot do until the next maintenance event. This option is not available without a restart.",
+      "B": "Migrating from MySQL to PostgreSQL is a significant engineering project (schema migration, query rewrites, driver changes) and does not address the immediate performance problem. It also doesn't improve the current bottleneck, and requires a new VM setup.",
+      "C": "C is correct. Persistent disk resize on Compute Engine can be performed online without stopping the VM (using gcloud compute disks resize or the console). Larger persistent disks have higher I/O throughput and IOPS limits — an SSD persistent disk at 500 GB provides significantly more I/O throughput than at 80 GB, which directly improves import/normalisation workload performance. Cost-effective: pay only for the additional storage.",
+      "D": "BigQuery is an analytical data warehouse, not a MySQL replacement for transactional import/normalisation workloads. Migrating to BigQuery would require significant architectural changes and is not the \"as soon as possible\" performance fix the team needs."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/compute/docs/disks/resize-persistent-disk", "text": "Resizing a persistent disk" },
+      { "url": "https://cloud.google.com/compute/docs/disks/performance", "text": "Persistent disk performance" }
+    ]
+  }
+];
+
+        let currentIdx = 0;
+        let selectedAnswers = {};
+        let flaggedQuestions = {};
+        let struckOptions = {};
+        let examSubmitted = false;
+        let timerInterval = null;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60);
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const el = document.getElementById('exam-timer');
+            el.textContent = formatTime(timeLeft);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                el.textContent = formatTime(timeLeft);
+                if (timeLeft <= 300) el.classList.add('warning');
+                if (timeLeft <= 0) { clearInterval(timerInterval); autoSubmitExam(); }
+            }, 1000);
+        }
+
+        function isAnswered(idx) {
+            const q = quizData[idx];
+            if (q.multi_select) {
+                return selectedAnswers[idx] && selectedAnswers[idx].length > 0;
+            }
+            return selectedAnswers[idx] !== undefined && selectedAnswers[idx] !== null;
+        }
+
+        function isCorrectAnswer(q, idx) {
+            if (q.multi_select) {
+                const sel = (selectedAnswers[idx] || []).slice().sort().join(',');
+                const correct = (Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer]).slice().sort().join(',');
+                return sel === correct;
+            }
+            return selectedAnswers[idx] === q.correct_answer;
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+            const pct = ((idx + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('question-header').textContent = 'Question ' + (idx + 1) + ' of ' + quizData.length;
+            const multiBadge = document.getElementById('multi-badge');
+            multiBadge.style.display = q.multi_select ? 'block' : 'none';
+
+            const textEl = document.getElementById('question-text');
+            let html = '';
+            if (q.case_study) {
+                html += '<div class="case-study-note">&#x1F4CB; This question refers to the <strong>' + q.case_study + '</strong> case study.</div>';
+            }
+            html += marked.parse(q.scenario);
+            textEl.innerHTML = html;
+
+            const optList = document.getElementById('options-list');
+            optList.innerHTML = '';
+            const struck = struckOptions[idx] || {};
+            const selAns = selectedAnswers[idx];
+            q.options.forEach(opt => {
+                const li = document.createElement('div');
+                li.className = 'option-item';
+                li.dataset.id = opt.id;
+                if (q.multi_select) {
+                    const isSelected = Array.isArray(selAns) && selAns.includes(opt.id);
+                    if (isSelected) li.classList.add('selected');
+                    if (struck[opt.id]) li.classList.add('struck-out');
+                    if (examSubmitted) {
+                        li.classList.remove('selected');
+                        if (opt.is_correct) li.classList.add('post-correct');
+                        else if (Array.isArray(selAns) && selAns.includes(opt.id)) li.classList.add('post-incorrect');
+                    }
+                    li.innerHTML = '<div class="option-checkbox"><svg class="option-checkbox-mark" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,6 5,9 10,3"/></svg></div><div class="option-text">' + opt.text + (examSubmitted && opt.is_correct ? ' <span class="badge-correct">✓ Correct</span>' : examSubmitted && Array.isArray(selAns) && selAns.includes(opt.id) && !opt.is_correct ? ' <span class="badge-incorrect">✗ Wrong</span>' : '') + '</div>';
+                    li.addEventListener('click', (e) => handleOptionClick(e, idx, opt.id, true));
+                    li.addEventListener('contextmenu', (e) => handleRightClick(e, idx, opt.id));
+                } else {
+                    const isSelected = selAns === opt.id;
+                    if (isSelected) li.classList.add('selected');
+                    if (struck[opt.id]) li.classList.add('struck-out');
+                    if (examSubmitted) {
+                        li.classList.remove('selected');
+                        if (opt.is_correct) li.classList.add('post-correct');
+                        else if (selAns === opt.id) li.classList.add('post-incorrect');
+                    }
+                    li.innerHTML = '<div class="option-radio"><div class="option-radio-dot"></div></div><div class="option-text">' + opt.text + (examSubmitted && opt.is_correct ? ' <span class="badge-correct">✓ Correct</span>' : examSubmitted && selAns === opt.id && !opt.is_correct ? ' <span class="badge-incorrect">✗ Wrong</span>' : '') + '</div>';
+                    li.addEventListener('click', (e) => handleOptionClick(e, idx, opt.id, false));
+                    li.addEventListener('contextmenu', (e) => handleRightClick(e, idx, opt.id));
+                }
+                optList.appendChild(li);
+            });
+
+            const fc = document.getElementById('flag-checkbox');
+            fc.checked = !!flaggedQuestions[idx];
+
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            document.getElementById('prev-btn').disabled = idx === 0;
+            document.getElementById('next-btn').disabled = idx === quizData.length - 1;
+            updateStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleOptionClick(e, idx, optId, isMulti) {
+            if (examSubmitted) return;
+            const struck = struckOptions[idx] || {};
+            if (struck[optId]) return;
+            if (isMulti) {
+                if (!selectedAnswers[idx]) selectedAnswers[idx] = [];
+                const pos = selectedAnswers[idx].indexOf(optId);
+                if (pos === -1) selectedAnswers[idx].push(optId);
+                else selectedAnswers[idx].splice(pos, 1);
+            } else {
+                selectedAnswers[idx] = optId;
+            }
+            loadQuestion(idx);
+        }
+
+        function handleRightClick(e, idx, optId) {
+            e.preventDefault();
+            if (examSubmitted) return;
+            if (!struckOptions[idx]) struckOptions[idx] = {};
+            struckOptions[idx][optId] = !struckOptions[idx][optId];
+            if (struckOptions[idx][optId]) {
+                if (quizData[idx].multi_select) {
+                    if (selectedAnswers[idx]) {
+                        const pos = selectedAnswers[idx].indexOf(optId);
+                        if (pos !== -1) selectedAnswers[idx].splice(pos, 1);
+                    }
+                } else {
+                    if (selectedAnswers[idx] === optId) selectedAnswers[idx] = null;
+                }
+            }
+            loadQuestion(idx);
+        }
+
+        function toggleFlag() {
+            flaggedQuestions[currentIdx] = !!document.getElementById('flag-checkbox').checked;
+            updateStats();
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.id = 'grid-cell-' + idx;
+                cell.textContent = idx + 1;
+                cell.addEventListener('click', () => loadQuestion(idx));
+                grid.appendChild(cell);
+            });
+        }
+
+        function prevQuestion() { if (currentIdx > 0) loadQuestion(currentIdx - 1); }
+        function nextQuestion() { if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1); }
+
+        function updateStats() {
+            let answered = 0, flagged = 0;
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById('grid-cell-' + idx);
+                if (!cell) return;
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+                if (examSubmitted) {
+                    if (isCorrectAnswer(q, idx)) cell.classList.add('post-correct');
+                    else cell.classList.add('post-incorrect');
+                } else {
+                    if (isAnswered(idx)) { answered++; cell.classList.add('answered'); }
+                }
+                if (flaggedQuestions[idx]) { flagged++; cell.classList.add('flagged'); }
+            });
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = answered + '/' + quizData.length + ' Answered';
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item ' + (opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+                const badgeText = opt.is_correct ? 'Option ' + opt.id + ' (Correct):' : 'Option ' + opt.id + ' (Incorrect):';
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+                const exp = q.explanations[opt.id] || 'See official Google Cloud documentation.';
+                item.innerHTML = '<span class="exp-badge" style="color:' + badgeColor + '">' + badgeText + '</span><br>' + marked.parse(exp);
+                container.appendChild(item);
+            });
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text || ref.url;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = 'No references available.';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('classic-mode');
+            const isClassic = document.body.classList.contains('classic-mode');
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/></svg><span>Premium Theme</span>';
+            } else {
+                btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg><span>Classic Theme</span>';
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) { showToast("Exam already submitted!"); return; }
+            const ac = quizData.filter((q,i) => isAnswered(i)).length;
+            const msg = "Submit exam?\n\nAnswered: " + ac + " of " + quizData.length + (quizData.length - ac > 0 ? "\n\nWARNING: " + (quizData.length - ac) + " unanswered question(s)." : "");
+            if (confirm(msg)) submitExam();
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Submitting your exam automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            let correctCount = 0;
+            quizData.forEach((q, idx) => { if (isCorrectAnswer(q, idx)) correctCount++; });
+            const pct = Math.round(correctCount / quizData.length * 100);
+            document.getElementById('results-score').textContent = pct + '%';
+            const statusEl = document.getElementById('results-passing-status');
+            if (pct >= 70) { statusEl.textContent = 'PASS'; statusEl.style.color = 'var(--correct)'; }
+            else { statusEl.textContent = 'FAIL'; statusEl.style.color = 'var(--incorrect)'; }
+            document.getElementById('results-detailed-stats').textContent = 'You scored ' + correctCount + ' out of ' + quizData.length + ' correct (' + pct + '%). Google Cloud Professional exams typically require ~70-75% to pass.';
+            document.getElementById('results-modal').style.display = 'flex';
+            loadQuestion(currentIdx);
+            updateStats();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Exam Submitted'; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; }
+        }
+
+        function closeResultsModalAndReview() { document.getElementById('results-modal').style.display = 'none'; }
+
+        function resetExam() {
+            selectedAnswers = {}; flaggedQuestions = {}; struckOptions = {};
+            examSubmitted = false; timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            initGrid(); loadQuestion(0); startTimer();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Submit Exam'; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+        }
+
+        function showToast(message, duration=3000) {
+            const t = document.getElementById('toast');
+            t.textContent = message; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), duration);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+            document.addEventListener('contextmenu', e => { if (e.target.closest('.option-item')) e.preventDefault(); });
+        });
+    </script>
+</body>
+</html>
