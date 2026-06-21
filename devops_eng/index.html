@@ -150,6 +150,8 @@
     .btn-primary:hover { background: var(--accent-dark); }
     .btn-exam { background: var(--rev-blue); color: #fff; }
     .btn-exam:hover { background: #1d4ed8; }
+    .btn-portal-wip { display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .wip-badge { background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px); color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000; border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1; }
     .btn-official { background: var(--rev-green); color: #fff; }
     .btn-official:hover { background: #15803d; }
     .btn-disabled { background: #e5e7eb; color: #9ca3af; border-color: #9ca3af; box-shadow: 2px 2px 0px #9ca3af; cursor: not-allowed; }
@@ -217,7 +219,7 @@
 
     <div class="action-row">
       <a href="cheatsheet.html" class="btn-rev btn-primary" style="flex:1 1 220px;">📋 Open Exam Cheatsheet &rarr;</a>
-      <a href="practice_questions.html" class="btn-rev btn-exam" style="flex:1 1 220px;">📝 Generated Practice (35 Q) &rarr;</a>
+      <a href="practice_questions.html" class="btn-rev btn-exam btn-portal-wip" style="flex:1 1 220px;">📝 Generated Practice (35 Q) <span class="wip-badge">WIP</span> &rarr;</a>
       <a href="sample_questions.html" style="flex:1 1 220px;" class="btn-rev btn-official">📋 Official Sample Questions &rarr;</a>
     </div>
 
@@ -302,7 +304,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <a href="cheatsheet.html" class="btn-rev btn-primary">Open Cheatsheet &rarr;</a>
-          <a href="practice_questions.html" class="btn-rev btn-exam">📝 Generated Practice (35 Q) &rarr;</a>
+          <a href="practice_questions.html" class="btn-rev btn-exam btn-portal-wip">📝 Generated Practice (35 Q) <span class="wip-badge">WIP</span> &rarr;</a>
           <a href="sample_questions.html" class="btn-rev btn-official">📋 Official Sample Questions &rarr;</a>
         </div>
       </div>

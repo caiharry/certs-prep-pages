@@ -319,6 +319,8 @@
       font-size: 0.9rem;
       color: #991b1b;
     }
+    .btn-portal-wip { display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .wip-badge { background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px); color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000; border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1; }
   </style>
 </head>
 <body>
@@ -350,7 +352,7 @@
     </section>
 
     <div style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px;">
-      <a href="practice_questions.html" class="btn-rev" style="background: #93c5fd; display: inline-block; padding: 14px 24px;">Generated Practice (25 Questions) &rarr;</a>
+      <a href="practice_questions.html" class="btn-rev btn-portal-wip" style="background: #93c5fd; padding: 14px 24px;">Generated Practice (25 Questions) <span class="wip-badge">WIP</span> &rarr;</a>
       <a href="sample_questions.html" class="btn-rev" style="background: #bbf7d0; display: inline-block; padding: 14px 24px;">Official Sample Questions (20) &rarr;</a>
     </div>
 

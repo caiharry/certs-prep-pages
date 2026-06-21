@@ -351,6 +351,8 @@
       color: #64748b;
       font-size: 0.9rem;
     }
+    .btn-portal-wip { display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .wip-badge { background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px); color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000; border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1; }
   </style>
 </head>
 
@@ -504,7 +506,7 @@
           <p class="sec-desc">Original exam-style questions covering the whole exam guide &mdash; VPC, hybrid
             connectivity, GKE, load balancing, security, and operations &mdash; each with full per-option diagnostics.</p>
         </div>
-        <a href="practice_questions.html" class="btn-rev" style="background: var(--rev-green); color: white;">Start Generated Practice &rarr;</a>
+        <a href="practice_questions.html" class="btn-rev btn-portal-wip" style="background: var(--rev-green); color: white;">Start Generated Practice <span class="wip-badge">WIP</span> &rarr;</a>
       </div>
 
     </div>
