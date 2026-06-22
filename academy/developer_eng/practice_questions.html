@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="academy" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Developer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #4f46e5;
+            --dark-accent-hover: #4338ca;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #3730a3;
+            --classic-accent-hover: #312e81;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Developer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Cloud Developer",
+    "scenario": "Your team is launching a webhook receiver for a payments partner. Traffic is spiky: long idle stretches punctuated by short bursts of a few thousand requests. The endpoint is a stateless container, must scale to zero to control cost, and the partner enforces a hard requirement that 99% of responses complete within 800 ms — including the first request after an idle period. The team has no Kubernetes expertise and wants the least operational overhead. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy to Cloud Run with the default settings and rely on request-based autoscaling from zero.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy to Cloud Run with a minimum number of instances configured to keep warmed capacity available.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Deploy to GKE Autopilot with a Horizontal Pod Autoscaler tuned to scale on requests per second.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy to App Engine standard environment with automatic scaling and a low `min_idle_instances`.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Default Cloud Run scales to zero with no warm pool, so the first request after idle pays a cold start that routinely breaches an 800 ms p99 for the partner.",
+      "B": "Cloud Run is the lowest-overhead managed fit, and setting minimum instances keeps warm capacity so the post-idle request avoids a cold start that would blow the 800 ms p99 — the configuration directly targets the binding latency constraint.",
+      "C": "GKE Autopilot can meet the latency target but contradicts the \"no Kubernetes expertise / least overhead\" constraint and does not scale to zero, so you pay for idle nodes.",
+      "D": "App Engine standard works but is a more constrained runtime than a partner-supplied container expects, and the team's container-first design and least-overhead goal point to Cloud Run."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/min-instances",
+        "text": "cloud.google.com/run/docs/configuring/min-instances"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/about-instance-autoscaling",
+        "text": "cloud.google.com/run/docs/about-instance-autoscaling"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Cloud Developer",
+    "scenario": "A browser-based photo app must let an authenticated end user upload one specific object directly to a Cloud Storage bucket for the next 15 minutes. The bytes must not pass through your backend, the user must not be granted any IAM role on the bucket, and the upload must be limited to that single object and time window. Your service runs on Cloud Run with an attached service account. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Grant the user's Google identity the Storage Object Creator role on the bucket, scoped with an IAM Condition that expires in 15 minutes.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Mint a downscoped Credential Access Boundary token for the bucket and pass it to the browser to call the JSON API.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Generate a V4 signed URL for the target object with a 15-minute expiry and return it to the client.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Enable uniform bucket-level access and make the bucket publicly writable for the duration of the upload.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "This grants an IAM role on the bucket, which the scenario explicitly forbids, and a Condition still scopes to the whole bucket rather than one object.",
+      "B": "Credential Access Boundaries downscope a service account's own token and are designed for backend/proxy use, not for handing browser clients direct upload access to one object — it is heavier and broader than a signed URL.",
+      "C": "A V4 signed URL grants time-limited, single-object, single-operation access with no IAM change and no proxying — exactly matching every constraint, and Cloud Run's service account can sign it via the IAM Credentials API.",
+      "D": "A publicly writable bucket exposes write access to everyone, not just the one user, and grossly violates the no-broad-access intent."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/access-control/signed-urls",
+        "text": "cloud.google.com/storage/docs/access-control/signed-urls"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers",
+        "text": "cloud.google.com/storage/docs/access-control/signing-urls..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Cloud Developer",
+    "scenario": "Two internal microservices on GKE exchange a very high volume of small messages and need the lowest possible per-call latency plus a strongly typed, versioned contract enforced at build time. The team already generates client and server stubs from a shared schema in CI. A third requirement is server-streaming of incremental results. Which inter-service style should you standardize on?",
+    "options": [
+      {
+        "id": "A",
+        "text": "gRPC over HTTP/2 with Protocol Buffers.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "REST over HTTP/1.1 with JSON and an OpenAPI specification checked in CI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "GraphQL over HTTP/1.1 with a schema-registry validation step.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Pub/Sub with Protocol Buffer schemas attached to the topic.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "gRPC multiplexes over HTTP/2, uses compact protobuf with compile-time-checked contracts, and natively supports server streaming — the best fit for chatty, low-latency, strongly typed internal calls.",
+      "B": "OpenAPI documents a contract but does not enforce it at compile time, and JSON over HTTP/1.1 carries more serialization and connection overhead for high-volume small messages.",
+      "C": "GraphQL optimizes flexible client-shaped queries, not minimal-latency machine-to-machine RPC, and adds resolver overhead the scenario does not need.",
+      "D": "Pub/Sub is asynchronous fan-out messaging; it adds delivery latency and is not a request/response RPC mechanism for synchronous streaming results."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/products/api-management/understanding-grpc-openapi-and-rest",
+        "text": "cloud.google.com/blog/products/api-management/understandi..."
+      },
+      {
+        "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+        "text": "grpc.io/docs/what-is-grpc/core-concepts"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Cloud Developer",
+    "scenario": "A globally used SaaS app stores user-generated documents that must remain readable and writable with strong consistency from three continents, with a relational schema and SQL access. The team expects unbounded horizontal growth and cannot tolerate a single regional write bottleneck. Operational simplicity matters more than squeezing single-region cost. Which data store should you choose?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AlloyDB for PostgreSQL with cross-region read replicas.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cloud SQL for PostgreSQL with HA and cross-region read replicas.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Firestore in Native mode with multi-region replication.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Cloud Spanner in a multi-region configuration.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "AlloyDB scales reads via replicas but has a single regional primary for writes, so multi-continent strongly consistent writes still funnel through one region.",
+      "B": "Cloud SQL cross-region replicas are asynchronous and read-only; the primary is a single regional write point, which is the bottleneck the scenario forbids.",
+      "C": "Firestore is a document store, not a relational SQL store, so it fails the relational-schema-with-SQL requirement despite scaling globally.",
+      "D": "Spanner is the only relational store offering global, horizontally scalable, strongly consistent reads and writes across continents with no single-region write bottleneck — exactly the stated need."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
+        "text": "cloud.google.com/spanner/docs/instance-configurations"
+      },
+      {
+        "url": "https://cloud.google.com/spanner/docs/replication",
+        "text": "cloud.google.com/spanner/docs/replication"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Cloud Developer",
+    "scenario": "Your Cloud Run service calls the Cloud Storage and Pub/Sub APIs. Security policy bans long-lived service-account keys, requires least privilege, and requires that access is revoked the moment the workload is decommissioned. You want the smallest credential-management burden. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a service-account key, store it in Secret Manager, mount it at runtime, and rotate it on a 90-day schedule.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Attach a dedicated, minimally scoped service account to the service and use Application Default Credentials.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use Workload Identity Federation so the Cloud Run service exchanges an external token for short-lived credentials.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Run the service under the broadly privileged default Compute Engine service account, relying on Application Default Credentials.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A service-account key is exactly the long-lived credential the policy bans; storing it in Secret Manager does not change its nature and adds rotation burden.",
+      "B": "An attached, least-privileged service account gives the libraries short-lived credentials via ADC with zero keys to manage, and deleting the service or its bindings instantly removes access — meeting every constraint.",
+      "C": "Workload Identity Federation is for external/non-Google workloads (e.g. CI, AWS, on-prem); a Cloud Run service already has a Google identity, so federation is unnecessary indirection here.",
+      "D": "The default Compute Engine service account is broadly privileged and shared, violating least privilege even though it avoids keys."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/securing/service-identity",
+        "text": "cloud.google.com/run/docs/securing/service-identity"
+      },
+      {
+        "url": "https://cloud.google.com/docs/authentication/application-default-credentials",
+        "text": "cloud.google.com/docs/authentication/application-default-..."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Cloud Developer",
+    "scenario": "A retail API runs on Cloud Run and serves a product-catalog endpoint that reads the same reference data on nearly every request. Each read hits Cloud SQL, and under burst traffic Cloud SQL CPU climbs and tail latency spikes. The catalog changes a few times per day, and brief staleness of up to a minute is acceptable. You want the cheapest fix that cuts both latency and database load. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cache the catalog in Memorystore for Redis with a short TTL and read through it from the service.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add a Cloud SQL read replica and route catalog reads to it.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Increase the Cloud SQL instance tier so it has more CPU during bursts.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Raise the Cloud Run concurrency setting so fewer instances open fewer connections to Cloud SQL.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "An in-memory cache with a short TTL absorbs the repeated identical reads, cutting both latency and Cloud SQL load, and the acceptable one-minute staleness makes a TTL cache the cheapest correct fit.",
+      "B": "A read replica adds standing cost and still serves each read from disk/CPU; it scales read capacity but does not eliminate the redundant work that caching removes.",
+      "C": "Scaling up the instance pays continuously for peak capacity and treats a caching problem with raw CPU — the opposite of the cheapest fix.",
+      "D": "Higher concurrency reduces instance count and connection count but does nothing to remove the repeated identical queries driving the CPU and latency."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
+        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
+      },
+      {
+        "url": "https://cloud.google.com/memorystore/docs/redis/about-caching",
+        "text": "cloud.google.com/memorystore/docs/redis/about-caching"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Cloud Developer",
+    "scenario": "An order-processing service publishes an `OrderPlaced` event. Three independent teams must each react to it at their own pace — billing, inventory, and analytics — and a new fourth consumer will be added later without changing the producer. Each consumer must be able to fall behind and catch up without losing events. Which integration should the producer use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enqueue one Cloud Tasks task per consumer with the consumer's endpoint as the target.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Define a Workflows execution that calls billing, inventory, and analytics in sequence.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Publish to a single Pub/Sub topic and give each consumer its own subscription.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Make synchronous HTTP calls from the producer to each consumer's endpoint.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Cloud Tasks dispatches to a specific worker endpoint per task; the producer would have to know and enumerate every consumer, defeating the \"add a consumer without changing the producer\" requirement.",
+      "B": "Workflows orchestrates a defined ordered sequence with the producer coupled to each step, the opposite of independent, self-paced fan-out.",
+      "C": "One Pub/Sub topic with per-consumer subscriptions is the canonical fan-out pattern: each subscription buffers and tracks its own backlog, consumers run at independent paces, and adding a fifth subscription needs no producer change.",
+      "D": "Synchronous calls couple the producer to every consumer's availability and offer no buffering, so a slow consumer blocks or drops events."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/pubsub/docs/overview",
+        "text": "cloud.google.com/pubsub/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/subscriber",
+        "text": "cloud.google.com/pubsub/docs/subscriber"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service stores a counter of \"likes\" for trending posts in a single Firestore document. During viral spikes the app sees repeated `RESOURCE_EXHAUSTED` errors and contention on that one document, because per-document sustained write throughput is limited. Reads of the total must stay simple and fast. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Wrap each increment in a Firestore transaction so concurrent writes serialize safely.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Move the counter to a Firestore field with a server-side `increment` transform to avoid read-modify-write.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Batch increments client-side and flush them to the single document once per second.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Shard the counter across N documents, write increments to a random shard, and sum the shards on read.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Transactions serialize the conflicting writes onto the same hot document, which increases contention and retries rather than relieving the per-document throughput ceiling.",
+      "B": "The atomic `increment` transform removes the read-modify-write race but every write still lands on the one document, so the per-document write limit is still the bottleneck.",
+      "C": "Client-side batching to one document reduces write rate but caps the counter's accuracy and still funnels all updates through the single hot document under heavy load.",
+      "D": "A sharded/distributed counter spreads writes across N documents so aggregate throughput scales past the single-document limit, while a read sums the shards — the documented Firestore high-write-counter pattern."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firestore/docs/solutions/counters",
+        "text": "cloud.google.com/firestore/docs/solutions/counters"
+      },
+      {
+        "url": "https://cloud.google.com/firestore/docs/best-practices",
+        "text": "cloud.google.com/firestore/docs/best-practices"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Cloud Developer",
+    "scenario": "A Java team must produce container images for Cloud Run from their existing Maven project. Security requires reproducible, small, non-root images, and the team does not want to write or maintain a Dockerfile. Images must land in Artifact Registry and be referenced by immutable digest in the deploy step. What should they use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Write a multi-stage Dockerfile and build it with Cloud Build using the `latest` tag.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Build images with Jib from the Maven build, pushing to Artifact Registry.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use Cloud Native Buildpacks but pin every image to the `latest` tag for simplicity.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use `docker build` locally and push the image tagged with the developer's username.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A Dockerfile contradicts the no-Dockerfile requirement, and deploying by the moving `latest` tag breaks the immutable-digest requirement.",
+      "B": "Jib builds optimized, reproducible, non-root images straight from a Maven build with no Dockerfile, pushes to Artifact Registry, and emits a digest the deploy step can pin — satisfying every stated constraint.",
+      "C": "Buildpacks would satisfy the no-Dockerfile goal, but pinning to `latest` violates the immutable-digest requirement, so this option fails on the binding constraint.",
+      "D": "Local builds tagged by username are not reproducible across machines and are not pinned by digest, failing the reproducibility and immutability requirements."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/java/getting-started/jib",
+        "text": "cloud.google.com/java/getting-started/jib"
+      },
+      {
+        "url": "https://cloud.google.com/artifact-registry/docs/docker/names",
+        "text": "cloud.google.com/artifact-registry/docs/docker/names"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Cloud Developer",
+    "scenario": "Compliance requires that only container images built by your official Cloud Build pipeline and signed by an approved attestor may run in the production GKE cluster. A developer must not be able to deploy an arbitrary image pulled from a public registry, even if they have `roles/container.developer`. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Binary Authorization on the cluster with a policy requiring an attestation from the approved attestor.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Restrict Artifact Registry push permissions to the Cloud Build service account only.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Apply a `Pod Security Admission` restricted policy to the production namespaces.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure Artifact Analysis to scan images and block any with known vulnerabilities at deploy time.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Binary Authorization enforces a deploy-time admission policy that admits only images carrying a valid attestation from the approved attestor — blocking arbitrary or unsigned images regardless of the deployer's RBAC.",
+      "B": "Restricting push controls who can upload to your registry but does nothing to stop a developer deploying an image from a different public registry.",
+      "C": "Pod Security Admission constrains pod security context (privileges, capabilities), not image provenance or signing.",
+      "D": "Artifact Analysis surfaces vulnerabilities but does not by itself enforce that an image came from your trusted, signed pipeline; an unsigned but clean image would still pass."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/setting-up-cli",
+        "text": "cloud.google.com/binary-authorization/docs/setting-up-cli"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Cloud Developer",
+    "scenario": "Your CI pipeline runs unit tests for code that uses Firestore. The tests are flaky and occasionally corrupt each other's data because they all hit one shared development Firestore database, and the team is being billed for the test reads and writes. You need fast, isolated, free, and faithful test runs. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create and tear down a dedicated real Firestore database per CI run to isolate data.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Replace all Firestore calls in tests with hand-written mocks of the client library.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run the tests against the Firestore emulator started by the Google Cloud CLI in each CI job.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Serialize the test suite so only one test touches the shared database at a time.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Spinning a real database per run still incurs cost and provisioning latency and is slower and more fragile than the emulator.",
+      "B": "Hand-written mocks drift from real Firestore behavior, so passing tests can hide query/transaction bugs — they verify the mock, not the logic.",
+      "C": "The Firestore emulator runs locally per job, is free, fully isolated, and reproduces real Firestore semantics (transactions, queries), fixing flakiness, cost, and cross-test contamination at once.",
+      "D": "Serializing avoids contention but leaves the suite slow, still billable, and still pointed at shared mutable state."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firestore/docs/emulator",
+        "text": "cloud.google.com/firestore/docs/emulator"
+      },
+      {
+        "url": "https://cloud.google.com/sdk/gcloud/reference/emulators/firestore",
+        "text": "cloud.google.com/sdk/gcloud/reference/emulators/firestore"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Cloud Developer",
+    "scenario": "You are releasing a new revision of a Cloud Run service. You want to send 5% of production traffic to it, watch error rates, then ramp to 100% over an hour — and be able to revert all traffic instantly if metrics degrade. The team wants the simplest approach with no extra infrastructure. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy a second Cloud Run service for the new version and switch users over with DNS weighting.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Replace the running revision in place and roll back by redeploying the old image if metrics degrade.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Put both revisions behind an external HTTP(S) Load Balancer with weighted serverless NEG backends.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy the new revision with `--no-traffic`, then shift 5% to it and gradually increase the split.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "DNS weighting is coarse and slow to revert because of resolver/TTL caching, so an \"instant\" rollback is not achievable.",
+      "B": "In-place replacement exposes 100% of traffic to the new code immediately and rolling back means a fresh redeploy, not an instant flip.",
+      "C": "An external load balancer with serverless NEGs can split traffic but adds plumbing Cloud Run already provides natively, violating the \"no extra infrastructure\" goal.",
+      "D": "Cloud Run's native revision traffic splitting lets you deploy with no traffic, shift a 5% canary, ramp the percentage, and revert by reassigning 100% to the old revision instantly — no extra infrastructure."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/managing/revisions",
+        "text": "cloud.google.com/run/docs/managing/revisions"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Cloud Developer",
+    "scenario": "A GKE pod runs a service that occasionally deadlocks: the process stays alive and the port stays open, but it stops making progress and returns errors. You want Kubernetes to automatically restart the container when this happens, while not pulling healthy-but-slow-starting pods out of rotation during their 60-second boot. Which probe setup is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A readiness probe only, so the deadlocked pod is removed from the Service endpoints.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A liveness probe to restart the hung container, plus a startup probe to defer liveness checks during boot.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A single liveness probe with a 5-second `initialDelaySeconds` value and no other probes configured.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A readiness probe plus a Horizontal Pod Autoscaler to add replicas when the pod stops responding.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A readiness probe only de-registers the pod from the Service; it never restarts the container, so the deadlock is never cleared.",
+      "B": "A liveness probe restarts the deadlocked container, and a startup probe holds off liveness checks until the 60-second boot finishes so slow starters are not killed prematurely — addressing both requirements.",
+      "C": "A liveness probe with a fixed 5-second initial delay would fire during the 60-second boot and kill healthy starting pods, which is the failure mode the startup probe exists to prevent.",
+      "D": "The HPA changes replica count on metrics; it neither detects a logical deadlock nor restarts the affected container."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/liveness-readiness-probes",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/liveness..."
+      },
+      {
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+        "text": "kubernetes.io/docs/tasks/configure-pod-container/configur..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Cloud Developer",
+    "scenario": "The same container image must be promoted unchanged through dev, staging, and prod on Cloud Run, each using a different database password. Security forbids credentials in the image or in source control and requires rotation without redeploying or rebuilding. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Store each environment's password in Secret Manager and reference it from the Cloud Run service at runtime.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Bake the per-environment password into a separate image variant that is built and promoted for each environment.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Commit an encrypted `.env` file per environment and decrypt it in the container entrypoint at startup.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Pass the password as a Cloud Build substitution and set it as a plaintext environment variable at deploy time.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Secret Manager keeps credentials out of the image and source, is referenced per service at runtime, and supports rotation by adding a new version with no rebuild — satisfying every constraint.",
+      "B": "Per-environment images break the \"one image promoted unchanged\" rule and embed the secret in the image, which is forbidden.",
+      "C": "Committing secrets, even encrypted, puts them in source control and creates key-management sprawl, violating the no-secrets-in-source rule.",
+      "D": "A plaintext substitution lands the password in build logs and deploy config, and rotating it requires a redeploy — both forbidden."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/services/secrets",
+        "text": "cloud.google.com/run/docs/configuring/services/secrets"
+      },
+      {
+        "url": "https://cloud.google.com/secret-manager/docs/best-practices",
+        "text": "cloud.google.com/secret-manager/docs/best-practices"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service receives Pub/Sub push messages to process uploaded invoices. Some messages reference a malformed file and fail every time, and the team is seeing the same poison message redelivered indefinitely, blocking throughput. Transient failures should still be retried for a while. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Have the service acknowledge every message immediately on receipt, then process it asynchronously.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Lower the subscription's acknowledgement deadline so failing messages are redelivered faster.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure the subscription with a retry policy plus a dead-letter topic after a max delivery-attempts threshold.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Set the subscription to never expire and increase the push endpoint's timeout to allow more retries.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Acknowledging on receipt drops Pub/Sub's at-least-once guarantee, so any in-flight processing failure silently loses the invoice entirely.",
+      "B": "A shorter ack deadline just redelivers the poison message faster, amplifying the redelivery loop rather than ending it.",
+      "C": "A retry policy keeps retrying transient failures, and a dead-letter topic with a max-delivery-attempts threshold moves a poison message aside after N tries so it stops blocking throughput — the standard failure-handling pattern.",
+      "D": "A longer push timeout and non-expiring subscription do nothing to retire a message that fails deterministically; it still redelivers forever."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/pubsub/docs/handling-failures",
+        "text": "cloud.google.com/pubsub/docs/handling-failures"
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/dead-letter-topics",
+        "text": "cloud.google.com/pubsub/docs/dead-letter-topics"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Cloud Developer",
+    "scenario": "Service A on Cloud Run must call private Service B, also on Cloud Run, which has unauthenticated invocations disabled. The call must be authenticated as Service A's own identity, with no shared secrets and no public exposure of Service B. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Grant Service A's service account `roles/run.invoker` on Service B, and have A attach an OAuth 2.0 access token to each request.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Put a shared API key in a request header that Service B validates against Secret Manager.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Allow unauthenticated invocations on Service B and restrict it with an ingress setting of internal only.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Grant Service A's service account `roles/run.invoker` on Service B, and have A attach a Google-signed OIDC ID token to each request.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Cloud Run's IAM check for invocation expects an ID token, not an OAuth access token; an access token is for calling Google APIs, so this call is rejected.",
+      "B": "A shared API key is a shared secret with no per-caller identity, contradicting the \"authenticated as A's identity, no shared secrets\" requirement.",
+      "C": "Internal-only ingress limits the network path but allowing unauthenticated invocations removes identity-based authorization, which the scenario requires.",
+      "D": "Cloud Run service-to-service auth requires a Google-signed OIDC ID token whose audience is the target service, and granting the caller's service account `run.invoker` authorizes it — keyless and identity-based."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/authenticating/service-to-service",
+        "text": "cloud.google.com/run/docs/authenticating/service-to-service"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/securing/managing-access",
+        "text": "cloud.google.com/run/docs/securing/managing-access"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Cloud Developer",
+    "scenario": "A containerized data-cleanup job must run nightly, process a batch to completion, retry on failure, and then exit — it is not a long-running server and should consume no resources between runs. The team wants the most fitting managed primitive with the least standing cost. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Run service kept warm with one minimum instance, invoked by a nightly Cloud Scheduler HTTP call.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Cloud Run job triggered nightly by Cloud Scheduler, with task retries configured.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A GKE `CronJob` running on a small always-on node pool.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Cloud Scheduler job that publishes to Pub/Sub, which pushes to an always-on Cloud Run service.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A Cloud Run service models a long-running request handler, and a minimum instance keeps capacity warm 24/7, incurring standing cost the batch model is meant to avoid.",
+      "B": "Cloud Run jobs run a containerized task to completion with built-in task retries and consume nothing between runs; Cloud Scheduler triggers them nightly — the lowest-standing-cost managed fit for a run-to-completion batch.",
+      "C": "A GKE CronJob fits the batch shape but an always-on node pool carries continuous cost and cluster overhead the serverless job avoids.",
+      "D": "An always-on Cloud Run service plus Pub/Sub adds standing cost and indirection for what is simply a scheduled run-to-completion job."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/create-jobs",
+        "text": "cloud.google.com/run/docs/create-jobs"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/execute/jobs-on-schedule",
+        "text": "cloud.google.com/run/docs/execute/jobs-on-schedule"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service reads from and writes to a Cloud SQL for PostgreSQL instance that has only a private IP. Connections must be encrypted and authenticated with IAM, the database must not be exposed publicly, and under autoscaling the service must not exhaust the database's connection limit. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Direct VPC egress (or a VPC connector) with the Cloud SQL language connector for IAM auth, and pool connections.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Assign the Cloud SQL instance a public IP, add authorized networks for Cloud Run's egress, and connect over TLS.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use the Cloud SQL Auth Proxy as a sidecar and open a fresh connection per request to keep things simple.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Connect through a bastion VM inside the VPC that the serverless service opens an SSH tunnel to on each request.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "VPC egress gives the serverless service a private route into the VPC, the Cloud SQL connector provides encrypted IAM-based auth with no public IP, and application-side pooling prevents connection exhaustion under autoscaling — covering every constraint.",
+      "B": "A public IP plus authorized networks exposes the database publicly, violating the no-public-exposure requirement; Cloud Run egress IPs are also not stable to allowlist reliably.",
+      "C": "A fresh connection per request under autoscaling is the exact pattern that exhausts the connection limit the scenario warns about, even though the Auth Proxy itself is fine.",
+      "D": "Per-request SSH tunneling through a bastion is fragile, high-latency, and not how serverless services are meant to reach private Cloud SQL."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/connect-run",
+        "text": "cloud.google.com/sql/docs/postgres/connect-run"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/connect-auth-proxy",
+        "text": "cloud.google.com/sql/docs/postgres/connect-auth-proxy"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Cloud Developer",
+    "scenario": "A microservice lists thousands of resources from a Google Cloud API on every dashboard load and is hitting both high latency and occasional `429` responses. You must make the calls efficient and resilient without architectural changes. Which combination of techniques should you apply?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Fetch all resources in one unpaginated request to minimize round trips, and disable retries to avoid worsening the overload.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Open a fresh API client on every request to spread load, and retry any failures immediately in a tight loop until they succeed.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Paginate results, restrict fields with a field mask, reuse one client, and retry `429`/`503` with exponential backoff.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Switch the calls to a second project to obtain separate quota, and cache the `429` error responses to return quickly.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A single unpaginated call risks timeouts and memory blowups and may not be supported, and disabling retries sacrifices resilience to the transient `429`s.",
+      "B": "A new client per request wastes connection setup, and tight-loop immediate retries amplify the overload that caused the `429`s.",
+      "C": "Pagination plus field masks shrink payloads and work, client reuse avoids per-call connection setup, and exponential backoff with jitter is the documented handling for `429`/`503` — together cutting latency and surviving throttling.",
+      "D": "Spreading calls across projects to dodge quota is an abuse pattern, and caching error responses serves users broken data instead of fixing the throttling."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/apis/design/design_patterns",
+        "text": "cloud.google.com/apis/design/design_patterns"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/retry-strategy",
+        "text": "cloud.google.com/storage/docs/retry-strategy"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Cloud Developer",
+    "scenario": "A request that spans an API gateway, a Cloud Run frontend, and two backend services is intermittently slow, but each service's own logs look fine. You need to see where the time goes across the whole request path and pinpoint which downstream span is responsible, with the least custom code. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add millisecond timing log lines around each external call in every service and correlate them by timestamp in Cloud Logging.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable Cloud Profiler on each service to find the function consuming the most wall-clock time.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a log-based metric on request duration and alert when the frontend's p99 latency exceeds a threshold.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Instrument the services with OpenTelemetry, propagate the trace context across calls, and analyze the spans in Cloud Trace.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Manual timing logs are the custom instrumentation you want to avoid, and timestamp correlation across services is error-prone compared with a shared trace ID.",
+      "B": "Cloud Profiler finds CPU/heap hotspots within one process; it does not show latency contributed by waiting on downstream services across the request path.",
+      "C": "A latency alert tells you the frontend is slow but not which downstream span causes it, so it does not localize the bottleneck.",
+      "D": "Distributed tracing with propagated context stitches spans from gateway through both backends into one Cloud Trace view, showing exactly which span is slow with minimal code — the purpose-built tool for cross-service latency."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/trace/docs/setup",
+        "text": "cloud.google.com/trace/docs/setup"
+      },
+      {
+        "url": "https://cloud.google.com/trace/docs/trace-context",
+        "text": "cloud.google.com/trace/docs/trace-context"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Cloud Developer",
+    "scenario": "Your team wants to expose a public REST API for a Cloud Run backend with per-developer API keys, request quotas, and an OpenAPI-defined contract, with minimal operational overhead. You do not need a monetized developer portal, granular productization, or analytics across dozens of backends. Which product should you choose?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apigee with API products, developer apps, and quota policies.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "API Gateway with an OpenAPI configuration in front of the Cloud Run service.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Cloud Endpoints with an ESPv2 sidecar deployed alongside the service.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "An external HTTP(S) Load Balancer with Cloud Armor rate-limiting rules.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Apigee delivers the full lifecycle platform (portal, monetization, deep analytics) the scenario explicitly does not need, making it over-engineered and costlier here.",
+      "B": "API Gateway is the lightweight managed gateway that provides API keys, quotas, and OpenAPI-based config for serverless backends with the least overhead — matching the requirement set without Apigee's heavier feature set.",
+      "C": "Cloud Endpoints with ESPv2 requires running and operating the proxy sidecar yourself, which is more operational overhead than the managed API Gateway.",
+      "D": "A load balancer with Cloud Armor handles routing and rate limiting but provides no API-key issuance, per-developer quotas, or OpenAPI contract management."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/api-gateway/docs/about-api-gateway",
+        "text": "cloud.google.com/api-gateway/docs/about-api-gateway"
+      },
+      {
+        "url": "https://cloud.google.com/endpoints/docs/openapi/about-cloud-endpoints",
+        "text": "cloud.google.com/endpoints/docs/openapi/about-cloud-endpo..."
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Cloud Developer",
+    "scenario": "An online store must, in one operation, debit a customer's wallet balance and create an order record, with the guarantee that either both succeed or neither does, even under concurrent purchases of the same item. The data lives in Cloud SQL for PostgreSQL. The endpoint may be retried by clients on timeout. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Perform the debit and order insert in one database transaction, and make the endpoint idempotent via a client idempotency key.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Debit the wallet first, return success, then insert the order asynchronously via a Cloud Tasks queue for resilience.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Wrap the two writes in a Saga: debit in one service, insert the order in another, and compensate on failure.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a Firestore transaction spanning the wallet and order collections to obtain atomicity across both of the writes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A single SQL transaction gives all-or-nothing atomicity for the two writes against one Cloud SQL database, and an idempotency key makes a retried request safe so a client timeout-retry cannot double-debit — exactly the two guarantees required.",
+      "B": "Returning success after only the debit breaks atomicity; if the async insert later fails, money is gone with no order, the precise outcome to avoid.",
+      "C": "A Saga is for atomicity across separate services/databases and adds compensation complexity that is unnecessary when both writes already share one Cloud SQL database.",
+      "D": "The data lives in Cloud SQL, not Firestore; a Firestore transaction cannot span data held in PostgreSQL."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/best-practices",
+        "text": "cloud.google.com/sql/docs/postgres/best-practices"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/application-development/idempotency",
+        "text": "cloud.google.com/architecture/application-development/ide..."
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service shows acceptable median latency but a heavy p99 tail under load. CPU graphs show instances are not saturated, yet some requests queue. The handler does meaningful CPU work per request, and the team set `concurrency` to the default of 80. They want to cut tail latency cost-effectively without rewriting the app. What is the most likely effective change?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Raise the per-instance concurrency above 80 so fewer instances handle more requests and reduce cold starts.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set a high minimum number of instances so large warm capacity is kept available at all times, even when idle.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Lower the per-instance concurrency so each instance serves fewer simultaneous requests and the autoscaler scales out.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Switch the service to request-based billing only and reduce the amount of CPU allocated to each instance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Raising concurrency packs even more contending requests onto each instance, worsening the CPU contention that is driving the tail.",
+      "B": "A large warm pool addresses cold-start latency, but the symptom is queuing under load on CPU-bound work, not cold starts, so this mostly adds cost.",
+      "C": "With CPU-heavy handlers, packing 80 requests onto one instance causes contention and queuing that inflates the tail; lowering concurrency spreads load so the autoscaler scales out, directly cutting p99 without code changes.",
+      "D": "Reducing allocated CPU per instance starves the already CPU-bound handler, making per-request work slower and the tail worse."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/about-concurrency",
+        "text": "cloud.google.com/run/docs/about-concurrency"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/tips/general",
+        "text": "cloud.google.com/run/docs/tips/general"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Cloud Developer",
+    "scenario": "A new feature must run a single task whenever a file is finalized in a specific Cloud Storage bucket, delivering the event to an existing Cloud Run service with minimal custom plumbing and no polling. The team wants Google's recommended event-routing approach. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Scheduler job that runs every minute and lists new objects in the bucket, invoking the service for each.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Cloud Build trigger that fires on bucket changes and calls the service.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Tasks queue that the upload client must populate with a task after each upload.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "An Eventarc trigger for the Cloud Storage `object.finalized` event routed to the Cloud Run service.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Polling on a schedule adds latency and cost, can miss or duplicate events, and is the anti-pattern the scenario rules out.",
+      "B": "Cloud Build is a CI/CD system, not an application event router, so it is the wrong tool for delivering object events to a service.",
+      "C": "Cloud Tasks requires the producer to enqueue work explicitly; it does not observe bucket finalize events, so it adds client-side plumbing the scenario wants to avoid.",
+      "D": "Eventarc natively routes the Cloud Storage finalize event to Cloud Run as a CloudEvent with minimal configuration and no polling — the recommended event-driven pattern."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/eventarc/docs/run/quickstart-storage",
+        "text": "cloud.google.com/eventarc/docs/run/quickstart-storage"
+      },
+      {
+        "url": "https://cloud.google.com/eventarc/docs/overview",
+        "text": "cloud.google.com/eventarc/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Cloud Developer",
+    "scenario": "A Cloud Run service backed by Cloud SQL for MySQL intermittently throws \"Too many connections\" errors during traffic spikes. You must alert the on-call engineer before the limit is reached and reduce how often the limit is hit, with minimal application changes. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a log-based metric counting \"Too many connections\" errors, alert when the count exceeds zero, and then raise the `max_connections` flag.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Alert on the `database/network/connections` metric at 90% of `max_connections`, and add a managed connection pooler before the database.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Enable Query Insights to identify the queries holding connections open, and alert whenever query p99 latency exceeds its baseline.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Set a `maxPoolSize` in the connection string and rely on Cloud SQL automatically scaling available connections during spikes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Alerting at the first error fires only after the outage has begun, not before, and raising `max_connections` without pooling just moves the cliff while each connection consumes more memory.",
+      "B": "The native `connections` metric supports a threshold alert that fires before exhaustion (90% of max), and a connection pooler in front of the database flattens spike-driven connection demand with little app change — meeting both requirements.",
+      "C": "Query Insights diagnoses queries but does not mitigate exhaustion, and a latency alert does not fire specifically on connection saturation.",
+      "D": "\"Cloud SQL automatically scaling connections during spikes\" is not a real feature; connection capacity is bounded by `max_connections`, so this offers no actual mitigation."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/manage-connections",
+        "text": "cloud.google.com/sql/docs/mysql/manage-connections"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/connection-org-policy",
+        "text": "cloud.google.com/sql/docs/mysql/connection-org-policy"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/developer_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/developer_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

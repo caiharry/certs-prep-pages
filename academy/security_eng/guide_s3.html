@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 3 Revision Guide - Ensuring Data Protection (Keys, DLP &amp; Secrets)</title>
+  <style>
+    :root {
+      --bg-light: #f0fdfa; /* Light teal background */
+      --ink: #1e293b;
+      --primary: #0d9488; /* Section 3 teal */
+      --primary-light: #ccfbf1;
+      --primary-border: #0f766e;
+      --rev-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%2399f6e4' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+
+    .container { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    header {
+      background: linear-gradient(135deg, #2dd4bf 0%, var(--primary) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      color: white; padding: 30px 20px; position: relative; margin-bottom: 35px;
+    }
+    header h1 {
+      margin: 0 0 10px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); text-transform: uppercase;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0px #000;
+    }
+    header p { margin: 0; font-size: 1.1rem; font-style: italic; }
+    .section-badge {
+      position: absolute; bottom: -15px; right: 20px; background: #ef4444; color: white; font-weight: bold;
+      padding: 6px 15px; border-radius: 999px; border: 3px solid #000; transform: rotate(2deg); font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem; border-bottom: 3px solid #000; padding-bottom: 8px; margin-top: 45px; margin-bottom: 20px;
+      text-transform: uppercase; color: var(--primary-border);
+    }
+    h3 { font-size: 1.3rem; margin-top: 30px; margin-bottom: 12px; color: #0f172a; }
+    p, li { font-size: 1.05rem; }
+
+    .rev-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0px #000;
+      padding: 22px; margin-bottom: 30px; position: relative;
+    }
+    .rev-card.tip { background: #effdfb; border-color: var(--primary); box-shadow: 4px 4px 0px var(--primary); }
+    .rev-card.tip h3 { color: var(--primary-border); margin-top: 0; }
+    .rev-card.warn { background: #fef2f2; border-color: var(--rev-red); box-shadow: 4px 4px 0px var(--rev-red); }
+    .rev-card.warn h3 { color: var(--rev-red); margin-top: 0; }
+
+    .exam-trap {
+      background: #fff7ed; border: 3px dashed var(--rev-orange); border-radius: var(--radius);
+      padding: 18px; margin: 25px 0; position: relative;
+    }
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!"; display: inline-block; background: var(--rev-orange); color: white; font-weight: bold;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; font-size: 0.85rem; margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8; border: 3px solid #db2777; border-radius: var(--radius); box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px; margin: 25px 0;
+    }
+    .mnemonic strong { color: #db2777; }
+    .mnemonic h3 { margin-top: 0; }
+
+    .joke-box {
+      font-style: italic; color: #4b5563; text-align: center; margin: 25px 0; padding: 10px;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .table-container {
+      overflow-x: auto; border: 3px solid #000; border-radius: var(--radius); box-shadow: 5px 5px 0px #000; margin: 30px 0;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 2px solid #000; padding: 12px 15px; text-align: left; font-size: 0.98rem; }
+    th { background: var(--rev-yellow); text-transform: uppercase; font-weight: bold; }
+    tr:nth-child(even) { background: #fbfbfe; }
+
+    .warm-up {
+      background: #effdfb; border: 3px solid var(--primary); border-radius: var(--radius); box-shadow: 4px 4px 0px var(--primary);
+      padding: 22px; margin: 35px 0;
+    }
+    .warm-up h3 { color: var(--primary-border); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+    .quiz-item { margin-bottom: 18px; border-bottom: 1px dashed #99f6e4; padding-bottom: 12px; }
+    .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .show-answer-btn {
+      background: #fff; border: 2px solid #000; border-radius: 6px; padding: 5px 12px; font-weight: bold;
+      cursor: pointer; margin-top: 8px; font-family: inherit;
+    }
+    .show-answer-btn:hover { background: #d6fbf4; }
+    .answer-panel {
+      display: none; margin-top: 10px; background: #f0fdfa; border-left: 4px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.95rem;
+    }
+
+    .practice-exam {
+      background: #fffaf0; border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 25px; margin-top: 50px;
+    }
+    .practice-exam h2 { color: var(--rev-orange); border-bottom: 3px solid #000; margin-top: 0; }
+    .q-box { background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .option-list { list-style-type: none; padding-left: 0; }
+    .option-list li {
+      margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .option-list li:hover { background: #fef8f2; border-color: #000; }
+    .option-list li.selected { background: #dbeafe; border-color: var(--rev-blue); box-shadow: 2px 2px 0px var(--rev-blue); }
+    .option-list li.eliminated { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+    .option-list li.correct-answer { background: #dcfce7; border-color: var(--rev-green); }
+    .option-list li.wrong-answer { background: #fee2e2; border-color: var(--rev-red); }
+    .explanation-panel {
+      display: none; margin-top: 15px; background: #fff8f2; border: 2px dashed var(--rev-orange); padding: 15px; border-radius: 8px;
+    }
+    .badge-check { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #000; margin-right: 6px; }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+    .submit-answer-btn {
+      background: var(--rev-orange); color: white; border: 2px solid #000; border-radius: 6px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-family: inherit;
+    }
+    .submit-answer-btn:hover { background: #dd5209; }
+
+    .further-reading {
+      background: #ecfeff; border: 3px solid #0891b2; border-radius: var(--radius); box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px; margin: 28px 0;
+    }
+    .further-reading h3 { color: #0e7490; margin-top: 0; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .doc-link {
+      display: block; background: #fff; border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0px #000;
+      color: #0f172a; padding: 10px 12px; text-decoration: none;
+    }
+    .doc-link strong { display: block; color: #0e7490; }
+    .doc-link span { display: block; font-size: 0.9rem; margin-top: 3px; }
+
+    .bullet-chk { list-style-type: none; padding-left: 0; }
+    .bullet-chk li::before { content: "✔️ "; margin-right: 8px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; overflow-wrap: anywhere; word-break: break-word; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0; background: var(--rev-yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="guide_s2.html" class="nav-link">&larr; Section 2: Boundary Protection</a>
+      <a href="index.html" class="nav-link">Portal</a>
+      <a href="guide_s4.html" class="nav-link">Section 4: Managing Operations &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 3: Ensuring Data Protection</h1>
+      <p>Protect data at rest, in transit, and in use; tame secrets, keys, and modern AI workloads (~23%). The crown jewels live here &mdash; encrypt them, hide them, and keep a kill-switch handy.</p>
+      <div class="section-badge">Section 3 🟢 ~23%</div>
+    </header>
+
+    <p>This domain is all about the data itself &mdash; not who reaches it (Section 1) or how it travels (Section 2), but how it's <strong>encrypted</strong>, <strong>de-identified</strong>, and <strong>secret-managed</strong>. The exam leans hard on the four encryption-key models and on Sensitive Data Protection, so we'll spend most of our time there. Grab your cryptographic hard hat. ⛏️🔐</p>
+
+    <!-- 3.1 -->
+    <h2>3.1 The Four Encryption Key Models</h2>
+    <p>Everything in Google Cloud is encrypted at rest by default. The exam question is always <em>who holds and controls the key</em>. Memorise these four rungs &mdash; the distinctions win you marks.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Where The Key Lives</th>
+            <th>You Reach For It When...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google-managed (default)</strong></td>
+            <td>Entirely in Google's infrastructure; you never see it.</td>
+            <td>No special key-control requirement exists.</td>
+          </tr>
+          <tr>
+            <td><strong>CMEK (Cloud KMS)</strong></td>
+            <td>In Cloud KMS; <em>you</em> own rotation, disable, destroy. Supports import.</td>
+            <td>You must control the key lifecycle and have a cryptographic kill-switch.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud EKM</strong></td>
+            <td>In an <em>external</em>/on-prem HSM or KMS &mdash; never persists in Google Cloud.</td>
+            <td>A regulator says "keys must never reside in the cloud."</td>
+          </tr>
+          <tr>
+            <td><strong>Confidential Computing</strong></td>
+            <td>N/A &mdash; encrypts data <em>in use</em>, in memory, via the CPU.</td>
+            <td>Data must stay encrypted even while being processed.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>EKM vs CMEK-import is the classic trap.</strong> "Keys must <em>never</em> leave / never reside in Google Cloud" = <strong>Cloud EKM</strong>. "We generate the key ourselves then bring it in" = <strong>CMEK import</strong> into Cloud KMS (the material now lives in KMS). "Encrypted while being processed in memory" = <strong>Confidential Computing</strong>, not a key model at all.
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 The 3-in-a-row: REST / TRANSIT / USE</h3>
+      <p>Data at <strong>rest</strong> &rarr; CMEK/EKM. Data in <strong>transit</strong> &rarr; TLS (automatic on Google's network). Data in <strong>use</strong> &rarr; <strong>Confidential Computing</strong>. If a stem stresses "while being processed," the answer is almost always Confidential VMs/GKE Nodes.</p>
+    </div>
+
+    <!-- 3.2 -->
+    <h2>3.2 CMEK in Practice: Rotation, Kill-Switch &amp; Separation of Duties</h2>
+    <p>Choose <strong>CMEK</strong> and you own the whole key lifecycle in <strong>Cloud KMS</strong>: create key rings, set <strong>automatic rotation</strong> schedules, and disable, destroy, or import key material. Each Google service reaches your key through a per-service <strong>service agent</strong> that needs <code>roles/cloudkms.cryptoKeyEncrypterDecrypter</code> on it.</p>
+
+    <div class="rev-card tip">
+      <h3>🔌 The Cryptographic Kill-Switch</h3>
+      <p>Need to make encrypted data instantly unreadable <em>without touching the data itself</em>? <strong>Disable (or destroy) the CMEK key version</strong>, or revoke the service agent's key role. With no key, the ciphertext can't be decrypted &mdash; an immediate, surgical kill-switch. Re-running DLP or editing bucket IAM does <em>not</em> achieve this.</p>
+    </div>
+
+    <div class="rev-card warn">
+      <h3>🧑‍⚖️ Separation of Duties</h3>
+      <p>The person who manages keys should <strong>not</strong> also be able to read the data those keys protect. Split it: the key admin holds only KMS roles in the <em>key</em> project and holds <em>no</em> data-read role in the <em>data</em> project. Now no single human can both unlock and read &mdash; satisfying the audit finding examiners love to set.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>"Instantly revoke access to encrypted data" = disable the key version.</strong> Don't pick "re-run DLP," "change bucket IAM," or "delete the data." Only the cryptographic move gives an instant, reversible-by-re-enabling kill-switch without destroying the underlying objects.
+    </div>
+
+    <!-- 3.3 -->
+    <h2>3.3 Sensitive Data Protection (formerly Cloud DLP)</h2>
+    <p><strong>Sensitive Data Protection</strong> does three distinct jobs the exam carefully separates:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>What It Does</th>
+            <th>Trigger Phrase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Discovery / Profiling</strong></td>
+            <td>Finds <em>where</em> sensitive data lives across BigQuery, Cloud Storage, Cloud SQL at scale.</td>
+            <td>"Find out which tables contain PII."</td>
+          </tr>
+          <tr>
+            <td><strong>Inspection</strong></td>
+            <td>Matches <strong>infoTypes</strong> (credit cards, national IDs, emails) in content.</td>
+            <td>"Detect credit-card numbers in this dataset."</td>
+          </tr>
+          <tr>
+            <td><strong>De-identification</strong></td>
+            <td>Redaction, masking, or format-preserving <strong>tokenisation/pseudonymisation</strong>.</td>
+            <td>"Hide the IDs but keep analytics working."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 FIND, then FUZZ</h3>
+      <p>Sensitive Data Protection first <strong>finds</strong> the PII (discovery + inspection), then <strong>fuzzes</strong> it (redact / mask / tokenise). If the stem says analytics or joins must still work, the answer is <strong>deterministic tokenisation</strong> (the same input always maps to the same token) &mdash; <em>not</em> redaction, which deletes the value and breaks joins.</p>
+    </div>
+
+    <div class="joke-box">
+      "I asked Cloud KMS to keep a secret. It said: 'Sure &mdash; but if you ever want it back, you'll need the key.' Brutal, but honest." 🔑🤐
+    </div>
+
+    <!-- 3.4 -->
+    <h2>3.4 Secret Manager</h2>
+    <p>Passwords, API keys, and certificates do <strong>not</strong> belong in code, config files, or container images. <strong>Secret Manager</strong> gives you central, <strong>versioned</strong> secrets with IAM-scoped access, CMEK encryption, rotation, and audit logging &mdash; fetched at runtime.</p>
+
+    <div class="exam-trap">
+      <strong>Secret Manager stores secrets, not KMS keys.</strong> If a question is about <em>separation of key/data duties</em>, the answer involves Cloud KMS roles &mdash; not granting Secret Manager Accessor. Secret Manager holds the database password; Cloud KMS holds the encryption key. Don't swap them.
+    </div>
+
+    <!-- 3.5 -->
+    <h2>3.5 Securing AI / ML Workloads</h2>
+    <p>The current exam adds security controls for ML systems. Protect <strong>training data and models</strong> from exfiltration (wrap the project in VPC Service Controls, use CMEK on the buckets and Vertex AI resources), lock down <strong>Vertex AI</strong> access with least-privilege IAM and private endpoints, and screen <strong>generative AI</strong> inputs/outputs with <strong>Model Armor</strong> and Sensitive Data Protection (catch prompt injection, jailbreaks, and PII leakage).</p>
+
+    <div class="rev-card tip">
+      <h3>🤖 Model Armor in One Line</h3>
+      <p>Think of <strong>Model Armor</strong> as a WAF for LLM prompts and responses: it inspects generative AI traffic for prompt-injection, harmful content, and sensitive-data leakage, independent of which model you run.</p>
+    </div>
+
+    <!-- Warm-Up Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Retrieve before you review. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Discover and redact credit-card numbers in a Cloud Storage dataset before analysis. Which service?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Sensitive Data Protection (Cloud DLP).</strong> It detects, classifies, and de-identifies sensitive data.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> A regulator requires that encryption keys are held only in your on-prem HSM and never reside in Google Cloud. Which option?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Cloud EKM.</strong> External keys never persist in Google Cloud; Google receives only a short-lived wrapped reference.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> An auditor asks you to instantly render a CMEK-encrypted dataset unreadable without deleting the data. What do you do?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>Disable (or destroy) the CMEK key version in Cloud KMS.</strong> Without the key, the ciphertext can't be decrypted &mdash; an immediate cryptographic kill-switch.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> A database password is currently baked into a container image. Where should it live instead?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>Secret Manager.</strong> Versioned, IAM-controlled, encrypted storage with rotation, retrieved at runtime.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Exam -->
+    <div class="practice-exam">
+      <h2>📝 Section 3 Practice Exam Questions</h2>
+      <p>Left-click to select, right-click to strike out a distractor, then Submit for the full diagnostic.</p>
+
+      <!-- Q1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A financial regulator requires that the encryption keys protecting your BigQuery datasets are generated and stored exclusively in your own on-premises HSM and never reside in Google Cloud, even briefly. Which key option satisfies this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) CMEK with key material imported into Cloud KMS from the on-prem HSM.</li>
+          <li data-option="B">B) Google-managed encryption keys with Access Approval enabled on the project.</li>
+          <li data-option="C">C) Cloud External Key Manager backed by your on-prem HSM through a supported partner.</li>
+          <li data-option="D">D) CMEK in Cloud HSM with a strict automatic rotation policy and audit logging.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> Cloud EKM keeps the key in your external HSM and Google only receives a short-lived wrapped reference, so the key material never resides in Google Cloud &mdash; exactly the regulator's constraint.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Importing key material places that material into Cloud KMS, violating "never resides in Google Cloud."<br>
+          <strong>B:</strong> Google-managed keys live entirely in Google's infrastructure; Access Approval gates support access but not key location.<br>
+          <strong>D:</strong> Cloud HSM keys are generated and held in Google's HSMs, not your on-prem HSM.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> Analysts need to run aggregate queries over a customer table that contains national ID numbers. The IDs must stay non-readable, yet rows for the same customer must still join consistently across tables. What is the right transformation?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Apply Sensitive Data Protection redaction so the ID values are removed from the output entirely.</li>
+          <li data-option="B">B) Apply Sensitive Data Protection deterministic tokenisation (format-preserving encryption) to the ID column.</li>
+          <li data-option="C">C) Encrypt the whole table with a CMEK key and grant analysts the key decrypt role.</li>
+          <li data-option="D">D) Move the table behind a VPC Service Controls perimeter and grant analysts BigQuery access.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why B is correct:</strong> Deterministic tokenisation replaces each ID with a stable surrogate, so the value is unreadable but the same input always yields the same token, preserving joins across tables.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Redaction removes the values, breaking the cross-table joins the analysts require.<br>
+          <strong>C:</strong> Granting decrypt access makes the raw IDs readable, defeating the requirement.<br>
+          <strong>D:</strong> A perimeter controls where data can go but does nothing to de-identify the ID values for the analysts who are allowed in.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Your security team must ensure that the engineer who manages encryption keys cannot also grant themselves read access to the data those keys protect, satisfying a separation-of-duties audit finding. How do you structure this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Give the key engineer Owner on the project so they can manage both keys and data consistently.</li>
+          <li data-option="B">B) Store all keys as Google-managed so no human holds key permissions at all.</li>
+          <li data-option="C">C) Put the keys in Secret Manager and grant the key engineer the Secret Accessor role.</li>
+          <li data-option="D">D) Grant the key engineer Cloud KMS Admin on the key project and ensure they hold no data-read role on the data project.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why D is correct:</strong> Splitting duties means the key admin holds only KMS roles in the key project and has no data-read role on the data resources, so they can manage keys but cannot read the protected data.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Owner grants both key and data control to one person, which is the exact concentration the audit flagged.<br>
+          <strong>B:</strong> Google-managed keys remove the need to manage keys at all, but the question requires a human key admin who is fenced off from data.<br>
+          <strong>C:</strong> Secret Manager stores secrets, not the KMS keys that encrypt the datasets, so it doesn't implement key/data separation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Go deeper on keys, secrets, and data de-identification:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/kms/docs/cmek" class="doc-link" target="_blank">
+          <strong>Customer-Managed Keys (CMEK)</strong>
+          <span>Own the key lifecycle: rotation, disable, destroy, import.</span>
+        </a>
+        <a href="https://cloud.google.com/kms/docs/ekm" class="doc-link" target="_blank">
+          <strong>Cloud External Key Manager</strong>
+          <span>Keys that stay in your external HSM/KMS.</span>
+        </a>
+        <a href="https://cloud.google.com/confidential-computing/docs/confidential-computing-overview" class="doc-link" target="_blank">
+          <strong>Confidential Computing</strong>
+          <span>Encrypt data in use, in memory.</span>
+        </a>
+        <a href="https://cloud.google.com/sensitive-data-protection/docs" class="doc-link" target="_blank">
+          <strong>Sensitive Data Protection</strong>
+          <span>Discover, inspect, and de-identify PII.</span>
+        </a>
+        <a href="https://cloud.google.com/secret-manager/docs/overview" class="doc-link" target="_blank">
+          <strong>Secret Manager</strong>
+          <span>Central, versioned, IAM-controlled secrets.</span>
+        </a>
+        <a href="https://cloud.google.com/security-command-center/docs/model-armor-overview" class="doc-link" target="_blank">
+          <strong>Model Armor</strong>
+          <span>Screen generative AI prompts and responses.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-nav">
+      <a href="guide_s2.html" class="nav-link">&larr; Section 2: Boundary Protection</a>
+      <a href="guide_s4.html" class="nav-link">Next: Managing Operations &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      element.style.display = (element.style.display === "block") ? "none" : "block";
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) { item.classList.remove('selected'); });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) { panel.dataset.originalHtml = panel.innerHTML; }
+      options.forEach(function(option) { option.classList.remove('correct-answer', 'wrong-answer'); });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) { option.classList.add('correct-answer'); }
+      });
+      if (selected.dataset.option !== correctOption) { selected.classList.add('wrong-answer'); }
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/security_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/security_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

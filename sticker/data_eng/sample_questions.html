@@ -1,0 +1,2685 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #ea580c;
+            --dark-accent-hover: #c2410c;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #9a3412;
+            --classic-accent-hover: #7c2d12;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Data Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">62:24</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Data Engineer",
+    "scenario": "One of your encryption keys stored in Cloud Key Management Service (Cloud KMS) was exposed. You need to re-encrypt all of your CMEK-protected Cloud Storage data that used that key, and then delete the compromised key. You also want to reduce the risk of objects getting written without customer-managed encryption key (CMEK) protection in the future. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Rotate the Cloud KMS key version. Continue to use the same Cloud Storage bucket.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a new Cloud KMS key. Set the default CMEK key on the existing Cloud Storage bucket to the new one.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a new Cloud KMS key. Create a new Cloud Storage bucket. Copy all objects from the old bucket to the new one bucket while specifying the new Cloud KMS key in the copy command.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a new Cloud KMS key. Create a new Cloud Storage bucket configured to use the new key as the default CMEK key. Copy all objects from the old bucket to the new bucket without specifying a key.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "because existing data will not automatically be re-encrypted just by rotating the key.",
+      "B": "because only newly written data will use the new key; existing data will still use the old key.",
+      "C": "because although it works, similar to the correct answer, but doesn't reduce risk of writing objects without CMEK as requested in the question (since bucket default CMEK key not set).",
+      "D": "because new bucket with CMEK will ensure that any data subsequently written to it (including the existing data being copied from the old bucket) will be protected with the default key."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kms/docs/re-encrypt-data",
+        "text": "cloud.google.com/kms/docs/re-encrypt-data"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/customer-managed-keys",
+        "text": "cloud.google.com/storage/docs/encryption/customer-managed..."
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys#add-object-key",
+        "text": "cloud.google.com/storage/docs/encryption/using-customer-m..."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Data Engineer",
+    "scenario": "You need to connect multiple applications with dynamic public IP addresses to a Cloud SQL instance. You configured users with strong passwords and enforced the SSL connection to your Cloud SQL instance. You want to use Cloud SQL public IP and ensure that you have secured connections. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add all application networks to Authorized Network and regularly update them.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Add CIDR 0.0.0.0/0 network to Authorized Network. Use Identity and Access Management (IAM) to add users.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add CIDR 0.0.0.0/0 network to Authorized Network. Use Cloud SQL Auth proxy on all applications.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Leave the Authorized Network empty. Use Cloud SQL Auth proxy on all applications.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "because the application networks may change anytime before the Authorized Network gets updated.",
+      "B": "because configuring an open network on the public Internet will increase security risk.",
+      "C": "because (same as B, open network will increase security risk) and configuring Authorized Network is not needed when using Cloud SQL Auth proxy.",
+      "D": "because Cloud SQL Auth proxy allows secured connection for applications with dynamically assigned IP addresses."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/connect-overview#dynamicIP",
+        "text": "cloud.google.com/sql/docs/mysql/connect-overview#dynamicIP"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/sql-proxy#benefits_of_the",
+        "text": "cloud.google.com/sql/docs/mysql/sql-proxy#benefits_of_the"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Data Engineer",
+    "scenario": "You are preparing an organization-wide dataset. You need to preprocess customer data stored in a restricted bucket in Cloud Storage. The data will be used to create consumer analyses. You need to comply with data privacy requirements. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Dataflow and Cloud KMS to encrypt sensitive fields and write the encrypted data in BigQuery. Share the encryption key by following the principle of least privilege.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use the Cloud Data Loss Prevention API and Dataflow to detect and remove sensitive fields from the data in Cloud Storage. Write the filtered data in BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Dataflow and the Cloud Data Loss Prevention API to mask sensitive data. Write the processed data in BigQuery.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use customer-managed encryption keys (CMEK) to directly encrypt the data in Cloud Storage. Use federated queries from BigQuery. Share the encryption key by following the principle of least privilege.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because it is not a scalable approach for an organization-wide dataset.",
+      "B": "because while it is scalable, it is suboptimal as you are losing data that might be used to enrich your analyses.",
+      "C": "because it ensures compliance with data privacy requirements while minimizing the loss of information.",
+      "D": "because it is not a scalable approach for an organization-wide dataset."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/cusctomer-managed-keys",
+        "text": "cloud.google.com/storage/docs/encryption/cusctomer-manage..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/bigquery/docs/column-data-masking-intro",
+        "text": "docs.cloud.google.com/bigquery/docs/column-data-masking-i..."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Data Engineer",
+    "scenario": "Your organization has two Google Cloud projects, project A and project B. In project A, you have a Pub/Sub topic that receives data from confidential sources. Only the resources in project A should be able to access the data in that topic. You want to ensure that project B and any future project cannot access data in the project A topic. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure VPC Service Controls in the organization with a perimeter around project A.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure VPC Service Controls in the organization with a perimeter around the VPC of project A.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add firewall rules in project A so only traffic from the VPC in project A is permitted.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Identity and Access Management conditions to ensure that only users and service accounts in project A can access resources in project A.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "because the problem is avoiding data exfiltration from project A, and that's what VPC-SC is for (and Pub/Sub is one of the products supported by VPC-SC).",
+      "B": "because that would have no effect preventing the access to Pub/Sub, since it is a serverless product.",
+      "C": "because Pub/Sub is a serverless product, and firewall rules will have no effect.",
+      "D": "because IAM conditions are not supported in Pub/Sub, and project id is not one of the conditions that can be used. Also, users don't belong to projects, so there is no way to select only users in project A."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/supported-products#table_pubsub",
+        "text": "cloud.google.com/vpc-service-controls/docs/supported-prod..."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Data Engineer",
+    "scenario": "You are on the data governance team and are implementing security requirements. You need to encrypt all your data in BigQuery by using an encryption key managed by your team. You must implement a mechanism to generate and store encryption material only on your on-premises hardware security module (HSM). You want to rely on Google managed solutions. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create the encryption key in the on-premises HSM, and import it into a Cloud Key Management Service (Cloud KMS) key. Associate the created Cloud KMS key while creating the BigQuery resources.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create the encryption key in the on-premises HSM, and import it into Cloud Key Management Service (Cloud HSM) key. Associate the created Cloud HSM key while creating the BigQuery resources.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create the encryption key in the on-premises HSM and link it to a Cloud External Key Manager (Cloud EKM) key. Associate the created Cloud KMS key while creating the BigQuery resources.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create the encryption key in the on-premises HSM. Create BigQuery resources and encrypt data while ingesting them into BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because keys are exported from the on-prem HSM and imported into Cloud KMS.",
+      "B": "because keys are exported from the on-prem HSM and imported into Cloud HSM.",
+      "C": "because Cloud EKM lets you create and store encryption keys on an external HSM.",
+      "D": "because it is not a Google-managed solution."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/control-access-to-gcp-data-with-key-access-justifications",
+        "text": "cloud.google.com/blog/products/identity-security/control-..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/customer-supplied-keys?hl=en",
+        "text": "docs.cloud.google.com/storage/docs/encryption/customer-su..."
+      },
+      {
+        "url": "https://cloud.google.com/kms/docs/hsm",
+        "text": "cloud.google.com/kms/docs/hsm"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Data Engineer",
+    "scenario": "You have an upstream process that writes data to Cloud Storage. This data is then read by an Apache Spark job that runs on Dataproc. These jobs are run in the us-central1 region, but the data could be stored anywhere in the United States. You need to have a recovery process in place in case of a catastrophic single region failure. You need an approach with a maximum of 15 minutes of data loss (RPO=15 mins). You want to ensure that there is minimal latency when reading the data. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "First, create a Cloud Storage bucket in the US multi-region. Then run the Dataproc cluster in a zone in the us-central1 region, reading data from the US multi-region bucket. In case of a regional failure, redeploy the Dataproc cluster to the us-central2 region and continue reading from the same bucket.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "First, create a dual-region Cloud Storage bucket in the us-central1 and us-south1 regions. Enable turbo replication. Then run the Dataproc cluster in a zone in the us-central1 region, reading from the bucket in the same region. In case of a regional failure, redeploy the Dataproc clusters to the us-south1 region and read from the same bucket.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "First, create two regional Cloud Storage buckets, one in the us-central1 region and one in the us-south1 region. Have the upstream process write data to the us-central1 bucket. Use the Storage Transfer Service to copy data hourly from the us-central1 bucket to the us-south1 bucket. Then run the Dataproc cluster in a zone in the us-central1 region, reading from the bucket in that region. In case of regional failure, redeploy your Dataproc clusters to the us-south1 region and read from the bucket in that region instead.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "First, create a dual-region Cloud Storage bucket in the us-central1 and us-south1 regions. Enable turbo replication. Then run the Dataproc cluster in a zone in the us-central1 region, reading from the bucket in the us-south1 region. In case of a regional failure, redeploy your Dataproc cluster to the us-south1 region and continue reading from the same bucket.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "because 1) multi-region buckets do not provide the lowest latency or sufficient bandwidth, and 2) multi-region buckets have an RPO of 1 hour (ie. data from the last hour could be lost).",
+      "B": "because dual-region buckets with turbo-replication have an RPO of 15 mins as required. Dataproc cluster gets redeployed to the available region and is colocated with the bucket.",
+      "C": "because STS only allows hourly transfers, which would not meet the 15 min RPO.",
+      "D": "because the primary Dataproc cluster runs in a different region to the bucket, increasing latency."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/locations#key-concepts",
+        "text": "cloud.google.com/storage/docs/locations#key-concepts"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/locations#location-dr",
+        "text": "cloud.google.com/storage/docs/locations#location-dr"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/locations#location-dr",
+        "text": "cloud.google.com/storage/docs/locations#location-dr"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Data Engineer",
+    "scenario": "You maintain ETL pipelines. You notice that a streaming pipeline running on Dataflow is taking a long time to process incoming data, which causes output delays. You also noticed that the pipeline graph was automatically optimized by Dataflow and merged into one step. You want to identify where the potential bottleneck is occurring. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Insert output sinks after each key processing step, and observe the writing throughput of each block.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Log debug information in each ParDo function, and analyze the logs at execution time.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Insert a Reshuffle operation after each processing step, and monitor the execution details in the Dataflow console.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Verify that the Dataflow service accounts have appropriate permissions to write the processed data to the output sinks.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "as it would create a lot of unnecessary output and it is not really a practical approach to identify processing bottlenecks in the pipeline.",
+      "B": "as this approach might create an unnecessary amount of logs and it does not really make it easier to identify the step that is causing the bottleneck.",
+      "C": "as the Reshuffle operation prevents the fusion of steps allowing us to observe the throughput of each individual step of the Dataflow pipeline.",
+      "D": "as the issue is related to the processing of incoming data and not on the writing of output data."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/pipeline-lifecycle#preventing_fusion",
+        "text": "cloud.google.com/dataflow/docs/pipeline-lifecycle#prevent..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Data Engineer",
+    "scenario": "You need to modernize your existing on-premises data strategy. Your organization currently uses: - Apache Hadoop clusters for processing multiple large data sets, including on-premises Hadoop Distributed File System (HDFS) for data replication. - Apache Airflow to orchestrate hundreds of ETL pipelines with thousands of job steps. You need to set up a new architecture in Google Cloud that can handle your Hadoop workloads and requires minimal changes to your existing orchestration processes. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Dataproc to migrate Hadoop clusters to Google Cloud, and Cloud Storage to handle any HDFS use cases. Convert your ETL pipelines to Dataflow.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Dataproc to migrate Hadoop clusters to Google Cloud, and Cloud Storage to handle any HDFS use cases. Orchestrate your pipelines with Cloud Composer.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use Bigtable for your large workloads, with connections to Cloud Storage to handle any HDFS use cases. Orchestrate your pipelines with Cloud Composer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Dataproc to migrate your Hadoop clusters to Google Cloud, and Cloud Storage to handle any HDFS use cases. Use Cloud Data Fusion to visually design and deploy your ETL pipelines.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "because in this scenario we are not looking to convert ETL pipelines, but orchestrate them within the Cloud. Dataflow is not an orchestration tool.",
+      "B": "because we would want to convert this company’s Hadoop workloads to Dataproc, and utilize Cloud Storage for their HDFS data. Additionally, Composer would be a great fit for moving their Airflow orchestration on to the cloud.",
+      "C": "because while Bigtable is a great choice for large analytical and operational workloads, and would be able to hold this organization’s many large datasets, Bigtable is more for an HBase migration, i.e. NOSQL database migration. Therefore this answer wouldn’t solve for migrating Hadoop clusters to the cloud. Bigtable could easily be part of the solution, but there was no indication that the organization was interested in a database move.",
+      "D": "because although this solution does accurately choose Dataproc and Cloud Storage, Cloud Data Fusion would not be the right choice for orchestration, as it is not an orchestration tool and the scenario did not have any requirements to translate their ETL pipelines into a different product or to do so in a code free fashion."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataproc",
+        "text": "cloud.google.com/dataproc"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/hadoop/hadoop-gcp-migration-data",
+        "text": "cloud.google.com/architecture/hadoop/hadoop-gcp-migration..."
+      },
+      {
+        "url": "https://cloud.google.com/composer",
+        "text": "cloud.google.com/composer"
+      },
+      {
+        "url": "https://cloud.google.com/data-fusion",
+        "text": "cloud.google.com/data-fusion"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Data Engineer",
+    "scenario": "You are designing the architecture of your application to store data in Cloud Storage. Your application consists of pipelines that read data from a Cloud Storage bucket that contains raw data, and write the data to a second bucket after processing. You want to design an architecture with Cloud Storage resources that are capable of being resilient if a Google Cloud regional failure occurs. You want to minimize the recovery point objective (RPO) if a failure occurs, with no impact on applications that use the stored data. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Adopt multi-regional Cloud Storage buckets in your architecture.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Adopt two regional Cloud Storage buckets, and update your application to write the output on both buckets.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Adopt a dual-region Cloud Storage bucket, and enable turbo replication in your architecture.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Adopt two regional Cloud Storage buckets, and create a daily task to copy from one bucket to the other.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because a multi regional bucket does not guarantee the minimum RPO for Cloud Storage.",
+      "B": "because having two regional buckets would have an impact on the applications.",
+      "C": "because a bucket with Turbo replication guarantees a 15 min RPO.",
+      "D": "because it has a RPO of up to 24 hours, and this would have an impact on the applications."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/turbo-replication",
+        "text": "cloud.google.com/storage/docs/turbo-replication"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/dr-scenarios-for-data",
+        "text": "cloud.google.com/architecture/dr-scenarios-for-data"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Data Engineer",
+    "scenario": "You are building an ELT solution in BigQuery by using Dataform. You need to perform uniqueness and null value checks on your final tables. What should you do to efficiently integrate these checks into your pipeline?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Build Dataform assertions into your code.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create Dataplex data quality tasks.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Build BigQuery user-defined functions (UDFs).",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Write a Spark-based stored procedure.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "as Dataform assertions are used to execute data quality checks within dataform and as part of a job.",
+      "B": "because Dataplex tasks are outside your pipeline.",
+      "C": "as BigQuery UDFs are not generally used for data quality checks",
+      "D": "as BigQuery Spark based stored procedures are not generally used for data quality checks"
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataform/docs/assertions",
+        "text": "cloud.google.com/dataform/docs/assertions"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Data Engineer",
+    "scenario": "You recently deployed several data processing jobs into your Cloud Composer 2 environment. You notice that some tasks are failing in Apache Airflow. On the monitoring dashboard, you see an increase in the total workers memory usage, and there were worker pod evictions. You need to resolve these errors. What should you do? (Choose two)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Increase the directed acyclic graph (DAG) file parsing interval.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Increase the Cloud Composer 2 environment size from medium to large.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Increase the memory available to the Airflow workers.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Increase the memory available to the Airflow triggerer.",
+        "is_correct": false
+      },
+      {
+        "id": "E",
+        "text": "Increase the maximum number of workers and reduce worker concurrency.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "E",
+    "explanations": {
+      "A": "because changing DAG file parsing interval only affects the Airflow scheduler. The Airflow workers handle the actual work of a DAG.",
+      "B": "because changing the environment size modifies only the capacities of Cloud Composer’s backend components, such as the Airflow database and the Airflow queue.",
+      "C": "because the majority of issues with worker pod evictions happen because of out-of-memory situations in workers. This is also suggested by the increased total workers memory usage in the monitoring dashboard. Increasing the memory available to the Airflow workers could reduce the memory pressure.",
+      "D": "because the increase in memory pressure is with the Airflow workers not the triggerer.",
+      "E": "because limiting the number of tasks each Airflow could work on at the same time and spreading them out to other workers could help to reduce memory pressure on each worker."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/composer/docs/composer-2/optimize-environments#env-size",
+        "text": "cloud.google.com/composer/docs/composer-2/optimize-enviro..."
+      },
+      {
+        "url": "https://cloud.google.com/composer/docs/composer-2/optimize-environments#monitor-evictions",
+        "text": "cloud.google.com/composer/docs/composer-2/optimize-enviro..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Data Engineer",
+    "scenario": "Your business users need a way to clean and prepare data before using the data for analysis. Your business users are less technically savvy and prefer to work with graphical user interfaces to define their transformations. After the data has been transformed, the business users want to perform their analysis directly in a spreadsheet. You need to recommend a solution that they can use. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Dataprep to clean the data, and write the results to BigQuery. Analyze the data by using Connected Sheets.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Dataprep to clean the data, and write the results to BigQuery. Analyze the data by using Looker Studio.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Dataflow to clean the data, and write the results to BigQuery. Analyze the data by using Connected Sheets.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Dataflow to clean the data, and write the results to BigQuery. Analyze the data by using Looker Studio.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "because Dataprep and Connected Sheets are correct.",
+      "B": "because Dataprep is correct, but using Looker Studio is incorrect.",
+      "C": "because using Dataflow is incorrect, but using Connect Sheets is correct.",
+      "D": "because using Dataflow and Looker Studio are both incorrect."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataprep",
+        "text": "cloud.google.com/dataprep"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/connected-sheets",
+        "text": "cloud.google.com/bigquery/docs/connected-sheets"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Data Engineer",
+    "scenario": "You are designing a Dataflow pipeline for a batch processing job. You want to mitigate multiple zonal failures at job submission time. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Specify a worker region by using the --region flag.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create an Eventarc trigger to resubmit the job in case of zonal failure when submitting the job.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Submit duplicate pipelines in two different zones by using the --zone flag.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Set the pipeline staging location as a regional Cloud Storage bucket.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "because by specifying a region instead of a specific zone, Dataflow can automatically choose the best possible zone for the job, providing an additional level of fault tolerance.",
+      "B": "because even though retrying the job submission (without explicitly specifying a zone) can be a helpful step in mitigating zonal failures, it is not optimal as it will add additional delays and overhead.",
+      "C": "because even though this approach would mitigate zonal failures, duplicated pipelines would cause an additional overhead in terms of costs and management of resources. Also, spinning pipelines in 2 different zones does not fully mitigate failure in case both zones are down while other zones in the region might still be available.",
+      "D": "because setting the staging location to a regional bucket does not address the risk of workers failures in case of zonal outages."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/guides/pipeline-workflows#geographic-redundancy",
+        "text": "cloud.google.com/dataflow/docs/guides/pipeline-workflows#..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Data Engineer",
+    "scenario": "Different teams in your organization store customer and performance data in BigQuery. Each team needs to keep full control of their collected data, be able to query data within their projects, and be able to exchange their data with other teams. You need to implement an organization-wide solution, while minimizing operational tasks and costs. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ask each team to create authorized views of their data. Grant the biquery.jobUser role to each team.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Ask each team to publish their data in BigQuery sharing (Analytics Hub). Direct the other teams to subscribe to them.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a BigQuery scheduled query to replicate all customer data into team projects.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable each team to create materialized views of the data they need to access in their projects.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "because biquery.jobUser does not grant access to data. Authorized views are not minimizing operational efforts needed.",
+      "B": "because it automatically creates an authorized dataset at subscription time.",
+      "C": "because it is increasing costs (data duplication) and adding operational tasks.",
+      "D": "because it is increasing costs (data duplication) and adding operational tasks."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/analytics-hub-introduction#architecture",
+        "text": "cloud.google.com/bigquery/docs/analytics-hub-introduction..."
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/share-access-views",
+        "text": "cloud.google.com/bigquery/docs/share-access-views"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/authorized-datasets",
+        "text": "cloud.google.com/bigquery/docs/authorized-datasets"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Data Engineer",
+    "scenario": "You are part of a healthcare organization where data is organized and managed by respective data owners in various storage services. As a result of this decentralized ecosystem, discovering and managing data has become difficult. You need to quickly identify and implement a cost-optimized solution to assist your organization with the following: - Data management and discovery - Data lineage tracking - Data quality validation How should you build the solution?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Build a new data discovery tool on Google Kubernetes Engine that helps with new source onboarding and data lineage tracking.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use BigLake to convert the current solution into a data lake architecture.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Dataplex to manage data, track data lineage, and perform data quality validation.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use BigQuery to track data lineage, and use Dataprep to manage data and perform data quality validation.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because, this is a time consuming and unoptimised way to solve the problem.",
+      "B": "because converting the decentralized ecosystem into a data lake model will be time consuming and high cost.",
+      "C": "because Dataplex gives us the benefit of managing decentralized ecosystems, do data validations and track lineage",
+      "D": "because BigQuery data lineage tracking is only for data stored in BigQuery, Dataprep is not the right solution for data management and validation"
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataplex/docs/introduction",
+        "text": "cloud.google.com/dataplex/docs/introduction"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/data-analytics/manage-and-govern-data-with-the-unified-dataplex-and-data-catalog",
+        "text": "cloud.google.com/blog/products/data-analytics/manage-and-..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Data Engineer",
+    "scenario": "You want to store your team’s shared tables in a single dataset to make data easily accessible to various analysts. You want to make this data readable but unmodifiable by analysts. At the same time, you want to provide the analysts with individual workspaces in the same project, where they can create and store tables for their own use, without the tables being accessible by other analysts. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Give analysts the BigQuery Data Viewer role at the project level. Create one other dataset, and give the analysts the BigQuery Data Editor role on that dataset.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Give analysts the BigQuery Data Viewer role at the project level. Create a dataset for each analyst, and give each analyst the BigQuery Data Editor role at the project level.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Give analysts the BigQuery Data Viewer role on the shared dataset. Create a dataset for each analyst, and give each analyst the BigQuery Data Editor role at the dataset level for their assigned dataset.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Give analysts the BigQuery Data Viewer role on the shared dataset. Create one other dataset and give the analysts the BigQuery Data Editor role on that dataset.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because…Condition 1 wrong, 2 wrong, 3 right.",
+      "B": "because…Condition 1 wrong, 2 right, 3 wrong.",
+      "C": "because…Condition 1 right, 2 right, 3 right.",
+      "D": "because...Condition 1 right, 2 wrong, 3 right."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/access-control#permissions_and_predefined_roles",
+        "text": "cloud.google.com/bigquery/docs/access-control#permissions..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Data Engineer",
+    "scenario": "You have several different file type data sources, such as Apache Parquet and CSV. You want to store the data in Cloud Storage. You need to set up an object sink for your data that allows you to use your own encryption keys. You want to use a GUI-based solution. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Storage Transfer Service to move files into Cloud Storage.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Dataflow to move files into Cloud Storage.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Cloud Data Fusion to move files into Cloud Storage.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use BigQuery Data Transfer Service to move files into BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "answer because although you could utilize Storage Transfer Service to easily move files to a Cloud Storage bucket and it is a no code solution to do so, Storage Transfer Service does not currently support customer managed encryption keys.",
+      "B": "answer because although you can use Dataflow to move files into Cloud Storage, it does not currently support customer managed encryption keys. Additionally, this wouldn’t fit the requirement of having a GUI based solution.",
+      "C": "because Data Fusion has connectors that can be used to support customer managed keys, and is one of Google Cloud’s top ETL tools, making it a great option to move load files into Cloud Storage. Additionally, Data Fusion supports code free ETL solutioning and is the closest product to Informatica functionality in the answers.",
+      "D": "because while BigQuery Data Transfer Service does support customer managed encryption key and is a low/no code option, however it is not really the best option for a file sink. Cloud Storage is the better option as an object store."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage-transfer-service",
+        "text": "cloud.google.com/storage-transfer-service"
+      },
+      {
+        "url": "https://cloud.google.com/data-fusion/docs/how-to/customer-managed-encryption-keys",
+        "text": "cloud.google.com/data-fusion/docs/how-to/customer-managed..."
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/customer-supplied-keys#restrictions",
+        "text": "cloud.google.com/storage/docs/encryption/customer-supplie..."
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys",
+        "text": "cloud.google.com/storage/docs/encryption/using-customer-m..."
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/batch-loading-data",
+        "text": "cloud.google.com/bigquery/docs/batch-loading-data"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Data Engineer",
+    "scenario": "You are designing a real-time system for a ride hailing app that identifies areas with high demand for rides to effectively reroute available drivers to meet the demand. The system ingests data from multiple sources to Pub/Sub, processes the data, and stores the results for visualization and analysis in real-time dashboards. The data sources include driver location updates every 5 seconds and app-based booking events from riders. The data processing involves real-time aggregation of supply and demand data for the last 30 seconds, every 2 seconds, and storing the results in a low-latency system for visualization. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Group the data by using a tumbling window in a Dataflow pipeline, and write the aggregated data to Memorystore.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Group the data by using a hopping window in a Dataflow pipeline, and write the aggregated data to Memorystore.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Group the data by using a session window in a Dataflow pipeline, and write the aggregated data to BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Group the data by using a hopping window in a Dataflow pipeline, and write the aggregated data to BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "because the tumbling window function is not ideal for real-time processing as it creates fixed, non-overlapping windows which can lead to outdated information in a real-time dashboards",
+      "B": "because the hopping window function is suitable for the given scenario to aggregate for the past 30 seconds for every 2 seconds period. Storing the aggregate data in Cloud Memorystore ensures low latency access to the data which is essential for real time dashboards.",
+      "C": "because the session window function is not suitable for this scenario as it is meant to group data based on periods of activity.",
+      "D": "because BigQuery is not meant for low latency access."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines#windows",
+        "text": "cloud.google.com/dataflow/docs/concepts/streaming-pipelin..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Data Engineer",
+    "scenario": "You have terabytes of customer behavioral data streaming from Google Analytics into BigQuery daily. Your customers’ information, such as their preferences, is hosted on a Cloud SQL for MySQL database. Your CRM database is hosted on a Cloud SQL for PostgreSQL instance. The marketing team wants to use your customers’ information from the two databases and the customer behavioral data to create marketing campaigns for yearly active customers. You need to ensure that the marketing team can run the campaigns over 100 times a day on typical days and up to 300 during sales. At the same time you want to keep the load on the Cloud SQL databases to a minimum. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create BigQuery connections to both Cloud SQL databases. Use BigQuery federated queries on the two databases and the Google Analytics data on BigQuery to run these queries.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a Dataproc cluster with Trino to establish connections to both Cloud SQL databases and BigQuery, to execute the queries.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create streams in Datastream to replicate the required tables from both Cloud SQL databases to BigQuery for these queries.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create a job on Apache Spark with Dataproc Serverless to query both Cloud SQL databases and the Google Analytics data on BigQuery for these queries.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because using BigQuery federated queries will increase the load to the databases significantly as the queries for these queries involve full table scan.",
+      "B": "because using Trino on Dataproc might require a large cluster to query the data in BigQuery which is not going to be performant loading large amount of data from BigQuery alongside with the data from 2 databases, therefore query execution should be pushed down to BigQuery as much as possible. Does not meet the requirement of keeping load to Cloud SQL databases to a minimum.",
+      "C": "because the required data that reside on the transactional databases are replicated in BigQuery which will minimize the load on the transactional databases as it is handled by change data capture and allow efficient queries for the campaigns queries.",
+      "D": "because using serverless Spark might require high amount of Data Compute Unit or Shuffle storage to query the data in BigQuery (using Storage Read API) which is not going to be performant and will be costly to maintain, therefore query execution should be pushed down to BigQuery as much as possible. Does not meet the requirement of keeping load to Cloud SQL databases to a minimum."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/cloud-sql-federated-queries",
+        "text": "cloud.google.com/bigquery/docs/cloud-sql-federated-queries"
+      },
+      {
+        "url": "https://trino.io/docs/current/connector.html",
+        "text": "trino.io/docs/current/connector.html"
+      },
+      {
+        "url": "https://cloud.google.com/datastream/docs/quickstart-replication-to-bigquery",
+        "text": "cloud.google.com/datastream/docs/quickstart-replication-t..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Data Engineer",
+    "scenario": "You have an Oracle database deployed in a VM as part of a Virtual Private Cloud (VPC) network. You want to replicate and continuously synchronize 50 tables to BigQuery. You want to minimize the need to manage infrastructure. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy Apache Kafka in the same VPC network, use Kafka Connect Oracle change data capture (CDC), and the Kafka Connect Google BigQuery Sink Connector.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy Apache Kafka in the same VPC network, use Kafka Connect Oracle Change Data Capture (CDC), and Dataflow to stream the Kafka topic to BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Datastream service from Oracle to BigQuery, use a private connectivity configuration to the same VPC network, and a connection profile to BigQuery.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create a Pub/Sub subscription to write to BigQuery directly. Deploy the Debezium Oracle connector to capture changes in the Oracle database, and sink to the Pub/Sub topic.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because Apache Kafka requires a VM to manage.",
+      "B": "because Apache Kafka requires a VM to manage.",
+      "C": "because Datastream is a serverless CDC service.",
+      "D": "because the Debezium connector requires a VM to manage."
+    },
+    "references": [
+      {
+        "url": "https://docs.confluent.io/kafka-connectors/oracle-cdc/current/overview.html",
+        "text": "docs.confluent.io/kafka-connectors/oracle-cdc/current/ove..."
+      },
+      {
+        "url": "https://docs.confluent.io/kafka-connectors/bigquery/current/overview.html",
+        "text": "docs.confluent.io/kafka-connectors/bigquery/current/overv..."
+      },
+      {
+        "url": "https://cloud.google.com/dataflow/docs/guides/templates/provided/kafka-to-bigquery",
+        "text": "cloud.google.com/dataflow/docs/guides/templates/provided/..."
+      },
+      {
+        "url": "https://cloud.google.com/datastream/docs/overview",
+        "text": "cloud.google.com/datastream/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/datastream/docs/sources-oracle",
+        "text": "cloud.google.com/datastream/docs/sources-oracle"
+      },
+      {
+        "url": "https://cloud.google.com/datastream/docs/destination-bigquery",
+        "text": "cloud.google.com/datastream/docs/destination-bigquery"
+      },
+      {
+        "url": "https://debezium.io/documentation/reference/stable/connectors/oracle.html",
+        "text": "debezium.io/documentation/reference/stable/connectors/ora..."
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/bigquery",
+        "text": "cloud.google.com/pubsub/docs/bigquery"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Data Engineer",
+    "scenario": "You are using Workflows to call an API that returns a 1KB JSON response, apply some complex business logic on this response, wait for the logic to complete, and then perform a load from a Cloud Storage file to BigQuery. The Workflows standard library does not have sufficient capabilities to perform your complex logic, and you want to use Python's standard library instead. You want to optimize your workflow for simplicity and speed of execution. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Dataproc cluster, and use PySpark to apply the logic on your JSON file.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Invoke a Cloud Run function instance that uses Python to apply the logic on your JSON file.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Invoke a subworkflow in Workflows to apply the logic on your JSON file.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a Cloud Composer environment and run the logic in Cloud Composer.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "because creating a Dataproc cluster to process a 1KB JSON file is not optimized for speed.",
+      "B": "because a Cloud Run function is fast to spin up and supports the use of Python.",
+      "C": "because creating a subworkflow will only give you access to Workflows standard library, hence not solving the problem",
+      "D": "because it is not optimizing for simplicity and would be overkill"
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/workflows/docs/calling-run-functions",
+        "text": "cloud.google.com/workflows/docs/calling-run-functions"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Data Engineer",
+    "scenario": "You need to look at BigQuery data from a specific table multiple times a day. The underlying table you are querying is several petabytes in size, but you want to filter your data and provide simple aggregations to downstream users. You want to run queries faster and get up-to-date insights quicker. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Run a scheduled query to pull the necessary data at specific intervals daily.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use a cached query to accelerate time to results.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Limit the query columns being pulled in the final result.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a materialized view based off of the query being run.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "because running a scheduled query that is identical to the existing query won’t really improve anything. You could try to make sure that the scheduled queries are run before the downstream consumer needs it, but this is very rigid and inflexible because from the scenario above we don’t know the exact times the data will be needed. Additionally, running a scheduled query on PBs of data is not very performant, and updates would only occur when queries are run.",
+      "B": "because since query caching is, in theory, already enabled, this would not speed up the query.",
+      "C": "because while this is a way to optimize your queries, from the problem statement we have no indication that there are excess columns being brought in by the query. Taking a route that would eliminate data that may be necessary to end consumers is not the best option in this scenario.",
+      "D": "option in this scenario. Materialized views are optimal for improving query performance if you frequently need to pre-aggregate, pre-filter, pre-join, and recluster data. Since we want to pre-filter PBs of data and take advantage of the performance and incremental refresh of materialized views, this is the best option. Additionally, materialized views will be updated whenever there are changes to the source table, providing fresh data."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/materialized-views-intro",
+        "text": "cloud.google.com/bigquery/docs/materialized-views-intro"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/cached-results",
+        "text": "cloud.google.com/bigquery/docs/cached-results"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/scheduling-queries",
+        "text": "cloud.google.com/bigquery/docs/scheduling-queries"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/best-practices-performance-compute",
+        "text": "cloud.google.com/bigquery/docs/best-practices-performance..."
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/materialized-views-intro#comparison",
+        "text": "cloud.google.com/bigquery/docs/materialized-views-intro#c..."
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Data Engineer",
+    "scenario": "You are administering a BigQuery on-demand environment. Your business intelligence tool is submitting hundreds of queries each day that aggregate a large (50 TB) sales history fact table at the day and month levels. These queries have a slow response time and are exceeding cost expectations. You need to decrease response time, lower query costs, and minimize maintenance. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Build materialized views on top of the sales table to aggregate data at the day and month level.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Build authorized views on top of the sales table to aggregate data at the day and month level.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable BI Engine and add your sales table as a preferred table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a scheduled query to build sales day and sales month aggregate tables on an hourly basis.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "as materialized views pre-aggregate data so queries do not scan as much data and run faster",
+      "B": "as authorized views are not a performance improvement",
+      "C": "as BI Engine caches frequently accessed dimension tables and won’t hold a 50 TB table in memory.",
+      "D": "because you have to maintain the scheduled queries"
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/materialized-views-intro#use_cases",
+        "text": "cloud.google.com/bigquery/docs/materialized-views-intro#u..."
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/bi-engine-preferred-tables",
+        "text": "cloud.google.com/bigquery/docs/bi-engine-preferred-tables"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/bi-engine-intro#minimize_your_joins",
+        "text": "cloud.google.com/bigquery/docs/bi-engine-intro#minimize_y..."
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Data Engineer",
+    "scenario": "You designed a data warehouse in BigQuery to analyze sales data. You want a self-serving, low-maintenance, and cost-effective solution to share the sales dataset to other business units in your organization. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the BigQuery Data Transfer Service to create a schedule that copies the sales dataset to the other business units’ projects.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create and share views with the users in the other business units.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a BigQuery sharing (Analytics Hub) private exchange, and publish the sales dataset.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Enable the other business units’ projects to access the authorized views of the sales dataset.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "because while it is a working solution, it is not cost effective as it will increase the storage cost (copies) and expose partially stale data (12h)",
+      "B": "because a shared view does not give access to the data",
+      "C": "because it is cost effective, as the data is not copied and low maintenance as the data can be discovered and subscribed without additional involvement of the data producer.",
+      "D": "because while it works, the authorized views changes incur lots of maintenance, and reauthorizations from the dataset provider."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/authorized-datasets",
+        "text": "cloud.google.com/bigquery/docs/authorized-datasets"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/analytics-hub-manage-exchanges#share_a_data_exchange",
+        "text": "cloud.google.com/bigquery/docs/analytics-hub-manage-excha..."
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/managing-datasets#copy-datasets",
+        "text": "cloud.google.com/bigquery/docs/managing-datasets#copy-dat..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Data Engineer",
+    "scenario": "You orchestrate ETL pipelines by using Cloud Composer. One of the tasks in the Airflow DAG relies on a third-party service. You want to be notified when the task does not succeed. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Assign a function with notification logic to the on_failure_callback parameter for the operator responsible for the task at risk.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Assign a function with notification logic to the sla_miss_callback parameter for the operator responsible for the task at risk.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Assign a function with notification logic to the on_retry_callback parameter for the operator responsible for the task at risk.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a Cloud Monitoring alert on the sla_missed metric associated with the task at risk to trigger a notification.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "as the callback function will be invoked when the specific task fails.",
+      "B": "as the callback function will be invoked when the task misses its defined SLAs and not specifically when it fails.",
+      "C": "as the callback function will be invoked when the task is retried after a failure and not if it just fails without retrying.",
+      "D": "as the alert is set up on the wrong metric and it requires additional configurations."
+    },
+    "references": [
+      {
+        "url": "https://airflow.apache.org/docs/apache-airflow/2.2.2/logging-monitoring/callbacks.html",
+        "text": "airflow.apache.org/docs/apache-airflow/2.2.2/logging-moni..."
+      },
+      {
+        "url": "https://airflow.apache.org/docs/apache-airflow/2.2.2/logging-monitoring/index.html",
+        "text": "airflow.apache.org/docs/apache-airflow/2.2.2/logging-moni..."
+      },
+      {
+        "url": "https://cloud.google.com/composer/docs/composer-2/monitor-environments",
+        "text": "cloud.google.com/composer/docs/composer-2/monitor-environ..."
+      }
+    ]
+  },
+  {
+    "number": 26,
+    "domain": "Data Engineer",
+    "scenario": "You need to create a SQL pipeline. The pipeline runs an aggregate SQL transformation on a BigQuery table every two hours and appends the result to another existing BigQuery table. You need to configure the pipeline to retry if errors occur. You want the pipeline to send an email notification after three consecutive failures. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a BigQuery scheduled query to run the SQL transformation with schedule options that repeats every two hours, and enable email notifications.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use the BigQueryUpsertTableOperator in Cloud Composer, set the retry parameter to three, and set the email_on_failure parameter to true.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a BigQuery scheduled query to run the SQL transformation with schedule options that repeats every two hours, and enable notification to Pub/Sub topic. Use Pub/Sub and Cloud Run functions to send an email after three failed executions.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use the BigQueryInsertJobOperator in Cloud Composer, set the retry parameter to three, and set the email_on_failure parameter to true.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "because BigQuery scheduled query does not have retry options.",
+      "B": "because BigQueryUpsertTableOperator is used to create/update table properties and not to run SQL transformation.",
+      "C": "because BigQuery scheduled query does not have retry options even though custom notification logic can be built as a Cloud Run function.",
+      "D": "because the BigQueryInsertJobOperator operator can run sql transformation queries on a BigQuery table and append the results to another BigQuery table. With retry=3 and email_on_failure=True, the operator retries 3 times and then sends email notification if all the 3 retries are exhausted This form was created inside of Google.com. Contact form owner Privacy & Terms Forms Help and feedback Contact form owner Help Forms improve Report"
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/scheduling-queries",
+        "text": "cloud.google.com/bigquery/docs/scheduling-queries"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/transfer-run-notifications?e=13803378&mods=dm_deploy_from_gcs",
+        "text": "cloud.google.com/bigquery/docs/transfer-run-notifications..."
+      },
+      {
+        "url": "https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/bigquery.html#upsert-table",
+        "text": "airflow.apache.org/docs/apache-airflow-providers-google/s..."
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/data_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/data_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

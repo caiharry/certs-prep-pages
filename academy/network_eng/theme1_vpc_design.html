@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 1 Revision Guide - VPC Foundations, IPAM & Routing</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-green-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #f0fdf4;
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--rev-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="theme0_foundations.html" class="nav-link">&larr; Back to Theme 0</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
+      <a href="theme2_private_access.html" class="nav-link">Go to Theme 2: Private Access &amp; NCC &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 1: VPC Foundations, IPAM &amp; Routing</h1>
+      <p>Mastering network tiers, Shared VPC permissions, subnet magic, and dynamic routing without getting lost in transit!</p>
+      <div class="section-badge">Theme 1 🟢</div>
+    </header>
+
+    <!-- 1.1 VPC Foundations & Network Tiers -->
+    <h2>1.1 VPC Foundations &amp; Network Tiers</h2>
+    <p>Welcome, networking wizard! Let's kick off with the absolute bedrock of Google Cloud Networking. A Google Cloud VPC is a <strong>global</strong> resource, but subnets are strictly <strong>regional</strong>. This is a massive architectural superpower! It means you can have a single VPC spanning the entire planet, with subnets in Europe, the US, and Asia talking to each other without touching the public internet. 🌍</p>
+
+    <div class="rev-card tip">
+      <h3>⚡ Premium vs. Standard Network Tiers</h3>
+      <p>Google Cloud offers two network service tiers. Examiners love to test your understanding of the trade-offs between cost and performance:</p>
+      <ul>
+        <li><strong>Premium Tier (Default):</strong> Google's high-performance global fiber network. Packets enter Google's network at the cold-potato edge closest to the user and travel entirely on Google's private backplane. It supports global load balancing and has a massive SLA. <strong>Always choose this for production!</strong> 🚀</li>
+        <li><strong>Standard Tier:</strong> A cheaper, hot-potato routing option. Packets travel over the public internet and only hop onto Google's network at the destination region. It only supports regional load balancing. <strong>Use this only to save pennies on non-critical dev/test workloads!</strong> 🥔</li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Watch out for the Global Load Balancer Tier Trap!</strong> You cannot use Global External Application Load Balancers or Global External Proxy Network Load Balancers with Standard Tier. Standard Tier is strictly regional. If an exam question asks you to design a global, low-latency web service and mentions Standard Tier to save costs, it's a trap!
+    </div>
+
+    <h3>📏 MTU Sizing: Don't Get Fragmented!</h3>
+    <p>MTU (Maximum Transmission Unit) is the largest packet size your network can carry. If you send a packet larger than the MTU, it gets fragmented (chopped up), which ruins performance, or gets silently dropped! Here are the golden numbers to memorize:</p>
+    <ul>
+      <li><strong>1460 bytes:</strong> The legacy default for GCP VPCs.</li>
+      <li><strong>1500 bytes:</strong> Standard Ethernet. The default for new VPCs since 2021. Perfect for general internet traffic.</li>
+      <li><strong>8896 bytes:</strong> Jumbo frames! Supported for high-throughput, low-latency internal (east-west) traffic like GKE node-to-node, BigQuery exports, or Filestore.</li>
+    </ul>
+
+    <div class="mnemonic">
+      <strong>🧠 Crucial Memory Tip: The HA VPN MTU Ceiling!</strong>
+      <p>Write this down: <strong>HA VPN has a strict MTU ceiling of 1460 bytes!</strong> Why? Because IPSec encryption adds overhead on top of the standard 1500-byte underlay. If your VPC is configured for 8896 (Jumbo) or 1500 and you route traffic over HA VPN to on-premises, TCP will survive thanks to MSS clamping, but UDP traffic (like Syslog or DNS) will be silently black-holed! Always set your VPC MTU to match the lowest common denominator on your hybrid path, or clamp MSS!</p>
+    </div>
+
+    <div class="joke-box">
+      "Why did the IP packet go to the gym? To increase its MTU, but it ended up getting fragmented anyway!" 🏋️‍♂️
+    </div>
+
+    <!-- 1.2 Shared VPC & IAM -->
+    <h2>1.2 Shared VPC &amp; IAM Architecture</h2>
+    <p>In a large enterprise, you don't want every single team managing their own firewalls, VPNs, and Interconnects. That would be absolute chaos! Instead, you use <strong>Shared VPC</strong> to centralize network administration while letting teams manage their own application resources.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Shared VPC Concept</th>
+            <th>Role / Responsibility</th>
+            <th>IAM Role Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Host Project</strong></td>
+            <td>Contains the shared VPC network, subnets, firewalls, and hybrid connections. Managed by the central NetOps team.</td>
+            <td><code>compute.packetMirroringAdmin</code>, <code>compute.securityAdmin</code>, etc.</td>
+          </tr>
+          <tr>
+            <td><strong>Service Projects</strong></td>
+            <td>Contain the application resources (VMs, GKE clusters, etc.) that use the shared subnets. Attached to the Host Project.</td>
+            <td>Managed by App teams.</td>
+          </tr>
+          <tr>
+            <td><strong>Subnet-level Permission</strong></td>
+            <td>Allows service project admins to provision VMs only in specific subnets. Best practice for micro-segmentation! 🔒</td>
+            <td><code>roles/compute.networkUser</code> bound to <strong>specific subnets</strong> in the Host Project.</td>
+          </tr>
+          <tr>
+            <td><strong>Project-level Permission</strong></td>
+            <td>Allows service project admins to use <em>any</em> subnet in the Shared VPC. Too permissive for most secure setups!</td>
+            <td><code>roles/compute.networkUser</code> bound at the <strong>Host Project level</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Shared VPC IAM Service Account Trap!</strong> When deploying resources in a service project (like GKE or Compute Engine) that use a Shared VPC, you must grant the <strong><code>compute.networkUser</code></strong> role to the service project's <strong>Google-managed service accounts</strong> (e.g., the GKE Service Agent or Compute Engine Service Agent) in the <strong>Host Project</strong>! If you only grant it to the human developer, the automated deployment will fail with a permission error!
+    </div>
+
+    <!-- 1.3 IPAM & Subnets -->
+    <h2>1.3 IP Address Management (IPAM) &amp; Subnets</h2>
+    <p>Managing IP addresses is like playing a high-stakes game of Tetris. If you run out of IP space, your GKE clusters can't scale, and your subnets will overlap with your on-premises network!</p>
+
+    <div class="rev-card tip">
+      <h3>🎨 Advanced IPAM Strategies</h3>
+      <ul>
+        <li><strong>Subnet Range Expansion:</strong> You can expand the IP range of an existing subnet without destroying any VMs or interrupting traffic! The new range must be larger than the old one (e.g., changing <code>/24</code> to <code>/22</code>) and must not overlap with other subnets. <em>Note: You can never shrink a subnet range!</em></li>
+        <li><strong>Privately Used Public IPs (PUPI):</strong> You can use public IP ranges internally inside your VPC as private subnets. However, if you do this, your VMs will lose the ability to talk to the actual owners of those public IPs on the internet. Use with caution!</li>
+        <li><strong>Non-RFC 1918 Ranges:</strong> Classless Inter-Domain Routing (CIDR) ranges outside the standard private blocks (like <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>). GCP allows you to use these, which is a lifesaver when you run out of standard RFC 1918 space!</li>
+        <li><strong>Private NAT:</strong> Used to translate private IP ranges to other private IP ranges. Extremely useful when merging two companies that both used <code>10.0.0.0/8</code> internally, preventing overlapping IP conflicts!</li>
+      </ul>
+    </div>
+
+    <!-- 1.4 VPC Peering & Routing -->
+    <h2>1.4 VPC Peering &amp; Routing</h2>
+    <p>Routing is how packets find their way home. Google Cloud uses <strong>Cloud Router</strong> to manage dynamic routing via BGP. Let's look at the routing rules that examiners love to test.</p>
+
+    <div class="rev-card warn">
+      <h3>🚨 The Non-Transitive Peering Wall</h3>
+      <p>Just like in the Database exam, this is the #1 networking trap in GCP! <strong>VPC Network Peering is non-transitive.</strong></p>
+      <p>If Network A is peered with Network B, and Network B is peered with Network C, Network A <strong>cannot</strong> talk to Network C! Traffic simply hits a brick wall and dies. 🧱</p>
+      <p><strong>🛠️ The Custom Route Import/Export Fix:</strong> If you have a hybrid connection (VPN or Interconnect) in Network B, Network A cannot reach on-premises natively. You must configure the peering link between A and B to <strong>"Export Custom Routes"</strong> from B, and <strong>"Import Custom Routes"</strong> into A. This propagates the hybrid routes across the peering boundary!</p>
+    </div>
+
+    <h3>🗺️ Dynamic Routing Modes: Regional vs. Global</h3>
+    <p>When you create a VPC, you must choose a dynamic routing mode. This controls how Cloud Router advertises routes:</p>
+    <ul>
+      <li><strong>Regional Dynamic Routing (Default):</strong> Cloud Router only advertises and learns routes for subnets in its own region. If you have a VPN in <code>europe-west1</code>, VMs in <code>us-central1</code> cannot use it!</li>
+      <li><strong>Global Dynamic Routing:</strong> Cloud Router shares learned routes across all regions in the VPC. VMs in any region can route traffic to on-premises via a VPN located in any other region. <strong>Always use Global for hybrid architectures!</strong> 🌐</li>
+    </ul>
+
+    <h3>🚗 Policy-Based Routing &amp; NVA Insertion</h3>
+    <p>What if you want to inspect all egress traffic using a third-party firewall VM (Network Virtual Appliance - NVA)? You can't just rely on standard destination-based routing. You need <strong>Policy-Based Routing (PBR)</strong>!</p>
+    <p>PBR allows you to route traffic based on <strong>source IP, destination IP, protocol, and network tags</strong>. You can configure PBR to direct traffic to an <strong>Internal Load Balancer (ILB)</strong> as the next hop, which distributes the traffic across a pool of healthy NVA firewalls. This gives you a highly available, auto-scaling security inspection tier! 🛡️</p>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Can you shrink an existing VPC subnet range to free up IP addresses?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>No!</strong> You can only expand subnet ranges. If you need to make a subnet smaller, you must delete it and recreate it (which destroys any resources inside it!).
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> What happens to UDP traffic when a VPC with an MTU of 8896 bytes sends packets over an HA VPN tunnel (MTU 1460) to on-premises?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Silent black-holing!</strong> Because UDP does not support TCP MSS clamping, and PMTU discovery often fails (e.g., if ICMP is blocked), UDP packets larger than 1460 bytes will be dropped silently.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> True or False: VPC Network Peering allows transitive routing by default.</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>False!</strong> VPC Peering is strictly non-transitive. To share custom routes (like VPN or Interconnect routes) across a peer, you must explicitly enable custom route import/export on the peering link.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> Which IAM role must be granted to the GKE Service Agent in the Host Project to deploy a Shared VPC cluster?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong><code>roles/compute.networkUser</code></strong> (Compute Network User). This must be granted to the GKE Service Agent service account in the Host Project (either at the project level or bound to specific shared subnets).
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 1 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style VPC design and routing brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> In a Shared VPC, Service Project A (payments) must deploy VMs only into <code>subnet-payment</code>, and Service Project B (analytics) only into <code>subnet-analytics</code>, both in the host project. The central network team must keep control of routing and firewall rules. How should you grant access?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Grant <code>roles/compute.networkUser</code> to each service project's identity at the host-project level, then rely on an organization policy to limit which subnet each one may use.</li>
+          <li data-option="B">B) Grant <code>roles/compute.networkUser</code> to project A's identity on <code>subnet-payment</code> only, and to project B's identity on <code>subnet-analytics</code> only.</li>
+          <li data-option="C">C) Grant <code>roles/compute.networkAdmin</code> to both service-project identities on the host project so each team manages the bindings for its own subnet.</li>
+          <li data-option="D">D) Peer each service project's own VPC to the host VPC, then use a hierarchical firewall policy to confine each team to its assigned subnet.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This is least privilege in action. Binding <code>compute.networkUser</code> at the <strong>subnet level</strong> means each service project can see and deploy into only its designated subnet, and because you never grant admin roles, the central team keeps control of routes and firewalls. 🔒</p>
+          <ul>
+            <li><strong>A:</strong> Project-level <code>networkUser</code> lets both projects deploy into <em>any</em> subnet in the host project, and organization policy doesn't scope subnet usage per project this way.</li>
+            <li><strong>C:</strong> <code>networkAdmin</code> lets the service teams change firewalls, routes, and VPNs in the host project &mdash; exactly the central control you must keep.</li>
+            <li><strong>D:</strong> Shared VPC service projects consume the host network directly rather than via peering, and firewall policy filters traffic; it does not grant subnet deploy permission.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> A subnet's primary range <code>10.0.0.0/24</code> is nearly exhausted. The team needs more internal IPs on this subnet without renumbering or recreating the running VMs. What is the supported way to add capacity?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Expand the subnet's primary IPv4 range in place to a larger prefix such as <code>/22</code>, which keeps existing IPs and adds free addresses.</li>
+          <li data-option="B">B) Delete and recreate the subnet with a <code>/22</code> range, then migrate the VMs into the new subnet during a maintenance window.</li>
+          <li data-option="C">C) Add a second primary IPv4 range to the subnet so that newly created VMs can draw their primary IP from either range.</li>
+          <li data-option="D">D) Peer this subnet to a new <code>/22</code> subnet in another VPC so the existing VMs can borrow addresses across the peering link.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> Google Cloud lets you <strong>expand a subnet's primary IPv4 range</strong> to a larger block (a smaller prefix length) in place. Existing instances keep their addresses and more become available. You can't <em>shrink</em> a range, but expansion is fully supported and non-disruptive. 📈</p>
+          <ul>
+            <li><strong>B:</strong> Deleting and recreating is disruptive and unnecessary &mdash; in-place expansion exists precisely to avoid this.</li>
+            <li><strong>C:</strong> A subnet has exactly one primary IPv4 range. You can add <em>secondary</em> ranges for alias IPs / GKE Pods and Services, but VMs' primary NIC addresses always come from the single primary range.</li>
+            <li><strong>D:</strong> Peering does not let a VM pull an IP from another subnet's range; a VM's address always comes from its own subnet.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A latency-sensitive web service runs in one region on Standard Tier networking. Users far from that region complain about high latency, and you want traffic to ride Google's backbone, entering and leaving as close to each user as possible. Which change best achieves this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Keep Standard Tier but place Cloud CDN in front of the load balancer so responses are cached at the network edge for all users.</li>
+          <li data-option="B">B) Deploy the service in a second region and keep Standard Tier in both, using DNS geo-routing to send each user to the nearer region.</li>
+          <li data-option="C">C) Move the external IP and load balancer to Premium Tier so traffic enters and exits Google's edge nearest the user, over the backbone.</li>
+          <li data-option="D">D) Configure the load balancer for Premium Tier egress while keeping its forwarding rule on Standard Tier to hold down inbound traffic cost.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> <strong>Premium Tier</strong> carries traffic on Google's private global backbone using cold-potato routing, so packets enter and leave at the Google edge closest to the user &mdash; cutting latency for distant users. (Global external load balancers require Premium Tier anyway.) 🌍</p>
+          <ul>
+            <li><strong>A:</strong> CDN helps cacheable content, but dynamic/uncacheable requests still traverse the underlying path, which the tier governs.</li>
+            <li><strong>B:</strong> Multi-region plus DNS helps, but on Standard Tier each region still hands traffic to the public internet near the source, so long-haul latency remains.</li>
+            <li><strong>D:</strong> You can't split a single forwarding rule's ingress and egress across tiers; tier is set per forwarding rule / external IP, so this is not a valid configuration.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> An HA VPN with a Cloud Router in <code>us-east1</code> (dynamic routing mode: <em>Regional</em>) lets on-premises hosts reach VMs in <code>us-east1</code>, but not VMs in <code>us-west1</code> in the same VPC. You want the simplest change that lets on-premises reach all regions. What should you do?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Add a second HA VPN and Cloud Router in <code>us-west1</code> and run BGP over both so each region is advertised to on-premises locally.</li>
+          <li data-option="B">B) Switch the VPC's dynamic routing mode from Regional to Global so the Cloud Router advertises every region's subnets.</li>
+          <li data-option="C">C) Add custom static routes for the <code>us-west1</code> subnets with the next hop set to the <code>us-east1</code> HA VPN gateway interface.</li>
+          <li data-option="D">D) Enable VPC Network Peering between the <code>us-east1</code> and <code>us-west1</code> subnets and turn on custom route export on the peering link.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> In <strong>Regional</strong> mode a Cloud Router only advertises (and applies learned routes to) subnets in its own region. <strong>Global</strong> dynamic routing propagates BGP routes to and from all regions, so on-premises learns <code>us-west1</code> &mdash; a single-setting fix. 🌐</p>
+          <ul>
+            <li><strong>A:</strong> A second tunnel and router would work, but it's far more cost and operational overhead than flipping one VPC setting.</li>
+            <li><strong>C:</strong> Static routes here are brittle and don't scale, and on-premises still wouldn't <em>learn</em> <code>us-west1</code> unless the Cloud Router advertises it (i.e. Global mode).</li>
+            <li><strong>D:</strong> Subnets in the same VPC are already connected and cannot be peered to each other; peering is only for separate VPCs.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/vpc/docs/mtu" class="doc-link" target="_blank">
+          <strong>VPC Maximum Transmission Unit (MTU)</strong>
+          <span>Official MTU limits, Jumbo frames, and VM configurations.</span>
+        </a>
+        <a href="https://cloud.google.com/vpc/docs/shared-vpc" class="doc-link" target="_blank">
+          <strong>Shared VPC Overview</strong>
+          <span>Host projects, service projects, and subnet sharing architectures.</span>
+        </a>
+        <a href="https://cloud.google.com/vpc/docs/vpc-peering" class="doc-link" target="_blank">
+          <strong>VPC Network Peering</strong>
+          <span>Peering configurations, custom route exchange, and non-transitivity.</span>
+        </a>
+      </div>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/network_eng/theme1_vpc_design.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/network_eng/theme1_vpc_design.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

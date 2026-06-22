@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Managing Data &amp; Models Across Teams</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 2</span><span class="weight">~14%</span>
+      <h1>Managing Data &amp; Models Across Teams</h1>
+      <p class="sec-intro">Explore and preprocess org-wide data, prototype in notebooks, and track experiments.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Preprocessing at scale</h3>
+      <p>Match the transform tool to the data and the team:</p>
+      <ul>
+        <li><strong>BigQuery SQL</strong> &mdash; the data is already in BigQuery and transforms express cleanly as SQL.</li>
+        <li><strong>Dataflow (Apache Beam)</strong> &mdash; large-scale, streaming or batch, with the same code for both; ideal for heavy custom transforms.</li>
+        <li><strong>TFX / <code>tf.transform</code></strong> &mdash; preprocessing that must run <em>identically</em> at training and serving (the transform graph travels with the model).</li>
+        <li><strong>Dataproc (Spark)</strong> &mdash; you already live in the Spark/Hadoop ecosystem.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Transformation logic must be the same offline and online" hints at <strong>TFX/tf.transform</strong> or a shared Feature Store &mdash; not an ad-hoc pandas script that only runs at training time.</div>
+    </section>
+    <section class="lesson">
+      <h3>Feature management &amp; training-serving skew</h3>
+      <p>Centralise reusable features in <strong>Vertex AI Feature Store</strong>. It serves the <em>same</em> feature values offline for training and online (low-latency) for serving &mdash; the canonical defence against <strong>training-serving skew</strong> (when the features a model sees in production differ from those it trained on). It also gives point-in-time correct lookups so you don't leak future data into training.</p>
+      <div class="callout mnemonic"><span class="hook">SKEW</span> Same features, Keyed by entity, Everywhere (offline + online) = no skew. One Feature Store, two serving modes.</div>
+    </section>
+    <section class="lesson">
+      <h3>Notebook backends</h3>
+      <p>Pick the prototyping environment by the data and collaboration need:</p>
+      <ul>
+        <li><strong>Vertex AI Workbench</strong> &mdash; managed JupyterLab with GCP integration; the default single-user choice.</li>
+        <li><strong>Colab Enterprise</strong> &mdash; collaborative, shareable notebooks with enterprise governance.</li>
+        <li><strong>Notebooks on Dataproc</strong> &mdash; Spark kernels for terabyte-scale data already in a Hadoop/Spark world.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Workbench + pandas chokes on TB-scale data. "Prototype on terabytes in an existing Spark ecosystem" = Dataproc notebooks.</div>
+    </section>
+    <section class="lesson">
+      <h3>Experiments, metadata &amp; lineage</h3>
+      <p>Track and compare runs with <strong>Vertex AI Experiments</strong> (parameters, metrics) and visualise with <strong>TensorBoard</strong>. <strong>Vertex ML Metadata</strong> records the lineage of datasets, executions, and models so you can answer "which data and code produced this model?" &mdash; essential for reproducibility and audits.</p>
+      <div class="callout mnemonic"><span class="hook">EXP</span> Experiments compare runs; Metadata remembers <em>lineage</em>; the Model Registry versions the winners.</div>
+    </section>
+    <section class="lesson">
+      <h3>Governance &amp; sensitive data</h3>
+      <p>Manage labelled datasets in Vertex AI managed datasets. For PII/PHI, run <strong>Cloud DLP / Sensitive Data Protection</strong> to inspect and de-identify <em>before</em> features reach the store, and control access with IAM and (where needed) VPC Service Controls. Treat the Feature Store and training data as governed assets, not scratch files.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Remove or mask PII before training" points to Sensitive Data Protection (DLP), not a manual SQL <code>REPLACE</code> or dropping columns by hand.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Prototype on terabytes already in a Spark/Hadoop ecosystem with familiar kernels. Which notebook backend?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Notebooks on Dataproc with Spark kernels.</strong></p>
+          <p class="quiz-why">Managed Spark at scale; Workbench+pandas can't handle TB-scale Spark data.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> How do you ensure identical features at training and serving time?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Use Vertex AI Feature Store for both.</strong></p>
+          <p class="quiz-why">Centralised offline+online features prevent skew.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An auditor asks which dataset version and training run produced a deployed model. Where do you look?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex ML Metadata (lineage).</strong></p>
+          <p class="quiz-why">It records datasets, executions, and artifacts and links them, giving full reproducible lineage.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Preprocessing must run byte-for-byte identically during training and online serving. What approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>TFX / tf.transform (transform graph shipped with the model)</strong>, or shared Feature Store values.</p>
+          <p class="quiz-why">The transform is baked into the serving graph, so train and serve apply the exact same logic.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A model performs well in offline evaluation but its accuracy drops sharply in production. Investigation shows the serving pipeline computes a key feature slightly differently from the training pipeline. What is the most robust fix?</p>
+        <ul>
+          <li>A) Retrain the model more frequently so it adapts to the production feature values.</li>
+          <li>B) Serve training and serving features from a shared Vertex AI Feature Store so both read identical values.</li>
+          <li>C) Add the production feature distribution as a new input column at serving time only.</li>
+          <li>D) Increase the model's capacity so it is robust to the feature discrepancy.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> This is classic training-serving skew. A shared Feature Store guarantees both paths read the same computed values, eliminating the discrepancy at its source.</p>
+          <p class="quiz-why"><strong>A:</strong> Retraining on skewed features doesn't fix the mismatch. <strong>C:</strong> Adding a serving-only column widens the skew. <strong>D:</strong> A bigger model can't compensate for systematically wrong inputs.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A data scientist must prototype interactively over 5 TB of logs that already sit in a Dataproc Spark cluster, using familiar Spark APIs. Which environment fits with the least data movement?</p>
+        <ul>
+          <li>A) A Vertex AI Workbench instance loading the logs into a pandas DataFrame.</li>
+          <li>B) A BigQuery notebook after exporting all logs to a BigQuery table.</li>
+          <li>C) A Dataproc-backed notebook using Spark kernels against the existing cluster.</li>
+          <li>D) Colab Enterprise downloading the logs to local session storage.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> A Dataproc notebook runs Spark on the existing cluster, so 5 TB stays put and the scientist keeps Spark APIs.</p>
+          <p class="quiz-why"><strong>A:</strong> pandas can't hold 5 TB in memory. <strong>B:</strong> Exporting everything to BigQuery is unnecessary data movement. <strong>D:</strong> A Colab session can't download or hold terabytes locally.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Before training a model on customer records, the security team requires that names, emails, and card numbers are detected and masked across a large, messy dataset, repeatably. What should you use?</p>
+        <ul>
+          <li>A) Cloud DLP / Sensitive Data Protection to inspect and de-identify the data in a pipeline.</li>
+          <li>B) A one-off SQL query that drops any column whose name contains "email" or "card".</li>
+          <li>C) Vertex AI Feature Store access controls to hide sensitive features from trainers.</li>
+          <li>D) IAM conditions restricting who can read the training bucket.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Sensitive Data Protection detects many PII types (even in free text) and de-identifies them repeatably as part of a pipeline &mdash; exactly the requirement.</p>
+          <p class="quiz-why"><strong>B:</strong> Name-based column dropping misses PII buried in text and is brittle. <strong>C/D:</strong> Access controls limit <em>who</em> reads the data but don't mask the PII that still ends up in the model.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s1.html" class="nav-link">&larr; Architecting Low-Code AI Solutions</a>
+      <a href="guide_s3.html" class="nav-link">Scaling Prototypes into ML Models &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/ml_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/ml_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

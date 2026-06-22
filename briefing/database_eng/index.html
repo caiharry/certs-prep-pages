@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="portal" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Database Engineer Revision Guide Portal</title>
+  <style>
+    :root {
+      --bg-light: #fefcf4;
+      --ink: #1e293b;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #facc15;
+      --rev-blue: #3b82f6;
+      --rev-violet: #8b5cf6;
+      --rev-teal: #0d9488;
+      --rev-orange: #ea580c;
+      --rev-green: #16a34a;
+      --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fef9c3' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 15px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "STUDY GUIDE!";
+      position: absolute;
+      top: 15px;
+      right: -35px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 6px 40px;
+      transform: rotate(45deg);
+      border: 2px solid #000;
+    }
+
+    .badge-rev {
+      background: #ef4444;
+      color: white;
+      display: inline-block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 2px solid #000;
+      transform: rotate(-2deg);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin: 10px 0;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 3px 3px 0px #fff;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      margin: 10px auto;
+      max-width: 700px;
+      font-style: italic;
+    }
+
+    .intro-section {
+      background: white;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 25px;
+      margin-bottom: 40px;
+    }
+
+    .intro-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--rev-orange);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    .grid-sections {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .grid-sections > * {
+      min-width: 0;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .grid-sections {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+
+    .section-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-width: 0;
+    }
+
+    .section-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000;
+    }
+
+    .section-card.s1 { border-color: var(--rev-blue); box-shadow: 4px 4px 0px var(--rev-blue); }
+    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--rev-blue); }
+    .section-card.s2 { border-color: var(--rev-violet); box-shadow: 4px 4px 0px var(--rev-violet); }
+    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--rev-violet); }
+    .section-card.s3 { border-color: var(--rev-teal); box-shadow: 4px 4px 0px var(--rev-teal); }
+    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--rev-teal); }
+    .section-card.s4 { border-color: var(--rev-orange); box-shadow: 4px 4px 0px var(--rev-orange); }
+    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--rev-orange); }
+
+    .sec-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      margin-bottom: 12px;
+      align-self: start;
+    }
+
+    .s1 .sec-badge { background: var(--rev-blue); }
+    .s2 .sec-badge { background: var(--rev-violet); }
+    .s3 .sec-badge { background: var(--rev-teal); }
+    .s4 .sec-badge { background: var(--rev-orange); }
+
+    .sec-title {
+      font-size: 1.4rem;
+      margin: 0 0 10px;
+      line-height: 1.2;
+    }
+
+    .sec-desc {
+      font-size: 0.95rem;
+      color: #475569;
+      margin: 0 0 20px;
+      flex-grow: 1;
+    }
+
+    .btn-rev {
+      display: block;
+      text-align: center;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 12px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      box-shadow: 3px 3px 0px #000;
+      text-decoration: none;
+      transition: background-color 0.2s, transform 0.1s;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .btn-rev:hover {
+      background: var(--rev-yellow-dark);
+      text-decoration: none;
+    }
+
+    .btn-rev:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    .s1 .btn-infra { background: #93c5fd; }
+    .s1 .btn-infra:hover { background: #60a5fa; }
+    .s1 .btn-data { background: #a7f3d0; }
+    .s1 .btn-data:hover { background: #34d399; }
+    .s2 .btn-rev { background: #c084fc; }
+    .s2 .btn-rev:hover { background: #a855f7; }
+    .s3 .btn-rev { background: #2dd4bf; }
+    .s3 .btn-rev:hover { background: #0d9488; }
+    .s4 .btn-rev { background: #fb923c; }
+    .s4 .btn-rev:hover { background: #f97316; }
+
+    .tips-block {
+      background: #ecfdf5;
+      border: 3px solid var(--rev-green);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-green);
+      padding: 25px;
+      margin-top: 40px;
+    }
+
+    .tips-title {
+      color: var(--rev-green);
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #64748b;
+      border-top: 2px dashed #cbd5e1;
+    }
+
+    .rev-humor {
+      background: #fef2f2;
+      border: 2px dashed #ef4444;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #991b1b;
+    }
+    .btn-portal-wip { display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .wip-badge { background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px); color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000; border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1; }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Back to Main Certs Hub</a>
+    </div>
+
+    <header>
+      <div class="badge-rev">No-Nonsense study guides</div>
+      <h1>Google Cloud Platform</h1>
+      <h2 style="margin: 0; text-transform: uppercase; -webkit-text-stroke: 0.5px #000; text-shadow: 1px 1px 0px #fff; font-size: clamp(1.2rem, 3vw, 2rem);">Professional Cloud Database Engineer</h2>
+      <p class="tagline">The Ultimate Complete Revision &amp; Practice Guide. Filled with bulletproof explanations, exam secrets, handy mnemonics, and just enough terrible puns to keep you awake!</p>
+      <p style="margin:14px 0 0;"><span style="display:inline-block;font-weight:900;font-size:0.72rem;padding:4px 11px;border:2px solid #000;border-radius:999px;box-shadow:2px 2px 0 #000;background:#ddd6fe;color:#4c1d95;transform:rotate(-2deg);">&#10022; Written by Gemini 3.5 Flash</span></p>
+    </header>
+
+    <section class="intro-section">
+      <h2 class="intro-title"><span>🌟</span> Welcome to the Revision Hub!</h2>
+      <p>Hello there, database superstar! Ready to conquer the <strong>GCP Professional Cloud Database Engineer</strong> exam and ace the exam? Of course you are! 🚀</p>
+      <p>Studying for database exams can be drier than a dry-run SQL export on a Sunday night. That’s why we’ve taken the highly effective, visual, and slightly silly conversational study-guide approach to make this study portal highly readable, incredibly comprehensive, and engaging.</p>
+      <p>Here’s what you get on every section-specific guide page:</p>
+      <ul style="padding-left: 20px;">
+        <li><strong>Super-Clear Explanations:</strong> Complex GCP DB concepts broken down into simple, memorable chunks. No unnecessary academic waffle!</li>
+        <li><strong>Exam Trap Callouts:</strong> Warning signs where GCP tries to trick you (they are sneaky like that!).</li>
+        <li><strong>Interactive Warm-Up Quizzes:</strong> Quick brain-teasing retrieval checks that let you test your recall instantly.</li>
+        <li><strong>Mnemonics &amp; Memory Tips:</strong> Foolproof hooks to keep those database specs glued inside your skull.</li>
+        <li><strong>Exam-Style Questions:</strong> Proper, tough questions to test your metal, complete with full "Why is this wrong?" diagnostics.</li>
+      </ul>
+    </section>
+
+    <div style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px;">
+      <a href="practice_questions.html" class="btn-rev btn-portal-wip" style="background: #93c5fd; padding: 14px 24px;">Generated Practice (25 Questions) <span class="wip-badge">WIP</span> &rarr;</a>
+      <a href="sample_questions.html" class="btn-rev" style="background: #bbf7d0; display: inline-block; padding: 14px 24px;">Official Sample (20 Q) &rarr;</a>
+    </div>
+
+    <h2 style="font-size: 1.8rem; margin: 30px 0 15px; text-transform: uppercase;">📚 Choose Your Section and Start Scoring Points:</h2>
+    
+    <div class="grid-sections">
+      <!-- Section 1 -->
+      <div class="section-card s1">
+        <div>
+          <span class="sec-badge">Section 1 &mdash; ~32% of Exam</span>
+          <h3 class="sec-title">Designing Scalable &amp; HA Databases</h3>
+          <p class="sec-desc">Sizing compute and storage, deciding regional HA vs multi-region, private networks, session poolers, and database evaluation. Includes the famous <strong>Which Database? Decision Matrix</strong>.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+          <a href="section1a_infra.html" class="btn-rev btn-infra">1A: Infra &amp; Connections &rarr;</a>
+          <a href="section1b_data.html" class="btn-rev btn-data">1B: DB Choice &amp; Schema &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-card s2">
+        <div>
+          <span class="sec-badge">Section 2 &mdash; ~25% of Exam</span>
+          <h3 class="sec-title">Managing Multi-Technology Solutions</h3>
+          <p class="sec-desc">Connectivity &amp; access management, IAM database auth, Query Insights, log-based metrics, automated serverless exports, and performance tuning.</p>
+        </div>
+        <a href="section2_manage.html" class="btn-rev">Enter Section 2 Study Guide &rarr;</a>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section-card s3">
+        <div>
+          <span class="sec-badge">Section 3 &mdash; ~23% of Exam</span>
+          <h3 class="sec-title">Migrating Data Solutions</h3>
+          <p class="sec-desc">Homogeneous vs heterogeneous migrations, Database Migration Service (DMS), Datastream for continuous CDC, reverse replication fallback paths, and the schema conversion workflow.</p>
+        </div>
+        <a href="section3_migrate.html" class="btn-rev">Enter Section 3 Study Guide &rarr;</a>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="section-card s4">
+        <div>
+          <span class="sec-badge">Section 4 &mdash; ~20% of Exam</span>
+          <h3 class="sec-title">Deploying Scalable &amp; HA Databases</h3>
+          <p class="sec-desc">Automated provisioning, Infrastructure as Code with Terraform, game-day HA and DR failover testing, multi-regional replication setup, and monitoring standby health.</p>
+        </div>
+        <a href="section4_deploy.html" class="btn-rev">Enter Section 4 Study Guide &rarr;</a>
+      </div>
+
+      <!-- Cheatsheet -->
+      <div class="section-card s1" style="background: #fffbeb; border-color: var(--rev-yellow-dark); box-shadow: 4px 4px 0px var(--rev-yellow-dark);">
+        <div>
+          <span class="sec-badge" style="background: var(--rev-yellow-dark); color: #000;">Exam Deck</span>
+          <h3 class="sec-title">Exam Guide Cheat Sheet</h3>
+          <p class="sec-desc">A modern, slide-based deck ordered strictly by the official exam guide sections. Features high-yield fact cards, exam traps, and synthesis matrices.</p>
+        </div>
+        <a href="cheatsheet.html" class="btn-rev" style="background: var(--rev-green); color: white;">Open Exam Cheat Sheet &rarr;</a>
+      </div>
+    </div>
+
+    <div class="tips-block">
+      <h3 class="tips-title">💡 Quick Study Tip: Spaced Retrieval Practice</h3>
+      <p>Don't try to cram all four guides into your brain at 2 AM! Read through one section guide, write down three key facts from memory, do the interactive warm-up quizzes, and try the practice questions at the end. Then sleep on it &mdash; your brain builds neural pathways while you snooze (and dreams about Spanner TrueTime latency)! 😴</p>
+      
+      <div class="rev-humor">
+        <strong>⚠️ Warning &mdash; Dad Joke Alert:</strong> Why did the SQL database query go to therapy? Because it had too many unresolved relations! (Groan... sorry, it only gets worse from here!)
+      </div>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/database_eng/index.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/database_eng/index.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

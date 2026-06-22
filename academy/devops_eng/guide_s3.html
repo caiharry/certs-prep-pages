@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP DevOps Engineer &mdash; Site Reliability Engineering</title>
+  <style>
+    :root {
+      --bg: #f0fdfa; --ink: #1e293b; --accent: #0d9488; --accent-dark: #0f766e;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%2399f6e4' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #5eead4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP DevOps Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 3</span><span class="weight">~18%</span>
+      <h1>Site Reliability Engineering</h1>
+      <p class="sec-intro">Balance change velocity and reliability with SLIs, SLOs, and error budgets.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>SLIs, SLOs, SLAs & error budgets</h3>
+      <p>An <strong>SLI</strong> measures a quality (availability, latency); an <strong>SLO</strong> is your internal target for it; an <strong>SLA</strong> is the external contract (with penalties). The <strong>error budget</strong> = 1 − SLO; when it's exhausted, freeze risky launches and prioritise reliability.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Out of error budget? Defer new features — don't ship. SLOs are internal; never quietly change the customer SLA to dodge a low budget.</div>
+      <div class="callout mnemonic"><span class="hook">Nines</span> Each extra "nine" of availability costs exponentially more — match the target to the business need.</div>
+    </section>
+    <section class="lesson">
+      <h3>Lifecycle, capacity & incident mitigation</h3>
+      <p>Plan capacity with quotas, reservations, and Dynamic Workload Scheduler; autoscale with MIGs, Cloud Run, and GKE. Mitigate incident impact by <strong>draining/redirecting traffic</strong>, <strong>adding capacity</strong>, and <strong>rolling back</strong>.</p>
+    </section>
+    <section class="lesson">
+      <h3>Toil, postmortems &amp; alerting</h3>
+      <p>SRE attacks <strong>toil</strong> (manual, repetitive, automatable work) so engineers spend time on engineering, not firefighting. After incidents, run <strong>blameless postmortems</strong> that fix systems, not people. Alert on <strong>symptoms that burn the error budget</strong> (SLO burn-rate alerts), not on every low-level cause &mdash; this cuts alert fatigue and pages humans only when users are actually affected.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Page on user-facing symptoms / SLO burn rate, not on raw CPU spikes that may not affect users &mdash; cause-based alerts create noise.</div>
+      <div class="callout mnemonic"><span class="hook">TOIL</span> If it's manual and repetitive, automate it; if it broke, write a blameless postmortem; if it pages, make sure a user actually cared.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> You served 99.00% against a 99% SLA and the error budget is spent. What's the SRE move on a new feature?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Defer the deployment until budget recovers.</strong></p>
+          <p class="quiz-why">No budget remaining means prioritise stability over change.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Difference between an SLO and an SLA?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>SLO is the internal target; SLA is the external contract with penalties.</strong></p>
+          <p class="quiz-why">SLOs guide engineering; SLAs are customer commitments.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> On-call is drowning in pages from CPU spikes that don't affect users. What should alerts target instead?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>User-facing symptoms / SLO burn rate.</strong></p>
+          <p class="quiz-why">Alerting on budget-burning symptoms pages only when users are impacted, cutting noise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> After a major outage, what kind of review does SRE prescribe?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A blameless postmortem.</strong></p>
+          <p class="quiz-why">It fixes systemic causes without blaming individuals, encouraging honest disclosure.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A service has exhausted its monthly error budget against a 99.9% SLO, yet the product team wants to ship a risky new feature. What does SRE practice prescribe?</p>
+        <ul>
+          <li>A) Ship the feature anyway and quietly lower the SLA to stay compliant.</li>
+          <li>B) Freeze risky releases and prioritise reliability work until the budget recovers.</li>
+          <li>C) Raise the SLO to 100% so there's no budget pressure.</li>
+          <li>D) Remove the SLO so deployments aren't blocked.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> An empty error budget means slow down on change and invest in reliability &mdash; that's the whole point of the budget.</p>
+          <p class="quiz-why"><strong>A:</strong> Quietly changing the customer SLA is dishonest and unrelated to the internal SLO. <strong>C/D:</strong> Inflating or removing the SLO games the metric instead of improving reliability.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> On-call engineers are burning out from frequent pages triggered by short CPU and memory spikes that rarely correlate with user-visible problems. How should the team redesign alerting?</p>
+        <ul>
+          <li>A) Raise the CPU alert thresholds slightly and keep paging on them.</li>
+          <li>B) Alert on SLO burn rate and user-facing symptoms rather than low-level causes.</li>
+          <li>C) Route all alerts to email so nobody is paged.</li>
+          <li>D) Add more granular per-resource alerts for completeness.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Symptom/SLO-burn-rate alerting pages only when users are actually affected, eliminating cause-based noise and fatigue.</p>
+          <p class="quiz-why"><strong>A:</strong> Higher thresholds still page on non-impacting causes. <strong>C:</strong> Email-only risks missing real incidents. <strong>D:</strong> More cause-based alerts worsen the noise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A team spends hours each week manually restarting a service and clearing queues after recurring failures. What is the SRE-aligned response?</p>
+        <ul>
+          <li>A) Accept the manual work as normal operations and add more on-call staff.</li>
+          <li>B) Treat it as toil: automate the remediation and fix the underlying cause via a postmortem.</li>
+          <li>C) Schedule the restarts more frequently to pre-empt failures.</li>
+          <li>D) Increase the SLA penalty to motivate the team.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Repetitive manual remediation is toil; SRE automates it and drives out the root cause through a blameless postmortem.</p>
+          <p class="quiz-why"><strong>A:</strong> Throwing people at toil doesn't scale. <strong>C:</strong> More frequent restarts treat the symptom, not the cause. <strong>D:</strong> SLA penalties don't fix the engineering problem.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s2.html" class="nav-link">&larr; Building &amp; Implementing CI/CD Pipelines</a>
+      <a href="guide_s4.html" class="nav-link">Observability &amp; Troubleshooting &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/devops_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/devops_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

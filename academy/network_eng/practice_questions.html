@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="academy" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Network Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #16a34a;
+            --dark-accent-hover: #15803d;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #166534;
+            --classic-accent-hover: #14532d;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Network Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Network Engineer",
+    "scenario": "Your organization runs a Shared VPC in a host project. The platform team must retain sole control of firewall rules, routes, and VLAN attachments. A new service project, `proj-checkout`, will run a managed instance group, and its developers must be able to deploy VMs only into the existing `subnet-checkout` (in `europe-west2`) and nowhere else. The deployment is driven by the project's Compute Engine default service account, but developers also run `gcloud` deploys interactively. What is the least-privilege configuration?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Grant `roles/compute.networkUser` to both the developers and the `proj-checkout` Compute Engine service agent, scoped to `subnet-checkout` only.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Grant `roles/compute.networkUser` at the host project level to the developers and the service agent so deployments can resolve the subnet during scheduling.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Grant `roles/compute.networkAdmin` on `subnet-checkout` to the developers so they manage their own subnet bindings without bothering the platform team.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Grant `roles/compute.networkUser` to the developers on `subnet-checkout`, relying on the Google-managed service agent's default Shared VPC access for the automated deploy.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Both the human identity and the service account that actually creates instances need `compute.networkUser` on the specific subnet; binding at the subnet level confines deploys to `subnet-checkout` and keeps routing/firewall control with the platform team.",
+      "B": "Project-level `networkUser` lets the project deploy into *any* shared subnet, breaking the \"only `subnet-checkout`\" constraint — over-broad, not least privilege.",
+      "C": "`networkAdmin` lets the service team edit firewalls and routes in the host project, which is exactly the central control the platform team must keep.",
+      "D": "Service agents have no default access to Shared VPC subnets; the deploying service account must be granted `networkUser` explicitly or the automated MIG creation fails with a permission error."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/shared-vpc",
+        "text": "cloud.google.com/vpc/docs/shared-vpc"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/provisioning-shared-vpc#networkuser_role",
+        "text": "cloud.google.com/vpc/docs/provisioning-shared-vpc#network..."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Network Engineer",
+    "scenario": "Two companies merged. Both ran on-premises estates numbered out of `10.0.0.0/8`, and both now connect to one Google Cloud VPC over separate HA VPN tunnels. Hosts behind Tunnel A and hosts behind Tunnel B have overlapping `10.50.0.0/16` ranges, and a shared application in the VPC must reach servers on both sides without either company renumbering. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Cloud NAT with manual IP assignment on the VPC so each tunnel's traffic is source-NATed to a unique public IP block.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Switch the VPC to global dynamic routing so the Cloud Router can advertise both overlapping `10.50.0.0/16` ranges and let BGP pick the best path per flow.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure Private NAT so the overlapping on-premises ranges are translated to distinct, non-overlapping ranges as traffic enters Google Cloud.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Place each on-premises site behind its own Private Service Connect endpoint so the application reaches them through distinct local IPs.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Cloud NAT is *public* source NAT for egress to the internet; it doesn't translate private destination ranges reachable over VPN, and adds public IPs the scenario never needs.",
+      "B": "BGP cannot install two identical `10.50.0.0/16` prefixes as distinct destinations; the overlap makes the routes ambiguous, so one site becomes unreachable — global routing doesn't de-conflict addresses.",
+      "C": "Private NAT (private-to-private NAT) exists precisely to de-overlap colliding RFC 1918 ranges across hybrid/peered connections, translating them to distinct ranges so both sides are reachable without renumbering.",
+      "D": "PSC publishes *services* via service attachments behind a load balancer; it isn't a mechanism for reaching arbitrary on-premises server subnets, and it doesn't resolve IP overlap on the producer side."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/nat/docs/private-nat",
+        "text": "cloud.google.com/nat/docs/private-nat"
+      },
+      {
+        "url": "https://cloud.google.com/nat/docs/overview",
+        "text": "cloud.google.com/nat/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Network Engineer",
+    "scenario": "A VPC peered to a partner's VPC must reach a Cloud SQL instance the partner exposes. The partner provisioned the instance using Private Services Access, which created VPC Network Peering from the partner VPC to a Google-managed tenant project. Your VPC is peered to the partner VPC, but your VMs cannot reach the database. The partner is willing to make a one-line configuration change. What do you ask them to do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable global dynamic routing on the partner's VPC so the PSA range propagates to all regions and across the peering to your VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Export custom routes on the partner's peering with your VPC, since the PSA tenant routes must be re-advertised across the second peering hop.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Add a custom static route in your VPC for the Cloud SQL range with the peering connection as the next hop.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Recreate the Cloud SQL instance with a Private Service Connect endpoint published into your subnet so peering is no longer involved.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Global vs regional routing governs Cloud Router/BGP propagation, not whether peered custom routes are exported; it doesn't make peering transitive.",
+      "B": "PSA reaches a database via peering, and VPC peering is non-transitive; the PSA range is a custom (imported) route on the partner VPC, so the partner must *export custom routes* on the peering toward your VPC for the route to cross the second hop.",
+      "C": "A static route can't make your VMs reach a range that lives behind two peering hops in a Google-managed tenant project; the next-hop peering won't carry traffic to an un-exported route.",
+      "D": "Re-creating as PSC is a real fix but it's the partner re-architecting their service, not the requested one-line change — and the question asks for the minimal config change."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/configure-private-services-access",
+        "text": "cloud.google.com/vpc/docs/configure-private-services-access"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/vpc-peering#transit-network",
+        "text": "cloud.google.com/vpc/docs/vpc-peering#transit-network"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Network Engineer",
+    "scenario": "You operate a VPC with hundreds of VMs across three teams. The security team wants to block all egress to a list of known-bad destination ranges for *every* VM in *every* project under the `prod` folder, in a way that individual project owners cannot override or delete. Project owners must keep the ability to manage their own per-project allow rules below that block. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A regional network firewall policy per region with deny-egress rules, attached to each VPC by the security team.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A global network firewall policy in each project's VPC with a deny-egress rule at priority 0.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "VPC firewall rules in each project denying egress to the bad ranges, locked with an organization policy constraint.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A hierarchical firewall policy on the `prod` folder with a high-priority deny-egress rule for the bad ranges.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Regional network firewall policies are also in-VPC, owner-editable, and would have to be replicated per region per project — neither centrally enforced nor override-proof.",
+      "B": "A global *network* firewall policy lives inside each project's VPC, so project owners with network admin can edit or remove it — it fails the \"cannot override\" requirement and must be set up per project.",
+      "C": "Per-project VPC firewall rules are owner-editable; an org policy constraint can't pin the *contents* of a firewall rule, so it doesn't deliver an un-deletable folder-wide block.",
+      "D": "Hierarchical firewall policies attach at the org/folder level, are evaluated before any VPC-level policy, and are managed by security admins — project owners cannot override or delete them, while lower-priority project rules still apply."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firewall/docs/firewall-policies-overview",
+        "text": "cloud.google.com/firewall/docs/firewall-policies-overview"
+      },
+      {
+        "url": "https://cloud.google.com/firewall/docs/firewall-policies",
+        "text": "cloud.google.com/firewall/docs/firewall-policies"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Network Engineer",
+    "scenario": "A latency-sensitive trading app runs across `us-east1` and `us-west1` in one VPC. All east-west traffic between these regions must be inspected by a pool of third-party NGFW appliances deployed as multi-NIC VMs. The inspection tier must be active/active with automatic health-based failover (not active/standby), and a VM-deleted appliance must stop receiving traffic immediately. How should you steer the traffic?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Put the NGFW VMs behind an internal Application Load Balancer and set it as the next hop in a policy-based route for the inter-region CIDRs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create two custom static routes to the inspection subnet at priorities 100 and 1000, each pointing at a different NGFW VM as the next hop.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy the NGFW VMs behind an internal passthrough Network Load Balancer set as the next hop in a policy-based route for the inter-region traffic.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Deploy the NGFW VMs behind a regional external passthrough Network Load Balancer and advertise its IP as the next hop over the VPC's Cloud Router.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A proxy load balancer (internal ALB) cannot be used as a route next hop, and it would terminate connections, breaking transparent L3/L4 inspection.",
+      "B": "Two priority routes give active/standby (only the lower-priority route is used) and have no health checking, so a dead appliance keeps attracting traffic until manually fixed.",
+      "C": "Only an internal passthrough NLB can be a route next hop, and behind a PBR it spreads traffic across all healthy appliances (active/active) with health-check-based removal — exactly the requirement.",
+      "D": "An *external* passthrough NLB isn't a valid internal route next hop, and it's the wrong product for private east-west VM-to-VM traffic that never touches the internet."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/internal/ilb-next-hop-overview",
+        "text": "cloud.google.com/load-balancing/docs/internal/ilb-next-ho..."
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/policy-based-routes",
+        "text": "cloud.google.com/vpc/docs/policy-based-routes"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Network Engineer",
+    "scenario": "A new VPC will host VMs that must communicate over an HA VPN to on-premises, where the on-premises MTU is locked at 1500 bytes. The application sends large UDP datagrams that must not be silently dropped. ICMP is filtered on the on-premises firewall, so path MTU discovery is unreliable. What MTU configuration avoids black-holed UDP traffic over the tunnel?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set the VPC MTU to 1500 to match on-premises, and rely on TCP MSS clamping to keep the UDP datagrams within tunnel limits.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set the VPC MTU to 1460 so packets fit within the HA VPN encapsulation ceiling end to end.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Set the VPC MTU to 8896 (jumbo frames) so the larger frames absorb the IPsec overhead before fragmentation occurs.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Keep the VPC MTU at 1500 and enable jumbo-frame negotiation on the HA VPN gateway to raise the tunnel ceiling above 1500.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "MSS clamping only applies to TCP; UDP has no MSS, so 1500-byte UDP datagrams still exceed the tunnel ceiling and, with ICMP filtered, get black-holed.",
+      "B": "HA VPN encapsulation imposes a 1460-byte effective MTU ceiling; setting the VPC MTU to 1460 keeps datagrams within that limit so oversized UDP packets aren't dropped.",
+      "C": "Jumbo frames make packets *larger*, worsening the fragmentation/drop problem over a 1460-ceiling tunnel.",
+      "D": "HA VPN has no jumbo-frame negotiation that raises the IPsec tunnel ceiling above ~1460; this capability does not exist."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/mtu-considerations",
+        "text": "cloud.google.com/network-connectivity/docs/vpn/concepts/m..."
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/mtu",
+        "text": "cloud.google.com/vpc/docs/mtu"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Network Engineer",
+    "scenario": "Your enterprise needs 99.99% availability for connectivity between an on-premises data center and Google Cloud, using Dedicated Interconnect. You already have colocation presence in two metros. Cost matters, so you want the *minimum* topology that genuinely qualifies for the 99.99% SLA. Which design meets it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "One 100 Gbps Dedicated Interconnect in metro A and one 100 Gbps Dedicated Interconnect in metro B, each terminating on its own Cloud Router with the VPC in regional dynamic routing mode.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Four Dedicated Interconnect connections in a single metro, spread across two edge availability domains, terminating on two Cloud Routers with the VPC in global dynamic routing mode.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Two Dedicated Interconnect connections in metro A across two edge availability domains, backed by an HA VPN over the public internet as the redundant cross-metro path.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Two Dedicated Interconnect connections in metro A and two in metro B (separate edge availability domains), with four VLAN attachments to two Cloud Routers, global routing mode.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "One connection per metro is single points of failure within each metro (no second edge availability domain), so it doesn't meet 99.99%; regional routing also strands other regions.",
+      "B": "A single metro tops out at 99.9% no matter how many connections or domains; it cannot survive a metro-level outage, so it fails the 99.99% target.",
+      "C": "An HA VPN backup is good practice but doesn't raise the *Interconnect* topology to a 99.99% SLA; the SLA is defined by the Interconnect redundancy, not a VPN fallback.",
+      "D": "The 99.99% Interconnect SLA requires connections in *two metros*, at least two per metro in separate edge availability domains, terminating on two Cloud Routers, with global routing so any region can use either metro — this is the minimal qualifying design."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/t..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/c..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Network Engineer",
+    "scenario": "An HA VPN connects your VPC to on-premises with two tunnels (Tunnel A and Tunnel B) from the single HA VPN gateway. You want *inbound* traffic from on-premises into Google Cloud to strongly prefer Tunnel A, with Tunnel B used only when Tunnel A's BGP session drops. You administer only the Google Cloud side via Cloud Router. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "On Cloud Router, set a lower MED on Tunnel A's session and a higher MED on Tunnel B's so on-premises prefers Tunnel A.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "On Cloud Router, AS-path prepend (or raise the advertised route priority) on Tunnel B so on-premises prefers Tunnel A.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "On Cloud Router, advertise your prefixes only on Tunnel A and leave Tunnel B with no advertisements until failover.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Switch the VPC to global dynamic routing so Cloud Router can pin inbound traffic to a single preferred tunnel.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "MED that Cloud Router *advertises* is largely ignored by the receiver across the AS boundary for this purpose; MED is the lever for *outbound* (GCP→on-prem) preference based on what on-premises sends, not inbound.",
+      "B": "Inbound (on-prem→GCP) path selection is influenced by what Cloud Router advertises *to* on-premises; making Tunnel B's advertisement less attractive via AS-path prepend (or higher route priority) steers inbound traffic onto Tunnel A with automatic fallback.",
+      "C": "Advertising on only Tunnel A means Tunnel B has no learned path, so there's no automatic failover — it breaks redundancy rather than ordering preference.",
+      "D": "Regional vs global routing controls cross-region propagation, not preference between two tunnels in the same region; both tunnels stay equally in scope."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/how-to/advertising-overview",
+        "text": "cloud.google.com/network-connectivity/docs/router/how-to/..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview#bgp-best-path-selection",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Network Engineer",
+    "scenario": "You run redundant Cloud Routers in `us-east1` and `us-west1`, each peering with on-premises over separate hybrid links, in one VPC with global dynamic routing. During failover tests, traffic occasionally takes a route with a *longer* AS-path because the two routers evaluate their BGP sessions independently. You need consistent, RFC 4271-compliant best-path selection across the whole VPC. What should you change?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set the VPC's BGP best path selection mode to standard.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable Bidirectional Forwarding Detection on both routers at a 50 ms interval to synchronize their route tables.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Switch the VPC to regional dynamic routing so each router only considers its own region's routes.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Replace BGP with custom static routes carrying explicit metrics on both Cloud Routers.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The default legacy best-path mode compares AS-path lengths only within a single BGP task and can choose a longer path; standard mode applies RFC 4271 comparison consistently across all the VPC's sessions and regions.",
+      "B": "BFD only speeds *failure detection*; it doesn't change which path the best-path algorithm selects, so the inconsistency persists.",
+      "C": "Regional routing limits propagation to each router's own region, breaking the intended cross-region redundancy rather than fixing path-selection consistency.",
+      "D": "Static routes discard dynamic failover and don't scale; they trade away the very BGP convergence the design relies on."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/best-path-selection-mode",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/router/concept..."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Network Engineer",
+    "scenario": "On-premises servers (no public IPs) must call Google Cloud APIs — Cloud Storage and BigQuery only — privately over a Dedicated Interconnect, and your security team requires that VPC Service Controls protect those APIs so nothing else on `googleapis.com` is reachable from on-premises. What must you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Private Service Connect endpoint for Google APIs in your VPC and have on-premises resolve `*.googleapis.com` to that endpoint's public IP.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Resolve `*.googleapis.com` to `private.googleapis.com` (`199.36.153.8/30`) on-premises and advertise that range over Cloud Router to the on-premises routers.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable Private Google Access on the on-premises router and add a default route to `storage.googleapis.com` over the Interconnect.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Resolve `*.googleapis.com` to `restricted.googleapis.com` (`199.36.153.4/30`) on-premises, advertise that range over Cloud Router, and route it through the Interconnect.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A PSC endpoint for Google APIs uses a private internal IP you assign (not a public IP), and resolving to a public IP defeats the private-path goal; the restricted VIP is the standard pattern here.",
+      "B": "The private VIP (`199.36.153.8/30`) reaches a broader set of Google APIs and does *not* enforce VPC Service Controls, so it fails the \"nothing else reachable / VPC-SC protected\" requirement.",
+      "C": "Private Google Access is a *subnet* setting for VMs without external IPs; it isn't something you \"enable on the on-premises router,\" and a default route to a public API name doesn't keep traffic private or VPC-SC-scoped.",
+      "D": "The restricted VIP (`199.36.153.4/30`) reaches only APIs that support VPC Service Controls and blocks everything else, so resolving `*.googleapis.com` to it and advertising the range over Interconnect satisfies the VPC-SC requirement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/private-google-access-hybrid",
+        "text": "cloud.google.com/vpc/docs/private-google-access-hybrid"
+      },
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/restricted-vip-services",
+        "text": "cloud.google.com/vpc-service-controls/docs/restricted-vip..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Network Engineer",
+    "scenario": "A serverless team runs a Cloud Run service that must connect to a Memorystore for Redis instance reachable only on a private IP inside your VPC. The team wants outbound connectivity from Cloud Run into the VPC with the least operational overhead and the ability to scale without managing a connector VM fleet. Which approach fits?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Publish the Redis instance behind a Private Service Connect service attachment and have Cloud Run reach it over the public internet.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Provision a Serverless VPC Access connector sized with a wide machine-type range and point Cloud Run at it.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure Cloud Run with Direct VPC egress to the VPC subnet hosting the Redis private IP.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Enable Private Google Access on the Cloud Run service so it can reach the Redis private IP directly.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "PSC endpoints/attachments are for consuming *published services* across VPCs, not the simplest way for Cloud Run to reach a private IP in the *same* VPC, and \"over the public internet\" contradicts a private IP target.",
+      "B": "A Serverless VPC Access connector works but *is* the connector-VM fleet the team wants to avoid; it carries throughput limits and per-connector management overhead.",
+      "C": "Direct VPC egress attaches Cloud Run directly to a VPC subnet without a connector instance pool, giving lower latency, faster scaling, and less ops overhead — the modern recommended path to private VPC resources.",
+      "D": "Private Google Access governs reaching *Google APIs* from VMs without external IPs; it has nothing to do with Cloud Run reaching a private Redis IP."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/vpc-direct-vpc",
+        "text": "cloud.google.com/run/docs/configuring/vpc-direct-vpc"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/connecting-vpc",
+        "text": "cloud.google.com/run/docs/configuring/connecting-vpc"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Network Engineer",
+    "scenario": "A media company serves a single global website. Requests to `/static/*` should be cached and served from Google's edge, `/api/*` should route to a regional backend service, and the whole site must terminate TLS at the edge and support HTTP/2. The company is on Premium Tier. Which front-end design meets all of this with one anycast IP?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A global external proxy Network Load Balancer with Cloud CDN enabled and a forwarding rule that path-matches `/static/*` to the bucket.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A global external Application Load Balancer with a URL map sending `/static/*` to a CDN-enabled backend bucket and `/api/*` to the backend service.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A regional external Application Load Balancer per region, fronted by a Cloud DNS geolocation policy and Cloud CDN on the bucket origin.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A global external passthrough Network Load Balancer with Cloud CDN, preserving the client IP while caching `/static/*` at the edge.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A proxy NLB is L4 (TCP/SSL) and cannot parse URL paths, so it can't split `/static/*` from `/api/*`; URL maps are an ALB feature.",
+      "B": "The global external ALB is the L7 product that does URL-map path routing, edge TLS termination, HTTP/2, a single anycast IP, and Cloud CDN on a backend bucket for `/static/*` — all requirements met in one front end.",
+      "C": "Regional ALBs plus DNS geo-routing give multiple regional IPs and slower DNS-based steering, not a single anycast IP with native edge content-based routing.",
+      "D": "A passthrough NLB is L4, doesn't terminate TLS or do path routing, and there is no *global* external passthrough NLB with edge CDN of this kind."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/application-load-balancer",
+        "text": "cloud.google.com/load-balancing/docs/application-load-bal..."
+      },
+      {
+        "url": "https://cloud.google.com/cdn/docs/setting-up-cdn-with-bucket",
+        "text": "cloud.google.com/cdn/docs/setting-up-cdn-with-bucket"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Network Engineer",
+    "scenario": "An internal microservices platform exposes a gRPC service over HTTP/2 that other teams' VMs in the *same* region and same VPC must reach by a stable internal VIP. The service runs on a managed instance group, needs path-based routing across two backend versions, and must not be reachable from the internet. Which load balancer should you deploy?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A regional internal Application Load Balancer, with a `REGIONAL_MANAGED_PROXY` proxy-only subnet provisioned in the region.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "An internal passthrough Network Load Balancer fronting the instance group, with session affinity set to client IP.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A regional internal proxy Network Load Balancer with an SNI-based routing rule to split the two backend versions.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A global external Application Load Balancer restricted with a Cloud Armor policy allowing only the VPC's internal ranges.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A regional internal ALB is the L7 internal product that gives a stable internal VIP, HTTP/2/gRPC support, and URL-map path/version routing; it requires a proxy-only subnet (`REGIONAL_MANAGED_PROXY`) in the region as a prerequisite.",
+      "B": "An internal passthrough NLB is L4 — no URL/path-based routing and no native HTTP/2 content routing — so it can't split traffic across the two versions by path.",
+      "C": "A proxy NLB is L4 and routes by SNI/port, not URL path, so it can't do the L7 path-based version split this scenario needs.",
+      "D": "A global external ALB is internet-facing; bolting on Cloud Armor to fake \"internal\" is the wrong tool and leaves an external surface the requirement forbids."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/l7-internal",
+        "text": "cloud.google.com/load-balancing/docs/l7-internal"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/proxy-only-subnets",
+        "text": "cloud.google.com/load-balancing/docs/proxy-only-subnets"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Network Engineer",
+    "scenario": "You publish an internal analytics API from a producer VPC to dozens of independent consumer VPCs using Private Service Connect. Some consumers report that, although their PSC endpoint resolves, connections intermittently fail under load while others on the same service work fine. You suspect the producer side cannot keep up with new connections. Which producer-side setting most directly governs this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The dynamic routing mode of the producer VPC, which must be set to global for a Private Service Connect attachment to scale to many consumers.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "The MTU of the consumer VPC subnets hosting the failing PSC endpoints, which throttles new connection setup once it is exceeded.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The number of NAT subnet IP addresses allocated to the PSC service attachment, which caps concurrent consumer connections.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "The proxy-only subnet size in the consumer VPCs where the PSC endpoints live, which bounds how many endpoints can connect.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Dynamic routing mode affects cross-region BGP propagation, not the PSC attachment's connection limits — PSC doesn't rely on it for capacity.",
+      "B": "Subnet MTU governs packet size, not connection capacity; it wouldn't cause load-dependent connection failures isolated to some consumers.",
+      "C": "A PSC service attachment uses NAT subnet(s) to source-NAT consumer traffic; if those NAT IPs are too few, the attachment runs out of port/connection capacity and new consumer connections fail under load — sizing the NAT subnets fixes it.",
+      "D": "PSC consumer endpoints are forwarding-rule IPs, not proxy load balancers, so they don't consume a proxy-only subnet; that subnet is irrelevant here."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
+        "text": "cloud.google.com/vpc/docs/private-service-connect"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/about-accessing-vpc-hosted-services-endpoints",
+        "text": "cloud.google.com/vpc/docs/about-accessing-vpc-hosted-serv..."
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Network Engineer",
+    "scenario": "You front a public web app with a global external Application Load Balancer. The compliance team requires that traffic from a list of embargoed countries be dropped at Google's network edge *before* it reaches your backends or consumes any WAF/L7 processing, while still allowing full WAF inspection for everyone else. How should you configure Cloud Armor?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Attach an edge security policy with a geo-based deny rule for the embargoed countries; keep the backend policy for WAF.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add an OWASP preconfigured WAF rule on the backend security policy that denies the embargoed country codes.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure a rate-limiting rule on the backend security policy that throttles the embargoed countries to zero requests per minute.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a hierarchical firewall policy with geo-IP match to drop the embargoed countries before they reach the load balancer.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Edge security policies are enforced at Google's PoPs before traffic reaches the load balancer or backend policy, and they support geography/IP-based filtering — perfect for dropping embargoed regions early while the backend policy still does full WAF for the rest.",
+      "B": "A backend security policy runs *at* the load balancer, after edge, so the embargoed traffic still consumes L7/WAF processing — it doesn't drop \"before backends\" as required.",
+      "C": "Rate-limiting to zero is a hacky deny that still happens at the backend layer (not the edge) and isn't the intended geo-block mechanism.",
+      "D": "VPC/hierarchical firewall rules don't see the original client geo for proxied external ALB traffic (the LB is the source to backends), and they don't act at Google's edge PoPs."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview#edge-security-policies",
+        "text": "cloud.google.com/armor/docs/security-policy-overview#edge..."
+      },
+      {
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview",
+        "text": "cloud.google.com/armor/docs/security-policy-overview"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Network Engineer",
+    "scenario": "Your VPC has a private zone `corp.internal` in Cloud DNS. On-premises clients (reachable over HA VPN) must be able to resolve names in `corp.internal`, and Google Cloud VMs must be able to resolve on-premises names in `onprem.example.com`. You want each direction configured once, cleanly. What do you set up?",
+    "options": [
+      {
+        "id": "A",
+        "text": "DNS peering in both directions between the VPC and an on-premises Cloud DNS hub, with `--enable-geo-fencing` on both zones.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "An outbound server policy with alternative name servers listing the on-premises DNS servers, plus DNS peering from on-premises into the VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A forwarding zone for `corp.internal` pointing at on-premises, plus an inbound server policy so VMs can resolve `onprem.example.com`.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "An inbound server policy on the VPC (for inbound forwarder IPs) plus a forwarding zone for `onprem.example.com` pointing at the on-premises DNS servers.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "DNS peering is a VPC-to-VPC feature (on-premises isn't a Cloud DNS hub), and geo-fencing is a routing-policy flag unrelated to hybrid resolution.",
+      "B": "An outbound server policy with alternative name servers is a blunt instrument that sends *all* VPC queries to those servers (breaking internal resolution), and DNS peering is VPC↔VPC, not for on-premises.",
+      "C": "The directions are swapped — a forwarding zone for `corp.internal` would push your *own* zone out to on-premises, and an inbound policy doesn't let VMs resolve external names; this configuration does neither job.",
+      "D": "The two directions are independent: an *inbound* server policy exposes forwarder IPs so on-premises can resolve Google Cloud private names, and a *forwarding zone* for `onprem.example.com` lets VMs resolve on-premises names — one config each, correctly scoped."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dns/docs/policies",
+        "text": "cloud.google.com/dns/docs/policies"
+      },
+      {
+        "url": "https://cloud.google.com/dns/docs/zones/forwarding-zones",
+        "text": "cloud.google.com/dns/docs/zones/forwarding-zones"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Network Engineer",
+    "scenario": "In a hub-and-spoke design, every spoke VPC must resolve a specific set of partner zones via on-premises DNS servers reachable from the hub over Interconnect. A junior engineer configured an identical forwarding zone in each spoke pointing at the on-premises servers, and resolution is now flaky: on-premises occasionally drops the forwarded queries. What is the correct fix?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Keep the per-spoke forwarding zones but switch them to an outbound server policy with alternative name servers on each spoke.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create the forwarding zone only on the hub VPC and configure each spoke with a DNS peering zone to the hub.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Advertise `169.254.169.254` from the hub Cloud Router so the on-premises servers can identify the forwarding source.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create the forwarding zone on every spoke but disable global dynamic routing so the queries don't loop.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Alternative name servers send *all* spoke queries out, breaking resolution of everything else, and it doesn't solve the duplicate-source-range problem — it makes scoping worse.",
+      "B": "Each spoke's forwarding zone advertises the same `35.199.192.0/19` DNS proxy source range, so on-premises can't tell which VPC asked and drops replies; configuring forwarding once on the hub and using DNS peering from each spoke fixes it cleanly.",
+      "C": "`169.254.169.254` is the metadata DNS server, not the forwarding source range; advertising it doesn't help on-premises identify or return forwarded queries.",
+      "D": "Disabling global dynamic routing breaks cross-region route propagation and has nothing to do with the duplicated DNS proxy source range causing drops."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dns/docs/zones/zones-overview#peering-zones",
+        "text": "cloud.google.com/dns/docs/zones/zones-overview#peering-zones"
+      },
+      {
+        "url": "https://cloud.google.com/dns/docs/best-practices#hub-and-spoke",
+        "text": "cloud.google.com/dns/docs/best-practices#hub-and-spoke"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Network Engineer",
+    "scenario": "A private GKE Standard cluster in a Shared VPC service project will host a payments API. The control plane must have no public IP and no bastion or jump host in the VPC, yet on-call engineers working from home (and from a second spoke VPC) must run `kubectl` against it. Master Authorized Networks are considered too brittle for home IPs. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable the DNS-based control-plane endpoint, disable the IP-based endpoint, and authorize engineers with `container.clusters.connect` IAM plus VPC Service Controls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Keep the IP-based private endpoint and reach it from home and the spoke VPC by exporting custom routes across the VPC peering and adding the home ranges to Master Authorized Networks.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Front the control plane with an internal passthrough Network Load Balancer published via Private Service Connect to the spoke VPC and the internet.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Make the cluster public but disable node public IPs, then restrict the control plane to the corporate VPN egress range with Master Authorized Networks.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The DNS-based endpoint resolves to Google's API frontend, gated by IAM (`container.clusters.connect`) and VPC Service Controls; it gives bastion-free access from anywhere and sidesteps non-transitive peering between the spoke and the cluster's tenant network.",
+      "B": "The managed control plane lives in a Google tenant project reached via non-transitive peering, so exported routes don't reach it from a second-hop spoke, and home IPs in MAN are exactly the brittleness ruled out.",
+      "C": "You can't place your own ILB or PSC attachment in front of GKE's Google-managed control plane; it isn't a resource you can load-balance.",
+      "D": "A public cluster exposes a control-plane public IP (forbidden), and home-IP MAN is the brittle approach the scenario rejects."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/network-..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/network-isolation",
+        "text": "cloud.google.com/kubernetes-engine/docs/how-to/network-is..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Network Engineer",
+    "scenario": "You're sizing IP ranges for a VPC-native GKE cluster expected to grow to 200 nodes with up to 2,000 ClusterIP Services over its lifetime, using the default per-node Pod allocation, while minimizing address consumption. You cannot resize Pod/Service ranges after creation. Which secondary-range plan is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Pods `/14` (262,144) and Services `/16` (65,536) to leave maximum headroom.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Pods `/18` (16,384) and Services `/21` (2,048), expanding the Pod range later if needed.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Pods `/16` (65,536) and Services `/20` (4,096), with a small primary node range.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Pods `/17` (32,768) and Services `/23` (512), relying on Service IP reuse across namespaces.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A `/14` Pods and `/16` Services vastly over-allocate, contradicting the \"minimize address consumption\" constraint and risking overlap with other subnets.",
+      "B": "A `/18` holds only 16,384 Pod IPs (≈64 nodes' worth), far short of 200 nodes, and secondary ranges *cannot* be resized after creation, so \"expand later\" is impossible.",
+      "C": "At the default `/24` (256 Pod IPs) per node, 200 nodes need 51,200 Pod IPs → a `/16` (65,536) is the smallest power-of-two fit; 2,000 Services need a `/20` (4,096) — correctly sized and minimal.",
+      "D": "A `/23` Services range (512) can't hold 2,000 Services, and Service IPs aren't reused across namespaces within a cluster — it would exhaust immediately."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/alias-ips"
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr",
+        "text": "cloud.google.com/kubernetes-engine/docs/how-to/flexible-p..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Network Engineer",
+    "scenario": "A GKE Ingress currently routes external traffic to nodes, which then forward to Pods via `kube-proxy`. You observe an extra network hop, uneven Pod load distribution, and difficulty draining individual Pods during rollouts. You want the Google Cloud load balancer to send traffic straight to Pod IPs. What should you enable?",
+    "options": [
+      {
+        "id": "A",
+        "text": "An internal passthrough Network Load Balancer in front of the cluster to preserve the client IP to Pods.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "NodePort services with externalTrafficPolicy set to `Local` so traffic skips the second node hop.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "GKE Dataplane V2 so eBPF replaces `kube-proxy` and the load balancer addresses Pods directly.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Container-native load balancing using standalone or Ingress-managed zonal Network Endpoint Groups that hold Pod IPs.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "An internal passthrough NLB is L4/private and about client-IP preservation, not making an external Ingress route directly to Pod IPs.",
+      "B": "`externalTrafficPolicy: Local` reduces a hop but still routes to *nodes* (not Pod IPs directly) and can cause imbalanced traffic across nodes with uneven Pod counts.",
+      "C": "Dataplane V2 (eBPF) improves in-cluster policy/routing performance but doesn't make the *external* Google Cloud load balancer target Pod IPs — that's what NEGs do.",
+      "D": "Container-native load balancing uses NEGs that contain Pod IPs as endpoints, so the Google Cloud load balancer routes directly to Pods — eliminating the `kube-proxy` node hop, evening out distribution, and enabling Pod-level health/draining."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/containe..."
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/negs",
+        "text": "cloud.google.com/load-balancing/docs/negs"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Network Engineer",
+    "scenario": "A regional fleet of private VMs (no external IPs) makes a very high volume of short-lived outbound HTTPS connections to many different SaaS endpoints. Under peak load, Cloud NAT logs show `OUT_OF_RESOURCES` drops. You must stop the drops while using as few external NAT IP addresses as possible. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Dynamic Port Allocation on the Cloud NAT gateway with a low minimum (e.g., 64) and a high maximum (e.g., 8192) ports per VM.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Set a high static minimum of 8192 ports per VM so every VM is guaranteed enough ports during the peak.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add 30 static external IP addresses to the NAT gateway and switch it to round-robin IP mapping to spread the connection load.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Reduce the Cloud NAT TCP TIME_WAIT timeout to zero so source ports are reclaimed instantly after each connection closes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Dynamic Port Allocation lets busy VMs scale up to a high maximum while idle VMs stay near the minimum, ending exhaustion without statically reserving huge port blocks — the most IP-efficient fix.",
+      "B": "A high *static* minimum gives *every* VM (even idle ones) 8192 ports, so the gateway burns through IP/port capacity far faster — it triggers exhaustion sooner, not later.",
+      "C": "Adding 30 static IPs throws addresses at the problem, directly violating \"as few external IPs as possible,\" and is wasteful next to DPA.",
+      "D": "A zero TIME_WAIT timeout isn't a valid/safe setting and risks port reuse collisions; tuning timeouts is a secondary lever, not the IP-efficient fix for exhaustion."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/nat/docs/ports-and-addresses",
+        "text": "cloud.google.com/nat/docs/ports-and-addresses"
+      },
+      {
+        "url": "https://cloud.google.com/nat/docs/dynamic-port-allocation",
+        "text": "cloud.google.com/nat/docs/dynamic-port-allocation"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Network Engineer",
+    "scenario": "Your security team must investigate a suspected data exfiltration: they need a full, lossless copy of *all* bidirectional packets (headers and payloads) to and from a specific set of sensitive VMs, delivered to a third-party IDS appliance, without sitting inline in the traffic path or adding latency. Sampled metadata is not sufficient — they need actual packet payloads. What should you deploy?",
+    "options": [
+      {
+        "id": "A",
+        "text": "VPC Flow Logs at a 100% sampling rate on the sensitive VMs' subnet, exported to BigQuery for the IDS appliance to query.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Packet Mirroring, selecting the sensitive VMs and forwarding mirrored traffic to a collector behind an internal load balancer.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Cloud NGFW Enterprise with Layer 7 packet inspection enabled inline on the subnet hosting the sensitive VMs.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Firewall Rules Logging enabled on the allow rules for the sensitive VMs, streamed to the third-party IDS appliance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "VPC Flow Logs capture sampled *metadata* (the 5-tuple plus counts), never full packet payloads even at higher sampling — it can't deliver the actual packets needed for payload forensics.",
+      "B": "Packet Mirroring clones full packets (headers and payloads) out-of-band from selected instances/subnets to a collector, giving the IDS lossless copies without being inline or adding latency — exactly the requirement.",
+      "C": "Cloud NGFW Enterprise inspects *inline* and would sit in the traffic path (potential latency), and it's a blocking control, not a lossless packet-copy feed to a third-party IDS.",
+      "D": "Firewall Rules Logging records rule-match *events*, not packet contents, so it gives no payloads for exfiltration analysis."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/packet-mirroring",
+        "text": "cloud.google.com/vpc/docs/packet-mirroring"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/about-packet-mirroring",
+        "text": "cloud.google.com/vpc/docs/about-packet-mirroring"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Network Engineer",
+    "scenario": "After a firewall cleanup, an app team complains that VMs in `subnet-app` can't reach a database VM in `subnet-db` across the same VPC. You need to determine, without sending live traffic, whether a route or firewall rule is blocking the path and exactly which rule is responsible, before scheduling any change. Which tool gives you this fastest?",
+    "options": [
+      {
+        "id": "A",
+        "text": "VPC Flow Logs on both subnets, queried in BigQuery to see which flows are missing.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Network Topology in Network Intelligence Center, inspecting the live throughput graph between the two subnets.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Connectivity Tests in Network Intelligence Center, simulating the path from a `subnet-app` VM to the `subnet-db` VM.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Firewall Insights, reviewing the shadowed-rule and unused-rule metrics for the VPC.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Flow Logs only show traffic that *did* flow (sampled); a blocked flow simply doesn't appear, so they can't tell you which rule blocked it.",
+      "B": "Network Topology visualizes observed throughput/flows; it won't simulate a path or pinpoint the blocking rule, and there may be no traffic to show because it's already blocked.",
+      "C": "Connectivity Tests run a *configuration simulation* of the packet path — evaluating routes, firewall rules, and perimeters — and name the specific rule that drops the packet, all without sending live traffic.",
+      "D": "Firewall Insights finds shadowed/unused rules for cleanup, but doesn't trace a specific source-to-destination path or identify the rule blocking *this* connection."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview",
+        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
+      },
+      {
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/how-to/running-connectivity-tests",
+        "text": "cloud.google.com/network-intelligence-center/docs/connect..."
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Network Engineer",
+    "scenario": "You connect three VPCs (shared services, app, data) plus two on-premises sites (over HA VPN) and need full any-to-any reachability with central route management, while avoiding the non-transitivity of VPC peering and the pairwise-mesh sprawl it creates. The on-premises sites must also be able to reach each other through Google's backbone. What should you build?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A transit VPC running a self-managed fleet of router-appliance VMs that all five networks peer with over BGP, with no NCC hub at all.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A full mesh of VPC peerings between the three VPCs with custom route export on each link, and separate HA VPNs terminated on each VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A Network Connectivity Center hub in star topology with the data VPC in the center group and the other VPCs and on-premises sites on edge spokes.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Network Connectivity Center mesh hub with the three VPCs as VPC spokes and the two HA VPNs as hybrid spokes with site-to-site transfer on.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A self-managed router-appliance transit VPC is far more operational overhead and a scaling/HA risk compared with the native NCC hub built for exactly this.",
+      "B": "A peering mesh is the sprawl you're trying to avoid, remains non-transitive (on-prem can't reach on-prem through it), and needs N×(N-1)/2 links plus per-link route export.",
+      "C": "Star topology *isolates* edge spokes from each other, which blocks the required any-to-any reachability and on-prem-to-on-prem transit between edge sites.",
+      "D": "NCC mesh gives any-to-any reachability across VPC spokes and hybrid spokes from one central hub (no pairwise peering), and enabling site-to-site data transfer on the hybrid spokes lets the two on-premises sites transit Google's backbone to reach each other."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/network-connectivity-center/concepts/hybrid",
+        "text": "cloud.google.com/network-connectivity/docs/network-connec..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Network Engineer",
+    "scenario": "A VPC hosts an internal-facing service whose external presence is published via a global external Application Load Balancer with Cloud CDN. The product team wants `/downloads/*` (large, immutable installer files in a Cloud Storage bucket) cached aggressively at the edge, but after every release they must guarantee users immediately receive the new binaries. They are wary of overloading the origin. What is the correct release-time action?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Issue a targeted cache invalidation for the `/downloads/*` path prefix after each release, rather than purging the entire cache.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Disable Cloud CDN on the bucket backend before each release and re-enable it afterward so the edge re-fetches everything.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set the bucket objects' Cache-Control to `no-store` so the CDN never caches `/downloads/*`, guaranteeing freshness.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Issue a full cache invalidation (`/*`) on every release so nothing stale can possibly be served.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A path-scoped invalidation (`/downloads/*`) purges only the changed content, forcing a fresh fetch for those objects while leaving the rest of the cache intact and the origin lightly loaded.",
+      "B": "Toggling CDN off/on flushes all cached content and sends a flood of cache-miss requests to the origin for *everything*, the exact origin overload they're wary of, plus a latency hit.",
+      "C": "`no-store` defeats the whole point of caching large immutable installers at the edge — every user request hits the origin, maximizing load and latency.",
+      "D": "A `/*` invalidation purges the entire cache, causing a thundering-herd of misses against the origin across the whole site, not just the new binaries."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/cdn/docs/invalidating-cached-content",
+        "text": "cloud.google.com/cdn/docs/invalidating-cached-content"
+      },
+      {
+        "url": "https://cloud.google.com/cdn/docs/caching",
+        "text": "cloud.google.com/cdn/docs/caching"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/network_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/network_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

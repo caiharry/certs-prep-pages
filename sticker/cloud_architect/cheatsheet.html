@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="cheatsheet" class="ds-skin">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Architect &mdash; Exam Cheatsheet</title>
+  <style>
+    :root {
+      --bg: #fef2f2;
+      --ink: #1e293b;
+      --accent: #dc2626;
+      --accent-dark: #b91c1c;
+      --c1: #8b5cf6; --c2: #2563eb; --c3: #0d9488; --c4: #ea580c; --c5: #16a34a; --c6: #db2777;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fecaca' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5; margin: 0; padding: 0;
+    }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 15px 60px; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f87171 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 36px 20px; text-align: center; position: relative; margin-bottom: 30px; overflow: hidden; color: var(--ink);
+    }
+    header::after {
+      content: "CHEAT SHEET!"; position: absolute; top: 15px; right: -35px;
+      background: var(--red); color: white; font-size: 0.75rem; font-weight: bold;
+      padding: 6px 40px; transform: rotate(45deg); border: 2px solid #000;
+    }
+    .badge-rev {
+      background: var(--red); color: white; display: inline-block; font-size: 0.9rem; font-weight: bold;
+      padding: 6px 16px; border-radius: 999px; border: 2px solid #000; transform: rotate(-2deg); margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.8rem, 4.5vw, 3rem); margin: 8px 0; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 3px 3px 0px #fff;
+    }
+    .tagline { font-size: 1.1rem; margin: 8px auto 0; max-width: 720px; font-style: italic; }
+    .intro {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 20px 24px; margin-bottom: 30px;
+    }
+    .sec-block {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 5px 5px 0px var(--blk, #000); padding: 24px; margin-bottom: 30px;
+    }
+    .sec-block.c1 { box-shadow: 5px 5px 0px var(--c1); border-color: var(--c1); }
+    .sec-block.c2 { box-shadow: 5px 5px 0px var(--c2); border-color: var(--c2); }
+    .sec-block.c3 { box-shadow: 5px 5px 0px var(--c3); border-color: var(--c3); }
+    .sec-block.c4 { box-shadow: 5px 5px 0px var(--c4); border-color: var(--c4); }
+    .sec-block.c5 { box-shadow: 5px 5px 0px var(--c5); border-color: var(--c5); }
+    .sec-block.c6 { box-shadow: 5px 5px 0px var(--c6); border-color: var(--c6); }
+    .sec-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .sec-pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; padding: 4px 12px;
+      border-radius: 999px; border: 2px solid #000;
+    }
+    .c1 .sec-pill { background: var(--c1); } .c2 .sec-pill { background: var(--c2); }
+    .c3 .sec-pill { background: var(--c3); } .c4 .sec-pill { background: var(--c4); }
+    .c5 .sec-pill { background: var(--c5); } .c6 .sec-pill { background: var(--c6); }
+    .weight { font-size: 0.8rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; }
+    .sec-head h2 { font-size: 1.4rem; margin: 0; width: 100%; }
+    .sec-intro { color: #475569; margin: 0 0 16px; font-size: 0.96rem; }
+    .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .cards > * { min-width: 0; }
+    @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } .nav-link { width: 100%; } }
+    .fact-card {
+      background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 14px 16px;
+    }
+    .fact-card h4 { margin: 0 0 8px; font-size: 1.02rem; color: var(--accent-dark); }
+    .fact-card ul { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+    .fact-card li { margin-bottom: 5px; }
+    .fact-card p { margin: 0 0 6px; font-size: 0.9rem; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.85em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 16px; font-size: 0.92rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook {
+      display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000;
+      border-radius: 6px; padding: 1px 8px; margin-right: 6px;
+    }
+    .table-wrap { margin-top: 16px; overflow-x: auto; }
+    .table-cap { font-weight: bold; margin-bottom: 6px; color: var(--accent-dark); }
+    table { border-collapse: collapse; width: 100%; font-size: 0.86rem; background: #fff; }
+    th, td { border: 2px solid #000; padding: 8px 10px; text-align: left; vertical-align: top; }
+    thead th { background: var(--accent); color: #fff; }
+    tbody tr:nth-child(even) { background: #f1f5f9; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 20px auto 0; background: var(--yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    footer { text-align: center; margin-top: 30px; font-size: 0.85rem; color: #64748b; }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Main Certs Hub</a>
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Architect Portal</a>
+      <a href="practice_questions.html" class="nav-link">Practice Questions &rarr;</a>
+    </div>
+
+    <header>
+      <div class="badge-rev">Exam Revision Style</div>
+      <h1>GCP Cloud Architect</h1>
+      <p class="tagline">High-yield revision deck ordered by the official exam guide. Pillars, decision matrices, and the traps the examiners love.</p>
+    </header>
+
+    <div class="intro"><strong>🏛️ The big picture:</strong> The PCA exam rewards judgement over recall. Anchor every answer in the <strong>Well-Architected Framework</strong> pillars — <em>operational excellence, security, reliability, performance, cost, sustainability</em> — and the explicit business constraint in the scenario. Read the four case studies (Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive) before exam day.</div>
+
+    <section class="sec-block c1">
+      <div class="sec-head">
+        <span class="sec-pill">Section 1</span>
+        <span class="weight">~25%</span>
+        <h2>Designing & Planning the Architecture</h2>
+      </div>
+      <p class="sec-intro">Translate business + technical requirements into a design. This is a quarter of the exam.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Requirements & trade-offs</h4>
+          <ul><li><strong>Functional</strong> = what it does; <strong>non-functional</strong> = how well (latency, RTO/RPO, availability).</li><li>Always tie design to the stated KPI/ROI and BCP.</li><li>Workload disposition: <strong>rehost, replatform, refactor, rebuild, retire</strong> (build/buy/modify/deprecate).</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Compute selection</h4>
+          <ul><li><strong>Cloud Run</strong>: stateless containers, scale-to-zero, fastest to ship.</li><li><strong>GKE</strong>: complex microservices, fine control, sidecars/mesh.</li><li><strong>Compute Engine</strong>: lift-and-shift, licensing, GPUs, VMware Engine.</li><li><strong>Spot VMs</strong>: fault-tolerant batch only.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Modern AI building blocks</h4>
+          <ul><li><strong>Model Garden</strong>: catalog of foundation + open models.</li><li><strong>Vertex AI Agent Builder</strong>: RAG/search/agents.</li><li><strong>AI Hypercomputer</strong>: large-scale GPU/TPU training.</li><li><strong>Gemini Cloud Assist</strong>: design/ops help inside the console.</li></ul>
+        </div>
+      </div>
+        <div class="table-wrap"><div class="table-cap">Storage decision matrix</div>
+          <table><thead><tr><th>Need</th><th>Service</th></tr></thead><tbody>
+<tr><td>Object/blob, web assets, data lake</td><td>Cloud Storage</td></tr>
+<tr><td>POSIX shared file system</td><td>Filestore</td></tr>
+<tr><td>Relational OLTP, MySQL/Postgres</td><td>Cloud SQL / AlloyDB</td></tr>
+<tr><td>Global, strongly-consistent relational</td><td>Spanner</td></tr>
+<tr><td>Wide-column, &gt;1TB, high write QPS, NoSQL</td><td>Bigtable</td></tr>
+<tr><td>Document, mobile sync, serverless</td><td>Firestore</td></tr>
+<tr><td>Analytics warehouse</td><td>BigQuery</td></tr>
+          </tbody></table>
+        </div>
+        <div class="callout mnemonic"><span class="hook">Pillars</span> <strong>"Some Old People Really Crave Sustainability"</strong> — Security, Operational excellence, Performance, Reliability, Cost, Sustainability.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Strongly consistent AND global" almost always means <strong>Spanner</strong>, not Cloud SQL cross-region replicas (async, RPO &gt; 0).</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Don't pick GKE when the scenario stresses <em>minimal ops / fastest delivery</em> — that's Cloud Run.</div>
+    </section>
+    <section class="sec-block c2">
+      <div class="sec-head">
+        <span class="sec-pill">Section 2</span>
+        <span class="weight">~17.5%</span>
+        <h2>Managing & Provisioning Infrastructure</h2>
+      </div>
+      <p class="sec-intro">Network topologies, storage, compute, and Agent Platform ML workflows.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Hybrid connectivity tiers</h4>
+          <ul><li><strong>HA VPN</strong>: 99.99% SLA, IPsec over internet, quick.</li><li><strong>Dedicated Interconnect</strong>: 10/100G, private, lowest latency, needs colo.</li><li><strong>Partner Interconnect</strong>: via SP when no colo presence.</li><li><strong>Cloud Router</strong> = dynamic BGP for all of the above.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Shared VPC vs Peering</h4>
+          <ul><li><strong>Shared VPC</strong>: one host project, central network admin, many service projects.</li><li><strong>VPC Peering</strong>: connect two VPCs, non-transitive, decentralised.</li><li><strong>PSC</strong>: private, one-way access to a published service.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Backup & DR tiers</h4>
+          <ul><li><strong>Backup/restore</strong>: cheapest, highest RTO.</li><li><strong>Cold/warm standby</strong>: lower RTO, more cost.</li><li><strong>Hot/multi-region active-active</strong>: near-zero RTO/RPO, priciest.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Interconnect is <em>not</em> encrypted by default — add HA VPN over it or MACsec if encryption-in-transit is required.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> VPC Peering is <strong>non-transitive</strong>: A–B and B–C does not give A–C.</div>
+    </section>
+    <section class="sec-block c3">
+      <div class="sec-head">
+        <span class="sec-pill">Section 3</span>
+        <span class="weight">~17.5%</span>
+        <h2>Designing for Security & Compliance</h2>
+      </div>
+      <p class="sec-intro">Least-privilege IAM, the resource hierarchy, encryption, and regulatory mapping.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Resource hierarchy & policy</h4>
+          <ul><li>Org &rarr; Folders &rarr; Projects &rarr; Resources; IAM &amp; org policies <strong>inherit downward</strong>.</li><li>Set guardrails high (org policy) e.g. restrict regions, disable SA key creation.</li><li><strong>Separation of duties</strong>: split key admin from key user.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Encryption key options</h4>
+          <ul><li><strong>Google-managed</strong>: default, zero effort.</li><li><strong>CMEK (Cloud KMS)</strong>: you control rotation/revocation.</li><li><strong>EKM</strong>: keys stay in external/on-prem HSM.</li><li><strong>Confidential Computing</strong>: encrypt data <em>in use</em>.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Access boundaries</h4>
+          <ul><li><strong>VPC Service Controls</strong>: perimeter against data exfiltration (serverless APIs).</li><li><strong>IAP / Chrome Enterprise Premium</strong>: context-aware, identity-based access — no VPN.</li><li><strong>WIF</strong>: federate external identities without SA keys.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To stop data exfiltration from a serverless product (BigQuery, Pub/Sub, GCS) use <strong>VPC Service Controls</strong>, not firewall rules.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Keys must never leave our HSM" = <strong>Cloud EKM</strong>; "we generate keys then import" = Cloud KMS import.</div>
+    </section>
+    <section class="sec-block c4">
+      <div class="sec-head">
+        <span class="sec-pill">Section 4</span>
+        <span class="weight">~15%</span>
+        <h2>Analyzing & Optimizing Processes</h2>
+      </div>
+      <p class="sec-intro">Technical and business processes — SDLC, DR, change, and cost.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>DR metrics</h4>
+          <ul><li><strong>RTO</strong> = how long to recover; <strong>RPO</strong> = how much data you can lose.</li><li>Tighter RTO/RPO &rarr; more replication &rarr; more cost.</li><li>Test DR with game-days; document runbooks.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Cost optimisation levers</h4>
+          <ul><li><strong>CUDs</strong> (committed use) &amp; <strong>sustained-use</strong> discounts.</li><li><strong>Spot VMs</strong> for fault-tolerant batch.</li><li>Right-size with <strong>Active Assist / Recommender</strong>.</li><li>Lifecycle policies on storage; autoscaling.</li></ul>
+        </div>
+      </div>
+        <div class="callout mnemonic"><span class="hook">CapEx/OpEx</span> Cloud shifts spend from <strong>CapEx</strong> (buy hardware up front) to <strong>OpEx</strong> (pay-as-you-go) — a frequent business-process answer.</div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Committed-use discounts are <em>resource</em> commitments (vCPU/RAM), not all-or-nothing per VM — they survive resizing.</div>
+    </section>
+    <section class="sec-block c5">
+      <div class="sec-head">
+        <span class="sec-pill">Section 5</span>
+        <span class="weight">~12.5%</span>
+        <h2>Managing Implementation</h2>
+      </div>
+      <p class="sec-intro">Advise teams and interact with Google Cloud programmatically.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Tooling</h4>
+          <ul><li><strong>Apigee</strong>: full API management (quotas, monetisation, versioning).</li><li><strong>API Gateway</strong>: lightweight gateway for serverless.</li><li><strong>Terraform / Infrastructure Manager</strong>: declarative IaC.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Dev access</h4>
+          <ul><li><strong>Cloud Shell / Code</strong>: browser dev + emulators.</li><li>SDKs: <code>gcloud</code>, <code>gsutil</code> (now <code>gcloud storage</code>), <code>bq</code>.</li><li>Cloud Emulators: Bigtable, Spanner, Pub/Sub, Firestore for local test.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Apigee vs Cloud Endpoints/API Gateway: choose <strong>Apigee</strong> when you see monetisation, developer portal, or complex policy needs.</div>
+    </section>
+    <section class="sec-block c6">
+      <div class="sec-head">
+        <span class="sec-pill">Section 6</span>
+        <span class="weight">~12.5%</span>
+        <h2>Solution & Operations Excellence</h2>
+      </div>
+      <p class="sec-intro">Observe, release safely, and prove resilience.</p>
+      <div class="cards">
+        <div class="fact-card">
+          <h4>Observability stack</h4>
+          <ul><li><strong>Cloud Monitoring</strong>: metrics, dashboards, alerting policies.</li><li><strong>Cloud Logging</strong>: logs, log-based metrics, sinks.</li><li><strong>Cloud Trace / Profiler</strong>: latency &amp; CPU/heap profiling.</li></ul>
+        </div>
+        <div class="fact-card">
+          <h4>Release & resilience</h4>
+          <ul><li>Progressive delivery: <strong>canary, blue/green, rolling</strong>.</li><li>SLI/SLO/error budget gate release velocity.</li><li>Prove reliability with <strong>chaos engineering, load &amp; pen testing</strong>.</li></ul>
+        </div>
+      </div>
+        <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Operational-excellence questions favour <em>automation + measurable SLOs</em> over heroic manual ops.</div>
+    </section>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+    <footer><p>High-yield cheatsheet ordered by the official exam guide. Pair with the practice simulator.</p></footer>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/cloud_architect/cheatsheet.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/cloud_architect/cheatsheet.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Architect &mdash; Managing &amp; Provisioning Infrastructure</title>
+  <style>
+    :root {
+      --bg: #fef2f2; --ink: #1e293b; --accent: #dc2626; --accent-dark: #b91c1c;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fecaca' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f87171 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Architect Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 2</span><span class="weight">~17.5%</span>
+      <h1>Managing &amp; Provisioning Infrastructure</h1>
+      <p class="sec-intro">Stand up network topologies, storage systems, and compute — including the newer Gemini Enterprise Agent Platform for ML workflows.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Hybrid & multicloud connectivity</h3>
+      <p>Pick the on-ramp by SLA, bandwidth, and encryption needs:</p><ul><li><strong>HA VPN</strong> — 99.99% SLA, IPsec-encrypted over the internet, fast to deploy.</li><li><strong>Dedicated Interconnect</strong> — 10/100 Gbps, private, lowest latency, needs a colo cross-connect; <em>not encrypted by default</em>.</li><li><strong>Partner Interconnect</strong> — via a service provider when you have no colo presence.</li><li><strong>Cloud Router</strong> provides dynamic BGP for all of the above.</li></ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Interconnect is not encrypted in transit by default — layer HA VPN over it or use MACsec when encryption is mandated.</div>
+    </section>
+    <section class="lesson">
+      <h3>Shared VPC vs VPC Peering vs PSC</h3>
+      <p><strong>Shared VPC</strong> centralises network admin in a host project while service projects attach — best for org-wide governance. <strong>VPC Peering</strong> connects two VPCs as equals but is <em>non-transitive</em>. <strong>Private Service Connect</strong> exposes a single service privately across the boundary.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> VPC Peering is non-transitive: A–B and B–C does not give A–C connectivity.</div>
+    </section>
+    <section class="lesson">
+      <h3>Compute provisioning & AI platform</h3>
+      <p>Configure volatility (spot vs standard), patch management, and orchestration (MIGs, GKE). The current exam adds the <strong>Gemini Enterprise Agent Platform</strong>: Agent Platform Pipelines orchestrate the ML lifecycle, and <strong>AI Hypercomputer</strong> runs large-scale GPU/TPU training. Know that Model Garden supplies models and prebuilt AI APIs (Vision, Document AI, etc.) cover standard tasks.</p>
+    </section>
+    <section class="lesson">
+      <h3>Infrastructure as Code &amp; provisioning</h3>
+      <p>Provision repeatably, never by clicking in the console. <strong>Terraform</strong> is the de facto IaC tool on Google Cloud; the <strong>Cloud Foundation Toolkit</strong> ships opinionated, secure module blueprints, and <strong>Config Controller / Config Connector</strong> manage GCP resources declaratively through the Kubernetes API for GitOps. Keep state remote and locked, review changes via pull requests, and bake guardrails (org policies) into the pipeline.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Repeatable, reviewable, auditable environment creation" = Terraform/IaC in a pipeline &mdash; not gcloud scripts run by hand or console clicks.</div>
+      <div class="callout mnemonic"><span class="hook">IaC</span> If it isn't in version control, it didn't happen &mdash; declarative + peer-reviewed beats imperative + ad-hoc.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> You need an encrypted, 99.99%-SLA connection to on-prem live this week, with no colocation presence. What do you choose?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>HA VPN (two tunnels).</strong></p>
+          <p class="quiz-why">Encrypted, 99.99% SLA, internet-based, fast; Dedicated Interconnect needs a colo and isn't encrypted by default.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Central network team must own one network used by many project teams. Which model?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Shared VPC.</strong></p>
+          <p class="quiz-why">Host project holds the network; service projects attach — centralised governance.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> VPC A peers with B, and B peers with C. Can A reach C?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>No &mdash; VPC Peering is non-transitive.</strong></p>
+          <p class="quiz-why">Each peering connects only the two directly-peered VPCs; A&ndash;C needs its own peering, an NCC hub, or a transit design.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Auditors require every environment to be created the same way, reviewed before apply. What approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Infrastructure as Code (Terraform) through a CI/CD pipeline.</strong></p>
+          <p class="quiz-why">Declarative, version-controlled, peer-reviewed, and auditable &mdash; unlike manual console changes.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A regulated enterprise needs a connection to on-premises that is encrypted in transit, carries a 99.99% SLA, and can be live this week. They have no colocation presence yet. What should they deploy?</p>
+        <ul>
+          <li>A) Dedicated Interconnect with two connections in one metro.</li>
+          <li>B) HA VPN with two tunnels and Cloud Router BGP.</li>
+          <li>C) Partner Interconnect with a single VLAN attachment.</li>
+          <li>D) A Classic VPN tunnel to a single on-prem gateway.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> HA VPN is encrypted, carries a 99.99% SLA, and deploys in days over the internet &mdash; matching every constraint.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Interconnect needs colo provisioning (weeks) and isn't encrypted by default. <strong>D:</strong> Classic VPN is deprecated and has no 99.99% SLA.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A central platform team must own and govern one network that dozens of application teams' projects deploy into, while keeping firewall and routing control centralised. Which design fits best?</p>
+        <ul>
+          <li>A) A separate VPC per team, fully meshed with VPC Peering.</li>
+          <li>B) Shared VPC, with the network in a host project and teams' service projects attached.</li>
+          <li>C) One giant project that every team shares directly.</li>
+          <li>D) Private Service Connect endpoints between every pair of teams.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Shared VPC centralises network and firewall control in the host project while service projects attach &mdash; exactly the governance model described.</p>
+          <p class="quiz-why"><strong>A:</strong> A peering mesh is non-transitive and hard to govern centrally. <strong>C:</strong> One shared project destroys project-level isolation and billing. <strong>D:</strong> PSC exposes single services, not a shared network.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> After several outages caused by hand-made console changes, leadership wants all infrastructure changes to be declarative, peer-reviewed, and auditable. What should the team adopt?</p>
+        <ul>
+          <li>A) A shared runbook of gcloud commands operators paste into the console.</li>
+          <li>B) Terraform managed through a CI/CD pipeline with remote state and pull-request review.</li>
+          <li>C) Nightly snapshots so changes can be rolled back after the fact.</li>
+          <li>D) Tighter IAM so only senior engineers can click in the console.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> IaC in a pipeline makes changes declarative, version-controlled, reviewed, and auditable &mdash; eliminating ad-hoc drift.</p>
+          <p class="quiz-why"><strong>A:</strong> Pasting commands is still manual and error-prone. <strong>C:</strong> Snapshots recover data, not change governance. <strong>D:</strong> Restricting who clicks doesn't make changes reviewable or repeatable.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s1.html" class="nav-link">&larr; Designing &amp; Planning the Architecture</a>
+      <a href="guide_s3.html" class="nav-link">Designing for Security &amp; Compliance &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/cloud_architect/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/cloud_architect/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

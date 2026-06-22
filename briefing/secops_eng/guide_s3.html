@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Operations Engineer &mdash; Threat Hunting</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --ink: #1e293b; --accent: #475569; --accent-dark: #334155;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23cbd5e1' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #cbd5e1 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Operations Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 3</span><span class="weight">~19%</span>
+      <h1>Threat Hunting</h1>
+      <p class="sec-intro">Proactively search for anomalies and indicators of compromise the detections may have missed.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Hunting techniques</h3>
+      <p>Run hypothesis-driven <strong>UDM searches</strong> across logs, analyse user behaviour for anomalies, and pivot on IOCs (hash/IP/URL/domain) via GTI. Use <strong>retrohunt</strong> to apply a new rule or fresh indicators to <em>historical</em> data — the way you discover earlier compromise.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> When you must apply brand-new indicators or a new rule to past data to find prior compromise, that's a retrohunt.</div>
+    </section>
+    <section class="lesson">
+      <h3>Risk-driven hunting</h3>
+      <p>Use the <strong>entity risk score</strong> to surface anomalous users/assets, and <strong>SCC toxic combinations</strong> to see when several individually-minor issues chain into a real attack path to sensitive data.</p>
+    </section>
+    <section class="lesson">
+      <h3>Frameworks & hypothesis-driven hunting</h3>
+      <p>Hunting isn't aimless log-staring — it's structured. Anchor hunts to a framework so coverage is measurable and repeatable:</p>
+      <ul>
+        <li><strong>MITRE ATT&amp;CK</strong> — map hunts to tactics/techniques (e.g., T1078 Valid Accounts) to find blind spots in your detection coverage.</li>
+        <li><strong>Pyramid of Pain</strong> — hunting on hashes/IPs is cheap for the adversary to change; hunting on <em>TTPs</em> hurts them most. Aim up the pyramid.</li>
+        <li><strong>Hypothesis &rarr; UDM search &rarr; pivot</strong> — state what you expect an attacker to do, query for it, then pivot across entities and indicators on the results.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">UP THE PYRAMID</span> Hashes and IPs are trivial to swap; <strong>TTPs</strong> are the costliest for an attacker to change — that's where durable hunts live.</div>
+    </section>
+    <section class="lesson">
+      <h3>UDM search craft & threat intel pivots</h3>
+      <p>The hunter's primary instrument is <strong>UDM search</strong> over normalised events. Strong hunts: filter by UDM field (not raw text), aggregate to spot outliers (rare process, rare parent-child pair, first-seen domain), and pivot on the survivors. Lean on <strong>Applied Threat Intelligence</strong> and GTI so curated, prioritised IoCs auto-match your telemetry rather than you pasting indicators by hand.</p>
+      <ul>
+        <li><strong>Statistical/rare-event hunting</strong> — surface the unusual (rare child processes, low-prevalence binaries) rather than known-bad only.</li>
+        <li><strong>IoC enrichment</strong> — pivot a suspicious hash/IP/domain through GTI for actor, campaign, and prevalence context.</li>
+        <li><strong>Entity risk score</strong> — let aggregated risk float anomalous users/assets to the top of the hunt queue.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Find prior compromise from a brand-new indicator" is a <strong>retrohunt</strong> (rule/indicator over historical data). "Proactively look for the unknown" is <strong>hunting</strong> via UDM search. Don't confuse the two.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A new advisory lists malicious hashes/IPs; check if they appeared in the last 6 months of logs. What do you run?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A retrohunt against historical data.</strong></p>
+          <p class="quiz-why">Applies indicators to past events to reveal earlier compromise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Several low-severity SCC findings chain into a path to sensitive data. Which concept surfaces this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Toxic combinations (attack path).</strong></p>
+          <p class="quiz-why">SCC chains issues into an exploitable path.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You want hunts that are hardest for an adversary to evade. Which layer of the Pyramid of Pain do you target?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>TTPs (tactics, techniques, procedures).</strong></p>
+          <p class="quiz-why">Hashes/IPs are trivial to swap; changing TTPs is far costlier for the attacker.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You want curated, prioritised IoCs to automatically match against your telemetry instead of pasting them manually. What provides this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Applied Threat Intelligence (with GTI).</strong></p>
+          <p class="quiz-why">Auto-matches prioritised curated indicators against your events.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Intel says an actor is active in your sector but gives no concrete indicators — only that they abuse valid accounts and living-off-the-land binaries. You have one day to hunt productively. What is the most effective approach?</p>
+        <ul>
+          <li>A) Wait for the intel team to publish hashes and IPs, then retrohunt those across historical logs</li>
+          <li>B) Form ATT&amp;CK-mapped hypotheses for the named techniques and run UDM searches for rare process behaviour</li>
+          <li>C) Block all the actor's known domains at the firewall and monitor for renewed connection attempts</li>
+          <li>D) Raise the severity of every existing detection so more of the actor's activity gets escalated</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> With only TTPs to go on, hypothesis-driven hunting mapped to ATT&amp;CK techniques (valid-account abuse, LOLBins) and executed as UDM searches for rare behaviour is exactly the high-pyramid hunt the situation calls for.</p>
+          <p class="quiz-why"><strong>A:</strong> Waiting for hashes/IPs forfeits the day and pins you to the most evadable, lowest-pyramid indicators. <strong>C:</strong> You were given no domains to block, and blocking is a control action, not a hunt for present compromise. <strong>D:</strong> Cranking severity on existing rules creates alert noise without searching for the unknown activity these detections were never built to catch.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A threat advisory drops at 2pm with 30 fresh file hashes tied to a new loader. Leadership asks whether any of these touched the estate over the past quarter. What do you do in SecOps?</p>
+        <ul>
+          <li>A) Add the hashes to a reference list and wait for live detections to fire on future matches</li>
+          <li>B) Open an interactive UDM search and manually scroll today's process events for the hashes</li>
+          <li>C) Run a retrohunt with the hashes against the last quarter of historical telemetry</li>
+          <li>D) Build a Looker Studio dashboard that trends hash prevalence across the quarter</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Applying brand-new indicators to past data to discover earlier compromise is the definition of a retrohunt, and it answers the "did this touch us in the last quarter" question directly.</p>
+          <p class="quiz-why"><strong>A:</strong> A reference list plus live detection only catches <em>future</em> matches, ignoring the historical question asked. <strong>B:</strong> Manually scrolling today's events neither covers the quarter nor scales to 30 hashes. <strong>D:</strong> A dashboard visualises trends but does not search history for specific indicators to confirm or rule out prior compromise.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A hunter notices a service account suddenly authenticating from a new country, then enumerating storage buckets it never touched before. They want the platform to keep surfacing accounts behaving this anomalously without writing a bespoke rule for each pattern. What should they lean on?</p>
+        <ul>
+          <li>A) The entity risk score, which aggregates anomalous signals to float high-risk users and assets up</li>
+          <li>B) A single high-severity YARA-L rule that fires on any authentication from a new country</li>
+          <li>C) SCC Security Health Analytics to flag the bucket configuration as a misconfiguration finding</li>
+          <li>D) A SOAR playbook that disables any account seen authenticating outside its usual region</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> The entity risk score aggregates multiple anomalous behaviours into a single prioritised signal, surfacing risky accounts for hunting without a hand-written rule per pattern.</p>
+          <p class="quiz-why"><strong>B:</strong> A blunt new-country rule generates heavy false positives and only captures one of the two suspicious behaviours. <strong>C:</strong> SHA checks bucket posture/configuration, not anomalous account behaviour over time. <strong>D:</strong> Auto-disabling on geography is a heavy-handed response action that would lock out legitimate travel and isn't a hunting mechanism.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s2.html" class="nav-link">&larr; Data Management</a>
+      <a href="guide_s4.html" class="nav-link">Detection Engineering &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/secops_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/secops_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

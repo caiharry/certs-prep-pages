@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Operations Engineer &mdash; Observability</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --ink: #1e293b; --accent: #475569; --accent-dark: #334155;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23cbd5e1' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #cbd5e1 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Operations Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 6</span><span class="weight">~10%</span>
+      <h1>Observability</h1>
+      <p class="sec-intro">Dashboards and reports for insight, plus health monitoring of the SecOps platform itself.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Dashboards & reports</h3>
+      <p>Build dashboards that visualise ingestion volume, detections, alerts, open cases, and top IOCs (SecOps SOAR/SIEM, optionally <strong>Looker Studio</strong>), and generate scheduled, exportable reports for leadership. Track key security analytics — metrics, KPIs, and trends.</p>
+    </section>
+    <section class="lesson">
+      <h3>Health monitoring & silent sources</h3>
+      <p>Create threshold alerts on key metrics and route notifications via <strong>Cloud Monitoring</strong>. Crucially, configure <strong>silent source detection</strong> to alert when an expected log feed stops sending data — a blind spot your content rules cannot catch (they simply see nothing).</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A feed that quietly stops sending logs is caught by silent source detection, not by your detection rules.</div>
+    </section>
+    <section class="lesson">
+      <h3>Metrics that matter & audience-fit dashboards</h3>
+      <p>Observability is only useful if the right person sees the right number. Match the metric to the audience:</p>
+      <ul>
+        <li><strong>SOC-operational</strong> — alert volume, MTTD/MTTR, case backlog, false-positive rate; these tune day-to-day operations.</li>
+        <li><strong>Detection-coverage</strong> — rules firing, ATT&amp;CK coverage, top noisy rules; these guide detection engineering.</li>
+        <li><strong>Executive/leadership</strong> — trend lines, risk posture, SLA adherence in scheduled, exportable reports — not raw event firehoses.</li>
+        <li><strong>Ingestion-health</strong> — per-source volume, latency, and parser error rates; an early-warning layer for the pipeline itself.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">RIGHT EYES</span> Operators want <strong>live ops</strong> metrics; execs want <strong>trends &amp; SLAs</strong>. Don't hand leadership a raw alert feed or analysts a quarterly PDF.</div>
+    </section>
+    <section class="lesson">
+      <h3>Pipeline health beyond silent sources</h3>
+      <p>A detection can only fire on data that arrives, on time, correctly parsed. So monitor the pipeline itself as a first-class concern:</p>
+      <ul>
+        <li><strong>Silent / missing sources</strong> — alert when an expected feed stops; content rules see nothing and stay quiet, so they cannot catch this.</li>
+        <li><strong>Ingestion latency</strong> — data arriving hours late means detections fire late; alert on lag, not just absence.</li>
+        <li><strong>Parser errors / drops</strong> — a vendor format change can silently break a parser, so events ingest but land in the wrong fields and dodge rules.</li>
+        <li><strong>Routing &amp; thresholds</strong> — push pipeline-health alerts through <strong>Cloud Monitoring</strong> to the on-call channel, separate from security alerts.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Logs still arrive but a vendor changed their format and detections went quiet" is a <strong>parser error</strong> problem, not a silent-source one — the feed isn't silent, it's mis-parsed.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A critical log source stopped 3 days ago and nobody noticed because detections produced no alerts. What prevents this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Silent source detection / ingestion-health monitoring.</strong></p>
+          <p class="quiz-why">Alerts when an expected feed goes quiet.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Leadership wants a single visual view of ingestion, detections, cases, and IOCs plus weekly exports. What do you build?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>SecOps SOAR/SIEM dashboards with scheduled reports (optionally Looker Studio).</strong></p>
+          <p class="quiz-why">Centralised observability with exportable reporting.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A feed still sends data, but after a vendor format change detections on it stopped firing. What's the likely cause?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A parser error — events land in the wrong UDM fields.</strong></p>
+          <p class="quiz-why">The source isn't silent; mis-parsed fields slip past rules. Not a silent-source case.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Analysts need live alert-volume and MTTR; the CISO wants quarterly trends. How do you serve both?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Audience-fit views: live operational dashboards for the SOC, scheduled trend reports for the CISO.</strong></p>
+          <p class="quiz-why">Match the metric and cadence to the audience rather than one shared view.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A firewall feed keeps streaming events at its normal volume, but after the vendor pushed a firmware update, none of your firewall detections fire anymore. Ingestion-volume dashboards look completely healthy. What is the most likely root cause?</p>
+        <ul>
+          <li>A) The source went silent, so silent-source detection should have already raised an alert</li>
+          <li>B) The vendor format changed and the parser now mis-maps fields, so events dodge the rules</li>
+          <li>C) Ingestion latency spiked, so the events arrive too late for the detections to evaluate</li>
+          <li>D) The detections were accidentally disabled during the firmware change-management window</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Steady volume plus dead detections after a vendor format change is the signature of a broken parser: events still ingest but land in the wrong UDM fields, so rules no longer match.</p>
+          <p class="quiz-why"><strong>A:</strong> Silent-source detection only triggers when a feed goes quiet, and volume is normal here, so it is not the cause. <strong>C:</strong> Latency would show as a lag or backlog, not normal-volume ingestion with healthy dashboards. <strong>D:</strong> A disable would be unrelated to the format change and is speculative; the format-change timing points squarely at parsing.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> The CISO wants a monthly, exportable summary of detection trends, SLA adherence, and overall risk posture to share with the board, while the SOC floor needs constantly-updating alert and case metrics. How should you deliver this?</p>
+        <ul>
+          <li>A) Give both groups the same live SIEM dashboard and let each filter it to whatever they need</li>
+          <li>B) Send the CISO the raw alert feed export weekly and have the SOC read the same export</li>
+          <li>C) Build a live operational dashboard for the SOC and scheduled exportable trend reports for the CISO</li>
+          <li>D) Configure Cloud Monitoring threshold alerts to email both the board and the SOC on every spike</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Matching cadence and content to audience — a live operational dashboard for the SOC and scheduled, exportable trend reports for leadership — is exactly the audience-fit observability the scenario needs.</p>
+          <p class="quiz-why"><strong>A:</strong> A single live dashboard buries the board in operational noise and assumes execs will self-serve filters they don't want. <strong>B:</strong> A raw alert feed is unreadable for a board summary and too coarse for live SOC work. <strong>D:</strong> Threshold alerts are for pipeline/operational anomalies, not board-level trend reporting or SOC dashboards.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You want early warning before detections degrade: notification when any expected source stops sending, when ingestion lags by hours, or when parser error rates climb. Where should these pipeline-health alerts be wired so they reach on-call without polluting the security alert queue?</p>
+        <ul>
+          <li>A) As high-severity YARA-L rules in the SIEM so they surface alongside threat detections</li>
+          <li>B) Through Cloud Monitoring thresholds routed to the on-call channel, separate from security alerts</li>
+          <li>C) Into the SOAR case queue so each ingestion hiccup opens a case for an analyst to triage</li>
+          <li>D) Onto the executive trend report so leadership sees ingestion health each reporting cycle</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Pipeline-health signals (silent sources, latency, parser errors) belong in Cloud Monitoring with notifications routed to on-call, keeping operational health distinct from the security alert queue.</p>
+          <p class="quiz-why"><strong>A:</strong> YARA-L watches ingested UDM events for threats; it cannot natively alert on the ingestion pipeline's own health and would mix the two queues. <strong>C:</strong> Opening a SOAR case per ingestion hiccup floods case management with operational, non-incident work. <strong>D:</strong> A monthly trend report is far too slow to act as early warning before detections degrade.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s5.html" class="nav-link">&larr; Incident Response</a>
+      <span></span>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/secops_eng/guide_s6.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/secops_eng/guide_s6.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

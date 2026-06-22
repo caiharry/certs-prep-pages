@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Operations Engineer &mdash; Detection Engineering</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --ink: #1e293b; --accent: #475569; --accent-dark: #334155;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23cbd5e1' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #cbd5e1 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Operations Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 4</span><span class="weight">~22%</span>
+      <h1>Detection Engineering</h1>
+      <p class="sec-intro">The largest section: write YARA-L detection rules and tune them with threat intelligence.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Anatomy of a YARA-L rule</h3>
+      <p>A YARA-L rule has: <code>meta</code> (author, severity), <code>events</code> (UDM match conditions), <code>match</code> (group-by variables + time window), <code>condition</code>, and <code>outcome</code> (e.g., a risk score). <strong>Reference lists</strong> hold reusable allow/deny values (known-good service accounts, watchlisted domains) referenced across rules.</p>
+      <div class="callout mnemonic"><span class="hook">YARA-L</span> <strong>"My Events Match Conditions, Output risk"</strong> — meta &rarr; events &rarr; match &rarr; condition &rarr; outcome.</div>
+    </section>
+    <section class="lesson">
+      <h3>Tuning & reducing false positives</h3>
+      <p>Cut noise without losing coverage: add known-good entities to a <strong>reference list</strong> and exclude them in the rule, and use <strong>entity-graph context</strong> to raise accuracy. Score alerts by IOC risk and suppress repetitive benign alerts. Detect posture changes with SCC Security Health Analytics and posture management.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Reduce false positives with reference lists and entity context — never by deleting the rule (which removes coverage).</div>
+    </section>
+    <section class="lesson">
+      <h3>Single-event vs multi-event rules</h3>
+      <p>The presence (or absence) of a <code>match</code> section changes a YARA-L rule's whole personality — and the exam tests the distinction:</p>
+      <ul>
+        <li><strong>Single-event rule</strong> — no <code>match</code> section; fires on each individual event meeting the condition (e.g., one connection to a watchlisted IP). Great for IoC matching.</li>
+        <li><strong>Multi-event rule</strong> — has a <code>match</code> with group-by variables and a time window; correlates several events (e.g., 20 auth failures from one user in 5 minutes, or failure-then-success = brute-force success).</li>
+        <li><strong>Placeholders vs match variables</strong> — placeholder variables (<code>$ip</code>) join conditions <em>within</em> an event; match variables (in <code>match</code>) group <em>across</em> events.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">MATCH = MANY</span> See a <strong>time window</strong> and a "happens N times / A then B" scenario &rarr; you need a <code>match</code> section (multi-event). One bad event on its own &rarr; single-event, no <code>match</code>.</div>
+    </section>
+    <section class="lesson">
+      <h3>Curated detections, the rule lifecycle & testing</h3>
+      <p>You don't write everything from scratch. <strong>Curated detections</strong> are Google-authored, continuously-updated rule sets (cloud threats, Applied Threat Intelligence, etc.) you enable and tune rather than build. Around your own rules, run a disciplined lifecycle:</p>
+      <ul>
+        <li><strong>Test before deploy</strong> — run a rule against historical data (a test/retrohunt run) to gauge true- vs false-positive volume before it goes live.</li>
+        <li><strong>Tune, don't delete</strong> — cut noise with reference-list exclusions, entity context, and tighter conditions; deleting a noisy rule throws away coverage.</li>
+        <li><strong>Manage as code</strong> — version, review, and stage rules; promote from a dev/test state to production deliberately.</li>
+        <li><strong>Alerting vs not</strong> — a rule can run for context/risk-scoring without raising an alert every time; reserve alerts for what needs a human.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> If Google already ships a maintained rule for a common threat, <strong>enable the curated detection</strong> and tune it — don't reinvent it as a hand-written YARA-L rule you now have to maintain.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Detect when one user fails auth &gt;20 times in 5 minutes and assign a risk score. What do you write?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A YARA-L rule in SecOps SIEM (events + match window + outcome).</strong></p>
+          <p class="quiz-why">YARA-L matches UDM events, groups by entity over a window, emits risk.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A rule keeps alerting on known automation accounts. Best fix?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Exclude them via a reference list in the rule logic.</strong></p>
+          <p class="quiz-why">Keeps the detection live while suppressing benign cases.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must correlate "auth failure then success from the same user inside 10 minutes." Which YARA-L construct is required?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A multi-event rule with a <code>match</code> section (group-by + time window).</strong></p>
+          <p class="quiz-why">Correlating several events over a window needs match variables and a window; a single-event rule can't.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Google already maintains a rule set for a common cloud threat you need to cover. What's the efficient move?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Enable and tune the curated detection.</strong></p>
+          <p class="quiz-why">Curated detections are Google-authored and continuously updated — no need to hand-build and maintain your own.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> You need a detection that fires only when a single user account produces more than 15 failed logins followed by a successful login within a 10-minute window, then assigns a risk score. How should the YARA-L rule be structured?</p>
+        <ul>
+          <li>A) A single-event rule whose condition counts failed logins, since each login is one event</li>
+          <li>B) A multi-event rule with a match section grouping by user over a time window, plus an outcome score</li>
+          <li>C) A reference-list lookup that flags users whose failed-login count exceeds a static threshold</li>
+          <li>D) A curated detection enabled as-is, because brute-force is a standard built-in scenario</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Correlating many failures then a success for the same user inside a window requires a match section with a group-by user variable and a time window, and the risk score comes from the outcome block.</p>
+          <p class="quiz-why"><strong>A:</strong> A single-event rule sees one event at a time and cannot count or sequence events across a window. <strong>C:</strong> Reference lists store reusable values; they don't count events or evaluate time-windowed sequences. <strong>D:</strong> Even if a curated rule exists, the question specifies bespoke thresholds and a custom outcome, which means you author or tune a rule, and the structure still needs a match section.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A newly written rule looks correct, but you're worried it will bury analysts in false positives once live. Before deploying it to production, what is the best validation step in SecOps?</p>
+        <ul>
+          <li>A) Run the rule against historical telemetry in a test run to measure true- vs false-positive volume</li>
+          <li>B) Deploy it straight to production at low severity and watch the alert queue for a week</li>
+          <li>C) Add every conceivable benign entity to a reference list up front so nothing can false-positive</li>
+          <li>D) Lower the rule's outcome risk score so any false positives are automatically de-prioritised</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Testing the rule against historical data shows exactly what it would have matched, letting you measure and tune false-positive volume before it ever touches the live queue.</p>
+          <p class="quiz-why"><strong>B:</strong> Shipping to production first is precisely the risk you're trying to avoid; low severity still floods the queue. <strong>C:</strong> Pre-loading every imaginable benign entity is guesswork that risks over-suppression and blind spots without any measurement. <strong>D:</strong> Lowering the score hides noise rather than validating accuracy, and you still don't know the real false-positive rate.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A high-value rule is accurate but fires constantly on three known CI/CD service accounts performing legitimate automated deployments. You must keep the detection's coverage for everyone else. What's the correct tuning?</p>
+        <ul>
+          <li>A) Delete the rule and rely on the entity risk score to surface the same activity when it matters</li>
+          <li>B) Reduce the rule's severity so the CI/CD alerts sink below the analysts' triage threshold</li>
+          <li>C) Exclude the three service accounts via a reference list referenced in the rule condition</li>
+          <li>D) Shorten the rule's match window so the automated bursts no longer satisfy the condition</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> A reference list of the known-good service accounts, excluded in the condition, suppresses the benign cases while the rule keeps full coverage against every other entity.</p>
+          <p class="quiz-why"><strong>A:</strong> Deleting the rule removes coverage for everyone, the classic trap. <strong>B:</strong> Lowering severity hides all alerts from the rule, not just the three benign accounts, weakening real detections. <strong>D:</strong> Shrinking the window degrades detection logic globally and may cause the rule to miss genuine slow attacks.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Threat Hunting</a>
+      <a href="guide_s5.html" class="nav-link">Incident Response &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/secops_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/secops_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

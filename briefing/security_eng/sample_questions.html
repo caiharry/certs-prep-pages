@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="briefing" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #8b5cf6;
+            --dark-accent-hover: #7c3aed;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #6d28d9;
+            --classic-accent-hover: #5b21b6;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Security Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">48:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Security Engineer",
+    "scenario": "Developers in an organization are prototyping a few applications on Google Cloud and are starting to store sensitive information on Google Cloud. The developers are using their personal/consumer Gmail accounts to set up and manage their projects within Google Cloud. A security engineer identifies this practice as a concern to the leadership team because of the lack of centralized project management and access to the data being stored in these accounts. Which solution should be used to resolve this concern?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enforce the setup of Security Keys as the 2-Step Verification method for those Gmail accounts.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set up Cloud Identity and require the developers to use those accounts for Google Cloud work.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Require the developers to log/store their Gmail passwords with the security team.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable logging on all Google Cloud projects to track all developer activities.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "While it addresses some level of security concern, it still does not address centralized management.",
+      "B": "It allows for enforcing 2SV-like security features and centralized management of the identities.",
+      "C": "It breaches developer privacy and goes against best practices.",
+      "D": "It does not help in restricting access or securing accounts accessing the sensitive data."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/docs/enterprise/best-practices-for-enterprise-organizations#manage-identities",
+        "text": "cloud.google.com/docs/enterprise/best-practices-for-enter..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/assessing-existing-user-accounts",
+        "text": "docs.cloud.google.com/architecture/identity/assessing-exi..."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Security Engineer",
+    "scenario": "A customer wants to use Cloud Identity as their primary IdP. The customer wants to use other non-Google Cloud SaaS products for CRM, messaging, and customer ticketing management. The customer also wants to improve employee experience with Single Sign-On (SSO) capabilities to securely access Google Cloud and non-Google Cloud applications. Only authorized individuals should be able to access these third-party applications. What action should the customer take to meet these requirements?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Remove the employee from Cloud Identity, set the correct license for the individuals, and resync them to Cloud Identity for the changes to take effect.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure third-party applications to federate authentication and authorization to the Google Cloud IdP.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Remove the individuals from the third-party applications, add the license to Cloud Identity, and resync the individuals back to the third-party applications.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Copy user personas from Cloud Identity to all third-party applications for the domain.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Users should continue to be in Cloud Identity as the central source of truth.",
+      "B": "Cloud Identity can serve as a SAML IdP for third-party apps.",
+      "C": "It does not help to automate user provisioning.",
+      "D": "It does not help to automate user provisioning and deprovisioning on a continual basis."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/single-sign-on",
+        "text": "docs.cloud.google.com/architecture/identity/single-sign-on"
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/best-practices-for-federating",
+        "text": "docs.cloud.google.com/architecture/identity/best-practice..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Security Engineer",
+    "scenario": "A Cloud Development team needs to use service accounts extensively in their local development. You need to provide the team with the keys for these service accounts. You want to follow Google-recommended practices. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Implement a daily key rotation process that generates a new key and commits it to the source code repository every day.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Implement a daily key rotation process, and provide developers with a Cloud Storage bucket from which they can download the new key every day.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a Google Group with all developers. Assign the group the IAM role of Service Account User, and have developers generate and download their own keys.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a Google Group with all developers. Assign the group the IAM role of Service Account Admin, and have developers generate and download their own keys.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A source code repository is not the place to store keys that expire or change.",
+      "B": "Per the sample answer key, this allows a centralized admin-managed key rotation process without delegating key creation to developers. (Current Google guidance strongly prefers keyless alternatives such as workload identity federation over user-managed keys.)",
+      "C": "The Service Account User IAM role does not allow creation of keys.",
+      "D": "This veers away from best practices because keys would reside in a decentralized place and can be potentially leaked."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys",
+        "text": "docs.cloud.google.com/iam/docs/best-practices-for-managin..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/key-rotation",
+        "text": "docs.cloud.google.com/iam/docs/key-rotation"
+      },
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/keys-create-delete",
+        "text": "docs.cloud.google.com/iam/docs/keys-create-delete"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Security Engineer",
+    "scenario": "A customer needs to rely on their existing user directory with the requirements of native authentication when developing solutions in Google Cloud. They want to leverage their existing tooling and functionality to gather insight on user activity from a familiar interface. Which action should you take to meet the customer's requirements?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Provision users into Cloud Identity using Just-in-Time SAML 2.0 user provisioning with the customer User Directory as source.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure Cloud Identity as a SAML 2.0 Service Provider, using the customer's User Directory as the Identity Provider.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Configure and enforce 2-Step Verification in Cloud Identity for all Super Admins.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a third-party IdP (Okta or Ping Federate) to manage authentication.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "The client wants to continue using their existing directory.",
+      "B": "It lets the client use their current user directory as the source of truth and authenticate against it while using Cloud Identity as their SAML broker.",
+      "C": "It adds protection to super admin accounts but does not address the use case.",
+      "D": "It proposes a non-native solution and does not address the use case."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/using-your-existing-identity-management-system-with-google-cloud-platform",
+        "text": "cloud.google.com/blog/products/identity-security/using-yo..."
+      },
+      {
+        "url": "https://support.google.com/a/answer/60224",
+        "text": "support.google.com/a/answer/60224"
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/identity/single-sign-on",
+        "text": "docs.cloud.google.com/architecture/identity/single-sign-on"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Security Engineer",
+    "scenario": "A customer wants to grant access to their application running on Compute Engine to write only to a specific Cloud Storage bucket. How should you grant access?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a service account for the application, and grant the Storage Object Creator role at the project level.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a service account for the application, and grant the Storage Object Creator role at the bucket level.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a user account, authenticate with the application, and grant the Storage Object Admin role at the bucket level.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a user account, authenticate with the application, and grant the Storage Object Admin role at the project level.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "It does not restrict scope to the specific bucket.",
+      "B": "It provides the right permission and keeps the scope limited to the bucket in question.",
+      "C": "Using a user account goes against recommended practice; a machine/service account should handle writes to the bucket.",
+      "D": "Using a user account goes against recommended practice, and project-level Storage Object Admin widens scope beyond minimum required privilege."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/iam/docs/understanding-service-accounts#using_service_accounts_with_compute_engine",
+        "text": "docs.cloud.google.com/iam/docs/understanding-service-acco..."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Security Engineer",
+    "scenario": "Your team creates an ingress firewall rule to allow SSH access from their corporate IP range to a specific bastion host on Compute Engine. Your team wants to make sure that this firewall rule cannot be used by unauthorized engineers who may otherwise have access to manage VMs in the development environment. What should your team do to meet this requirement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create the firewall rule with a target of a network tag. Centrally manage access to the tag.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create the firewall rule with a target of a service account. Centrally manage access to the service account.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create the firewall rule in a Shared VPC with a target of a network tag.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create the firewall rule in a Shared VPC with a target of a specific subnet.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "The network tag value can be inferred by examining the firewall rule or VM metadata.",
+      "B": "Access to the service account is required to use a firewall rule with a target of a service account.",
+      "C": "The target network tag value can be inferred by examining the firewall rule or VM metadata.",
+      "D": "The target subnet value can be inferred by examining the firewall rule or VM metadata."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/firewall/docs/firewalls#service-accounts-vs-tags",
+        "text": "docs.cloud.google.com/firewall/docs/firewalls#service-acc..."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Security Engineer",
+    "scenario": "You want to protect the default VPC network from all inbound and outbound internet traffic. What action should you take?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Deny All inbound internet firewall rule.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a Deny All outbound internet firewall rule.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a new subnet in the VPC network with private Google access enabled.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create instances without external IP addresses only.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A deny-all inbound firewall rule is already part of the standard configuration and does not need to be added.",
+      "B": "All inbound traffic is already blocked, but all egress traffic is allowed by default. To prevent any outbound traffic, an extra rule needs to be added.",
+      "C": "Private Google access allows calls to Google-managed APIs from private IP addresses, but it does not prevent providing external IPs or other outgoing traffic from instances.",
+      "D": "Outbound traffic can still come from instances with private IPs if Cloud NAT is used."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/nat/docs/overview",
+        "text": "docs.cloud.google.com/nat/docs/overview"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/private-access-options",
+        "text": "docs.cloud.google.com/vpc/docs/private-access-options"
+      },
+      {
+        "url": "https://docs.cloud.google.com/firewall/docs/firewalls",
+        "text": "docs.cloud.google.com/firewall/docs/firewalls"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Security Engineer",
+    "scenario": "An organization recently began using App Engine to build and host its new web application for its customers. The organization wants to use its existing IAM setup to allow its developer employees to have elevated access to the application remotely. This would allow them to push updates and fixes to the application via an HTTPS connection. Non-developer employees should only get access to the production version without development permissions. Which Google Cloud solution should be used to meet these requirements?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Synchronize the organization's Active Directory using Cloud Identity for employee access via Cloud VPN.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Disable access for non-developer employees by removing their Google Group from the application access control list (ACL).",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set up Cloud Identity-Aware Proxy (Cloud IAP) to manage authentication and different authorization levels for employee access.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Set up Virtual Private Cloud (VPC) firewall rules to manage authentication and different authorization levels for employee access.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Synchronizing users to Google Identity does not grant differentiated access to an App Engine application.",
+      "B": "App Engine IAM roles only specify different levels of administrative access to App Engine applications in a project.",
+      "C": "Cloud IAP allows establishing different levels of access based on user criteria for App Engine apps.",
+      "D": "VPC firewall rules do not grant different levels of authorization; they only allow or block traffic."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/appengine/docs/standard/access-control",
+        "text": "docs.cloud.google.com/appengine/docs/standard/access-control"
+      },
+      {
+        "url": "https://docs.cloud.google.com/iap/docs/concepts-overview",
+        "text": "docs.cloud.google.com/iap/docs/concepts-overview"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Security Engineer",
+    "scenario": "You have defined subnets in a VPC within Google Cloud. You need multiple projects to create Compute Engine instances with IP addresses from these subnets. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure Cloud VPN between the projects.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Set up VPC peering between all related projects.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Change the VPC subnets to enable private Google access.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Shared VPC to share the subnets with the other projects.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Cloud VPN between projects does not provide functionality to share a subnet to host resources on.",
+      "B": "Peering two VPCs allows traffic between the shared networks, but the peered VPC networks remain administratively separate.",
+      "C": "Private Google access allows you to access APIs from a private IP, but it does not affect creating Compute Engine instances on a specific subnet.",
+      "D": "Shared VPC allows you to share a VPC into multiple projects, keep administrative oversight in the host project, and restrict other projects to creating VMs on IPs in the shared VPC."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+        "text": "docs.cloud.google.com/vpc/docs/shared-vpc"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/vpc-peering",
+        "text": "docs.cloud.google.com/vpc/docs/vpc-peering"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Security Engineer",
+    "scenario": "An application log's data, including customer identifiers such as email addresses, needs to be redacted. However, these logs also include the email addresses of internal developers from company.com, and these should NOT be redacted. Which solution should you use to meet these requirements?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a regular custom dictionary detector that lists a subset of the developers' email addresses.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a regular expression (regex) custom infoType detector to match on @company.com.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a regular custom dictionary detector to match all email addresses listed in Cloud Identity.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a custom infoType called COMPANY_EMAIL to match @company.com.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "All company.com email addresses are sensitive and should be protected. A static list is hard to maintain and can easily miss sensitive data.",
+      "B": "The regex will detect all company.com email addresses that need to be protected and written to the log file.",
+      "C": "The user base in Cloud Identity might only be a subset of all emails that need to be protected.",
+      "D": "You need to specify a detector within the custom infoType, and the detector should be a regular expression to match all @company.com email addresses."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-regex",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/crea..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/infotypes-reference",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/info..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Security Engineer",
+    "scenario": "Which encryption algorithm is used with Default Encryption in Cloud Storage?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AES-256",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "SHA512",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "MD5",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "3DES",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Cloud Storage encrypts user data at rest using AES-256.",
+      "B": "Cloud Storage encrypts user data at rest using AES-256.",
+      "C": "Cloud Storage encrypts user data at rest using AES-256.",
+      "D": "Cloud Storage encrypts user data at rest using AES-256."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/default-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/default-keys"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Security Engineer",
+    "scenario": "Your company is storing files on Cloud Storage. To comply with local regulations, you want to ensure that uploaded files cannot be deleted within the first 5 years. It should not be possible to lower the retention period after it has been set. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply a retention period of 5 years to the bucket, and lock the bucket.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable Temporary hold and apply a retention period of 5 years to the bucket.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Cloud IAM to ensure that nobody has an IAM role that has the permissions to delete files from Cloud Storage.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create an object lifecycle rule using the Age condition and the Delete action. Set the Age condition to 5 years.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Bucket Lock allows you to configure a data retention policy for a Cloud Storage bucket that governs how long objects in the bucket must be retained. The feature also allows you to lock the data retention policy, permanently preventing the policy from being reduced or removed.",
+      "B": "Object holds can be easily released by operators or admins.",
+      "C": "An admin can grant themselves or someone else enough rights to tamper with files in Cloud Storage.",
+      "D": "An Age condition and Delete action does not prevent objects from being manually deleted before the Age condition is met."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/using-bucket-lock",
+        "text": "docs.cloud.google.com/storage/docs/using-bucket-lock"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Security Engineer",
+    "scenario": "Your company is deploying their applications on Google Kubernetes Engine. You want to follow Google-recommended practices. What should you do to ensure that the container images used for new deployments contain the latest security patches?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Google-managed base images for all containers.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Container Analysis to detect vulnerabilities in images.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use an update script as part of every container image startup.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use exclusively private images in Container Registry.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Google-provided base images are updated when new versions of official upstream images are released, helping keep container bases current.",
+      "B": "Container Analysis (Artifact Analysis) detects vulnerabilities; it does not patch images.",
+      "C": "While an update script may help patch on startup, this significantly increases the time it takes for the instance to become ready for serving workloads.",
+      "D": "Private images also go out of date and need to be patched manually by the customer."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/software-supply-chain-security/docs/base-images",
+        "text": "docs.cloud.google.com/software-supply-chain-security/docs..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview",
+        "text": "docs.cloud.google.com/artifact-analysis/docs/container-sc..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Security Engineer",
+    "scenario": "Your customer is moving their corporate applications to Google Cloud. The security team wants detailed visibility of all resources in the organization. You use Resource Manager to set yourself up as the org admin. What Cloud Identity and Access Management (Cloud IAM) roles should you give to the security team?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Org viewer, Project owner",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Org viewer, Project viewer",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Org admin, Project browser",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Project owner, Network admin",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Project Owner is too broad. The security team does not need to be able to make changes to projects.",
+      "B": "Org Viewer grants permissions to view the organization's display name; Project Viewer grants permissions to see resources within projects.",
+      "C": "Org Admin is too broad. The security team does not need to be able to make changes to the organization.",
+      "D": "Project Owner is too broad. The security team does not need to be able to make changes to projects."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/resource-manager/docs/access-control-org#using_predefined_roles",
+        "text": "docs.cloud.google.com/resource-manager/docs/access-contro..."
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Security Engineer",
+    "scenario": "Your company wants to collect and analyze CVE information for packages in container images, and wants to prevent images with known security issues from running in your Google Kubernetes Engine environment. Which two security features does Google recommend including in a container build pipeline? (Choose two.)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deployment policies",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Password policies",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Vulnerability scanning",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Network isolation",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Deployment policies defined in Binary Authorization ensure that only trusted images can be deployed in GKE clusters. Binary Authorization can integrate with Artifact Analysis, which scans container images for vulnerabilities and stores trusted metadata used in the authorization process.",
+      "B": "It does not address the use case.",
+      "C": "Vulnerability scanning can be performed by Artifact Analysis to discover package vulnerability information in container base images and obtain CVE data from respective Linux distributions.",
+      "D": "It does not address the use case."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/binary-authorization/docs/overview",
+        "text": "docs.cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://docs.cloud.google.com/artifact-analysis/docs/container-scanning-overview",
+        "text": "docs.cloud.google.com/artifact-analysis/docs/container-sc..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Security Engineer",
+    "scenario": "You need to perform a vulnerability scan for an App Engine app using Web Security Scanner. Upon completion of the scan, the report is not producing the expected number of webpage results. The pages in the app with mouseover menus are missing from the report. Which action should you take to make sure the scan completes and captures the menu?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Verify the Excluded URLs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Modify the scan schedule to return new results.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Change the scan to include additional Starting URLs.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Adjust the Google account on which the scan is running.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "The missing webpages in the mouseover menu are unlikely to be explicitly excluded since they are expected to be scanned.",
+      "B": "Changing the scan schedule will not result in scanning of more webpages.",
+      "C": "Web Security Scanner may not be able to navigate through complex JavaScript such as a mouseover-driven multilevel menu. Specifying additional starting URLs can increase scan coverage in this scenario.",
+      "D": "Changing the Google account will not result in scanning of more webpages."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/security-command-center/docs/how-to-web-security-scanner-custom-scans",
+        "text": "docs.cloud.google.com/security-command-center/docs/how-to..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Security Engineer",
+    "scenario": "An organization is working on their GDPR compliance strategy. It wants to ensure that controls are in place to ensure that personally identifiable information (PII) is stored in Cloud Storage buckets without third-party exposure. Which Google Cloud solution should the organization use to verify that PII is stored in the correct place without exposing PII internally?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud Storage Bucket Lock",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cloud Data Loss Prevention API",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "VPC Service Controls",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Web Security Scanner",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Bucket Lock protects the data retention policy and does not address the use case.",
+      "B": "Sensitive Data Protection (formerly Cloud DLP) can inspect Cloud Storage buckets for PII.",
+      "C": "VPC Service Controls can define security perimeters around Cloud Storage buckets to mitigate data exfiltration risks, but it is not a tool to locate PII.",
+      "D": "Web Security Scanner is for App Engine, Compute Engine, and GKE applications and does not address the use case."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/using-bucket-lock",
+        "text": "docs.cloud.google.com/storage/docs/using-bucket-lock"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/inspecting-storage",
+        "text": "docs.cloud.google.com/sensitive-data-protection/docs/insp..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "docs.cloud.google.com/vpc-service-controls/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Security Engineer",
+    "scenario": "A cloud customer has an on-premises key management system and wants to generate, protect, rotate, and audit encryption keys with it. How can the customer use Cloud Storage with their own encryption keys?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Declare usage of default encryption at rest in the audit report on compliance",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Upload encryption keys to the same Cloud Storage bucket",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Customer Managed Encryption Keys (CMEK)",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Customer-Supplied Encryption Keys (CSEK)",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Default encryption at rest uses Google-generated and Google-managed keys and does not address the use case.",
+      "B": "You need the encryption keys to decrypt data in the bucket, but you cannot store those keys in the same bucket. Customer-supplied encryption keys are not stored on Google's infrastructure.",
+      "C": "CMEK uses Google-generated, customer-managed keys in Cloud KMS—not keys from the customer's on-premises KMS in this scenario.",
+      "D": "You can provide your own AES-256 key (CSEK). Cloud Storage does not permanently store your key on Google's servers; you provide your key for each operation."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/docs/security/encryption/customer-supplied-encryption-keys",
+        "text": "docs.cloud.google.com/docs/security/encryption/customer-s..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/customer-supplied-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/customer-su..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage/docs/encryption/customer-managed-keys",
+        "text": "docs.cloud.google.com/storage/docs/encryption/customer-ma..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Security Engineer",
+    "scenario": "You are responsible for implementing a payment processing environment that will use Google Kubernetes Engine and need to apply proper security controls. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Implement and enforce two-factor authentication.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Activate a firewall to prevent all egress traffic.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Establish minimum password length requirements for all systems.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Require file integrity monitoring and antivirus scans of pods and nodes.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "This solution is not specific to GKE.",
+      "B": "This would render the environment non-functional.",
+      "C": "This solution is not specific to GKE.",
+      "D": "This is a requirement of PCI DSS in Sections 5 and 11."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/architecture/pci-dss-and-gke-guide",
+        "text": "docs.cloud.google.com/architecture/pci-dss-and-gke-guide"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Security Engineer",
+    "scenario": "A retail company is moving its e-commerce site, including its point-of-sale application, to Google Cloud. Which compliance standard must the company meet?",
+    "options": [
+      {
+        "id": "A",
+        "text": "FedRAMP High",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "HIPAA",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "SOX",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "PCI DSS",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "FedRAMP is a U.S. government-wide program for cloud products and services; it does not fit this industry use case.",
+      "B": "HIPAA safeguards health information; it does not fit this industry use case.",
+      "C": "SOX is relevant to accounting and financial reporting for U.S. public companies; it does not address the use case.",
+      "D": "PCI DSS is relevant to protecting payment card information for e-commerce and point-of-sale workloads."
+    },
+    "references": [
+      {
+        "url": "https://www.pcisecuritystandards.org/pdfs/best_practices_securing_ecommerce.pdf",
+        "text": "pcisecuritystandards.org/pdfs/best_practices_securing_eco..."
+      },
+      {
+        "url": "https://cloud.google.com/security/compliance/pci-dss/",
+        "text": "cloud.google.com/security/compliance/pci-dss"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/security_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/security_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

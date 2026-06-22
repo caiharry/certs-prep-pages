@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Operations Engineer &mdash; Incident Response</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --ink: #1e293b; --accent: #475569; --accent-dark: #334155;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23cbd5e1' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #cbd5e1 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Operations Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 5</span><span class="weight">~21%</span>
+      <h1>Incident Response</h1>
+      <p class="sec-intro">Contain and investigate incidents, automate response with SOAR playbooks, and run the case lifecycle.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Contain & investigate</h3>
+      <p>Scope incidents with Logs Explorer, Log Analytics, BigQuery, and SecOps. <strong>Isolate</strong> affected services (restrict the network) to stop spread <em>while preserving</em> the instance for forensics — don't delete evidence. Analyse artifacts (hash/IP/URL/binary) enriched by GTI, and perform root-cause analysis in the SecOps SIEM.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Contain by network-isolating a compromised instance, not by deleting it — deletion destroys forensic evidence.</div>
+    </section>
+    <section class="lesson">
+      <h3>SOAR playbooks & case management</h3>
+      <p>Automate repetitive, well-understood response steps in <strong>SOAR playbooks</strong> (enrichment, containment, notifications), keeping humans for judgement calls. Run the <strong>case management lifecycle</strong>: assign cases to response stages, escalate efficiently, and ensure clean handoffs.</p>
+    </section>
+    <section class="lesson">
+      <h3>Playbook design: triggers, integrations & human-in-the-loop</h3>
+      <p>A good SOAR playbook is more than a script — it's an orchestrated flow. Know the moving parts:</p>
+      <ul>
+        <li><strong>Trigger</strong> — what starts it: a new alert/case, a tag, or a specific detection. Scope triggers tightly so the right playbook runs on the right case.</li>
+        <li><strong>Integrations &amp; actions</strong> — connectors to EDR, IdP, firewalls, ticketing; actions enrich (GTI lookup), contain (isolate host, disable user), and notify.</li>
+        <li><strong>Human-in-the-loop step</strong> — for irreversible or high-impact actions (wiping a host, locking an exec), insert a manual approval gate instead of full automation.</li>
+        <li><strong>Automate the boring, escalate the judgement</strong> — fully automate repetitive deterministic steps; keep analysts for the calls that need context.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Don't fully automate a destructive or high-blast-radius action. The expected answer adds a <strong>human approval gate</strong> in the playbook, not unattended execution.</div>
+    </section>
+    <section class="lesson">
+      <h3>Case lifecycle, SLAs & post-incident</h3>
+      <p>The case is the unit of work in SecOps SOAR. Drive it through a clean lifecycle and the metrics that prove it:</p>
+      <ul>
+        <li><strong>Triage &rarr; investigate &rarr; contain &rarr; eradicate &rarr; recover</strong> — assign cases to stages and owners so nothing stalls.</li>
+        <li><strong>MTTD / MTTR &amp; SLAs</strong> — track time-to-detect and time-to-respond; SLA breaches drive escalation and staffing decisions.</li>
+        <li><strong>Evidence &amp; chain of custody</strong> — keep artifacts, timelines, and analyst actions attached to the case for audit and any legal hold.</li>
+        <li><strong>Post-incident review</strong> — feed lessons back into new detections, reference lists, and playbook tweaks so the same incident is cheaper next time.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">PICERL</span> <strong>P</strong>repare, <strong>I</strong>dentify, <strong>C</strong>ontain, <strong>E</strong>radicate, <strong>R</strong>ecover, <strong>L</strong>essons learned — the IR loop the case lifecycle mirrors.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A VM is actively talking to a C2 server. Best immediate containment that preserves evidence?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Network-isolate the instance.</strong></p>
+          <p class="quiz-why">Stops C2/lateral movement while keeping the instance for forensics.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Repetitive phishing-alert triage (enrich, disable session, notify) should be handled how?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A SOAR playbook.</strong></p>
+          <p class="quiz-why">Automates consistent multi-step response.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A playbook step would wipe a production host. How should it be designed?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Insert a human approval gate before the destructive action.</strong></p>
+          <p class="quiz-why">High-blast-radius/irreversible steps need human-in-the-loop, not unattended automation.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Leadership wants to know how long it takes from alert to containment. Which metric do you report?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>MTTR (mean time to respond/remediate).</strong></p>
+          <p class="quiz-why">MTTR captures alert-to-response duration; MTTD captures time to detect.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A compromised Compute Engine VM is beaconing to a known C2 endpoint and may be moving laterally. Forensics will need disk and memory afterward, and the workload owner has not yet been reached. What is the correct first containment step?</p>
+        <ul>
+          <li>A) Delete the instance immediately so the attacker loses their foothold and the beaconing stops</li>
+          <li>B) Apply a deny-all firewall policy to isolate the instance's network while leaving it running</li>
+          <li>C) Shut the instance down so it stops communicating until the owner approves further action</li>
+          <li>D) Rotate the service-account keys the VM uses and leave its network connectivity in place</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Network isolation via a deny-all policy halts C2 and lateral movement instantly while keeping the running instance — and its volatile memory — intact for forensics.</p>
+          <p class="quiz-why"><strong>A:</strong> Deleting the VM destroys the very disk and memory evidence forensics needs. <strong>C:</strong> Shutting down loses volatile memory artifacts and can trigger anti-forensic or destructive malware on halt. <strong>D:</strong> Rotating keys may limit credential abuse but leaves the C2 channel and lateral movement fully open.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Your SOC handles dozens of identical low-risk malware-quarantine alerts daily: enrich the hash with GTI, confirm the EDR already quarantined it, tag the case, and close. Analysts are drowning. What should you build, and how far should automation go?</p>
+        <ul>
+          <li>A) A playbook that auto-enriches and auto-closes these cases end to end with no analyst interaction</li>
+          <li>B) A playbook that auto-enriches and tags but routes every case to an analyst for a manual close decision</li>
+          <li>C) A new YARA-L rule that suppresses these alerts entirely so they never create cases</li>
+          <li>D) A dashboard that counts the alerts so leadership can decide whether to hire more analysts</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> These steps are deterministic, low-risk, and already remediated by the EDR, so full automation of enrich-confirm-tag-close is the textbook case for hands-off SOAR, freeing analysts for judgement work.</p>
+          <p class="quiz-why"><strong>B:</strong> Forcing a manual close on a fully deterministic, already-contained workflow keeps the analyst burden the scenario is trying to remove. <strong>C:</strong> Suppressing the alerts blinds you to the malware activity and its trend entirely. <strong>D:</strong> A dashboard measures the problem but does nothing to reduce the repetitive toil.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> After a ransomware near-miss, the incident commander wants the response repeatable and the lessons captured so the next occurrence is faster and cheaper. Which action best closes the incident lifecycle?</p>
+        <ul>
+          <li>A) Immediately raise the severity of all ransomware-related detections to maximum across the tenant</li>
+          <li>B) Archive the case and move on, since containment succeeded and no data was lost</li>
+          <li>C) Run a post-incident review and feed findings into new detections, reference lists, and playbook updates</li>
+          <li>D) Network-isolate the affected hosts again to make sure the threat has not returned</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> The lessons-learned phase turns a single response into durable improvement by feeding detections, reference lists, and playbooks, which is exactly what makes the next incident faster and cheaper.</p>
+          <p class="quiz-why"><strong>A:</strong> Blanket-maxing severity creates alert fatigue and isn't a structured improvement. <strong>B:</strong> Archiving without review wastes the most valuable output of an incident — the lessons. <strong>D:</strong> Re-isolating already-contained hosts is redundant containment, not lifecycle closure or improvement.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s4.html" class="nav-link">&larr; Detection Engineering</a>
+      <a href="guide_s6.html" class="nav-link">Observability &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/secops_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/secops_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

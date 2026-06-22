@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 2 Revision Guide - Communications &amp; Boundary Protection</title>
+  <style>
+    :root {
+      --bg-light: #eff6ff; /* Light blue background */
+      --ink: #1e293b;
+      --primary: #2563eb; /* Section 2 blue */
+      --primary-light: #dbeafe;
+      --primary-border: #1d4ed8;
+      --rev-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bfdbfe' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+
+    .container { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    header {
+      background: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      color: white; padding: 30px 20px; position: relative; margin-bottom: 35px;
+    }
+    header h1 {
+      margin: 0 0 10px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); text-transform: uppercase;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0px #000;
+    }
+    header p { margin: 0; font-size: 1.1rem; font-style: italic; }
+    .section-badge {
+      position: absolute; bottom: -15px; right: 20px; background: #ef4444; color: white; font-weight: bold;
+      padding: 6px 15px; border-radius: 999px; border: 3px solid #000; transform: rotate(2deg); font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem; border-bottom: 3px solid #000; padding-bottom: 8px; margin-top: 45px; margin-bottom: 20px;
+      text-transform: uppercase; color: var(--primary-border);
+    }
+    h3 { font-size: 1.3rem; margin-top: 30px; margin-bottom: 12px; color: #0f172a; }
+    p, li { font-size: 1.05rem; }
+
+    .rev-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0px #000;
+      padding: 22px; margin-bottom: 30px; position: relative;
+    }
+    .rev-card.tip { background: #f0f7ff; border-color: var(--primary); box-shadow: 4px 4px 0px var(--primary); }
+    .rev-card.tip h3 { color: var(--primary-border); margin-top: 0; }
+    .rev-card.warn { background: #fef2f2; border-color: var(--rev-red); box-shadow: 4px 4px 0px var(--rev-red); }
+    .rev-card.warn h3 { color: var(--rev-red); margin-top: 0; }
+
+    .exam-trap {
+      background: #fff7ed; border: 3px dashed var(--rev-orange); border-radius: var(--radius);
+      padding: 18px; margin: 25px 0; position: relative;
+    }
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!"; display: inline-block; background: var(--rev-orange); color: white; font-weight: bold;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; font-size: 0.85rem; margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8; border: 3px solid #db2777; border-radius: var(--radius); box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px; margin: 25px 0;
+    }
+    .mnemonic strong { color: #db2777; }
+    .mnemonic h3 { margin-top: 0; }
+
+    .joke-box {
+      font-style: italic; color: #4b5563; text-align: center; margin: 25px 0; padding: 10px;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .table-container {
+      overflow-x: auto; border: 3px solid #000; border-radius: var(--radius); box-shadow: 5px 5px 0px #000; margin: 30px 0;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 2px solid #000; padding: 12px 15px; text-align: left; font-size: 0.98rem; }
+    th { background: var(--rev-yellow); text-transform: uppercase; font-weight: bold; }
+    tr:nth-child(even) { background: #fbfbfe; }
+
+    .warm-up {
+      background: #f0f7ff; border: 3px solid var(--primary); border-radius: var(--radius); box-shadow: 4px 4px 0px var(--primary);
+      padding: 22px; margin: 35px 0;
+    }
+    .warm-up h3 { color: var(--primary-border); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+    .quiz-item { margin-bottom: 18px; border-bottom: 1px dashed #bfdbfe; padding-bottom: 12px; }
+    .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .show-answer-btn {
+      background: #fff; border: 2px solid #000; border-radius: 6px; padding: 5px 12px; font-weight: bold;
+      cursor: pointer; margin-top: 8px; font-family: inherit;
+    }
+    .show-answer-btn:hover { background: #e0ecff; }
+    .answer-panel {
+      display: none; margin-top: 10px; background: #eff6ff; border-left: 4px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.95rem;
+    }
+
+    .practice-exam {
+      background: #fffaf0; border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 25px; margin-top: 50px;
+    }
+    .practice-exam h2 { color: var(--rev-orange); border-bottom: 3px solid #000; margin-top: 0; }
+    .q-box { background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .option-list { list-style-type: none; padding-left: 0; }
+    .option-list li {
+      margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .option-list li:hover { background: #fef8f2; border-color: #000; }
+    .option-list li.selected { background: #dbeafe; border-color: var(--rev-blue); box-shadow: 2px 2px 0px var(--rev-blue); }
+    .option-list li.eliminated { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+    .option-list li.correct-answer { background: #dcfce7; border-color: var(--rev-green); }
+    .option-list li.wrong-answer { background: #fee2e2; border-color: var(--rev-red); }
+    .explanation-panel {
+      display: none; margin-top: 15px; background: #fff8f2; border: 2px dashed var(--rev-orange); padding: 15px; border-radius: 8px;
+    }
+    .badge-check { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #000; margin-right: 6px; }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+    .submit-answer-btn {
+      background: var(--rev-orange); color: white; border: 2px solid #000; border-radius: 6px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-family: inherit;
+    }
+    .submit-answer-btn:hover { background: #dd5209; }
+
+    .further-reading {
+      background: #ecfeff; border: 3px solid #0891b2; border-radius: var(--radius); box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px; margin: 28px 0;
+    }
+    .further-reading h3 { color: #0e7490; margin-top: 0; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .doc-link {
+      display: block; background: #fff; border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0px #000;
+      color: #0f172a; padding: 10px 12px; text-decoration: none;
+    }
+    .doc-link strong { display: block; color: #0e7490; }
+    .doc-link span { display: block; font-size: 0.9rem; margin-top: 3px; }
+
+    .bullet-chk { list-style-type: none; padding-left: 0; }
+    .bullet-chk li::before { content: "✔️ "; margin-right: 8px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; overflow-wrap: anywhere; word-break: break-word; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0; background: var(--rev-yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="guide_s1.html" class="nav-link">&larr; Section 1: Configuring Access</a>
+      <a href="index.html" class="nav-link">Portal</a>
+      <a href="guide_s3.html" class="nav-link">Section 3: Data Protection &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 2: Communications &amp; Boundary Protection</h1>
+      <p>Perimeter controls, network segmentation, and private connectivity (~22%). Keep the good traffic flowing and the bad traffic &mdash; and your data &mdash; firmly on the right side of the fence.</p>
+      <div class="section-badge">Section 2 🔵 ~22%</div>
+    </header>
+
+    <p>Section 1 decided <em>who</em> gets in. Section 2 decides <em>where they can go once inside</em> and <em>how data is allowed to move</em>. This domain is a tale of two perimeters: the classic <strong>network</strong> perimeter (firewalls, load balancers, private links) and the modern <strong>API data</strong> perimeter (VPC Service Controls). Mix those two up and you'll lose easy marks &mdash; so let's draw the fence lines clearly. 🚧</p>
+
+    <!-- 2.1 -->
+    <h2>2.1 The Edge Defenders</h2>
+    <p>Several services guard the front door of your applications. Each owns a distinct job, and the exam tests the boundaries between them.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Defender</th>
+            <th>Operates At</th>
+            <th>Its One Job</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Cloud Armor</strong></td>
+            <td>L7, in front of the external load balancer</td>
+            <td>WAF rules, DDoS protection, IP/geo allow/deny, rate limiting. Inbound web traffic only.</td>
+          </tr>
+          <tr>
+            <td><strong>Identity-Aware Proxy (IAP)</strong></td>
+            <td>L7, identity layer</td>
+            <td>Identity- and context-aware access to apps/SSH/RDP &mdash; no VPN.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud NGFW</strong></td>
+            <td>L3&ndash;L7 network firewall</td>
+            <td>Stateful rules, FQDN/geo objects, and (Enterprise) L7 intrusion prevention.</td>
+          </tr>
+          <tr>
+            <td><strong>Secure Web Proxy</strong></td>
+            <td>Egress, L7</td>
+            <td>Filters and logs <em>outbound</em> internet traffic by URL/host.</td>
+          </tr>
+          <tr>
+            <td><strong>Certificate Authority Service</strong></td>
+            <td>PKI</td>
+            <td>Run a private CA to issue and manage internal certificates.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Cloud Armor is inbound; Secure Web Proxy is outbound.</strong> If the stem says "filter what our VMs can reach on the internet and log every request," that's <strong>Secure Web Proxy</strong> egress filtering &mdash; not Cloud Armor, which only protects inbound HTTP(S) at the load-balancer edge.
+    </div>
+
+    <!-- 2.2 -->
+    <h2>2.2 The Three Firewall Layers</h2>
+    <p>GCP firewalling comes in three layers, and a favourite exam discriminator is <em>which one can a project owner not delete</em>.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Attaches To</th>
+            <th>Who Controls It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>VPC firewall rules</strong></td>
+            <td>A single VPC network; scoped by tags/service accounts</td>
+            <td>Anyone with network-admin on that project &mdash; editable, not a guardrail.</td>
+          </tr>
+          <tr>
+            <td><strong>Hierarchical firewall policies</strong></td>
+            <td>Organization or folder node; inherit downward</td>
+            <td>Central security team. Project owners <em>cannot</em> remove them. Use <code>goto_next</code> to delegate the rest.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud NGFW Enterprise</strong></td>
+            <td>Network firewall policies + L7 inspection</td>
+            <td>Adds intrusion prevention, TLS inspection, and threat intelligence.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 Hierarchy = Handcuffs</h3>
+      <p>A <strong>hierarchical firewall policy</strong> at the org/folder is a <em>handcuff</em> the project owner can't pick. A plain <strong>VPC firewall rule</strong> is a <em>sticky note</em> &mdash; anyone with network-admin can peel it off. "Owners cannot remove it" &rArr; go hierarchical.</p>
+    </div>
+
+    <!-- 2.3 -->
+    <h2>2.3 VPC Service Controls &mdash; The Anti-Exfiltration Perimeter</h2>
+    <p>This is the single most-tested service in the whole domain, so internalise it. <strong>VPC Service Controls (VPC-SC)</strong> draws a <em>perimeter</em> around Google-managed, API-based services (Cloud Storage, BigQuery, Pub/Sub, and friends). Inside the perimeter, data can move freely; crossing the boundary is blocked &mdash; <strong>even for an identity with perfectly valid IAM permissions</strong>.</p>
+
+    <div class="rev-card tip">
+      <h3>🛡️ Why VPC-SC Is Special</h3>
+      <p>IAM answers "are you <em>allowed</em>?" VPC-SC answers "are you <em>inside the box</em>?" A stolen credential with legitimate Storage access still can't copy a bucket to a project outside the perimeter, because the request fails at the <strong>API layer</strong>, not the IAM layer. That's the defence against the classic exfiltration attack: valid creds, wrong destination.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Firewalls don't stop serverless exfiltration.</strong> BigQuery and Cloud Storage calls go to Google's API frontends, not arbitrary internet egress, so a VPC firewall or subnet egress rule won't reliably block an authorised API-to-API copy. To stop data leaving a <em>serverless / API</em> product, you need <strong>VPC Service Controls</strong>. Full stop.
+    </div>
+
+    <div class="joke-box">
+      "Our data tried to escape the perimeter. VPC Service Controls gave it a stern look and said: 'You're not on the list.'" 📋🚪
+    </div>
+
+    <!-- 2.4 -->
+    <h2>2.4 Private Connectivity &amp; Controlled Egress</h2>
+    <p>These options all keep traffic <em>off the public internet</em>, but they solve different problems. The exam rewards you for telling the pipes apart.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Problem It Solves</th>
+            <th>Tell-Tale Phrase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Private Google Access</strong></td>
+            <td>A no-external-IP VM reaching <em>Google APIs</em> over internal routes.</td>
+            <td>"VM has no public IP but must call the Storage/BigQuery API."</td>
+          </tr>
+          <tr>
+            <td><strong>Private Service Connect (PSC)</strong></td>
+            <td>Consuming a Google or published service via a private endpoint IP in your VPC.</td>
+            <td>"Reach a managed service through a private endpoint inside our network."</td>
+          </tr>
+          <tr>
+            <td><strong>HA VPN / Cloud Interconnect</strong></td>
+            <td>Private connectivity between on-prem and GCP.</td>
+            <td>"Connect the data centre to the VPC privately / with an SLA."</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud NAT</strong></td>
+            <td>Outbound internet for private VMs with <em>no</em> inbound exposure.</td>
+            <td>"Private VMs need to download updates but accept no inbound."</td>
+          </tr>
+          <tr>
+            <td><strong>Secure Web Proxy</strong></td>
+            <td>Policy-based, logged egress filtered by hostname/URL.</td>
+            <td>"Allow only approved domains and log every outbound request."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 PERIMETER vs PIPE</h3>
+      <p>VPC Service Controls is a <strong>perimeter</strong> around <em>API data</em>. PSC, Private Google Access, VPN, and NAT are private <strong>pipes</strong> for <em>connectivity</em>. When the question is about <em>exfiltration</em>, reach for the perimeter; when it's about <em>reaching something privately</em>, reach for a pipe. Don't plumb a pipe at an exfiltration problem.</p>
+    </div>
+
+    <!-- Warm-Up Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Retrieve before you review. Cover the answers!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Prevent a user who has legitimate BigQuery access from exporting a dataset to an outside project. Which control?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>A VPC Service Controls perimeter.</strong> It blocks data egress from in-scope services across the perimeter boundary regardless of IAM.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> Give employees identity-based access to an internal web app from anywhere, with no VPN. What do you use?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Identity-Aware Proxy (IAP)</strong> &mdash; context-aware, identity-based access to apps without a VPN.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> Security must enforce a deny-all baseline firewall rule across every project that owners cannot delete. Which feature?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>A hierarchical firewall policy</strong> at the organization or folder node. It inherits downward and is managed centrally, so project network admins cannot remove it.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> A VM with no external IP must reach the Cloud Storage API over Google's network. What do you enable on its subnet?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>Private Google Access.</strong> It routes requests to Google APIs internally, so no public IP is required.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Exam -->
+    <div class="practice-exam">
+      <h2>📝 Section 2 Practice Exam Questions</h2>
+      <p>Left-click to select, right-click to strike out a distractor, then Submit for the full diagnostic.</p>
+
+      <!-- Q1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A compromised service account inside a project has valid IAM permissions on a Cloud Storage bucket and is attempting to copy the bucket's contents to a personal project in another organization. You must stop the copy even though the IAM grant is legitimate. What blocks it?</p>
+        <ul class="option-list">
+          <li data-option="A">A) A VPC firewall egress rule denying outbound traffic to the internet from the affected subnet.</li>
+          <li data-option="B">B) Removing the Storage Object Viewer role from the service account on the bucket.</li>
+          <li data-option="C">C) A VPC Service Controls perimeter around the project that restricts Cloud Storage egress.</li>
+          <li data-option="D">D) A Cloud Armor security policy applied in front of the storage endpoint.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> VPC Service Controls enforces a perimeter at the API layer, so a copy from in-perimeter Cloud Storage to a project outside the perimeter is denied regardless of the identity's valid IAM permissions.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Storage API calls go to Google's API frontends, not arbitrary internet egress, so a subnet egress rule doesn't reliably stop an authorised API-to-API copy.<br>
+          <strong>B:</strong> The grant is described as legitimate and needed; revoking it breaks normal use and an attacker with IAM-edit could restore it.<br>
+          <strong>D:</strong> Cloud Armor protects inbound HTTP(S) load-balanced applications, not outbound storage API exfiltration.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> An internal HR application runs on Compute Engine and must be reachable by employees from anywhere, but only after their identity and device posture are verified, and you want to retire the corporate VPN. Which design meets this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Put the app behind Identity-Aware Proxy with an access level that checks device posture and group membership.</li>
+          <li data-option="B">B) Publish the app on an external load balancer protected by a Cloud Armor IP allowlist of office ranges.</li>
+          <li data-option="C">C) Keep the VPN but add a hierarchical firewall policy restricting the app's port to internal ranges.</li>
+          <li data-option="D">D) Expose the app through Private Service Connect so only endpoints inside the VPC can reach it.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why A is correct:</strong> IAP combined with an Access Context Manager access level gives identity-aware, device-aware, VPN-less access from any network &mdash; the BeyondCorp model the question describes.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>B:</strong> An IP allowlist binds access to office networks, which fails the "from anywhere" requirement and checks neither identity nor device.<br>
+          <strong>C:</strong> This keeps the VPN you were asked to retire and does no identity/device verification.<br>
+          <strong>D:</strong> PSC restricts reachability to inside-VPC endpoints, the opposite of letting verified employees connect from anywhere.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> VMs in a locked-down subnet have no external IPs but must download OS patches from a specific set of vendor domains on the public internet, and security wants every outbound request logged and filtered by hostname. Which control fits best?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Cloud NAT on the subnet so the VMs can reach the patch servers via a managed egress IP.</li>
+          <li data-option="B">B) Private Google Access so the VMs can resolve and reach the external vendor endpoints.</li>
+          <li data-option="C">C) Secure Web Proxy with a policy allowing only the approved vendor hostnames and logging all egress.</li>
+          <li data-option="D">D) A VPC Service Controls perimeter listing the vendor domains as allowed egress destinations.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> Secure Web Proxy applies URL/host-based egress policy and logs every request, exactly matching "filtered by hostname and logged."</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Cloud NAT provides egress but applies no hostname filtering or per-request application logging.<br>
+          <strong>B:</strong> Private Google Access only reaches Google APIs, not arbitrary external vendor domains.<br>
+          <strong>D:</strong> VPC-SC governs access to Google-managed API services, not generic internet hostnames for patch downloads.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Drill into the boundary-protection building blocks:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/vpc-service-controls/docs/overview" class="doc-link" target="_blank">
+          <strong>VPC Service Controls</strong>
+          <span>Service perimeters that stop API data exfiltration.</span>
+        </a>
+        <a href="https://cloud.google.com/firewall/docs/firewall-policies-overview" class="doc-link" target="_blank">
+          <strong>Firewall Policies</strong>
+          <span>Hierarchical and network firewall policies vs VPC rules.</span>
+        </a>
+        <a href="https://cloud.google.com/iap/docs/concepts-overview" class="doc-link" target="_blank">
+          <strong>Identity-Aware Proxy</strong>
+          <span>Context-aware, VPN-less access to apps and VMs.</span>
+        </a>
+        <a href="https://cloud.google.com/armor/docs/cloud-armor-overview" class="doc-link" target="_blank">
+          <strong>Cloud Armor</strong>
+          <span>WAF, DDoS protection, and rate limiting at the edge.</span>
+        </a>
+        <a href="https://cloud.google.com/vpc/docs/private-google-access" class="doc-link" target="_blank">
+          <strong>Private Google Access</strong>
+          <span>Reach Google APIs without an external IP.</span>
+        </a>
+        <a href="https://cloud.google.com/secure-web-proxy/docs/overview" class="doc-link" target="_blank">
+          <strong>Secure Web Proxy</strong>
+          <span>Policy-based, logged outbound internet egress.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-nav">
+      <a href="guide_s1.html" class="nav-link">&larr; Section 1: Configuring Access</a>
+      <a href="guide_s3.html" class="nav-link">Next: Ensuring Data Protection &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      element.style.display = (element.style.display === "block") ? "none" : "block";
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) { item.classList.remove('selected'); });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) { panel.dataset.originalHtml = panel.innerHTML; }
+      options.forEach(function(option) { option.classList.remove('correct-answer', 'wrong-answer'); });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) { option.classList.add('correct-answer'); }
+      });
+      if (selected.dataset.option !== correctOption) { selected.classList.add('wrong-answer'); }
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/security_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/security_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

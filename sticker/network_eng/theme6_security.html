@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 6 Revision Guide - Network Security</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-green-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #f0fdf4;
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--rev-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="theme5_lb_dns_cdn.html" class="nav-link">&larr; Back to Theme 5</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
+      <a href="theme7_ops.html" class="nav-link">Go to Theme 7: Operations &amp; Troubleshooting &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 6: Network Security</h1>
+      <p>Cloud Armor, Cloud NGFW, Cloud NAT, Secure Web Proxy, and NVAs</p>
+      <div class="section-badge">Theme 6 🟢</div>
+    </header>
+
+    <!-- 6.1 Google Cloud Armor -->
+    <h2>6.1 Google Cloud Armor: The Shield of GCP</h2>
+    <p>Leaving your web applications exposed to the raw public internet without a Web Application Firewall (WAF) is like inviting a group of rowdy vikings to your tea party! <strong>Google Cloud Armor</strong> is your global shield, protecting applications behind external HTTP/S load balancers from DDoS attacks and application-level exploits: 🛡️</p>
+
+    <div class="rev-card tip">
+      <h3>⚔️ Cloud Armor Core Capabilities</h3>
+      <ul>
+        <li><strong>Preconfigured WAF Rules (OWASP Top 10):</strong> Out-of-the-box protection against SQL Injection (SQLi), Cross-Site Scripting (XSS), Remote File Inclusion (RFI), and Local File Inclusion (LFI).</li>
+        <li><strong>Adaptive Protection (ML Anomaly Detection):</strong> Uses machine learning to continuously analyze traffic patterns. If it detects a sudden, anomalous spike in traffic (like a Layer 7 DDoS attack), it automatically drafts a custom blocking rule for you to enforce with a single click! 🧠</li>
+        <li><strong>Rate Limiting:</strong> Prevents brute-force login attempts or API scraping by capping the number of requests a single client IP can make within a time window.</li>
+        <li><strong>Bot Management:</strong> Integrates natively with reCAPTCHA Enterprise to detect and block malicious scraping bots, credential stuffers, and automated spam.</li>
+        <li><strong>Google Threat Intelligence:</strong> Automatically blocks traffic from known malicious IPs, Tor exit nodes, and active botnets using Google's global threat database.</li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Edge vs. Backend Security Policies!</strong>
+      <ul>
+        <li><strong>Backend Security Policies:</strong> Attached to backend services. They support full WAF rules, L7 inspection, and rate limiting.</li>
+        <li><strong>Edge Security Policies:</strong> Enforced at Google's global edge (Points of Presence) <em>before</em> traffic even reaches your load balancer. They only support basic IP-based filtering and geography-based blocking. Use Edge policies to block entire countries or blacklisted CIDR blocks at the absolute perimeter to save backend processing power!</li>
+      </ul>
+    </div>
+
+    <!-- 6.2 Cloud Next-Generation Firewall (NGFW) -->
+    <h2>6.2 Cloud Next-Generation Firewall (NGFW)</h2>
+    <p>Google Cloud has modernized its firewall architecture. The legacy "VPC firewall rules" are being replaced by <strong>Cloud NGFW policies</strong>. Let's memorize the tiers and the evaluation order: 🧱</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>NGFW Tier</th>
+            <th>Features Supported</th>
+            <th>How It's Enforced</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Essentials (Free)</strong></td>
+            <td>Basic L4 rules (IP, port, protocol), network tags, service accounts, and global/regional network firewall policies.</td>
+            <td>Enforced natively in the Andromeda virtual network stack.</td>
+          </tr>
+          <tr>
+            <td><strong>Standard</strong></td>
+            <td>Adds <strong>FQDN filtering</strong> (e.g., allow egress only to <code>*.github.com</code>), Geo-IP matching, and Google Threat Intelligence lists.</td>
+            <td>Enforced natively in Andromeda.</td>
+          </tr>
+          <tr>
+            <td><strong>Enterprise</strong></td>
+            <td>Adds <strong>Layer 7 Packet Inspection</strong> (Intrusion Prevention System - IPS) to detect malware, spyware, and active exploits inside packets.</td>
+            <td>Routes traffic through managed <strong>Firewall Endpoints</strong> in your subnets for deep packet inspection. 🔍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-card warn">
+      <h3>🚦 Firewall Rule Evaluation Order</h3>
+      <p>When a packet enters your VPC, Google evaluates firewall rules in a strict top-down order. Memorize this sequence:</p>
+      <ol>
+        <li><strong>Hierarchical Firewall Policies:</strong> Attached to the Organization or Folder level. They override everything below!</li>
+        <li><strong>Global Network Firewall Policies:</strong> Attached to the VPC network globally.</li>
+        <li><strong>Regional Network Firewall Policies:</strong> Attached to specific regions in the VPC.</li>
+        <li><strong>Legacy VPC Firewall Rules:</strong> The classic per-VPC rules.</li>
+      </ol>
+      <p><em>Micro-segmentation Best Practice: Avoid network tags for critical security boundaries! Network tags are easily modified by VM administrators. Instead, use <strong>Secure Tags</strong> (governed by IAM) or <strong>Service Accounts</strong> to define secure micro-segments that cannot be bypassed!</em></p>
+    </div>
+
+    <!-- 6.3 Public Cloud NAT & Secure Web Proxy -->
+    <h2>6.3 Public Cloud NAT &amp; Secure Web Proxy</h2>
+    <p>How do private VMs safely initiate outbound connections to the internet (e.g., to download software updates) without exposing themselves to inbound attacks?</p>
+
+    <div class="rev-card tip">
+      <h3>💧 Cloud NAT &amp; Dynamic Port Allocation (DPA)</h3>
+      <p>Cloud NAT provides managed Source NAT (SNAT) for private instances. The #1 production issue with Cloud NAT is <strong>SNAT Port Exhaustion</strong> (where VMs open too many outbound connections and run out of allocated source ports, causing connection drops and <code>OUT_OF_RESOURCES</code> errors).</p>
+      <p><strong>🛠️ The Dynamic Port Allocation (DPA) Fix:</strong> Instead of statically assigning a fixed number of ports (like 64) to every VM regardless of usage, enable DPA!</p>
+      <ul>
+        <li><strong>How it works:</strong> Each VM starts with a minimum number of ports (e.g., 32). If a VM is close to exhausting its ports, Cloud NAT <strong>doubles</strong> its allocation (32 -> 64 -> 128 -> 256 -> 512 -> 1024) up to a configured maximum (e.g., 4096). When connection demand drops, ports are released back to the pool!</li>
+        <li><strong>The Powers of 2 Rule:</strong> Both <code>--min-ports-per-vm</code> and <code>--max-ports-per-vm</code> <strong>MUST be powers of 2</strong>! (Min: 32 to 32768, Max: 64 to 65536).</li>
+      </ul>
+    </div>
+
+    <div class="mnemonic">
+      <strong>🧠 Crucial Memory Tip: Secure Web Proxy (SWP)</strong>
+      <p>If you need to secure and inspect <strong>outbound HTTP/HTTPS traffic</strong> (egress) from your VPC based on domain names, URLs, or web categories, don't use Cloud NAT (which only filters by IP/port) or complex NVA proxy VMs. Reach for <strong>Secure Web Proxy (SWP)</strong>! It is a fully managed, serverless egress proxy that doesn't require a NAT gateway or VM maintenance. 🌐</p>
+    </div>
+
+    <div class="joke-box">
+      "Why did the Cloud NAT gateway get a power of 2 tattoo? Because it wanted to remind everyone that it only doubles port allocations dynamically!" 🔢
+    </div>
+
+    <!-- 6.4 Self-Managed NVAs & Packet Mirroring -->
+    <h2>6.4 Self-Managed NVAs &amp; Packet Mirroring</h2>
+    <p>For some compliance frameworks, you must route all inter-VPC traffic through a pool of self-managed third-party firewall virtual machines (Network Virtual Appliances - NVAs) like Palo Alto or Fortinet.</p>
+    <p>To do this in a highly available, scalable manner, deploy the NVAs as multi-network interface card (multi-NIC) VMs behind an <strong>Internal Load Balancer (ILB)</strong>. You configure <strong>Policy-Based Routing (PBR)</strong> in your VPC to intercept traffic and set the next hop to the ILB's forwarding rule IP address. This ensures traffic is distributed across healthy firewalls automatically! 🛡️</p>
+    <p>If you need out-of-band security analysis (like an Intrusion Detection System - IDS) without intercepting or slowing down live traffic, use <strong>Packet Mirroring</strong>. It clones a copy of all traffic from selected VM instances or subnets and forwards it to a pool of collector VMs behind an ILB for passive analysis.</p>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Which Cloud NGFW tier is required to perform deep packet inspection (Layer 7 IPS) to detect active malware exploits?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Cloud NGFW Enterprise</strong>. It is the only tier that supports L7 packet inspection, which it enforces by routing traffic through managed Firewall Endpoints.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> True or False: Hierarchical firewall policies can override rules defined in global or regional VPC network firewall policies.</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>True!</strong> Hierarchical policies (attached at the Org or Folder level) are evaluated first and take absolute precedence over VPC-level and regional-level policies.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What is the mathematical constraint on the minimum and maximum ports per VM when configuring Cloud NAT Dynamic Port Allocation?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          Both values <strong>MUST be powers of 2</strong> (e.g., 32, 64, 128, 256, 512, 1024, etc.).
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> What managed GCP service should you deploy to restrict outbound VM traffic to specific external domains (like <code>*.github.com</code>) without managing proxy VMs?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>Secure Web Proxy (SWP)</strong>. It is a fully managed egress proxy that supports FQDN, URL, and category-based filtering for HTTP/S traffic.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 6 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style network security brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> Your e-commerce site sits behind a Global External Application Load Balancer. During a sale, backend CPU spikes and logs reveal a Layer 7 HTTP flood from thousands of rotating IPs. You need to mitigate it automatically without blocking legitimate shoppers. What should you do?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Create a Cloud Armor edge security policy that blocks the top 10 countries by query volume, with a custom error page for blocked users.</li>
+          <li data-option="B">B) Add a Cloud Armor rate-limiting rule of 1 request per minute per IP and apply it to every backend service behind the load balancer.</li>
+          <li data-option="C">C) Enable Cloud Armor Adaptive Protection on the backend policy and let it model the anomaly and apply a generated rule for the attack signature.</li>
+          <li data-option="D">D) Swap the frontend to a regional passthrough Network Load Balancer to skip L7 parsing and absorb the surge at the network layer.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> <strong>Cloud Armor Adaptive Protection</strong> uses ML to fingerprint an anomalous L7 flood across many rotating IPs and proposes a targeted rule, blocking the attack while legitimate shoppers keep browsing. 🛡️</p>
+          <ul>
+            <li><strong>A:</strong> Country blocking drops thousands of legitimate shoppers &mdash; crude and revenue-destroying.</li>
+            <li><strong>B:</strong> 1 request per minute per IP breaks normal browsing and checkout for everyone.</li>
+            <li><strong>D:</strong> Passthrough NLB doesn't support Cloud Armor or WAF, leaving the backends exposed to the L7 flood.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> Policy requires that private Compute Engine VMs reach the internet only to pull updates from <code>*.ubuntu.com</code> and <code>*.github.com</code>. You want this egress filtering with minimal operational overhead and no per-VM proxy configuration. What should you deploy?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Deploy Secure Web Proxy in the VPC, write an egress policy allowing <code>*.ubuntu.com</code> and <code>*.github.com</code>, and route outbound HTTP/S through it.</li>
+          <li data-option="B">B) Deploy a public Cloud NAT gateway and add static routes to Ubuntu's and GitHub's public IP blocks, with metrics preferring local egress.</li>
+          <li data-option="C">C) Create egress VPC firewall rules with target tags that deny <code>0.0.0.0/0</code> and allow source ranges matching the update repositories.</li>
+          <li data-option="D">D) Run an autoscaling pool of Squid proxy VMs behind an internal load balancer, with a startup script pointing <code>apt</code> and <code>curl</code> at the proxy.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> <strong>Secure Web Proxy</strong> is a managed, serverless egress proxy with FQDN/wildcard policies for HTTP/S. It gives granular domain filtering at the lowest operational overhead, with no per-VM proxy settings. 🌐</p>
+          <ul>
+            <li><strong>B:</strong> Cloud NAT is Layer 4 only; it can't match FQDNs or wildcards, and chasing SaaS IP blocks is unsustainable.</li>
+            <li><strong>C:</strong> VPC firewall rules are L4 and can't match domains; denying <code>0.0.0.0/0</code> blocks all egress, and "source ranges" is the wrong control for egress <em>destinations</em>.</li>
+            <li><strong>D:</strong> A Squid VM fleet means patching, scaling, and config overhead plus per-VM proxy settings &mdash; the opposite of minimal.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A GKE cluster of ~1,000 pods makes heavy outbound calls to payment gateways. At peak, logs show <code>OUT_OF_RESOURCES</code> timeouts from Cloud NAT and you confirm SNAT port exhaustion. You want to fix it now while using as few public IPs as possible. What should you do?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Add 50 static public IPs to the NAT pool and switch the gateway to round-robin address mapping.</li>
+          <li data-option="B">B) Raise the static minimum ports-per-VM to 4096 on the gateway and disable dynamic port scaling.</li>
+          <li data-option="C">C) Disable Cloud NAT, give each GKE node a public IP, and restrict node ports with egress firewall rules.</li>
+          <li data-option="D">D) Enable Dynamic Port Allocation with <code>--min-ports-per-vm=64</code> and <code>--max-ports-per-vm=1024</code>.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> <strong>Dynamic Port Allocation</strong> lets busy VMs scale up to 1024 ports while idle VMs stay at 64, ending SNAT exhaustion while squeezing the most out of the existing IP pool. 💧</p>
+          <ul>
+            <li><strong>A:</strong> 50 static IPs is costly and wasteful next to dynamic scaling.</li>
+            <li><strong>B:</strong> A static minimum of 4096 gives <em>every</em> VM (even idle ones) 4096 ports, immediately exhausting the IP pool.</li>
+            <li><strong>C:</strong> Public IPs on nodes expose them to the internet and add huge IP-management overhead.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> A government agency requires that all traffic into and out of the production VPC undergo inline deep packet inspection to detect malware, spyware, and exploits, with detected threats blocked automatically. Which native GCP solution fits?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Enable Cloud Armor on the external load balancers with custom WAF regex rules for deep payload inspection.</li>
+          <li data-option="B">B) Configure Cloud NGFW Enterprise and enable its Layer 7 inspection with Intrusion Prevention System (IPS) profiles.</li>
+          <li data-option="C">C) Deploy Packet Mirroring to clone bidirectional traffic to a pool of third-party IDS VMs for analysis.</li>
+          <li data-option="D">D) Enable Cloud NGFW Essentials with folder-level hierarchical firewall policies and custom packet-filter tags.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> <strong>Cloud NGFW Enterprise</strong> performs inline Layer 7 inspection with an IPS (Palo Alto threat signatures), detecting and automatically blocking malware, spyware, and exploits inside packet payloads. 🔍</p>
+          <ul>
+            <li><strong>A:</strong> Cloud Armor is a WAF for inbound HTTP/S at the load balancer, not inline bidirectional VPC packet inspection.</li>
+            <li><strong>C:</strong> Packet Mirroring is out-of-band &mdash; it can detect but can't block inline, since it only sees a copy of the traffic.</li>
+            <li><strong>D:</strong> NGFW Essentials is L4 port/protocol only, with no L7 inspection or IPS.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/armor/docs/cloud-armor-overview" class="doc-link" target="_blank">
+          <strong>Google Cloud Armor Overview</strong>
+          <span>WAF rules, DDoS protection, and Adaptive Protection.</span>
+        </a>
+        <a href="https://cloud.google.com/firewall/docs/about-firewalls" class="doc-link" target="_blank">
+          <strong>Cloud NGFW Overview</strong>
+          <span>Comparing Essentials, Standard, and Enterprise firewall tiers.</span>
+        </a>
+        <a href="https://cloud.google.com/nat/docs/ports-and-addresses" class="doc-link" target="_blank">
+          <strong>Cloud NAT Port Allocation</strong>
+          <span>Static vs. Dynamic Port Allocation and preventing SNAT exhaustion.</span>
+        </a>
+        <a href="https://cloud.google.com/secure-web-proxy/docs/overview" class="doc-link" target="_blank">
+          <strong>Secure Web Proxy (SWP)</strong>
+          <span>Managed egress filtering for HTTP/S traffic based on FQDNs.</span>
+        </a>
+      </div>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/network_eng/theme6_security.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/network_eng/theme6_security.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

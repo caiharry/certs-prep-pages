@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP DevOps Engineer &mdash; Observability &amp; Troubleshooting</title>
+  <style>
+    :root {
+      --bg: #f0fdfa; --ink: #1e293b; --accent: #0d9488; --accent-dark: #0f766e;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%2399f6e4' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #5eead4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP DevOps Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 4</span><span class="weight">~25%</span>
+      <h1>Observability &amp; Troubleshooting</h1>
+      <p class="sec-intro">Joint-largest section: instrument telemetry, analyse logs/metrics/traces, and find root cause.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Collecting telemetry</h3>
+      <p>Collect logs and metrics with the <strong>Ops Agent</strong> and <strong>OpenTelemetry</strong>; scrape Prometheus metrics via <strong>Google Cloud Managed Service for Prometheus</strong>. Optimise log cost with filtering, sampling, and exclusions. Create <strong>synthetic monitors</strong> to probe endpoints proactively and <strong>log-based metrics</strong> for custom signals.</p>
+    </section>
+    <section class="lesson">
+      <h3>Logs, metrics, dashboards & alerts</h3>
+      <p>Query with the <strong>Logs Explorer</strong> and Logging query language; export/retain via sinks to BigQuery/Pub/Sub/GCS. Analyse metrics in <strong>Metrics Explorer</strong> (PromQL supported), build dashboards, and configure alerting policies on SLIs/SLOs. Capture <strong>distributed traces</strong> (OpenTelemetry), analyse span waterfalls, and correlate trace IDs with structured logs.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> To detect VM shutdowns quickly, create a log-based alert on the audit-log method (e.g., compute.instances.stop) — not an hourly scheduled BigQuery query.</div>
+    </section>
+    <section class="lesson">
+      <h3>Root-cause workflow</h3>
+      <p>Debug systematically, top-down from the user symptom: confirm the SLO impact in <strong>Cloud Monitoring</strong>, narrow the time/scope, then drill into <strong>Cloud Trace</strong> to find the slow span and into <strong>Cloud Logging</strong> (correlated by trace ID) for the error. Use <strong>Cloud Profiler</strong> for CPU/memory hotspots and <strong>Error Reporting</strong> to group recurring exceptions. The three pillars &mdash; metrics, logs, traces &mdash; answer "how bad", "what happened", and "where".</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Which microservice adds the latency in a request that crosses ten services?" = distributed tracing (Cloud Trace), not reading each service's logs by hand.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Get notified quickly when a VM stops. Best approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A log-based alert on the v1.compute.instances.stop method in Cloud Logging.</strong></p>
+          <p class="quiz-why">Real-time, no polling; scheduled BigQuery queries lag and cost more.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Ingest existing Prometheus metrics at scale on GCP. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Google Cloud Managed Service for Prometheus.</strong></p>
+          <p class="quiz-why">Managed, scalable Prometheus-compatible metrics.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A request crossing 10 microservices is slow. Which signal finds the offending hop?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Distributed tracing (Cloud Trace) span waterfall.</strong></p>
+          <p class="quiz-why">Traces show per-span latency across services, pinpointing the slow hop &mdash; logs alone can't.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Logging bills are too high from verbose debug logs. Two cheap levers?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Log exclusions/filters and sampling.</strong></p>
+          <p class="quiz-why">Drop or sample low-value logs before ingestion to cut cost without losing key signals.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> The on-call team must be alerted within seconds whenever a production VM is stopped, with no polling cost. What is the best approach?</p>
+        <ul>
+          <li>A) An hourly scheduled BigQuery query over exported audit logs.</li>
+          <li>B) A Cloud Logging log-based alert on the <code>compute.instances.stop</code> audit-log method.</li>
+          <li>C) A cron job that lists instances and compares state every minute.</li>
+          <li>D) A weekly review of the activity log.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A log-based alert fires in near-real-time off the audit log with no polling, exactly matching the requirement.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Hourly queries and per-minute polling lag and cost more. <strong>D:</strong> Weekly review is far too slow.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A user request that traverses ten microservices is intermittently slow, and you must identify which service contributes the latency. Which observability signal is the right tool?</p>
+        <ul>
+          <li>A) Aggregate CPU metrics for the whole cluster.</li>
+          <li>B) Distributed tracing (Cloud Trace) with correlated trace IDs.</li>
+          <li>C) Reading each service's logs in sequence by hand.</li>
+          <li>D) Error Reporting exception counts.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A trace's span waterfall shows per-service latency across the whole request, pinpointing the slow hop.</p>
+          <p class="quiz-why"><strong>A:</strong> Cluster CPU doesn't isolate one service's request latency. <strong>C:</strong> Manual log reading across ten services is slow and error-prone. <strong>D:</strong> Error Reporting counts exceptions, not latency.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An existing Kubernetes estate already exposes Prometheus metrics, and the team wants them collected at scale on Google Cloud without running and scaling their own Prometheus servers. What should they adopt?</p>
+        <ul>
+          <li>A) Google Cloud Managed Service for Prometheus.</li>
+          <li>B) A self-hosted Prometheus per cluster with manual federation.</li>
+          <li>C) Rewrite all metrics as Cloud Monitoring custom metrics by hand.</li>
+          <li>D) Ship metrics as logs and build log-based metrics from them.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Managed Service for Prometheus ingests existing Prometheus metrics at scale with no servers to run, keeping PromQL compatibility.</p>
+          <p class="quiz-why"><strong>B:</strong> Self-hosting is the operational burden they want to avoid. <strong>C:</strong> Hand-porting metrics is wasteful and error-prone. <strong>D:</strong> Logs-as-metrics is a workaround, not native Prometheus ingestion.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Site Reliability Engineering</a>
+      <a href="guide_s5.html" class="nav-link">Optimizing Performance &amp; Cost &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/devops_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/devops_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

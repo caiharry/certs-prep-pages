@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Monitoring AI Solutions</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 6</span><span class="weight">~13%</span>
+      <h1>Monitoring AI Solutions</h1>
+      <p class="sec-intro">Identify risk, apply Responsible AI, and distinguish skew from drift.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Skew vs drift</h3>
+      <ul>
+        <li><strong>Training-serving skew</strong> &mdash; training and serving data or preprocessing differ; fix by sharing preprocessing / a Feature Store.</li>
+        <li><strong>Prediction (feature) drift</strong> &mdash; the serving input distribution shifts over time versus training; detect with Vertex AI Model Monitoring.</li>
+        <li><strong>Feature attribution drift</strong> &mdash; the relative importance of features changes over time, hinting the world has moved.</li>
+        <li><strong>Concept drift</strong> &mdash; the relationship between inputs and the label itself changes (the right answer moves).</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Good offline metrics but poor production results <em>from day one</em> = training-serving skew. Metrics that decay <em>over weeks</em> = drift. The timing tells you which.</div>
+    </section>
+    <section class="lesson">
+      <h3>Setting up Model Monitoring</h3>
+      <p><strong>Vertex AI Model Monitoring</strong> compares live serving inputs (and optionally attributions) against a <strong>baseline</strong> &mdash; usually the training distribution &mdash; and raises alerts when divergence crosses a threshold you set. Sample a fraction of traffic to control cost, route alerts to Cloud Monitoring, and feed them into the retraining trigger you built in the pipelines section.</p>
+      <div class="callout mnemonic"><span class="hook">BASE</span> No baseline, no monitoring. Drift is always measured <em>relative to</em> the training distribution.</div>
+    </section>
+    <section class="lesson">
+      <h3>Responsible AI &amp; explainability</h3>
+      <p>Check for <strong>bias and fairness</strong> across slices before launch, assess solution readiness, and use <strong>Vertex Explainable AI</strong> (feature attributions, e.g. integrated gradients / sampled Shapley) so each decision can be explained &mdash; essential in regulated domains like lending or healthcare. Attribution drift also doubles as an early-warning signal.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "We must justify each individual decision to a regulator" = Explainable AI per-prediction attributions, not aggregate accuracy or a confusion matrix.</div>
+    </section>
+    <section class="lesson">
+      <h3>Securing models &amp; GenAI safety</h3>
+      <p>Protect models and data from exploitation: restrict endpoint access with IAM and private networking, guard against <strong>data exfiltration</strong> with VPC Service Controls, and for GenAI watch for <strong>prompt injection</strong> and unsafe output. Apply <strong>safety filters</strong> and human-in-the-loop review for high-risk actions, and log prompts/responses for audit.</p>
+      <div class="callout mnemonic"><span class="hook">GUARD</span> Least-privilege access + private serving + safety filters = a model that's hard to abuse.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Production accuracy drops as incoming feature distributions shift. What detects this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex AI Model Monitoring (feature drift).</strong></p>
+          <p class="quiz-why">Compares serving inputs against a baseline and alerts on divergence.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A lending model must explain which features drove each decision. Which capability?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex Explainable AI feature attributions.</strong></p>
+          <p class="quiz-why">Produces per-prediction attributions for transparency.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A model is great in tests but underperforms from the very first day in production. Skew or drift?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Training-serving skew.</strong></p>
+          <p class="quiz-why">Day-one gaps point to a training/serving mismatch, not a gradual distribution shift over time.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> What must Model Monitoring be given before it can detect drift?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A baseline distribution (usually the training data).</strong></p>
+          <p class="quiz-why">Drift is divergence from that baseline, so it's required to compare against.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A model scored well on the holdout set but produced noticeably worse results the moment it went live, before any data could have shifted. What is the most likely cause?</p>
+        <ul>
+          <li>A) Concept drift caused by a changing input-label relationship.</li>
+          <li>B) Training-serving skew from differing preprocessing or features.</li>
+          <li>C) Gradual feature drift accumulating over several weeks.</li>
+          <li>D) Overfitting that only appears after months of serving.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A gap present from day one, with no time for distributions to move, is training-serving skew &mdash; the serving path differs from training.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Drift develops over time; it can't explain an immediate launch-day gap. <strong>D:</strong> Overfitting shows up in evaluation, not specifically at the train/serve boundary.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A regulated lender must justify each individual loan decision the model makes. Which capability satisfies the requirement?</p>
+        <ul>
+          <li>A) An aggregate accuracy and confusion-matrix report per quarter.</li>
+          <li>B) Vertex AI Model Monitoring drift alerts on the input features.</li>
+          <li>C) Vertex Explainable AI per-prediction feature attributions.</li>
+          <li>D) A traffic split that A/B tests two model versions.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> Per-prediction feature attributions explain why <em>this</em> decision was made &mdash; exactly what a regulator demands for individual cases.</p>
+          <p class="quiz-why"><strong>A:</strong> Aggregate metrics don't explain a single decision. <strong>B:</strong> Drift detection watches distributions, not individual rationale. <strong>D:</strong> A/B testing compares versions, not decisions.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You want production retraining to fire automatically when the live feature distribution diverges from training, with cost kept reasonable. What should you set up?</p>
+        <ul>
+          <li>A) Model Monitoring on a sample of traffic, with a baseline and a drift threshold that triggers the pipeline.</li>
+          <li>B) A fixed daily retraining job regardless of whether anything changed.</li>
+          <li>C) Manual quarterly reviews of accuracy dashboards.</li>
+          <li>D) Explainable AI attributions logged but not alerted on.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Monitoring a sampled stream against a baseline detects drift cheaply, and the threshold alert triggers retraining only when needed.</p>
+          <p class="quiz-why"><strong>B:</strong> Daily retraining wastes compute when nothing changed. <strong>C:</strong> Quarterly manual review is slow and misses fast shifts. <strong>D:</strong> Logging attributions without alerts won't trigger anything.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s5.html" class="nav-link">&larr; Automating &amp; Orchestrating Pipelines</a>
+      <span></span>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/ml_eng/guide_s6.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/ml_eng/guide_s6.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

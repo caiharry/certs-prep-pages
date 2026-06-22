@@ -1,0 +1,122 @@
+/* ============================================================
+   SKIN · BRIEFING  — "most professional"
+   Ovo + Work Sans, hairline cards, quiet colour, no block
+   shadows. Personality lives in the words, not the chrome.
+   Visual rules scoped under html.ds-skin; simulators get only
+   the :root re-accent.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Ovo&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('tokens.css');
+
+/* ---- Quiet the whole palette down ---- */
+:root {
+  --rev-yellow: #F4F6FB;  --rev-yellow-dark: var(--ds-golden);
+  --rev-blue: var(--ds-alchemy); --rev-violet: #6E59F2; --rev-teal: var(--ds-cloud-700);
+  --rev-green: var(--ds-cloud-700); --rev-green-dark: #0E7C6B; --rev-green-light: #EDF1FB;
+  --rev-orange: #B98318; --rev-red: var(--ds-warn);
+  --rev-violet-light: #F1F0FB; --rev-violet-border: #5A46C8;
+  --bg-light: #fff; --ink: var(--ds-ink); --radius: var(--ds-radius);
+
+  --green: var(--ds-alchemy); --green-dark: var(--ds-alchemy-700);
+  --teal: var(--ds-cloud-700); --amber: var(--ds-golden-700); --red: var(--ds-warn);
+  --blue: var(--ds-alchemy); --violet: #6E59F2; --muted: var(--ds-muted); --line: var(--ds-line);
+  --surface: #fff; --surface-solid: #fff; --surface-soft: #F7F8FB; --bg: #fff;
+  --shadow: var(--ds-shadow-hairline); --shadow-soft: var(--ds-shadow-hairline);
+
+  --dark-accent: var(--ds-alchemy); --dark-accent-hover: var(--ds-alchemy-700);
+  --classic-accent: var(--ds-alchemy); --classic-accent-hover: var(--ds-alchemy-700);
+  --accent: var(--ds-alchemy); --accent-hover: var(--ds-alchemy-700);
+  --font-display: var(--ds-font-display); --font-sans: var(--ds-font-ui);
+}
+
+/* ---- Base type & page ---- */
+html.ds-skin body {
+  font-family: var(--ds-font-ui) !important;
+  background: #fff !important;
+  color: var(--ds-body);
+  line-height: 1.65;
+}
+html.ds-skin h1, html.ds-skin h2, html.ds-skin h3,
+html.ds-skin .sec-title, html.ds-skin .intro-title, html.ds-skin .matrix-title,
+html.ds-skin header h1, html.ds-skin .slide-header h2, html.ds-skin .hero h1 {
+  font-family: var(--ds-font-display) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em;
+  color: var(--ds-ink) !important;
+}
+html.ds-skin h2 { border-bottom: 1px solid var(--ds-line) !important; color: var(--ds-ink) !important; }
+html.ds-skin a { color: var(--ds-alchemy); }
+html.ds-skin code { font-family: var(--ds-font-mono); background: #F4F6FB; border: 1px solid var(--ds-line); }
+
+/* ---- Header: quiet deep-blue, hairline, no block ---- */
+html.ds-skin header {
+  background: var(--ds-deep) !important;
+  border: 1px solid var(--ds-line) !important;
+  box-shadow: var(--ds-shadow-hairline) !important;
+  border-radius: var(--ds-radius) !important;
+  color: #fff !important;
+}
+html.ds-skin header h1, html.ds-skin header p { color: #fff !important; }
+html.ds-skin .tagline { font-style: normal; opacity: .9; }
+html.ds-skin .section-badge, html.ds-skin header::after { background: var(--ds-muted) !important; border: none !important; }
+html.ds-skin .badge-rev { background: rgba(255,255,255,.14) !important; color: #fff !important; border: none !important; transform: none !important; }
+html.ds-skin .eyebrow, html.ds-skin .slide-kicker { color: var(--ds-cloud) !important; }
+
+/* ---- Cards: hairline only, faint shadow, NO blocks ---- */
+html.ds-skin .rev-card, html.ds-skin .cert-card, html.ds-skin .section-card,
+html.ds-skin .intro-section, html.ds-skin .table-container, html.ds-skin .warm-up,
+html.ds-skin .practice-exam, html.ds-skin .q-box, html.ds-skin .know-card,
+html.ds-skin .guide-card, html.ds-skin .slide, html.ds-skin .fact-card,
+html.ds-skin .mnemonic, html.ds-skin .further-reading {
+  background: #fff !important;
+  border: 1px solid var(--ds-line) !important;
+  box-shadow: var(--ds-shadow-hairline) !important;
+  border-radius: var(--ds-radius) !important;
+}
+html.ds-skin .cert-card:hover, html.ds-skin .section-card:hover { transform: none !important;
+  border-color: #D7DEEA !important; box-shadow: 0 6px 18px -8px rgba(28,24,49,.18) !important; }
+
+/* meaning shown by a quiet left rule, not colour-flooding */
+html.ds-skin .rev-card.tip { border-left: 3px solid var(--ds-alchemy) !important; }
+html.ds-skin .rev-card.warn { border-left: 3px solid var(--ds-warn) !important; }
+html.ds-skin .mnemonic { border-left: 3px solid var(--ds-mnemonic) !important; }
+html.ds-skin .mnemonic strong { color: var(--ds-mnemonic-ink) !important; }
+html.ds-skin .further-reading { border-left: 3px solid var(--ds-cloud-700) !important; }
+html.ds-skin .further-reading h3 { color: var(--ds-mnemonic-ink) !important; }
+
+/* exam trap: still a dashed callout, but quiet */
+html.ds-skin .exam-trap, html.ds-skin .trap {
+  background: #FCFAF2 !important;
+  border: 1px dashed var(--ds-golden) !important;
+  box-shadow: none !important;
+  border-radius: var(--ds-radius) !important;
+}
+html.ds-skin .exam-trap::before { background: var(--ds-golden) !important; color: var(--ds-deep) !important; border: none !important; }
+html.ds-skin .exam-trap h3 { color: var(--ds-trap-ink) !important; }
+
+/* ---- Buttons: flat, hairline, no blocks ---- */
+html.ds-skin .btn-rev, html.ds-skin .nav-link, html.ds-skin .show-answer-btn,
+html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn, html.ds-skin .doc-link {
+  border: 1px solid var(--ds-line) !important;
+  box-shadow: none !important;
+  border-radius: var(--ds-radius-sm) !important;
+  font-family: var(--ds-font-ui) !important;
+}
+html.ds-skin .btn-rev, html.ds-skin .btn-primary { background: var(--ds-alchemy) !important; color: #fff !important; border-color: var(--ds-alchemy) !important; }
+html.ds-skin .btn-rev:hover, html.ds-skin .btn-primary:hover { background: var(--ds-alchemy-700) !important; }
+html.ds-skin .btn-secondary, html.ds-skin .btn-exam, html.ds-skin .btn-official { background: #F7F8FB !important; color: var(--ds-ink) !important; }
+html.ds-skin .nav-link { background: #fff !important; color: var(--ds-body) !important; }
+html.ds-skin .nav-link:hover { background: #F7F8FB !important; }
+html.ds-skin .scroll-top-btn { background: var(--ds-deep) !important; color: #fff !important; border-color: var(--ds-deep) !important; }
+html.ds-skin .doc-link strong { color: var(--ds-alchemy) !important; }
+
+/* ---- Tables & quiz keep meaning, lose the chrome ---- */
+html.ds-skin .table-container { box-shadow: var(--ds-shadow-hairline) !important; border: 1px solid var(--ds-line) !important; }
+html.ds-skin th { background: #F4F6FB !important; color: var(--ds-ink) !important; text-transform: none !important; }
+html.ds-skin th, html.ds-skin td { border-color: var(--ds-line) !important; }
+html.ds-skin .answer-panel { border-left-color: var(--ds-alchemy) !important; }
+html.ds-skin .hero { background: linear-gradient(135deg, var(--ds-deep), #2c2746) !important; box-shadow: none !important; }
+html.ds-skin .hero h1, html.ds-skin .hero .subtitle { color: #fff !important; }
+html.ds-skin .joke-box { color: var(--ds-muted) !important; }

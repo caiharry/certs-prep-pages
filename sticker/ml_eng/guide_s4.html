@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Serving &amp; Scaling Models</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 4</span><span class="weight">~20%</span>
+      <h1>Serving &amp; Scaling Models</h1>
+      <p class="sec-intro">Choose inference patterns, manage versions, and tune production serving.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Batch vs online inference</h3>
+      <p><strong>Batch prediction</strong> scores large datasets offline &mdash; the cost-efficient choice when latency doesn't matter (e.g. nightly scoring of a whole table). <strong>Online endpoints</strong> serve low-latency, per-request predictions for interactive apps.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Score the whole table once nightly" = batch prediction. "Respond per request in milliseconds" = online endpoint. Don't pay for an always-on endpoint for an offline job.</div>
+    </section>
+    <section class="lesson">
+      <h3>Endpoint types &amp; private serving</h3>
+      <p>Online prediction can run on a <strong>shared public endpoint</strong> (simple) or a <strong>private endpoint / Private Service Connect</strong> for VPC-internal, low-latency traffic that must not traverse the internet. Choose <strong>dedicated</strong> resources when one model needs guaranteed capacity, and attach GPUs to the endpoint for heavy models.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Predictions must stay on the private network / meet data-exfiltration controls" points to a private endpoint or PSC, not the default public endpoint.</div>
+    </section>
+    <section class="lesson">
+      <h3>Versioning &amp; safe rollout</h3>
+      <p>Register every model in the <strong>Model Registry</strong> (versioned, with aliases). Deploy multiple versions behind one endpoint and use a <strong>traffic split</strong> for A/B tests and <strong>canary</strong> rollouts &mdash; send 5% to the new version, watch metrics, then ramp. Roll back instantly by shifting traffic back.</p>
+      <div class="callout mnemonic"><span class="hook">CANARY</span> Small slice first, watch the metrics, then ramp. The endpoint's traffic split is your dial.</div>
+    </section>
+    <section class="lesson">
+      <h3>Autoscaling &amp; latency/cost tuning</h3>
+      <p>Endpoints autoscale node count on traffic; set min/max replicas to balance cost against tail latency, and keep a warm minimum if cold starts hurt. Shrink the model itself with <strong>quantization</strong> and <strong>distillation</strong>, and batch requests where the app tolerates it, to cut cost and latency.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Cut serving cost without retraining" leans on quantization/distillation and right-sizing replicas &mdash; not a bigger machine type.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Score 500M rows once per night, latency irrelevant, cost matters. Which serving mode?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex AI batch prediction.</strong></p>
+          <p class="quiz-why">Designed for large offline scoring; cheapest for the job.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Compare two model versions on a slice of live traffic, then promote. How?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Traffic split across versions on a Vertex AI endpoint.</strong></p>
+          <p class="quiz-why">Native A/B testing and gradual promotion.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Predictions must never leave the VPC for compliance. Which endpoint do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A private endpoint / Private Service Connect.</strong></p>
+          <p class="quiz-why">Keeps online prediction traffic on the private network instead of the public internet.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Serving cost is too high but you can't retrain. Two levers?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Quantize/distill the model and right-size endpoint replicas.</strong></p>
+          <p class="quiz-why">Both cut compute per request and idle capacity without changing model quality much.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A risk model scores the entire customer table once every night to populate a dashboard. There is no interactive latency requirement and cost should be minimal. How should it be served?</p>
+        <ul>
+          <li>A) A dedicated online endpoint with autoscaling and a warm minimum of replicas.</li>
+          <li>B) A Vertex AI batch prediction job that scores the table and writes results out.</li>
+          <li>C) A Cloud Function calling the model per row in a nightly loop.</li>
+          <li>D) A private online endpoint behind Private Service Connect.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A one-shot, latency-insensitive scoring of a whole table is the canonical batch-prediction job &mdash; cheapest and simplest.</p>
+          <p class="quiz-why"><strong>A/D:</strong> Always-on endpoints cost money to idle for a nightly job. <strong>C:</strong> Per-row function calls are slow and expensive at table scale.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> You want to release a new model version with minimal blast radius: route a small share of live traffic to it, watch error and latency metrics, then ramp up or roll back fast. What should you configure?</p>
+        <ul>
+          <li>A) Deploy the new version to a separate endpoint and switch DNS when ready.</li>
+          <li>B) Replace the old version in place and monitor afterward.</li>
+          <li>C) Deploy both versions to one endpoint and use a traffic split, starting at ~5% on the new one.</li>
+          <li>D) Run a batch prediction with the new model and compare offline only.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> A traffic split on a single endpoint gives a true canary on live traffic with instant rollback by shifting the split back.</p>
+          <p class="quiz-why"><strong>A:</strong> DNS switching is coarse and slow to roll back. <strong>B:</strong> In-place replacement has full blast radius. <strong>D:</strong> Offline comparison doesn't test live serving behaviour.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An online endpoint meets latency targets but costs too much, and retraining is off the table this quarter. Which combination best reduces cost while protecting latency?</p>
+        <ul>
+          <li>A) Switch to batch prediction for the interactive app.</li>
+          <li>B) Quantize/distill the model and tune the min/max replica counts.</li>
+          <li>C) Move the endpoint to a much larger machine type.</li>
+          <li>D) Disable autoscaling and run a single fixed large replica.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Quantization/distillation cut compute per request, and right-sizing replicas removes idle cost without hurting latency &mdash; all without retraining the original model.</p>
+          <p class="quiz-why"><strong>A:</strong> Batch can't serve an interactive app. <strong>C:</strong> A bigger machine usually raises cost. <strong>D:</strong> A fixed large replica wastes money at low traffic and risks latency at peaks.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Scaling Prototypes into ML Models</a>
+      <a href="guide_s5.html" class="nav-link">Automating &amp; Orchestrating Pipelines &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/ml_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/ml_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Developer &mdash; Integrating with Google Cloud Services</title>
+  <style>
+    :root {
+      --bg: #eef2ff; --ink: #1e293b; --accent: #4f46e5; --accent-dark: #3730a3;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23c7d2fe' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #a5b4fc 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Developer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 4</span><span class="weight">~21%</span>
+      <h1>Integrating with Google Cloud Services</h1>
+      <p class="sec-intro">Connect to data stores, consume APIs efficiently, and instrument observability.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Efficient API consumption</h3>
+      <p>On retryable errors (HTTP 429/503), retry with <strong>exponential backoff and jitter</strong> — never a tight loop. <strong>Paginate</strong> large list results, request only the fields you need, <strong>batch</strong> requests where supported, and cache idempotent reads. Authenticate API calls with service accounts.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> The correct response to 429/503 is exponential backoff; immediate retries amplify the overload.</div>
+    </section>
+    <section class="lesson">
+      <h3>Connecting to managed data stores</h3>
+      <p>Reach private backends securely. Connect to <strong>Cloud SQL</strong> via the <strong>Cloud SQL Auth Proxy</strong> / language connectors (IAM auth, encrypted, no public IP). Let serverless services (Cloud Run, Cloud Functions) reach VPC resources through a <strong>Serverless VPC Access connector</strong> or Direct VPC egress. Pool connections so you don't exhaust the database under autoscaling.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A serverless service can't reach a private Cloud SQL/VPC resource without VPC egress (connector / Direct VPC) &mdash; giving the database a public IP is the wrong fix.</div>
+    </section>
+    <section class="lesson">
+      <h3>Observability &amp; troubleshooting</h3>
+      <p>Instrument <strong>metrics, logs, and traces</strong> (OpenTelemetry) into Google Cloud Observability. <strong>Cloud Logging</strong> centralises structured logs, <strong>Cloud Monitoring</strong> drives dashboards and alerts on SLOs, <strong>Error Reporting</strong> groups exceptions, and <strong>Cloud Trace</strong> stitches spans. Propagate <strong>trace IDs</strong> so a single request can be followed across services.</p>
+      <div class="callout mnemonic"><span class="hook">LMT</span> <strong>L</strong>ogs (what happened), <strong>M</strong>etrics (how much/SLOs), <strong>T</strong>races (where the time went). The three pillars.</div>
+    </section>
+    <section class="lesson">
+      <h3>Diagnosing latency &amp; cost in production</h3>
+      <p>Use <strong>Cloud Profiler</strong> (continuous CPU/heap profiling) to find hot code paths and memory bloat in live services with negligible overhead, and Cloud Trace latency reports to spot slow spans. Set up <strong>log-based metrics</strong> and alerting policies tied to user-facing SLOs so you're paged on symptoms, not noise.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Find which function consumes the most CPU/memory in production, continuously" = Cloud Profiler, not adding manual timing logs.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Your service gets intermittent 429s from a Google API during spikes. Correct client behaviour?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Retry with exponential backoff and jitter.</strong></p>
+          <p class="quiz-why">Spaces out retries and relieves the overload.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> How do you follow a single request across multiple microservices in Cloud Trace?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Propagate and correlate by trace ID.</strong></p>
+          <p class="quiz-why">Trace IDs stitch spans across services.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A Cloud Run service must reach a Cloud SQL instance that has no public IP. What enables this?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Serverless VPC Access (or Direct VPC egress) plus the Cloud SQL connector.</strong></p>
+          <p class="quiz-why">It gives the serverless service a route into the VPC to reach the private instance.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You need to find the hottest CPU function in a live service without redeploying instrumentation. Which tool?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Profiler.</strong></p>
+          <p class="quiz-why">Continuous, low-overhead production profiling of CPU and memory.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> During traffic spikes a client receives sporadic HTTP 429 and 503 responses from a Google API. What client behaviour best handles this without making the overload worse?</p>
+        <ul>
+          <li>A) Retry immediately in a tight loop until the call succeeds.</li>
+          <li>B) Retry with exponential backoff and jitter, up to a sensible cap.</li>
+          <li>C) Switch to a second project's quota for the same API.</li>
+          <li>D) Cache the failed response and return it to users.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Exponential backoff with jitter spaces out retries, relieving the overload and avoiding synchronized retry storms.</p>
+          <p class="quiz-why"><strong>A:</strong> Tight retries amplify the overload. <strong>C:</strong> Splitting quota across projects to dodge limits is an abuse pattern, not a fix. <strong>D:</strong> Caching errors serves users broken data.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A Cloud Run service must connect to a Cloud SQL instance that has only a private IP, with credentials managed by IAM and no public exposure. What should you configure?</p>
+        <ul>
+          <li>A) Give the Cloud SQL instance a public IP and allowlist Cloud Run's egress ranges.</li>
+          <li>B) Use Serverless VPC Access (or Direct VPC egress) with the Cloud SQL connector for IAM auth.</li>
+          <li>C) Open the database to <code>0.0.0.0/0</code> and rely on strong passwords.</li>
+          <li>D) Tunnel through a bastion VM that the service SSHes into per request.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> VPC egress lets the serverless service reach the private instance, and the Cloud SQL connector provides encrypted, IAM-based access with no public IP.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Public IPs and open firewalls violate the no-exposure requirement. <strong>D:</strong> Per-request SSH bastions are fragile and not how serverless connects.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A production service is intermittently slow and you must identify which code path burns the most CPU, continuously and with minimal overhead, without shipping custom timing instrumentation. Which tool fits?</p>
+        <ul>
+          <li>A) Cloud Profiler statistical CPU/heap profiling.</li>
+          <li>B) Adding manual stopwatch logs around suspect functions.</li>
+          <li>C) Error Reporting exception grouping.</li>
+          <li>D) A load test that reproduces the spike in staging.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Cloud Profiler continuously samples CPU and heap in production at negligible overhead and points directly at the hot functions.</p>
+          <p class="quiz-why"><strong>B:</strong> Manual logs are exactly the instrumentation you want to avoid and add overhead. <strong>C:</strong> Error Reporting groups exceptions, not CPU usage. <strong>D:</strong> A staging load test may not reproduce the real production hotspot.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Configuring Apps for Deployment</a>
+      <span></span>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/developer_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/developer_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

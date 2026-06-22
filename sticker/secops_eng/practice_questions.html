@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Security Operations Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #475569;
+            --dark-accent-hover: #334155;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #1e293b;
+            --classic-accent-hover: #0f172a;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Security Operations Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "SecOps Engineer",
+    "scenario": "Your SOC already ingests Cloud Audit Logs, VPC Flow, and Cloud DNS natively into Google SecOps via the Google Cloud integration. The team now needs Okta sign-in events and AWS CloudTrail in the same SIEM, with the least operational overhead and explicitly no agents to build or patch. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Managed `feeds` that pull Okta and AWS CloudTrail events over their first-party connectors into SecOps",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A SecOps `forwarder` on a VM in each cloud, with the providers' syslog output pointed at it",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "An export of both log sets to Cloud Storage, then ingestion of the bucket into Security Command Center",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A YARA-L rule that references the Okta and CloudTrail APIs directly at detection time",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Okta and AWS CloudTrail are cloud/SaaS sources with first-party connectors, so managed feeds pull them over API with zero agents — the lowest-overhead intake for SaaS telemetry.",
+      "B": "A forwarder is the right tool for on-prem syslog/packet/file logs, but it is exactly the VM agent the scenario forbids, and it is the wrong intake for managed SaaS APIs.",
+      "C": "SCC is a posture/CSPM tool, not the SIEM where these logs are searched and detected on, and the bucket round-trip adds latency and cost for no benefit.",
+      "D": "YARA-L runs over already-normalised UDM events; it is a detection construct that cannot pull data from external APIs, so it ingests nothing."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/ingestion/ingestion-methods",
+        "text": "cloud.google.com/chronicle/docs/ingestion/ingestion-methods"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "SecOps Engineer",
+    "scenario": "Compliance requires that only the 6-person fraud team can read payment-system logs, even though all 45 analysts share one Google SecOps tenant and use SIEM search daily for hunting. You must not stop the wider team from searching everything else. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Remove the SIEM feature-access IAM role from everyone except the fraud team so others cannot open search",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Move the payment-system logs into a separate Google Cloud project with its own IAM bindings",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Build a YARA-L reference list of payment hostnames and exclude other analysts from matching it",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Apply data RBAC so the payment-system log scope (by label) is readable only within the fraud team's scope",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Stripping feature access blocks all 45 analysts from search entirely, breaking the requirement that the wider team keeps hunting.",
+      "B": "Splitting projects fragments the single SIEM tenant and does not map to how SecOps data-access controls work; the logs would no longer be in the shared analysis surface.",
+      "C": "Reference lists tune detection logic, not who may read raw log data during search; they grant no data-access control at all.",
+      "D": "SecOps data RBAC scopes which labelled log slices a group can read while leaving feature access intact, so the fraud team alone sees payment logs and everyone else keeps searching the rest."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/datarbac-overview",
+        "text": "cloud.google.com/chronicle/docs/administration/datarbac-o..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "SecOps Engineer",
+    "scenario": "You are onboarding 30 external SOC contractors from a managed-security partner. Policy says they must authenticate with the partner's own corporate IdP, no Google accounts may be provisioned for them, and access must drop automatically when the partner offboards someone. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create one shared Google account for the contractor pool and rotate its password monthly",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Issue each contractor a service account key scoped to the SecOps API",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Provision the contractors through Workforce Identity Federation against the partner's IdP",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Add each contractor as a Google Cloud guest user and assign SecOps viewer roles individually",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A shared account destroys per-analyst accountability and audit trails, and a rotated password is still not tied to the partner's IdP or its offboarding lifecycle.",
+      "B": "Service account keys authenticate workloads, not human analysts, and a leaked key has no link to corporate identity or automatic revocation on offboarding.",
+      "C": "Workforce Identity Federation lets external workforce identities from a third-party IdP access SecOps without Google accounts, and access follows the partner's IdP, so deprovisioning there revokes access automatically.",
+      "D": "Creating Google guest identities per contractor is exactly the per-user Google-account provisioning the policy forbids, and manual role grants must be manually revoked."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workforce-identity-federation",
+        "text": "cloud.google.com/iam/docs/workforce-identity-federation"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "SecOps Engineer",
+    "scenario": "A new SaaS source ingests under its Google-managed default parser, but the username lands in a generic text field instead of the UDM principal, so all your user-based detections silently miss it. You want the fix scoped to this one source and you must not disturb other tenants of the same shared default parser. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Author a brand-new custom parser for the source and disable the Google-managed default",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a parser extension that maps the username into the correct UDM principal field",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Rewrite each affected YARA-L rule to read the generic text field instead of the principal",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Add the usernames to a reference list so detections can resolve them at match time",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A full custom parser throws away the working default mappings, is far more to maintain, and replaces the managed parser for far more than this one-field gap needs.",
+      "B": "A parser extension overlays just the field mapping you need on top of the existing default parser, fixing the principal mapping for this source without forking or replacing the managed parser.",
+      "C": "Chasing a mis-mapped field inside every rule scatters the workaround across all detections and breaks portability of shared and curated rules.",
+      "D": "Reference lists hold reusable values for matching; they cannot relocate a value into the correct UDM field, so the principal stays empty."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/event-processing/manage-parser-extensions",
+        "text": "cloud.google.com/chronicle/docs/event-processing/manage-p..."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "SecOps Engineer",
+    "scenario": "A vendor changed a custom application's log format last week. You corrected the parser yesterday and validated it against sample logs, but an analyst reports that events from the affected three-day gap still land in the wrong UDM fields and dodge detections. What do you tell them, and what is the fix?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Parser changes are forward-only; reingest or backfill the affected window to remap the old events",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "The parser edit reparses all stored data on save, so they should just refresh the search results",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The historical events are unrecoverable, so the only option is to extend the data retention period",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Add a reference list of the affected hostnames so detections can resolve the old events on the fly",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Parser changes apply only to logs ingested after the change, so to fix the three-day gap you must reingest/backfill that window so the events are reparsed under the corrected mapping.",
+      "B": "Saving a parser does not retroactively reparse stored data; refreshing search shows the same mis-mapped historical events.",
+      "C": "The raw data is not lost and retention length is irrelevant; the events simply need reparsing, not longer storage.",
+      "D": "A reference list supplies values for matching; it cannot relocate fields already parsed into the wrong UDM locations."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/event-processing/parser-overview",
+        "text": "cloud.google.com/chronicle/docs/event-processing/parser-o..."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "SecOps Engineer",
+    "scenario": "Your SecOps ingest bill is dominated by verbose application debug logs that no detection or hunt has referenced in 12 months, while you need to onboard high-value EDR telemetry inside the same fixed budget. You want the cleanest data-management move that frees budget without slowing searches on valuable data. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Uniformly shorten retention across every source so total stored volume drops across the board",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Move all logs, including the new EDR feed, into a cheaper cold data tier to cut overall cost",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Route the debug logs to Security Command Center so they stop counting against SIEM ingestion",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Filter the unused debug logs at the source so they are never ingested, freeing budget for EDR",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Blanket retention cuts also shorten your valuable logs' searchable history and don't target the actual cost driver, which is ingest volume of the debug logs.",
+      "B": "A cold tier slows searches on the EDR telemetry you most want fast and still pays to ingest the useless debug logs.",
+      "C": "SCC is a posture tool, not a dumping ground for application logs; this misroutes data rather than reducing volume or cost.",
+      "D": "Filtering low-value, never-referenced logs at the source removes their ingest cost directly — the textbook value-versus-volume trade — and the recovered budget funds the high-signal EDR data."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/manage-ingestion",
+        "text": "cloud.google.com/chronicle/docs/administration/manage-ing..."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "SecOps Engineer",
+    "scenario": "During an investigation you must enrich each sign-in event with the user's department and manager so you can spot which logins are anomalous for that person's role. That context is not in the auth log itself. What kind of data do you bring in, and how?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Entity context data from identity/org records, enriched onto events via aliasing fields",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "More event data, by relaxing the auth source's filtering so additional fields are ingested",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A retrohunt over historical auth logs to reconstruct each user's department from past activity",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A parser extension on the auth log to synthesise the department and manager fields locally",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Department and manager describe who the user is — entity context from identity/org sources — and SecOps joins it onto events through aliasing fields so detections and investigations gain that context.",
+      "B": "The auth log is event data about an action; relaxing its filtering cannot surface HR org attributes the log never contained.",
+      "C": "A retrohunt finds past matching events but cannot manufacture org context that was never logged in the first place.",
+      "D": "A parser maps fields that exist in the raw log; it cannot invent a department or manager the source never sent."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/investigation/view-entity-context",
+        "text": "cloud.google.com/chronicle/docs/investigation/view-entity..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "SecOps Engineer",
+    "scenario": "Threat intel says a financially motivated actor is active in your sector but provides no concrete indicators — only that they abuse valid accounts and living-off-the-land binaries. You have one working day to hunt productively before the next shift. What is the most effective approach?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Wait for the intel team to publish file hashes and IPs, then retrohunt those across historical logs",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Form ATT&CK-mapped hypotheses for the named techniques and run UDM searches for rare process behaviour",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Block all of the actor's known domains at the firewall and monitor for renewed connection attempts",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Raise the severity of every existing detection so more of the actor's activity gets escalated to analysts",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Waiting for hashes/IPs forfeits the day and pins the hunt to the most evadable, lowest-value indicators an actor swaps trivially.",
+      "B": "With only TTPs to go on, hypothesis-driven hunting mapped to ATT&CK techniques (valid-account abuse, LOLBins) and run as UDM searches for rare behaviour is the high-value hunt this situation demands.",
+      "C": "You were given no domains to block, and blocking is a control action, not a hunt for compromise that may already be present.",
+      "D": "Cranking severity on existing rules creates alert noise without searching for the unknown activity those rules were never built to catch."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/investigation/udm-search",
+        "text": "cloud.google.com/chronicle/docs/investigation/udm-search"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "SecOps Engineer",
+    "scenario": "A threat advisory drops at 14:00 listing 30 fresh file hashes tied to a newly observed loader. Leadership wants to know within the hour whether any of these hashes touched the estate at any point over the past quarter of retained telemetry. What do you do in Google SecOps?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add the 30 hashes to a reference list and let live detections fire on any future match",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Open an interactive UDM search and manually scroll today's process-execution events for the hashes",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run a retrohunt of the hashes against the last quarter of historical telemetry",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Build a Looker Studio dashboard that trends hash prevalence across the quarter",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A reference list plus live detection only catches future matches and ignores the historical \"did this already touch us\" question that was actually asked.",
+      "B": "Manually scrolling today's events neither covers the quarter of history nor scales to 30 hashes within the hour.",
+      "C": "Applying brand-new indicators to past data to find earlier compromise is exactly what a retrohunt does, and it answers the quarter-long historical question directly.",
+      "D": "A dashboard visualises trends but does not search history for specific indicators to confirm or rule out prior compromise."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/manage-retrohunts",
+        "text": "cloud.google.com/chronicle/docs/detection/manage-retrohunts"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "SecOps Engineer",
+    "scenario": "You want curated, prioritised indicators of compromise from Google Threat Intelligence to automatically match against your ingested telemetry and rank the resulting hits by confidence, rather than analysts pasting indicator lists into searches by hand. Which SecOps capability provides this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A static reference list of known-bad IPs and hashes, updated manually each quarter",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "SCC Security Health Analytics, which scans your cloud configuration against benchmarks",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Applied Threat Intelligence, which auto-matches prioritised GTI indicators against your UDM events",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A scheduled SOAR playbook that queries the GTI API and writes findings into a case each night",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A manually updated reference list is stale by design, carries no confidence prioritisation, and is the very hand-maintained approach the scenario wants to replace.",
+      "B": "SHA evaluates cloud posture/misconfiguration, not IoC matching against ingested security telemetry.",
+      "C": "Applied Threat Intelligence continuously matches curated, prioritised GTI indicators against your telemetry and scores the hits, removing the manual indicator-paste workflow entirely.",
+      "D": "A nightly playbook is batchy, bespoke to build and maintain, and reinvents the auto-matching and prioritisation that Applied Threat Intelligence already provides."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/about-applied-threat-intelligence",
+        "text": "cloud.google.com/chronicle/docs/detection/about-applied-t..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "SecOps Engineer",
+    "scenario": "A hunter notices a service account authenticate from a new country, then enumerate storage buckets it has never touched, then read a secret it has never accessed. They want the platform to keep surfacing accounts behaving this anomalously and to escalate when several weak signals stack on one entity — without hand-writing a rule for every pattern. What should they rely on?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single high-severity YARA-L rule that fires on any authentication from a new country",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "SCC Security Health Analytics to flag the bucket and secret configuration as misconfigurations",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The entity risk score, which aggregates anomalous signals on an entity and floats high-risk ones up",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A SOAR playbook that auto-disables any account seen authenticating outside its usual region",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A blunt new-country rule fires on legitimate travel constantly and captures only one of the three suspicious behaviours, missing the cumulative picture.",
+      "B": "SHA checks standing posture/configuration, not anomalous account behaviour accumulating over time.",
+      "C": "SecOps Risk Analytics aggregates multiple anomalous behaviours into a single rising entity risk score, surfacing accounts that stack weak signals without a bespoke rule per pattern.",
+      "D": "Auto-disabling on geography is a heavy-handed response that locks out legitimate travel and is a containment action, not the anomaly-surfacing mechanism requested."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/risk-analytics-overview",
+        "text": "cloud.google.com/chronicle/docs/detection/risk-analytics-..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "SecOps Engineer",
+    "scenario": "Leadership wants a single finding proving that a Cloud Storage bucket is publicly exposed AND chained to an over-privileged service account that can reach customer data. Each issue is individually low severity; they want the combined exposure surfaced as a posture risk, not as a log-based detection. Where does this belong?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A multi-event YARA-L correlation rule joining IAM and storage UDM events over a time window",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A scheduled UDM search in the SIEM that pivots from bucket access to service-account activity",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A SOAR playbook that periodically queries the storage and IAM APIs and opens a case on a match",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Security Command Center toxic-combination analysis, which chains posture issues into attack paths",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "YARA-L correlates activity events for detections; standing posture exposure is not an event stream it watches, so it would not surface a configuration attack path.",
+      "B": "A UDM search inspects logged activity, not the standing configuration state of buckets and IAM bindings.",
+      "C": "A playbook can react to a finding but is response automation, not the engine that evaluates posture risk and computes the attack path in the first place.",
+      "D": "Chaining individually-minor misconfigurations into a viable path to sensitive data is a posture/attack-path problem, which SCC's toxic-combination analysis is purpose-built to surface."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/toxic-combinations-overview",
+        "text": "cloud.google.com/security-command-center/docs/toxic-combi..."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "SecOps Engineer",
+    "scenario": "You must detect when a single user account produces more than 15 failed logins followed by a successful login within a 10-minute window, and assign a risk score to the result so it feeds entity risk. How should the YARA-L 2.0 rule be structured?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single-event rule whose condition counts failed logins, since each login is one event",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A reference-list lookup that flags users whose failed-login count exceeds a static threshold",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A multi-event rule with a `match` section grouping by user over a time window, plus an `outcome` score",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A curated detection enabled as-is, because brute-force success is a standard built-in scenario",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A single-event rule evaluates one event at a time and has no `match` section, so it cannot count or sequence failures-then-success across a window.",
+      "B": "Reference lists store reusable values for matching; they cannot count events or evaluate a time-windowed sequence.",
+      "C": "Correlating many failures then a success for the same user inside a window requires a `match` section with a group-by user variable and a time window, and the risk score comes from the `outcome` block.",
+      "D": "Even where a curated brute-force rule exists, this scenario specifies a bespoke threshold and a custom outcome score, so you author or tune a rule — and it still needs a `match` section."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax",
+        "text": "cloud.google.com/chronicle/docs/detection/yara-l-2-0-syntax"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "SecOps Engineer",
+    "scenario": "You need a detection that fires on a single event: any process connecting to an IP that appears on your curated command-and-control watchlist, with no correlation across events required. You want the rule to stay accurate as the watchlist changes weekly, with no rule edits each time. How should you build it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A multi-event YARA-L rule with a `match` section grouping connections by host over a 1-hour window",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A single-event YARA-L rule whose condition tests the destination IP against a reference list",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A scheduled retrohunt that re-runs the watchlist against the last week of telemetry every Monday",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A SOAR playbook triggered hourly that pulls the watchlist and searches the SIEM for matches",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A `match` section is for correlating several events over a window; forcing it here adds needless grouping logic for what is a single-event IoC match.",
+      "B": "One connection to a watchlisted IP is a per-event condition, so a single-event rule (no `match` section) referencing a reference list fires correctly, and updating the list updates the rule with no edits.",
+      "C": "A retrohunt looks backward at historical data on a schedule; it does not provide the live, forward-looking detection the scenario asks for.",
+      "D": "An hourly playbook is batchy and bespoke, reinventing detection that a live single-event rule does continuously and natively."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/reference-lists",
+        "text": "cloud.google.com/chronicle/docs/detection/reference-lists"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "SecOps Engineer",
+    "scenario": "A high-value YARA-L rule is accurate but fires dozens of times a day on three known CI/CD service accounts running legitimate automated deployments. You must eliminate those false positives while keeping the rule's full coverage for every other identity. What is the correct tuning?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Delete the rule and rely on the entity risk score to surface the same activity when it matters",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Lower the rule's severity so the CI/CD alerts sink below the analysts' triage threshold",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Exclude the three service accounts via a reference list referenced in the rule condition",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Shorten the rule's `match` window so the automated deployment bursts no longer satisfy it",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Deleting the rule removes coverage for every identity, not just the three benign accounts — the classic over-correction trap.",
+      "B": "Lowering severity hides all of the rule's alerts, including genuine threats it catches, rather than suppressing only the three known-good accounts.",
+      "C": "A reference list of the known-good service accounts, excluded in the condition, suppresses exactly the benign cases while the rule keeps full coverage against everything else.",
+      "D": "Shrinking the window degrades the detection logic globally and risks missing slower, genuine attacks that the original window was sized to catch."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/reference-lists",
+        "text": "cloud.google.com/chronicle/docs/detection/reference-lists"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "SecOps Engineer",
+    "scenario": "A newly authored YARA-L rule looks correct, but you fear it will bury analysts in false positives once live. Before promoting it to production, what is the best validation step in Google SecOps?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy it straight to production at informational severity and watch the alert queue for a week",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Pre-load every conceivable benign entity into a reference list so nothing can false-positive at launch",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set the rule's `outcome` risk score low so any false positives are automatically de-prioritised",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Run the rule against historical telemetry in a test run to measure true- versus false-positive volume",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Shipping to production first is precisely the risk you are trying to avoid, and informational severity still floods the queue with noise.",
+      "B": "Pre-loading every imaginable benign entity is guesswork that risks over-suppression and detection blind spots, all without measuring the real false-positive rate.",
+      "C": "Lowering the score hides noise rather than validating accuracy, and you still do not know how often the rule actually misfires.",
+      "D": "Running the rule against historical data shows exactly what it would have matched, letting you measure and tune the false-positive rate before it ever touches the live queue."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/manage-rules",
+        "text": "cloud.google.com/chronicle/docs/detection/manage-rules"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "SecOps Engineer",
+    "scenario": "A common cloud-platform attack technique — for example, anomalous IAM grants and service-account key abuse — is already covered by a Google-authored, continuously-updated rule set in SecOps. Your team needs coverage fast and wants to minimise long-term rule maintenance. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Write and maintain your own YARA-L rules replicating the technique so you fully control the logic",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Build a SOAR playbook that queries the IAM API hourly and opens a case on suspicious grants",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Rely solely on SCC Event Threat Detection and skip authoring any SecOps detection content",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable the relevant curated detection rule set and tune it with reference-list exclusions",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Hand-building rules for a threat Google already maintains duplicates effort and saddles you with ongoing upkeep the curated set would handle for you.",
+      "B": "An hourly API-polling playbook is batchy, bespoke, and high-maintenance, reinventing detection the curated rules already perform natively over UDM.",
+      "C": "ETD finds threats in Google Cloud logs and is complementary, but leaning on it alone leaves the SecOps SIEM detection coverage this technique needs unaddressed.",
+      "D": "Curated detections are Google-authored and continuously updated, so enabling and lightly tuning the relevant set gives fast coverage with minimal maintenance."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/detection/about-curated-detections",
+        "text": "cloud.google.com/chronicle/docs/detection/about-curated-d..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "SecOps Engineer",
+    "scenario": "A compromised Compute Engine VM is beaconing to a known command-and-control endpoint and may be moving laterally. Forensics will need its disk and memory afterward, and the workload owner has not yet been reached. What is the correct first containment step?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply a deny-all firewall policy to isolate the instance's network while leaving it running",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Delete the instance immediately so the attacker loses the foothold and the beaconing stops",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Shut the instance down so it stops communicating until the owner approves further action",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Rotate the service-account keys the VM uses and leave its network connectivity in place",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Network isolation via a deny-all policy halts C2 and lateral movement instantly while keeping the running instance and its volatile memory intact for forensics.",
+      "B": "Deleting the VM destroys the very disk and memory evidence forensics needs, and is irreversible.",
+      "C": "Shutting down loses volatile memory artifacts and can trigger anti-forensic or destructive malware that runs on halt.",
+      "D": "Rotating keys may limit some credential abuse but leaves the C2 channel and lateral movement fully open, so it does not contain the incident."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/security-incident-response",
+        "text": "cloud.google.com/architecture/security-incident-response"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "SecOps Engineer",
+    "scenario": "Your SOC handles dozens of identical low-risk malware-quarantine cases daily. Each requires the same deterministic steps: enrich the file hash with GTI, confirm the EDR already quarantined the file, tag the case, and close it. Analysts are drowning in this toil and you want to cut it without losing visibility. What should you build, and how far should automation go?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A SOAR playbook that auto-enriches and tags but routes every case to an analyst for a manual close decision",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A SOAR playbook that auto-enriches, confirms the EDR quarantine, tags, and closes these cases end to end",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A YARA-L rule that suppresses these alerts entirely so they never create cases in the first place",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A dashboard that counts the alerts so leadership can decide whether to hire more analysts",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Forcing a manual close on a fully deterministic, already-contained workflow keeps the analyst burden the scenario is explicitly trying to remove.",
+      "B": "These steps are deterministic, low-risk, and the threat is already remediated by the EDR, so full enrich-confirm-tag-close automation is the textbook hands-off SOAR case, freeing analysts for judgement work while the cases still exist for visibility.",
+      "C": "Suppressing the alerts blinds you to the malware activity and its trend entirely, trading toil for a visibility gap.",
+      "D": "A dashboard measures the problem but does nothing to reduce the repetitive toil itself."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
+        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "SecOps Engineer",
+    "scenario": "You are designing a SOAR playbook for ransomware response. One of its steps would wipe and rebuild a production host from a golden image. Leadership demands fast response but is adamant that this irreversible, high-blast-radius action must never run unattended. How should the playbook handle that step?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Fully automate the wipe-and-rebuild so MTTR is minimised whenever the trigger fires",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Insert a human approval gate before the wipe step, automating the enrichment and notification around it",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Move the wipe step into a separate scheduled playbook that runs nightly regardless of triggers",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Replace the wipe with a network-isolation step and never offer rebuild from the playbook at all",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Fully automating an irreversible, high-blast-radius wipe is exactly what leadership forbids and risks destroying a healthy production host on a false positive.",
+      "B": "The expected design automates the deterministic enrichment and notification but inserts a human-in-the-loop approval gate before the destructive wipe, balancing speed with the no-unattended-destruction requirement.",
+      "C": "A nightly scheduled wipe decouples the action from the incident entirely and would wipe hosts on a timer rather than in response to a real, approved decision.",
+      "D": "Dropping rebuild capability altogether removes a legitimate recovery action the team may need; the requirement was a control on it, not its removal."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/respond/working-with-playbooks/playbooks-overview",
+        "text": "cloud.google.com/chronicle/docs/soar/respond/working-with..."
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "SecOps Engineer",
+    "scenario": "Two tier-1 analysts have independently begun investigating what turns out to be the same threat, duplicating enrichment and contacting the same asset owner. Your SOC lead wants clean ownership, visible investigation stages, and auditable handoffs as work escalates to tier-2. Which SecOps capability addresses this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The SOAR case management lifecycle, with assignment, stages, and tracked escalation handoffs",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A shared team email inbox that both tiers monitor for new threat reports",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Additional YARA-L correlation rules so duplicate activity is detected and merged automatically",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Disabling one analyst's account during active investigations to prevent concurrent work",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Case management assigns a single owner, moves the case through defined response stages, and records escalation handoffs for audit — exactly the ownership and traceability the lead wants.",
+      "B": "A shared inbox has no concept of ownership, stage, or handoff, so it does nothing to stop two analysts grabbing the same work.",
+      "C": "More detection rules generate more alerts; they do not assign ownership or structure the investigation workflow.",
+      "D": "Disabling an analyst's account is a crude blunt instrument that harms capacity and accountability rather than coordinating the work."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/soar/investigate/working-with-cases/the-cases-page",
+        "text": "cloud.google.com/chronicle/docs/soar/investigate/working-..."
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "SecOps Engineer",
+    "scenario": "After a contained ransomware near-miss, the incident commander wants the response made repeatable and the lessons captured so the next occurrence is faster and cheaper. Which action best closes the incident lifecycle?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Immediately raise the severity of all ransomware-related detections to maximum across the tenant",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run a post-incident review and feed findings into new detections, reference lists, and playbook updates",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Archive the case and move on, since containment succeeded and no data was lost",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Network-isolate the affected hosts again to confirm the threat has not returned",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Blanket-maxing severity creates alert fatigue across the SOC and is not a structured, lasting improvement.",
+      "B": "The lessons-learned phase turns a single response into durable improvement by feeding detections, reference lists, and playbooks, which is precisely what makes the next incident faster and cheaper.",
+      "C": "Archiving without review discards the most valuable output of an incident — the lessons that make the next response cheaper.",
+      "D": "Re-isolating already-contained hosts is redundant containment, not lifecycle closure or process improvement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/security-incident-response",
+        "text": "cloud.google.com/architecture/security-incident-response"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "SecOps Engineer",
+    "scenario": "You need automation to call the Google SecOps API on a schedule to pull case statistics into an external reporting system. Security requires least privilege and prohibits embedding long-lived credentials in the pipeline. How should the pipeline authenticate?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A personal analyst's OAuth credentials, reused by the pipeline so actions inherit their access",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A single broadly-scoped API key shared across this and other automations for convenience",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A service account granted the SecOps administrator role so the pipeline never hits a permission error",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A dedicated service account with a minimal SecOps role, authenticated via keyless workload identity",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Reusing a human's credentials breaks accountability and least privilege, and ties the pipeline's access to one person's lifecycle.",
+      "B": "A broad shared API key over-permissions the pipeline, is a long-lived secret the policy forbids, and is leak-prone across the automations sharing it.",
+      "C": "Granting the administrator role grossly over-privileges a read-only reporting pipeline, violating least privilege even if it authenticates cleanly.",
+      "D": "A purpose-built service account scoped to a minimal role and authenticated keylessly via workload identity meets both least privilege and the no-long-lived-credentials requirement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "SecOps Engineer",
+    "scenario": "A firewall feed keeps streaming events at its normal daily volume, but after the vendor pushed a firmware update last night, none of your firewall detections fire anymore. Your ingestion-volume dashboards look completely healthy. What is the most likely root cause, and where would you have caught it earliest?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The vendor format changed and the parser now mis-maps fields, caught by monitoring parser error rates",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "The source went silent, so silent-source detection should already have raised an alert",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Ingestion latency spiked, so the events arrive too late for the detections to evaluate them in time",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "The detections were accidentally disabled during the firmware change-management window",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Steady volume plus dead detections right after a vendor format change is the signature of a broken parser — events still ingest but land in the wrong UDM fields, so rules no longer match — and rising parser error rates would have flagged it earliest.",
+      "B": "Silent-source detection only triggers when a feed goes quiet, but volume here is normal, so the source is not silent.",
+      "C": "Latency would show as lag or backlog, not normal-volume ingestion with healthy dashboards.",
+      "D": "A disable is unrelated to a format change and is speculative; the timing points squarely at parsing, not at the detection rules' enabled state."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/parser-troubleshooting",
+        "text": "cloud.google.com/chronicle/docs/administration/parser-tro..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "SecOps Engineer",
+    "scenario": "You want early warning before detections silently degrade: a notification when any expected source stops sending, when ingestion lags by hours, or when parser error rates climb. These pipeline-health alerts must reach the on-call engineer without polluting the analysts' security alert queue. Where should they be wired?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Through Cloud Monitoring threshold alerts routed to the on-call channel, away from security alerts",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "As high-severity YARA-L rules in the SIEM so they surface alongside threat detections",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Into the SOAR case queue so each ingestion hiccup opens a case for an analyst to triage",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Onto the executive trend report so leadership sees ingestion health each reporting cycle",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Pipeline-health signals (silent sources, latency, parser errors) belong in Cloud Monitoring with notifications routed to on-call, keeping operational health distinct from the security alert queue.",
+      "B": "YARA-L watches ingested UDM events for threats; it cannot natively alert on the pipeline's own health and would mix operational and security queues.",
+      "C": "Opening a SOAR case per ingestion hiccup floods case management with operational, non-incident work for analysts.",
+      "D": "A monthly trend report is far too slow to act as early warning before detections degrade."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/chronicle/docs/administration/silent-host-monitoring",
+        "text": "cloud.google.com/chronicle/docs/administration/silent-hos..."
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/secops_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/secops_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

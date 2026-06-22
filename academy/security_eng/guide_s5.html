@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 5 Revision Guide - Supporting Compliance (Residency, Transparency &amp; Frameworks)</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --primary: #16a34a; /* Section 5 green */
+      --primary-light: #dcfce7;
+      --primary-border: #15803d;
+      --rev-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.3' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+
+    .container { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--primary) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      color: white; padding: 30px 20px; position: relative; margin-bottom: 35px;
+    }
+    header h1 {
+      margin: 0 0 10px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); text-transform: uppercase;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0px #000;
+    }
+    header p { margin: 0; font-size: 1.1rem; font-style: italic; }
+    .section-badge {
+      position: absolute; bottom: -15px; right: 20px; background: #ef4444; color: white; font-weight: bold;
+      padding: 6px 15px; border-radius: 999px; border: 3px solid #000; transform: rotate(2deg); font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem; border-bottom: 3px solid #000; padding-bottom: 8px; margin-top: 45px; margin-bottom: 20px;
+      text-transform: uppercase; color: var(--primary-border);
+    }
+    h3 { font-size: 1.3rem; margin-top: 30px; margin-bottom: 12px; color: #0f172a; }
+    p, li { font-size: 1.05rem; }
+
+    .rev-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0px #000;
+      padding: 22px; margin-bottom: 30px; position: relative;
+    }
+    .rev-card.tip { background: #f3fdf6; border-color: var(--primary); box-shadow: 4px 4px 0px var(--primary); }
+    .rev-card.tip h3 { color: var(--primary-border); margin-top: 0; }
+    .rev-card.warn { background: #fef2f2; border-color: var(--rev-red); box-shadow: 4px 4px 0px var(--rev-red); }
+    .rev-card.warn h3 { color: var(--rev-red); margin-top: 0; }
+
+    .exam-trap {
+      background: #fff7ed; border: 3px dashed var(--rev-orange); border-radius: var(--radius);
+      padding: 18px; margin: 25px 0; position: relative;
+    }
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!"; display: inline-block; background: var(--rev-orange); color: white; font-weight: bold;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; font-size: 0.85rem; margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8; border: 3px solid #db2777; border-radius: var(--radius); box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px; margin: 25px 0;
+    }
+    .mnemonic strong { color: #db2777; }
+    .mnemonic h3 { margin-top: 0; }
+
+    .joke-box {
+      font-style: italic; color: #4b5563; text-align: center; margin: 25px 0; padding: 10px;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .table-container {
+      overflow-x: auto; border: 3px solid #000; border-radius: var(--radius); box-shadow: 5px 5px 0px #000; margin: 30px 0;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 2px solid #000; padding: 12px 15px; text-align: left; font-size: 0.98rem; }
+    th { background: var(--rev-yellow); text-transform: uppercase; font-weight: bold; }
+    tr:nth-child(even) { background: #fbfbfe; }
+
+    .warm-up {
+      background: #f3fdf6; border: 3px solid var(--primary); border-radius: var(--radius); box-shadow: 4px 4px 0px var(--primary);
+      padding: 22px; margin: 35px 0;
+    }
+    .warm-up h3 { color: var(--primary-border); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+    .quiz-item { margin-bottom: 18px; border-bottom: 1px dashed #bbf7d0; padding-bottom: 12px; }
+    .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .show-answer-btn {
+      background: #fff; border: 2px solid #000; border-radius: 6px; padding: 5px 12px; font-weight: bold;
+      cursor: pointer; margin-top: 8px; font-family: inherit;
+    }
+    .show-answer-btn:hover { background: #d6f7e0; }
+    .answer-panel {
+      display: none; margin-top: 10px; background: #f0fdf4; border-left: 4px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.95rem;
+    }
+
+    .practice-exam {
+      background: #fffaf0; border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 25px; margin-top: 50px;
+    }
+    .practice-exam h2 { color: var(--rev-orange); border-bottom: 3px solid #000; margin-top: 0; }
+    .q-box { background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .option-list { list-style-type: none; padding-left: 0; }
+    .option-list li {
+      margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .option-list li:hover { background: #fef8f2; border-color: #000; }
+    .option-list li.selected { background: #dbeafe; border-color: var(--rev-blue); box-shadow: 2px 2px 0px var(--rev-blue); }
+    .option-list li.eliminated { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+    .option-list li.correct-answer { background: #dcfce7; border-color: var(--rev-green); }
+    .option-list li.wrong-answer { background: #fee2e2; border-color: var(--rev-red); }
+    .explanation-panel {
+      display: none; margin-top: 15px; background: #fff8f2; border: 2px dashed var(--rev-orange); padding: 15px; border-radius: 8px;
+    }
+    .badge-check { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #000; margin-right: 6px; }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+    .submit-answer-btn {
+      background: var(--rev-orange); color: white; border: 2px solid #000; border-radius: 6px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-family: inherit;
+    }
+    .submit-answer-btn:hover { background: #dd5209; }
+
+    .further-reading {
+      background: #ecfeff; border: 3px solid #0891b2; border-radius: var(--radius); box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px; margin: 28px 0;
+    }
+    .further-reading h3 { color: #0e7490; margin-top: 0; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .doc-link {
+      display: block; background: #fff; border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0px #000;
+      color: #0f172a; padding: 10px 12px; text-decoration: none;
+    }
+    .doc-link strong { display: block; color: #0e7490; }
+    .doc-link span { display: block; font-size: 0.9rem; margin-top: 3px; }
+
+    .bullet-chk { list-style-type: none; padding-left: 0; }
+    .bullet-chk li::before { content: "✔️ "; margin-right: 8px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; overflow-wrap: anywhere; word-break: break-word; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0; background: var(--rev-yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="guide_s4.html" class="nav-link">&larr; Section 4: Managing Operations</a>
+      <a href="index.html" class="nav-link">Portal</a>
+      <a href="practice_questions.html" class="nav-link">Practice Exam &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 5: Supporting Compliance</h1>
+      <p>Map regulatory and industry requirements onto Google Cloud controls (~11%). The smallest slice on the paper, and mostly common sense once you know the shared responsibility model &mdash; easy marks if you don't fumble three look-alike services.</p>
+      <div class="section-badge">Section 5 🟩 ~11%</div>
+    </header>
+
+    <p>Only one in nine questions lives here, so don't over-invest &mdash; but don't skip it either, because the marks are cheap. The whole domain boils down to: know <em>who's responsible for what</em>, keep data <em>in the right region</em>, control <em>Google's own access</em>, and <em>prove</em> compliance with evidence. The one trap is three services that sound identical (Transparency, Approval, Assured Workloads) but do very different jobs. 📜✅</p>
+
+    <!-- 5.1 -->
+    <h2>5.1 The Shared Responsibility Model</h2>
+    <p>Compliance starts with knowing where Google's job ends and yours begins. <strong>Google secures the infrastructure</strong> (hardware, the global network, the hypervisor, physical data centres). <strong>You secure what you put on it</strong>: identity, IAM configuration, your data, and your application code. The split <em>shifts</em> as you move up the stack &mdash; with serverless products Google takes on more, but <strong>your data and access decisions are always yours</strong>.</p>
+
+    <div class="rev-card tip">
+      <h3>🤝 "Shared Fate", Not Just Shared Responsibility</h3>
+      <p>Google's modern framing is <strong>shared fate</strong>: Google doesn't just draw a line and walk away &mdash; it provides secure-by-default blueprints, Assured Workloads, and risk-protection programs to help you hold up <em>your</em> side. But the accountability for configuration and data never transfers.</p>
+    </div>
+
+    <!-- 5.2 -->
+    <h2>5.2 The Three Look-Alikes: Transparency vs Approval vs Assured Workloads</h2>
+    <p>This is the only genuinely tricky bit of the domain. All three concern regulated estates and Google's access to your data &mdash; but they sit at different strengths.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Control</th>
+            <th>What It Does</th>
+            <th>Strength</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Access Transparency</strong></td>
+            <td><em>Logs</em> when Google staff access your content (e.g. during a support case).</td>
+            <td>Visibility only &mdash; you <em>SEE</em> it, after the fact.</td>
+          </tr>
+          <tr>
+            <td><strong>Access Approval</strong></td>
+            <td>Google must <em>request</em>, and you must explicitly <em>approve</em>, before that access happens.</td>
+            <td>A <em>GATE</em> &mdash; you approve it first.</td>
+          </tr>
+          <tr>
+            <td><strong>Assured Workloads</strong></td>
+            <td>A compliance-boundary folder enforcing data residency, personnel controls, and an approved-service set.</td>
+            <td>A <em>BOUNDARY</em> &mdash; broad enforcement for FedRAMP, CJIS, EU sovereignty, etc.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 SEE / GATE / BOUND</h3>
+      <p>Transparency lets you <strong>SEE</strong> (a passive log). Approval is the <strong>GATE</strong> (you say yes first). Assured Workloads draws the <strong>BOUND</strong>ary (residency + personnel + services). Match the verb in the stem to the right control.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>"We need a log of Google access" = Access Transparency. "We must approve it first" = Access Approval.</strong> Don't confuse the passive log with the active gate. And if the stem adds "support staff must be in-country" or "only approved services / specific region," that personnel-and-residency bundle is <strong>Assured Workloads</strong> &mdash; the others can't enforce personnel location.
+    </div>
+
+    <!-- 5.3 -->
+    <h2>5.3 Enforcing Data Residency</h2>
+    <p>Two tools enforce where data and resources live, and you should know when each fits:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>What It Enforces</th>
+            <th>Use When...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Resource-location org policy</strong> (<code>gcp.resourceLocations</code>)</td>
+            <td>Blocks resource creation outside approved regions; inherits to all current &amp; future projects.</td>
+            <td>You just need a residency guardrail without a full compliance program.</td>
+          </tr>
+          <tr>
+            <td><strong>Assured Workloads</strong></td>
+            <td>Residency <em>plus</em> personnel controls, approved services, and regime alignment.</td>
+            <td>A named regime (FedRAMP, CJIS, EU sovereignty) demands the full bundle.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Residency is preventive, not detective.</strong> If the requirement is "must never be created outside region X, across all current and future projects, with no per-project setup," the answer is the <strong>resource-location org policy at the org node</strong> &mdash; not tagging-and-auditing (detective, after the fact) and not a firewall policy (governs traffic, not where resources are provisioned).
+    </div>
+
+    <!-- 5.4 -->
+    <h2>5.4 Demonstrating Compliance With Evidence</h2>
+    <p>Mapping a requirement (SOC 2, PCI DSS, ISO 27001, data sovereignty) onto Google Cloud means translating it into concrete controls <em>and</em> being able to <strong>prove</strong> them:</p>
+    <ul class="bullet-chk">
+      <li><strong>Security Command Center compliance dashboard</strong> &mdash; maps Security Health Analytics findings to benchmarks like CIS, PCI DSS, and NIST out of the box. Continuous checks, exportable evidence, minimal build.</li>
+      <li><strong>Cloud Audit Logs</strong> &mdash; the who-did-what record auditors ask for.</li>
+      <li><strong>CMEK</strong> &mdash; demonstrable key control for data-at-rest requirements.</li>
+      <li><strong>Scoping</strong> &mdash; decide which projects are <em>in scope</em> for each framework and isolate them with the resource hierarchy and VPC Service Controls, so the audit surface stays small.</li>
+    </ul>
+
+    <div class="mnemonic">
+      <h3>💡 Don't Re-Build the Benchmark</h3>
+      <p>If the stem says "continuously checked against an industry benchmark, with the least custom build," the answer is the <strong>SCC compliance dashboard</strong> &mdash; never "export logs to BigQuery and write SQL to re-implement PCI." Re-implementing the benchmark by hand is exactly the wrong answer.</p>
+    </div>
+
+    <div class="joke-box">
+      "The auditor asked for evidence of continuous compliance. I showed them the SCC dashboard. They asked for a second espresso instead &mdash; we were done early." ☕📊
+    </div>
+
+    <!-- Warm-Up Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Retrieve before you review. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> A regulated workload must run only in EU regions with controls to support a named compliance regime. Which service?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Assured Workloads.</strong> It enforces data residency, personnel, and control constraints for compliance regimes.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> You must explicitly approve any Google support access to your data before it happens. Which feature?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Access Approval</strong> (paired with Access Transparency). It requires explicit customer approval and logs Google access.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> You only need a log showing when Google staff accessed your content during support, with no approval workflow. Which feature?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>Access Transparency.</strong> It records Google administrative access to your content as logs, without gating it.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> Prevent developers from creating any resource outside approved regions, without buying a full compliance program. Which control?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>The resource-location organization policy</strong> (<code>constraints/gcp.resourceLocations</code>). It restricts where resources can be created and inherits across the hierarchy.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Exam -->
+    <div class="practice-exam">
+      <h2>📝 Section 5 Practice Exam Questions</h2>
+      <p>Left-click to select, right-click to strike out a distractor, then Submit for the full diagnostic.</p>
+
+      <!-- Q1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A government customer's regulation requires that any Google support engineer who touches their data must be located in-country, that data stays in approved regions, and that only an approved service set is used. Which offering meets all three at once?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Access Approval combined with the resource-location organization policy.</li>
+          <li data-option="B">B) Assured Workloads configured for the relevant compliance regime.</li>
+          <li data-option="C">C) A VPC Service Controls perimeter plus CMEK on all data services.</li>
+          <li data-option="D">D) Access Transparency logs reviewed alongside Security Command Center findings.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why B is correct:</strong> Assured Workloads is the single offering that bundles personnel controls (support-staff location), data residency, and a restricted approved-service set for a chosen compliance regime.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> This pair covers approval and residency but not the support-personnel location requirement.<br>
+          <strong>C:</strong> VPC-SC and CMEK protect data exfiltration and keys but say nothing about where support staff are located or residency enforcement.<br>
+          <strong>D:</strong> These provide visibility into access and posture, not enforcement of residency, personnel, or service constraints.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> An auditor for a PCI assessment asks you to demonstrate that your in-scope projects are continuously checked against an industry benchmark and to produce evidence of the findings. Which approach gives this with the least custom build?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Export all audit logs to BigQuery and write SQL that re-implements the benchmark checks.</li>
+          <li data-option="B">B) Schedule a third-party scanner against each project and collate its reports manually.</li>
+          <li data-option="C">C) Use the Security Command Center compliance dashboard mapped to the relevant benchmark.</li>
+          <li data-option="D">D) Enable Access Transparency and present the Google-access logs as compliance evidence.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> Security Command Center maps Security Health Analytics findings to industry benchmarks such as PCI DSS and CIS out of the box, providing continuous checks and exportable evidence with minimal build.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Re-implementing benchmark logic in SQL is exactly the heavy custom build the question asks you to avoid.<br>
+          <strong>B:</strong> Manual collation of third-party reports is neither continuous nor low-effort.<br>
+          <strong>D:</strong> Access Transparency logs Google access; it's unrelated to benchmarking your configuration against PCI.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A data-sovereignty rule says certain workloads must never have resources created outside two approved European regions, and the restriction must hold across all current and future projects without depending on per-project setup. What enforces this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Setting the resource-location organization policy at the org node listing the two approved regions.</li>
+          <li data-option="B">B) A hierarchical firewall policy permitting only traffic to and from the two regions.</li>
+          <li data-option="C">C) Tagging resources by region and auditing the tags with a scheduled report.</li>
+          <li data-option="D">D) A VPC Service Controls perimeter restricted to subnets in the two approved regions.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why A is correct:</strong> The <code>gcp.resourceLocations</code> org policy set at the org node inherits to all current and future projects and blocks resource creation outside the listed regions &mdash; preventive, not detective.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>B:</strong> Firewall policies govern network traffic, not where resources may be created.<br>
+          <strong>C:</strong> Tagging and reporting only detects violations after the fact and relies on per-resource discipline.<br>
+          <strong>D:</strong> VPC-SC limits API data movement across a perimeter; it doesn't constrain the regions in which resources are provisioned.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Round out the compliance domain:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/architecture/framework/security/shared-responsibility-shared-fate" class="doc-link" target="_blank">
+          <strong>Shared Responsibility &amp; Shared Fate</strong>
+          <span>Where Google's responsibility ends and yours begins.</span>
+        </a>
+        <a href="https://cloud.google.com/assured-workloads/docs/overview" class="doc-link" target="_blank">
+          <strong>Assured Workloads</strong>
+          <span>Residency, personnel, and approved-service boundaries.</span>
+        </a>
+        <a href="https://cloud.google.com/cloud-provider-access-management/access-transparency/docs/overview" class="doc-link" target="_blank">
+          <strong>Access Transparency &amp; Approval</strong>
+          <span>Log and gate Google's access to your content.</span>
+        </a>
+        <a href="https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations" class="doc-link" target="_blank">
+          <strong>Resource Location Constraint</strong>
+          <span>Block resource creation outside approved regions.</span>
+        </a>
+        <a href="https://cloud.google.com/security-command-center/docs/concepts-compliance" class="doc-link" target="_blank">
+          <strong>SCC Compliance Reporting</strong>
+          <span>Map posture to CIS, PCI DSS, NIST, and more.</span>
+        </a>
+        <a href="https://cloud.google.com/security/compliance/offerings" class="doc-link" target="_blank">
+          <strong>Compliance Offerings</strong>
+          <span>Google Cloud's certifications and frameworks.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-nav">
+      <a href="guide_s4.html" class="nav-link">&larr; Section 4: Managing Operations</a>
+      <a href="practice_questions.html" class="nav-link">Next: Full Practice Exam &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      element.style.display = (element.style.display === "block") ? "none" : "block";
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) { item.classList.remove('selected'); });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) { panel.dataset.originalHtml = panel.innerHTML; }
+      options.forEach(function(option) { option.classList.remove('correct-answer', 'wrong-answer'); });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) { option.classList.add('correct-answer'); }
+      });
+      if (selected.dataset.option !== correctOption) { selected.classList.add('wrong-answer'); }
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/security_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/security_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

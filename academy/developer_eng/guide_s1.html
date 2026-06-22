@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Developer &mdash; Designing Scalable, Secure, Reliable Apps</title>
+  <style>
+    :root {
+      --bg: #eef2ff; --ink: #1e293b; --accent: #4f46e5; --accent-dark: #3730a3;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23c7d2fe' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #a5b4fc 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Developer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 1</span><span class="weight">~32%</span>
+      <h1>Designing Scalable, Secure, Reliable Apps</h1>
+      <p class="sec-intro">The heavyweight third of the exam: choose the right platform, design secure applications, and pick the correct data store and schema.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Platform selection</h3>
+      <p>Match the runtime to the workload:</p><ul><li><strong>Cloud Run</strong> — stateless containers, scale-to-zero, per-instance concurrency, fastest path.</li><li><strong>GKE</strong> — complex or stateful microservices, sidecars, service mesh, fine control.</li><li><strong>Compute Engine</strong> — lift-and-shift, licensing, GPUs.</li></ul><p>Add caching with <strong>Memorystore</strong>, decouple with <strong>Pub/Sub</strong>, and route events with <strong>Eventarc</strong>. Orchestrate multi-step flows with <strong>Workflows</strong>, schedule with <strong>Cloud Scheduler</strong>, and queue per-task work with <strong>Cloud Tasks</strong>.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> When the scenario stresses minimal operational overhead or fastest delivery, the answer is almost always the most managed option — usually Cloud Run.</div>
+    </section>
+    <section class="lesson">
+      <h3>The authentication ladder</h3>
+      <p>Authenticate to Google APIs the recommended way, in order of preference:</p><ul><li><strong>Application Default Credentials (ADC)</strong> with an attached service account — no keys to manage.</li><li><strong>Workload Identity Federation</strong> for external/CI workloads — keyless.</li><li>Long-lived <strong>service-account keys</strong> only as a last resort (rotate, store in Secret Manager).</li></ul><p>Store secrets in <strong>Secret Manager</strong>, protect images with <strong>Binary Authorization</strong>, and run every service with least privilege.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Distributing service-account keys to clients or embedding API keys for IAM-protected services is a guaranteed wrong answer.</div>
+    </section>
+    <section class="lesson">
+      <h3>Storing &amp; accessing data</h3>
+      <p>Pick the data store by consistency and shape &mdash; the exam tests the boundaries:</p>
+      <ul>
+        <li><strong>Spanner</strong> &mdash; global, horizontally scalable, strong consistency (relational at planet scale).</li>
+        <li><strong>AlloyDB</strong> &mdash; Postgres-compatible, high-performance transactional + analytical (HTAP).</li>
+        <li><strong>Cloud SQL</strong> &mdash; regional managed MySQL/PostgreSQL/SQL Server for classic apps.</li>
+        <li><strong>Bigtable</strong> &mdash; massive-throughput, low-latency wide-column (time series, IoT).</li>
+        <li><strong>Firestore</strong> &mdash; serverless document store with mobile/web sync and offline support.</li>
+      </ul>
+      <p>Grant time-limited object access with <strong>signed URLs</strong> rather than making a bucket public.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Let a client upload/download one object for a limited time with no IAM change = a <strong>signed URL</strong>. Making the bucket public is the wrong answer.</div>
+    </section>
+    <section class="lesson">
+      <h3>Async &amp; messaging patterns</h3>
+      <p>Decouple components with the right primitive &mdash; they are <em>not</em> interchangeable:</p>
+      <ul>
+        <li><strong>Pub/Sub</strong> &mdash; fan-out, many-subscriber, high-throughput event streaming.</li>
+        <li><strong>Cloud Tasks</strong> &mdash; per-task queues with rate limiting and retries; dispatch work to a specific worker/endpoint.</li>
+        <li><strong>Workflows</strong> &mdash; orchestrate a defined sequence of service calls with branching and error handling.</li>
+        <li><strong>Eventarc</strong> &mdash; route events from Google sources (e.g. a GCS finalize) to a service via CloudEvents.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Throttle and retry individual outbound jobs to one endpoint" = Cloud Tasks. "Broadcast an event to many independent subscribers" = Pub/Sub. Don't swap them.</div>
+      <div class="callout mnemonic"><span class="hook">PTWE</span> <strong>P</strong>ub/Sub broadcasts, <strong>T</strong>asks throttle, <strong>W</strong>orkflows orchestrate, <strong>E</strong>ventarc routes.</div>
+    </section>
+    <section class="lesson">
+      <h3>Statelessness &amp; resilience</h3>
+      <p>Design services <strong>stateless</strong> (push session/state to Memorystore, Firestore, or a token) so any instance can serve any request and autoscaling works. Make write operations <strong>idempotent</strong> so safe retries don't double-charge or duplicate. Degrade gracefully (cache, fallbacks, circuit breakers) when a dependency is slow or down, and cap blast radius with timeouts.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Storing session state in local instance memory breaks autoscaling and rolling deploys &mdash; externalise it (e.g. Memorystore).</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A stateless API container must scale to zero and need no node management. Which platform?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Run.</strong></p>
+          <p class="quiz-why">Managed, scale-to-zero, request autoscaling.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Your Cloud Run service must call Cloud Storage with the least credential burden. What do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An attached service account via Application Default Credentials.</strong></p>
+          <p class="quiz-why">No keys to manage or rotate; library picks up ADC automatically.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You need globally consistent, horizontally scalable relational data across continents. Which database?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Spanner.</strong></p>
+          <p class="quiz-why">It's the only relational store offering global strong consistency with horizontal scale.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> One event must fan out to several independent subscribers at high volume. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Pub/Sub.</strong></p>
+          <p class="quiz-why">Built for high-throughput, many-subscriber fan-out; Cloud Tasks targets a single worker.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team must ship a stateless REST API fast, scale it to zero between bursts, and avoid managing nodes or clusters. Which platform best fits?</p>
+        <ul>
+          <li>A) GKE Standard with a Horizontal Pod Autoscaler and cluster autoscaler.</li>
+          <li>B) Cloud Run, deploying the container with request-based autoscaling.</li>
+          <li>C) A managed instance group of Compute Engine VMs behind a load balancer.</li>
+          <li>D) App Engine flexible environment with custom runtimes.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Run runs stateless containers, scales to zero, and needs no node management &mdash; the fastest, most managed fit.</p>
+          <p class="quiz-why"><strong>A:</strong> GKE Standard means managing nodes and won't scale to zero cheaply. <strong>C:</strong> MIGs need VM and image management. <strong>D:</strong> App Engine flex keeps at least one instance running and is heavier than Cloud Run.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A CI job on GitHub Actions must call Google Cloud APIs. Security policy forbids long-lived service-account keys. What is the recommended authentication method?</p>
+        <ul>
+          <li>A) Create a service-account JSON key and store it as a CI secret.</li>
+          <li>B) Use Workload Identity Federation so the external CI exchanges its token for short-lived credentials.</li>
+          <li>C) Embed an API key in the pipeline configuration.</li>
+          <li>D) Use a user's personal OAuth refresh token stored in CI.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Workload Identity Federation lets the external workload exchange its own identity token for short-lived Google credentials &mdash; keyless, exactly what the policy requires.</p>
+          <p class="quiz-why"><strong>A:</strong> A JSON key is the long-lived credential the policy bans. <strong>C:</strong> API keys don't authenticate IAM-protected APIs and leak easily. <strong>D:</strong> Personal tokens tie automation to an individual and are discouraged.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A payment endpoint occasionally retries on transient failures and you must ensure a retry never charges a customer twice. What design property must the endpoint have?</p>
+        <ul>
+          <li>A) It must store each session in the serving instance's local memory.</li>
+          <li>B) It must be idempotent, e.g. de-duplicating on a client-supplied idempotency key.</li>
+          <li>C) It must disable all retries on the client side.</li>
+          <li>D) It must run only on a single non-autoscaling instance.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Idempotency (e.g. keyed de-duplication) makes a repeated request safe, so retries can't double-charge.</p>
+          <p class="quiz-why"><strong>A:</strong> Local session state breaks autoscaling and doesn't address double charges. <strong>C:</strong> Disabling retries sacrifices reliability and still doesn't make the operation safe. <strong>D:</strong> A single instance hurts availability and doesn't guarantee exactly-once.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <span></span>
+      <a href="guide_s2.html" class="nav-link">Building &amp; Testing Applications &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/developer_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/developer_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

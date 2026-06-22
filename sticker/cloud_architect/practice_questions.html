@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Architect - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #dc2626;
+            --dark-accent-hover: #b91c1c;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #991b1b;
+            --classic-accent-hover: #7f1d1d;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Architect</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Cloud Architect",
+    "scenario": "Cymbal Retail runs a global e-commerce catalog. Shoppers in North America, Europe, and Asia must see identical inventory counts, and overselling is unacceptable: writes that decrement stock have to be strongly consistent globally with an RPO of zero. The application logic is relational and the team wants a managed service. Which database should the architect choose?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`Cloud SQL` for PostgreSQL with a primary in `us-central1` and cross-region read replicas promoted on failover.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`Cloud Spanner` in a multi-region configuration.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "`AlloyDB` for PostgreSQL with a cross-region secondary cluster serving the other continents.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`Bigtable` with an instance in each region and multi-cluster routing for availability.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Cloud SQL cross-region replicas are asynchronous, so the replica lags the primary; a regional failure loses in-flight writes (RPO > 0) and reads off a lagging replica can oversell — it cannot guarantee global strong consistency.",
+      "B": "Spanner multi-region replicates synchronously across regions and provides external consistency, so every region reads the latest committed stock level with RPO 0 — exactly what stops overselling.",
+      "C": "AlloyDB cross-region replication is asynchronous and the secondary is read-only, so writes still funnel to one region and the secondary lags — no globally consistent decrement with zero RPO.",
+      "D": "Bigtable is wide-column NoSQL with no multi-row ACID transactions, and multi-cluster routing replicates eventually — it cannot enforce a strongly consistent inventory decrement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/spanner/docs/instance-configurations",
+        "text": "cloud.google.com/spanner/docs/instance-configurations"
+      },
+      {
+        "url": "https://cloud.google.com/spanner/docs/true-time-external-consistency",
+        "text": "cloud.google.com/spanner/docs/true-time-external-consistency"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Cloud Architect",
+    "scenario": "A two-person startup is launching a stateless REST API packaged as a container. Traffic is spiky and frequently zero overnight; each request finishes in under a second. The team wants the lowest operational overhead, must scale to handle sudden bursts, and wants to pay nothing while idle. Which compute platform fits best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A regional managed instance group of Compute Engine VMs with autoscaling and a minimum size of two.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`GKE` Autopilot with the Horizontal Pod Autoscaler driven by request rate.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Cloud Run` (services) with concurrency tuning and scale-to-zero enabled.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "`Cloud Run` functions (2nd gen) triggered through an HTTP load balancer.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A MIG keeps the minimum VMs running and billing overnight, and the team still owns OS patching, images, and autoscaler tuning — the opposite of low overhead and pay-nothing-when-idle.",
+      "B": "Autopilot bills for running pods and the HPA does not scale a Deployment to zero by default, so there is steady idle cost plus cluster and workload management overhead — more than a stateless API needs.",
+      "C": "Cloud Run runs the container as-is, scales to zero (no idle cost), scales up instantly for bursts via concurrency, and is fully managed — the minimal-ops, pay-per-use fit for a spiky stateless API.",
+      "D": "Cloud Run functions target event-glue/single-purpose code, not deploying an existing container image; you would repackage the API as functions for no benefit over Cloud Run services."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/about-instance-autoscaling",
+        "text": "cloud.google.com/run/docs/about-instance-autoscaling"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/configuring/concurrency",
+        "text": "cloud.google.com/run/docs/configuring/concurrency"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Cloud Architect",
+    "scenario": "EHR Healthcare stores patient records in a BigQuery dataset and streams events through a Pub/Sub topic. A new policy states that even users who already hold valid IAM read access must not be able to copy this data to projects or networks outside an approved boundary. The control must apply to the managed APIs, not just to VMs. What should the architect implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A hierarchical firewall policy at the organization node denying egress to non-approved CIDR ranges.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A `VPC Service Controls` perimeter around the projects that hold the dataset and topic.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "IAM deny policies on the BigQuery dataset and the Pub/Sub topic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "CMEK on both services so data is unreadable outside the boundary.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Firewall policies act on VM IP/port traffic; BigQuery and Pub/Sub are reached through Google managed APIs that firewall rules do not govern, so data can still be copied out.",
+      "B": "VPC Service Controls draw a service perimeter that blocks copying data from in-scope managed services to anything outside it, even for an identity with valid IAM — the only control that stops authorised-user exfiltration.",
+      "C": "A deny policy removes a principal's permission to call the API at all; it cannot let authorised users keep read access yet stop them moving data to an outside destination.",
+      "D": "CMEK controls key custody and rotation, but an authorised user reads decrypted data and can still copy it across the boundary — encryption is not an exfiltration boundary."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "cloud.google.com/vpc-service-controls/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/supported-products",
+        "text": "cloud.google.com/vpc-service-controls/docs/supported-prod..."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Cloud Architect",
+    "scenario": "An enterprise is connecting its on-premises data center to Google Cloud. They require a 99.99% availability SLA on the connection, encryption in transit is mandatory, and they can tolerate internet-path latency. They have no presence in a Google colocation facility and need to be in production within days. What should the architect recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single `Dedicated Interconnect` connection in the nearest colocation facility.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`HA VPN` with two tunnels to two interfaces of a Cloud VPN gateway, with Cloud Router BGP.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "`Partner Interconnect` with one 1 Gbps VLAN attachment through a service provider.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`HA VPN` over `Dedicated Interconnect` for encrypted private connectivity.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Dedicated Interconnect needs a colocation cross-connect they do not have, takes weeks to provision, and is not encrypted in transit by default — it fails the timeline and the encryption mandate.",
+      "B": "HA VPN with two tunnels carries a 99.99% SLA, is IPsec-encrypted over the internet (acceptable latency), needs no colo, and is live in days — it meets every stated constraint.",
+      "C": "A single non-redundant Partner Interconnect attachment does not reach the 99.99% SLA, still depends on a provider lead time, and Interconnect is not encrypted by default.",
+      "D": "Layering HA VPN over Dedicated Interconnect would give encryption but still requires the colo cross-connect and weeks of provisioning they cannot afford."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies",
+        "text": "cloud.google.com/network-connectivity/docs/vpn/concepts/t..."
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/overview",
+        "text": "cloud.google.com/network-connectivity/docs/interconnect/c..."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Cloud Architect",
+    "scenario": "A compliance team mandates that encryption keys for a regulated workload are generated and stored exclusively in the company's own on-premises HSM and must never persist inside Google Cloud, while BigQuery and Cloud Storage still encrypt data with those keys. What should the architect use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Generate the keys on-prem, then import the key material into `Cloud KMS` and reference it as a CMEK key.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create `Cloud HSM` keys in Google Cloud and restrict their use with IAM and a 90-day rotation policy.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Cloud External Key Manager` (Cloud EKM) backed by the on-prem HSM via a supported partner.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Google-managed encryption with `Access Transparency` and `Access Approval` enabled.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Importing key material copies the key into Cloud KMS where it persists — directly violating the \"never persist inside Google Cloud\" rule, even though it otherwise produces a CMEK key.",
+      "B": "Cloud HSM keys live in Google's FIPS 140-2 Level 3 HSMs inside Google Cloud, not the customer's on-prem HSM, so key custody never leaves Google — failing the mandate.",
+      "C": "Cloud EKM lets Google services perform crypto with a key that remains in the external/on-prem key manager; the key material is never sent to or stored in Google Cloud.",
+      "D": "Google-managed keys live entirely in Google Cloud and give the customer no external custody; Access Transparency/Approval only log and gate Google personnel access — they do not move key custody on-prem."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kms/docs/ekm",
+        "text": "cloud.google.com/kms/docs/ekm"
+      },
+      {
+        "url": "https://cloud.google.com/docs/security/key-management-deep-dive",
+        "text": "cloud.google.com/docs/security/key-management-deep-dive"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Cloud Architect",
+    "scenario": "A genomics team runs a nightly batch pipeline that processes large datasets for about four hours. Every worker is fully fault-tolerant: any task can be preempted and restarted without affecting the result. The architect must minimise compute cost for this nightly-only workload. Which configuration is best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "On-demand standard Compute Engine VMs in a MIG, covered by a 1-year committed-use discount.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`Spot VMs` in a managed instance group sized for the batch window.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "On-demand standard VMs left running 24/7 so sustained-use discounts accrue automatically.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`Cloud Run` jobs with the task count fixed at one to avoid parallel-execution charges.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A committed-use discount commits to ~24/7 resource consumption for one year, but the workload runs only four hours a night — you pay for idle commitment, costing far more than Spot for the same work.",
+      "B": "Spot VMs are up to ~60–91% cheaper than on-demand and are designed for fault-tolerant, restartable batch; preemption is acceptable here, so this is the cost-optimal fit for a nightly window.",
+      "C": "Running VMs 24/7 to earn sustained-use discounts pays for 20 idle hours a day; the discount never offsets running compute you do not need.",
+      "D": "Forcing one task removes the parallelism that makes a batch pipeline finish quickly, and on-demand Cloud Run jobs are pricier per vCPU-hour than Spot for long fault-tolerant compute."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/spot",
+        "text": "cloud.google.com/compute/docs/instances/spot"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/create-use-spot",
+        "text": "cloud.google.com/compute/docs/instances/create-use-spot"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Cloud Architect",
+    "scenario": "KnightMotives Automotive wants org-wide guardrails enforced regardless of project-level IAM: no one may create service account keys, and resources may only be created in EU regions for data-residency. The controls must be preventive, not detective. What should the architect configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Custom IAM roles at each project that omit `iam.serviceAccountKeys.create` and compute-create permissions outside the EU.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Organization policy constraints `iam.disableServiceAccountKeyCreation` and `gcp.resourceLocations` at the org node.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Function triggered by Cloud Asset Inventory feeds that deletes any non-EU resource or new key.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A `VPC Service Controls` perimeter spanning all projects to confine resources to EU regions.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Custom roles only shape what a principal can do where granted; an Owner on a project, or any project granting the permission, can still create keys or non-EU resources — roles are not inherited guardrails.",
+      "B": "These org policy constraints are inherited down the hierarchy and enforced before creation regardless of project IAM, blocking key creation and confining resource location to EU regions preventively.",
+      "C": "A delete-after-the-fact function is detective and racy — the non-compliant resource exists (and may leak data) before the function reacts; it does not prevent creation as required.",
+      "D": "VPC Service Controls limit data movement across a perimeter; they do not govern service-account key creation or restrict the regions where resources may be created."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/overview",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+      },
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Cloud Architect",
+    "scenario": "A web application's primary region could fail. The business sets a recovery time objective of about 10 minutes and accepts a few minutes of data loss, but wants standby costs kept moderate rather than running full active-active. Which DR pattern fits best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Backup and restore: hourly snapshots of disks and database, rebuilt into a second region on failure.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Warm standby: a scaled-down replica running in a second region with continuous replication, promoted on failover.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Hot active-active across two regions behind a global external load balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Cold standby: infrastructure recreated from Terraform in a second region after an outage.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Restoring from hourly snapshots still means provisioning and warming infrastructure during the incident — well beyond a 10-minute RTO, and up to an hour of data loss.",
+      "B": "A warm standby keeps a smaller replica running with ongoing replication, so promotion and scale-up complete within minutes at moderate cost — matching the ~10-minute RTO and small RPO.",
+      "C": "Active-active meets the RTO easily but runs full capacity in two regions continuously — the most expensive pattern, conflicting with the moderate-cost constraint.",
+      "D": "Cold standby must build the environment from IaC only after the outage starts, which typically exceeds a 10-minute RTO."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/dr-scenarios-planning-guide",
+        "text": "cloud.google.com/architecture/dr-scenarios-planning-guide"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/disaster-recovery",
+        "text": "cloud.google.com/architecture/disaster-recovery"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Cloud Architect",
+    "scenario": "An enterprise exposes dozens of internal and partner APIs that run on a mix of GKE, Cloud Run, and on-prem backends. It needs per-consumer quota enforcement, API-key and OAuth credential lifecycle, a self-service developer portal, and cross-backend usage analytics. Which product should the architect select?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Global External Application Load Balancer with `Cloud Armor` rate limiting and per-client throttling.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`API Gateway` fronting each backend with API keys and Cloud Monitoring dashboards.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Apigee` API management.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A self-managed NGINX gateway on a managed instance group with a custom keys database.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Cloud Armor throttles by IP/rule at the edge but provides no API product packaging, no developer portal, and no per-consumer credential lifecycle or analytics — it is a WAF/rate limiter, not API management.",
+      "B": "API Gateway is a lightweight managed gateway aimed at serverless backends; it lacks Apigee's developer portal, monetization, rich per-product analytics, and first-class hybrid/on-prem backend management.",
+      "C": "Apigee is full-lifecycle API management — quotas, API-key/OAuth credential lifecycle, a self-service developer portal, and analytics across hybrid and multi-backend APIs.",
+      "D": "A hand-built NGINX gateway means building and operating quotas, portal, key store, and analytics yourself — heavy ongoing ops with none of the managed-platform features required."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/apigee/docs",
+        "text": "cloud.google.com/apigee/docs"
+      },
+      {
+        "url": "https://cloud.google.com/api-gateway/docs/about-api-gateway",
+        "text": "cloud.google.com/api-gateway/docs/about-api-gateway"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Cloud Architect",
+    "scenario": "A team running microservices on GKE wants to release a new version to 5% of users first, watch error rate and latency, then progressively shift all traffic — with an automated, instant rollback path if metrics breach the SLO. They already use a managed continuous-delivery service. Which approach should the architect recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A `Cloud Deploy` canary deployment with progressive traffic and automated rollback on verification failure.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A blue/green cutover via `Cloud Deploy` that flips 100% of traffic once the green release is verified.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The Kubernetes `Recreate` strategy so old pods are replaced cleanly by the new version.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Two Deployments where an operator edits the Service selector to shift traffic and reverts it on errors.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A Cloud Deploy canary routes a small percentage first, runs automated verification against metrics between phases, progresses on success, and rolls back automatically on a breach — exactly the 5%-then-increase, auto-rollback requirement.",
+      "B": "Blue/green offers rollback but flips all traffic at once after verification; it skips the gradual 5%-then-increase exposure the scenario explicitly requires.",
+      "C": "Recreate terminates old pods before starting new ones, causing downtime and exposing every user to the new version simultaneously — no gradual validation.",
+      "D": "Hand-editing selectors is manual, error-prone, has no metric-driven progression or automated rollback, and is not a recommended release strategy."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/deploy/docs/deployment-strategies/canary",
+        "text": "cloud.google.com/deploy/docs/deployment-strategies/canary"
+      },
+      {
+        "url": "https://cloud.google.com/deploy/docs/deployment-strategies",
+        "text": "cloud.google.com/deploy/docs/deployment-strategies"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Cloud Architect",
+    "scenario": "An IoT platform must serve billions of time-series readings, ingest a sustained ~500,000 writes per second, and return single-digit-millisecond lookups by `device_id` and time range. The most common query is the latest readings for one device. Which storage choice and key design should the architect use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`BigQuery` with tables partitioned by ingestion time and clustered on `device_id`.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`Bigtable` with a row key of `timestamp#device_id` so time-range scans are simple prefix scans.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Cloud SQL` for PostgreSQL with the readings table partitioned by day and indexed on `device_id`.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`Bigtable` with a row key of `device_id#reversed_timestamp`.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "BigQuery is an analytical warehouse optimised for scans and aggregations, not low-latency single-row key lookups or sustained very high write QPS.",
+      "B": "A timestamp-leading key sends all current writes to one contiguous key range, creating a write hotspot on a single tablet, and scattering any one device's data across the table.",
+      "C": "Cloud SQL is a single-primary OLTP engine that cannot sustain ~500k writes/sec at billions of rows with consistent millisecond lookups, regardless of partitioning.",
+      "D": "Bigtable handles this write throughput and millisecond key lookups; prefixing the key with `device_id` co-locates a device's data, and a reversed/last-recent timestamp keeps the newest reading first while spreading writes across many devices to avoid hotspots."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigtable/docs/schema-design-time-series",
+        "text": "cloud.google.com/bigtable/docs/schema-design-time-series"
+      },
+      {
+        "url": "https://cloud.google.com/bigtable/docs/schema-design",
+        "text": "cloud.google.com/bigtable/docs/schema-design"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Cloud Architect",
+    "scenario": "A company is migrating about 300 mixed on-premises VMs and databases to Google Cloud. Leadership wants automated discovery, dependency mapping, fit assessment, and a TCO estimate to plan migration waves before committing to any move. Which approach should the architect start with?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`Storage Transfer Service` to copy each VM disk image to Cloud Storage for inventory and sizing.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`Migrate to Virtual Machines` to replicate every VM, validating dependencies as servers come online.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Migration Center` for discovery, dependency mapping, fit assessment, and TCO, then movers per workload.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Export each workload to OVF and import it, recording dependencies in a spreadsheet during cutover.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Storage Transfer Service moves objects/files, not running VMs, and does nothing for dependency mapping, fit assessment, or TCO.",
+      "B": "Migrate to Virtual Machines is an execution mover used after planning; discovering dependencies by booting replicas is risky, slow, and provides no upfront TCO or wave plan.",
+      "C": "Migration Center is the assessment-and-planning tool — it discovers assets, maps dependencies, assesses fit, and estimates TCO so waves can be planned before any workload moves.",
+      "D": "Manual OVF export/import does not scale to 300 workloads and produces no automated dependency or wave planning."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/migration-center/docs/migration-center-overview",
+        "text": "cloud.google.com/migration-center/docs/migration-center-o..."
+      },
+      {
+        "url": "https://cloud.google.com/migration-center/docs/discovery-overview",
+        "text": "cloud.google.com/migration-center/docs/discovery-overview"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Cloud Architect",
+    "scenario": "Developers need to connect to Linux Compute Engine VMs in a private subnet for administration. Security requires no public IPs on the VMs, no open SSH port to the internet, and that access is tied to corporate identity and centrally audited. What should the architect implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "OS Login with SSH keys uploaded per user and a firewall rule allowing port 22 from `0.0.0.0/0`.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A bastion host with an external IP, locked down by a firewall rule allowing only the office CIDR.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`Cloud VPN` from the corporate network so developers reach private VMs over the tunnel and SSH directly.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`Identity-Aware Proxy` TCP forwarding for SSH, with IAP granted to the developers' group and Private Google Access on the subnet.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Opening port 22 to `0.0.0.0/0` directly violates the no-internet-SSH requirement; OS Login improves key handling but does not remove the public exposure.",
+      "B": "A bastion with an external IP exposes a public SSH endpoint; CIDR allow-listing narrows but does not eliminate internet exposure, and identity is SSH-key based rather than IAM-tied.",
+      "C": "VPN provides reachability but not identity-bound access control or per-session audit to the VMs; SSH still needs its own key management and the design adds tunnel infrastructure for an admin-access problem IAP solves directly.",
+      "D": "IAP TCP forwarding brokers SSH without any public IP or open port, authorises by IAM on corporate identities, and logs access centrally — meeting every constraint."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iap/docs/using-tcp-forwarding",
+        "text": "cloud.google.com/iap/docs/using-tcp-forwarding"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/connect/ssh-using-iap",
+        "text": "cloud.google.com/compute/docs/connect/ssh-using-iap"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Cloud Architect",
+    "scenario": "Three business units share one organization. Each needs isolated cost visibility, its own budget alerts, and the ability to apply different network and security policies independently, while central IT keeps org-wide governance. How should the architect structure the resource hierarchy?",
+    "options": [
+      {
+        "id": "A",
+        "text": "One folder per business unit under the org, with each unit's projects beneath, plus per-unit budgets and org policies.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A single shared project for all three units, using resource labels and a billing export to BigQuery for attribution.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A separate Google Cloud organization per business unit, federated to the same Cloud Identity tenant.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "One project per business unit under the org node, with IAM groups per unit for separation.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A folder per unit gives an inheritance boundary for org policies and IAM, scopes budgets and cost views per unit, and lets each unit hold many projects — while the org node keeps central governance.",
+      "B": "One shared project blurs IAM and policy boundaries between units and makes per-unit policy differences impossible; label-based attribution reports cost but does not isolate control.",
+      "C": "Separate organizations fragment central governance and duplicate org-level setup; it is far heavier than needed when one org with folders already isolates the units.",
+      "D": "A single project per unit cannot hold the multiple environments/projects each unit needs and gives no folder-level policy inheritance point as the estate grows."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy",
+        "text": "cloud.google.com/resource-manager/docs/cloud-platform-res..."
+      },
+      {
+        "url": "https://cloud.google.com/billing/docs/how-to/budgets",
+        "text": "cloud.google.com/billing/docs/how-to/budgets"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Cloud Architect",
+    "scenario": "A legacy Java monolith on Compute Engine must be modernised into microservices, but it cannot go offline and the business will not fund a big-bang rewrite. The team wants to migrate functionality incrementally and route only completed slices to new services while the monolith keeps serving the rest. Which approach should the architect recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Freeze the monolith, rebuild the whole system as microservices in parallel, then cut over in a single release.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Lift-and-shift the monolith to GKE unchanged, then split it into independent services inside the cluster later.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Front the monolith with a gateway and incrementally route routes to new microservices until it is retired (strangler fig).",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Refactor the monolith in place into modules but keep deploying them as one larger artifact each release.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A parallel rebuild-and-cut-over is the big-bang rewrite the business explicitly rejected, with high risk and likely downtime at cutover.",
+      "B": "Re-hosting to GKE changes the platform but not the architecture; the monolith is still monolithic, deferring the modernisation the business asked for.",
+      "C": "The strangler-fig pattern puts a façade/gateway in front, redirects individual capabilities to new services as they are built, and shrinks the monolith with no outage and no big-bang risk — matching every constraint.",
+      "D": "In-place modularisation still ships one artifact, so there are no independently deployable services and no incremental traffic routing — it is not the requested decomposition."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/migrating-a-monolith-vm-to-microservices-gke",
+        "text": "cloud.google.com/architecture/migrating-a-monolith-vm-to-..."
+      },
+      {
+        "url": "https://learn.microsoft.com/azure/architecture/patterns/strangler-fig",
+        "text": "learn.microsoft.com/azure/architecture/patterns/strangler..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Cloud Architect",
+    "scenario": "A web tier on Compute Engine maintains user session state in process. Behind a load balancer, autoscaling means instances are added and removed frequently, so users are losing their sessions when an instance goes away. The fix must keep sub-millisecond session lookups and require minimal application change. What should the architect recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Replicate session state between instances using a peer-to-peer gossip protocol baked into the app.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable load-balancer session affinity so each user is pinned to one backend instance.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Store session state in `Cloud SQL` and read it on each request.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Externalise session state to `Memorystore` for Redis and have all instances read/write sessions there.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A custom gossip layer is significant application work, the opposite of minimal change, and is fragile under rapid membership churn from autoscaling.",
+      "B": "Affinity pins a user to one backend, but when autoscaling removes that instance the session is still lost, and affinity unevenly loads backends — it papers over the root cause.",
+      "C": "Cloud SQL reads are milliseconds, not sub-millisecond, and hammering an OLTP database on every request for session lookups adds load and latency the requirement rules out.",
+      "D": "Memorystore for Redis provides a shared, sub-millisecond in-memory store; instances become stateless, so scaling events no longer drop sessions, with only a small change to read/write sessions externally."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/memorystore/docs/redis/redis-overview",
+        "text": "cloud.google.com/memorystore/docs/redis/redis-overview"
+      },
+      {
+        "url": "https://cloud.google.com/memorystore/docs/redis/using-memorystore-for-session-management",
+        "text": "cloud.google.com/memorystore/docs/redis/using-memorystore..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Cloud Architect",
+    "scenario": "An enterprise federates employee identities into Google Cloud and SaaS apps from its existing Okta IdP, and security requires that when an employee is offboarded in Okta their Google Cloud access is removed automatically. Which design should the architect recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "SSO via `Cloud Identity` federated with Okta as the SAML IdP, with user provisioning/deprovisioning synced from Okta.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Cloud Identity as the source of truth, with employees setting separate Google passwords managed in Google.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Workload Identity Federation so each employee's Okta token is exchanged for Google credentials at login.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A synced group of service accounts, one per employee, disabled by an offboarding script.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "SAML SSO federates authentication to Okta while provisioning/deprovisioning syncs the account lifecycle, so disabling the user in Okta removes Google Cloud access automatically — one identity, central control.",
+      "B": "Separate Google-managed passwords fragment identity away from Okta and break automatic offboarding, since the Google credential is not tied to the Okta lifecycle.",
+      "C": "Workload Identity Federation is for external/CI workloads calling Google APIs without keys, not for human SSO and user-account lifecycle management.",
+      "D": "Per-employee service accounts misuse a workload identity for humans, are unmanageable at scale, and rely on a fragile custom script rather than IdP-driven deprovisioning."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/identity/single-sign-on",
+        "text": "cloud.google.com/architecture/identity/single-sign-on"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/identity/federating-gcp-with-active-directory-introduction",
+        "text": "cloud.google.com/architecture/identity/federating-gcp-wit..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Cloud Architect",
+    "scenario": "A regulated financial workload must keep all data storage and processing within a single EU jurisdiction, restrict Google support personnel to in-region access, and provide evidence of these controls for an audit. The team wants this enforced rather than relying on configuration discipline. Which offering should the architect use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A standard project pinned to EU regions, with the `gcp.resourceLocations` org policy constraint.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`Assured Workloads` with the appropriate EU regulatory control package.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "`VPC Service Controls` around the project plus `Access Approval` for support access.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`Cloud EKM` with EU-hosted keys and an org policy restricting locations.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A location org policy confines where resources are created but does not restrict Google support-personnel access or package the compliance controls and evidence an audit expects.",
+      "B": "Assured Workloads enforces data residency, personnel-access controls (including in-region support), and compliance-package constraints as a managed control plane with audit evidence — exactly the regulated-regime requirement.",
+      "C": "VPC-SC plus Access Approval address exfiltration and gate Google access case-by-case, but neither guarantees in-region personnel support nor bundles the residency/compliance regime.",
+      "D": "Cloud EKM and a location policy control key custody and placement, not the broader personnel-access and compliance-package controls the regulation demands."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/assured-workloads/docs/overview",
+        "text": "cloud.google.com/assured-workloads/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/assured-workloads/docs/concept-data-residency",
+        "text": "cloud.google.com/assured-workloads/docs/concept-data-resi..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Cloud Architect",
+    "scenario": "A Cloud SQL for MySQL instance intermittently rejects connections with \"Too many connections\" during traffic spikes. The architect must alert on-call before the limit is reached and reduce how often the limit is hit, with minimal application change. What should the architect do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Alert on the `database/network/connections` metric at 90% of `max_connections`, and add a connection pooler in front of the database.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a log-based metric counting \"Too many connections\" errors, alert when it exceeds zero, and raise the `max_connections` flag.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable `Query Insights` to find the connection-holding queries and alert when query latency exceeds the P99 baseline.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Set `max_pool_size` in the application's driver and rely on Cloud SQL's automatic connection scaling during the spikes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The native connections metric fires before exhaustion (at 90%), and a connection pooler multiplexes many app connections onto few backend ones, structurally reducing how often the limit is hit — minimal app change.",
+      "B": "Alerting when errors exceed zero fires after the outage has begun, not before, and raising `max_connections` without pooling just moves the cliff while each connection consumes more instance memory.",
+      "C": "Query Insights diagnoses queries but does not mitigate connection exhaustion, and a P99-latency alert does not fire on the connection limit being approached.",
+      "D": "\"Automatic connection scaling\" is not a Cloud SQL feature; a driver pool size alone does not bound total connections across many app instances during a spike."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/manage-connections",
+        "text": "cloud.google.com/sql/docs/mysql/manage-connections"
+      },
+      {
+        "url": "https://cloud.google.com/sql/docs/mysql/manage-connections-with-managed-connection-pooling",
+        "text": "cloud.google.com/sql/docs/mysql/manage-connections-with-m..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Cloud Architect",
+    "scenario": "An AlloyDB for PostgreSQL cluster powers an executive dashboard that aggregates over 500 million operational rows. Dashboard queries take 40+ seconds; the team needs sub-5-second responses without changing the dashboard's SQL and without adding an ETL pipeline. What should the architect do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use `Datastream` to replicate the data into BigQuery and repoint the dashboard at BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a materialized view per dashboard aggregation and refresh each on a schedule.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add two read-pool instances to the cluster and route dashboard traffic to them.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable the `AlloyDB` columnar engine and size its memory to cover the dashboard's hot tables.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Replicating to BigQuery is an ETL pipeline and forces repointing the dashboard — both explicitly excluded by the constraints.",
+      "B": "Materialized views require the dashboard to query the view instead of the base tables (a SQL change) and the scheduled refresh is an ETL-by-another-name with stale data.",
+      "C": "Read pools add capacity for concurrent queries but do not speed up a single 40-second analytical scan — this is a per-query-latency problem, not a throughput one.",
+      "D": "AlloyDB's columnar engine accelerates analytical scans/aggregations on the operational data in place — no SQL change, no separate pipeline — which is precisely the \"analytics on the operational DB without ETL\" pitch."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/alloydb/docs/columnar-engine/about",
+        "text": "cloud.google.com/alloydb/docs/columnar-engine/about"
+      },
+      {
+        "url": "https://cloud.google.com/alloydb/docs/columnar-engine/configure",
+        "text": "cloud.google.com/alloydb/docs/columnar-engine/configure"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Cloud Architect",
+    "scenario": "A retailer runs Spanner in a single-region configuration (`europe-west2`, 3 nodes). Month-end batch jobs push CPU to 85% and cause latency spikes for customer-facing reads; the rest of the month CPU sits near 40%. The batch jobs cannot be rescheduled, customer latency must stay low, and the team wants the most cost-effective fix. What should the architect do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Spanner autoscaling with a high-priority CPU target around 65% so capacity scales up during batch runs and back down afterward.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Convert the batch jobs to stale reads with a 15-second bound so they avoid leader coordination and free CPU for customer reads.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Move to a multi-region configuration so batch reads are served from a different region than customer traffic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Permanently increase the instance to 6 nodes to keep peak CPU below the recommended threshold.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The Spanner autoscaler adds processing units when high-priority CPU approaches the target during the month-end peak and removes them afterward — meeting the latency need while paying for extra capacity only when used.",
+      "B": "Stale reads cut leader coordination, not total CPU; at 85% the instance is CPU-saturated and the reads still burn CPU on whichever replica serves them, so it does not add the needed capacity.",
+      "C": "Multi-region adds replicas (and cost) everywhere 24/7 and is aimed at geographic availability/latency, not absorbing a periodic CPU spike in one region — wasteful for this problem.",
+      "D": "Sizing for peak permanently pays for double the nodes during the ~28 days of low usage — the opposite of cost-effective when the spike is predictable and short."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/spanner/docs/compute-capacity-autoscaling",
+        "text": "cloud.google.com/spanner/docs/compute-capacity-autoscaling"
+      },
+      {
+        "url": "https://cloud.google.com/spanner/docs/cpu-utilization",
+        "text": "cloud.google.com/spanner/docs/cpu-utilization"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Cloud Architect",
+    "scenario": "A regulated workload must retain audit logs for seven years for cheap, immutable long-term storage, while a security team also needs to run ad-hoc SQL across recent logs to investigate incidents. The architect wants a managed approach with minimal custom code. What should they configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A single sink to Cloud Storage, with the security team loading objects into BigQuery on demand whenever they investigate.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Raise the `_Default` log bucket retention to 2,555 days and have the security team query logs in the Logs Explorer.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "One log sink to a BigQuery dataset for SQL analysis, and one to a Cloud Storage bucket with a seven-year retention lock.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A single sink to BigQuery and a scheduled query that exports older partitions out to Cloud Storage as Avro files.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A GCS-only sink meets archive but forces manual ad-hoc loads into BigQuery each investigation — extra effort exactly when speed matters, failing the analysis requirement cleanly.",
+      "B": "Log Analytics/Logs Explorer is workable for queries but log-bucket storage is far costlier than GCS for seven years, and it is not the immutable cheap-archive tier the requirement calls for.",
+      "C": "Two aggregated sinks route each need to the right place — BigQuery for ad-hoc SQL on recent logs, and a Cloud Storage bucket with a lifecycle/retention (bucket lock) policy for cheap, immutable seven-year retention — with no custom code.",
+      "D": "Keeping seven years in BigQuery is expensive, and a custom scheduled export job adds maintenance the \"minimal custom code\" constraint asks you to avoid."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/logging/docs/export/aggregated_sinks",
+        "text": "cloud.google.com/logging/docs/export/aggregated_sinks"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/bucket-lock",
+        "text": "cloud.google.com/storage/docs/bucket-lock"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Cloud Architect",
+    "scenario": "A teammate manually enabled the `cloudsql.enable_pgaudit` flag on a production Cloud SQL instance through the console during an incident. The fleet of 12 instances is provisioned with Terraform, and the next `terraform apply` will revert the flag. The architect needs the flag to persist and to stop this whole class of manual drift recurring. What should they do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Run `terraform state rm` then `terraform import` to refresh state and adopt the console change as the new baseline.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run `terraform import` on the production instance so the manually set flag is captured into state and future applies keep it.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add `lifecycle { ignore_changes = [settings.0.database_flags] }` to the resource so Terraform stops reconciling flags.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Add the flag to the Terraform config, apply it across the instances, and restrict `cloudsql.instances.update` in production to the CI/CD service account.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Removing and re-importing refreshes state from the live resource, but the next apply still reconciles toward config and removes the flag; it also does nothing to prevent recurrence.",
+      "B": "`terraform import` on an already-managed resource errors, and even after a state refresh, apply reconciles state toward config — so the flag is still stripped.",
+      "C": "Ignoring changes makes the flag persist but abandons Terraform's management of flags entirely, hiding future drift and surrendering to click-ops rather than preventing it.",
+      "D": "Putting the flag in config makes it the source of truth across all 12 instances, and restricting `instances.update` to the CI/CD account means production changes flow only through reviewed IaC — fixing both the flag and the recurrence."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sql/docs/postgres/flags",
+        "text": "cloud.google.com/sql/docs/postgres/flags"
+      },
+      {
+        "url": "https://cloud.google.com/docs/terraform/best-practices-for-terraform",
+        "text": "cloud.google.com/docs/terraform/best-practices-for-terraform"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Cloud Architect",
+    "scenario": "A site reliability team wants to validate before a major release that the production environment recovers from failures: zonal outages, dependency latency, and instance loss. They need to inject these failures in production-like conditions in a controlled, measurable way and tie the results to an SLO. Which practice should the architect institute?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Chaos engineering: controlled fault-injection experiments with a defined steady-state hypothesis and blast-radius limits, tied to the service's SLO.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Load testing the service at 2x expected peak and treating any error as a recovery failure.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Penetration testing the environment to find weaknesses an attacker could exploit during the release.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Increasing the availability SLO toward 100% so the team is forced to design out every failure mode.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Chaos engineering deliberately injects failures (zone loss, latency, instance termination) under controlled conditions with a steady-state hypothesis and limited blast radius, measuring recovery against the SLO — exactly the resilience validation described.",
+      "B": "Load testing validates behaviour under volume, not recovery from injected component failures like zonal outages or dependency latency.",
+      "C": "Penetration testing probes security vulnerabilities, not the service's ability to recover from infrastructure failures.",
+      "D": "Pushing the SLO toward 100% removes the error budget and is an anti-pattern; an SLO is a target, not a fault-injection technique, and it validates nothing about recovery."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/framework/reliability/perform-testing-for-recovery-from-failures",
+        "text": "cloud.google.com/architecture/framework/reliability/perfo..."
+      },
+      {
+        "url": "https://sre.google/workbook/canarying-releases/",
+        "text": "sre.google/workbook/canarying-releases"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Cloud Architect",
+    "scenario": "A planned product launch is expected to drive a one-day burst of traffic that will push Compute Engine and external IP usage far above the project's current consumption, then return to normal. The architect must ensure the launch is not throttled by capacity limits, at the lowest standing cost. What should they do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add retry-with-backoff to the application so requests that hit quota limits are retried until they succeed.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Purchase a 1-year committed-use discount sized for the launch-day peak to guarantee the capacity is reserved.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Spread the workload across several projects so each project's default quota multiplies the available capacity.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Review the relevant Compute Engine quotas and request increases ahead of the launch, then let autoscaling scale back down afterward.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Retrying against a quota wall does not create capacity — requests keep failing until the limit is raised; this masks the problem and degrades the launch.",
+      "B": "A 1-year commitment reserves and pays for peak capacity every day for a year to cover one launch day — large standing cost for a one-off burst, the opposite of the constraint.",
+      "C": "Sharding across projects to dodge quotas is an anti-pattern that fragments the workload and operations, and Google may still rate-limit; the supported path is to request an increase.",
+      "D": "Quotas are the hard ceiling on resource creation; requesting increases before the spike removes the throttle, and because quota costs nothing until used, autoscaling down afterward keeps standing cost minimal."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/compute/quotas",
+        "text": "cloud.google.com/compute/quotas"
+      },
+      {
+        "url": "https://cloud.google.com/docs/quotas/view-manage",
+        "text": "cloud.google.com/docs/quotas/view-manage"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/cloud_architect/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/cloud_architect/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

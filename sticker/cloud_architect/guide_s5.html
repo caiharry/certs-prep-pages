@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Architect &mdash; Managing Implementation</title>
+  <style>
+    :root {
+      --bg: #fef2f2; --ink: #1e293b; --accent: #dc2626; --accent-dark: #b91c1c;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fecaca' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f87171 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Architect Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 5</span><span class="weight">~12.5%</span>
+      <h1>Managing Implementation</h1>
+      <p class="sec-intro">Advise dev and ops teams on deployment, and interact with Google Cloud programmatically.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>API management & deployment</h3>
+      <p><strong>Apigee</strong> is full API management — quotas, key management, developer portal, monetization, analytics across hybrid backends. <strong>API Gateway</strong> is a lightweight gateway for serverless. Use load/unit/integration testing frameworks and Gemini Cloud Assist for guidance during rollout.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Choose <strong>Apigee</strong> when you see a developer portal, monetization, or complex policy needs; API Gateway is the lighter serverless option.</div>
+    </section>
+    <section class="lesson">
+      <h3>Programmatic access & IaC</h3>
+      <p>Cloud Shell, Cloud Code, and Cloud Shell Editor for dev; SDKs <code>gcloud</code>, <code>gcloud storage</code> (formerly gsutil), and <code>bq</code>; Cloud Emulators (Bigtable, Spanner, Pub/Sub, Firestore) for local testing. Provision declaratively with <strong>Terraform</strong> or Infrastructure Manager — never click-ops for reproducible estates.</p>
+    </section>
+    <section class="lesson">
+      <h3>Advising teams &amp; interacting with support</h3>
+      <p>An architect also shapes <em>how</em> teams work: recommend testing strategies (unit/integration/load), code-review and trunk-based development, and a clear environment promotion path. Know the operational levers too &mdash; <strong>Cloud Quotas</strong> (request increases before launch spikes), the right <strong>support tier</strong> for the SLA, and using <strong>Gemini Cloud Assist</strong> to accelerate troubleshooting and design reviews.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "A planned launch will exceed current API limits" = request a <strong>quota increase ahead of time</strong>, not retry-on-failure during the event.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> You must expose partner APIs with quotas, key issuance, a developer portal, and analytics. Which product?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Apigee.</strong></p>
+          <p class="quiz-why">Full lifecycle API management; API Gateway lacks the portal/analytics/monetization.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Reproducible, version-controlled infrastructure across environments. What approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Infrastructure as Code (Terraform / Infrastructure Manager).</strong></p>
+          <p class="quiz-why">Declarative, repeatable, auditable — preferred over manual console changes.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A simple internal REST API on Cloud Functions just needs auth and basic routing &mdash; not a portal or monetization. Apigee or API Gateway?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>API Gateway.</strong></p>
+          <p class="quiz-why">It's the lightweight gateway for serverless backends; Apigee is overkill without portal/analytics/monetization needs.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A big product launch will far exceed your current API request limits. What do you do beforehand?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Request a quota increase in advance via Cloud Quotas.</strong></p>
+          <p class="quiz-why">Quotas should be raised ahead of a known spike, not discovered when requests start failing.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A company exposes APIs to external partners and needs quotas, API-key issuance, a self-service developer portal, monetization, and cross-backend analytics. Which product should the architecture use?</p>
+        <ul>
+          <li>A) API Gateway in front of the serverless backends.</li>
+          <li>B) Apigee API management.</li>
+          <li>C) A Global External Application Load Balancer with Cloud Armor.</li>
+          <li>D) Cloud Endpoints with an OpenAPI spec.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Apigee is full-lifecycle API management: developer portal, monetization, quotas, key management, and analytics across hybrid backends.</p>
+          <p class="quiz-why"><strong>A/D:</strong> API Gateway and Endpoints are lightweight and lack the portal/monetization/analytics suite. <strong>C:</strong> A load balancer routes and protects traffic but isn't API management.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A marketing event is expected to drive 20&times; normal traffic to a service that calls several Google Cloud APIs. The architect wants to avoid throttling during the event. What is the right action?</p>
+        <ul>
+          <li>A) Add aggressive client-side retries to ride through any limit errors.</li>
+          <li>B) Request the needed quota increases ahead of the event via Cloud Quotas.</li>
+          <li>C) Spread calls across several projects to multiply the quota.</li>
+          <li>D) Cache all API responses indefinitely to avoid calling the APIs.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Known spikes call for raising quotas in advance so the service isn't throttled during the event.</p>
+          <p class="quiz-why"><strong>A:</strong> Retries against an exceeded quota just amplify load. <strong>C:</strong> Splitting across projects to dodge limits is an abuse pattern. <strong>D:</strong> Indefinite caching serves stale data and doesn't fit dynamic calls.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Teams keep creating environments inconsistently by clicking in the console, causing drift between dev and prod. What should the architect mandate for reproducibility?</p>
+        <ul>
+          <li>A) A wiki page documenting the console steps to follow.</li>
+          <li>B) Declarative Infrastructure as Code (Terraform / Infrastructure Manager) in version control.</li>
+          <li>C) Screenshots of the correct console settings shared with teams.</li>
+          <li>D) Granting only senior staff console access.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> IaC makes environments declarative, versioned, and reproducible, eliminating console drift.</p>
+          <p class="quiz-why"><strong>A/C:</strong> Docs and screenshots still rely on manual, drift-prone steps. <strong>D:</strong> Limiting who clicks doesn't make creation repeatable.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s4.html" class="nav-link">&larr; Analyzing &amp; Optimizing Processes</a>
+      <a href="guide_s6.html" class="nav-link">Solution &amp; Operations Excellence &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/cloud_architect/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/cloud_architect/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

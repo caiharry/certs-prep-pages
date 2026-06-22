@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Architecting Low-Code AI Solutions</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 1</span><span class="weight">~13%</span>
+      <h1>Architecting Low-Code AI Solutions</h1>
+      <p class="sec-intro">The fastest paths to a working model: BigQuery ML, pretrained ML APIs and foundation models, and AutoML.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>The build-vs-buy ladder</h3>
+      <p>The single most-tested instinct in this domain: <em>climb only as high as you need</em>. Each rung up costs more data, more skill, and more time to maintain.</p>
+      <ul>
+        <li><strong>Pretrained ML APIs / Model Garden</strong> &mdash; standard tasks (OCR, translation, sentiment, transcription) with <em>no</em> training data.</li>
+        <li><strong>BigQuery ML</strong> &mdash; the data already lives in BigQuery and the team writes SQL.</li>
+        <li><strong>AutoML</strong> &mdash; you need a <em>custom</em> model but want minimal code and have some labelled data.</li>
+        <li><strong>Custom training (Vertex AI)</strong> &mdash; full control over framework, architecture, and hardware.</li>
+      </ul>
+      <p>Pick the lowest rung that satisfies the requirement <em>and</em> the team's skill. The exam loves to dangle a fancy option when a humbler one is correct.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "No labelled data + a standard task" points to a pretrained ML API &mdash; never AutoML or custom training, both of which need labelled examples.</div>
+      <div class="callout mnemonic"><span class="hook">LADDER</span> <strong>L</strong>owest rung wins. If two options both work, the cheaper / less-custom one is almost always the keyed answer.</div>
+    </section>
+    <section class="lesson">
+      <h3>Pretrained ML APIs at a glance</h3>
+      <p>Know which API owns which task &mdash; the exam tests the boundaries, not the SDK calls:</p>
+      <ul>
+        <li><strong>Cloud Vision</strong> &mdash; labels, objects, OCR, faces, safe-search on images.</li>
+        <li><strong>Video Intelligence</strong> &mdash; shot/label/object tracking and explicit-content detection in video.</li>
+        <li><strong>Natural Language</strong> &mdash; entities, sentiment, syntax, classification of free text.</li>
+        <li><strong>Speech-to-Text / Text-to-Speech</strong> &mdash; transcription and voice synthesis.</li>
+        <li><strong>Translation</strong> &mdash; language detection and translation.</li>
+        <li><strong>Document AI</strong> &mdash; structured extraction from forms, invoices, and contracts (key-value pairs, tables).</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Extract fields from scanned invoices" is <strong>Document AI</strong>, not the raw Vision OCR &mdash; Document AI understands document <em>structure</em>, Vision just returns text.</div>
+    </section>
+    <section class="lesson">
+      <h3>BigQuery ML model picker</h3>
+      <p>BigQuery ML lets analysts train and serve models with <code>CREATE MODEL</code> SQL &mdash; no data leaves the warehouse. Match the goal to the model type:</p>
+      <ul>
+        <li>Predict a number &rarr; <strong>linear regression</strong>.</li>
+        <li>Yes/no or a class &rarr; <strong>logistic / multiclass classification</strong>.</li>
+        <li>Forecast a time series &rarr; <strong>ARIMA_PLUS</strong>.</li>
+        <li>Recommendations &rarr; <strong>matrix factorization</strong>.</li>
+        <li>Maximum tabular accuracy &rarr; <strong>boosted trees (XGBoost)</strong>.</li>
+        <li>Anomaly detection / grouping &rarr; <strong>autoencoder / k-means</strong>.</li>
+        <li>Reuse a TensorFlow model &rarr; <strong>imported TF model</strong> for in-warehouse inference.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">BQML</span> Data in BigQuery + a SQL-speaking team = BigQuery ML beats standing up custom training every time.</div>
+    </section>
+    <section class="lesson">
+      <h3>AutoML &mdash; the low-code custom rung</h3>
+      <p>AutoML (now folded into Vertex AI) trains a <em>custom</em> model on <em>your</em> labelled data with almost no code, handling feature engineering, architecture search, and tuning for you. Use it when a pretrained API can't capture your domain (e.g. classifying <em>your</em> defect types) but you lack the team or time for custom training.</p>
+      <p>It spans tabular, image, text, and video. The trade-off versus custom training is control: you don't choose the architecture or framework, and very large or exotic models still want custom training.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> AutoML still needs a <em>labelled</em> dataset. If the scenario says "we have no labels", AutoML is wrong &mdash; consider a pretrained API or an unsupervised approach.</div>
+    </section>
+    <section class="lesson">
+      <h3>Generative AI building blocks</h3>
+      <p><strong>Model Garden</strong> is the catalogue of foundation and open models (Gemini, plus third-party and open-weight models). <strong>Vertex AI Agent Builder</strong> provides managed retrieval-augmented generation (RAG), search, and agents &mdash; ground an LLM's answers in your own documents with citations and minimal infrastructure.</p>
+      <p>Choose the lightest customization that works: <strong>prompt design</strong> first, then <strong>grounding / RAG</strong> to inject fresh private knowledge, then <strong>tuning</strong> (e.g. supervised fine-tuning) only when style or format must be baked in. Full pre-training is essentially never the exam answer.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Answer from a document corpus, with citations, kept current" = RAG via Agent Builder. Fine-tuning memorizes, doesn't cite, and goes stale the moment the docs change.</div>
+      <div class="callout mnemonic"><span class="hook">PGT</span> <strong>P</strong>rompt &rarr; <strong>G</strong>round (RAG) &rarr; <strong>T</strong>une. Walk up the GenAI ladder one step at a time, just like build-vs-buy.</div>
+    </section>
+    <section class="lesson">
+      <h3>Responsible AI &amp; data residency</h3>
+      <p>Even low-code solutions carry obligations. Watch for scenarios that hinge on <strong>data residency</strong> (keep training/serving in a specific region), <strong>sensitive data</strong> (run Cloud DLP / Sensitive Data Protection to de-identify before training), or <strong>fairness/explainability</strong> (Vertex Explainable AI feature attributions). Pretrained APIs process data in Google's managed service &mdash; if a constraint forbids that, you may be pushed up to a model you host in-region.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A strict "PII must never leave our region / be exposed to a shared API" constraint can rule out a pretrained API even when the task is standard.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> SQL-fluent analysts must train a churn classifier on data already in BigQuery, fast. What do you use?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>BigQuery ML (logistic regression).</strong></p>
+          <p class="quiz-why">In-warehouse training/serving with SQL, no data movement.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Chatbot must answer from thousands of internal PDFs with citations, minimal infra. Which approach?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>RAG with Vertex AI Agent Builder.</strong></p>
+          <p class="quiz-why">Managed retrieval-augmented generation grounds answers and cites sources.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must pull line items and totals out of scanned supplier invoices. Vision OCR or Document AI?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Document AI.</strong></p>
+          <p class="quiz-why">It returns structured key-value pairs and tables; Vision OCR only gives you raw text you'd have to parse yourself.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A standard sentiment task, but the team has zero labelled data and no ML engineers. Which rung?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Pretrained Natural Language API.</strong></p>
+          <p class="quiz-why">No labels and a standard task = lowest rung. AutoML and custom training both need labelled examples.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A retailer wants automatic object and label tagging on catalogue photos. There is no ML team and no labelled training data, and the budget is tight. What is the best approach?</p>
+        <ul>
+          <li>A) Train an AutoML Vision model on a labelled subset of the catalogue and deploy it to a Vertex endpoint.</li>
+          <li>B) Use the pretrained Cloud Vision API label and object-detection features from the application.</li>
+          <li>C) Fine-tune a Model Garden vision foundation model on the product images.</li>
+          <li>D) Build a custom CNN with Vertex AI custom training on a managed image dataset.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Object and label detection is a standard task with no labelled data, so the pretrained Cloud Vision API is the lowest, cheapest rung that works.</p>
+          <p class="quiz-why"><strong>A:</strong> AutoML needs labelled data and effort that a standard task doesn't justify. <strong>C:</strong> Fine-tuning needs data and skill for no benefit here. <strong>D:</strong> Custom training is the most expensive rung &mdash; massive overkill.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> SQL analysts must ship a customer-churn classifier this week, on data already in BigQuery, with minimal new infrastructure. What should they use?</p>
+        <ul>
+          <li>A) Export the data to Cloud Storage and train an AutoML Tabular model.</li>
+          <li>B) Stand up Vertex AI custom training with a TensorFlow model.</li>
+          <li>C) Train a logistic-regression model in place using BigQuery ML and SQL.</li>
+          <li>D) Call the Vertex AI Gemini API to classify each customer row.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> BigQuery ML trains and serves with SQL where the data already lives &mdash; no movement, no new infrastructure, and it fits a SQL team and a tight deadline.</p>
+          <p class="quiz-why"><strong>A:</strong> Exporting adds data movement and setup for no gain. <strong>B:</strong> Custom training is heavy for a SQL team on a one-week timeline. <strong>D:</strong> An LLM is the wrong, costly tool for structured tabular classification.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A support assistant must answer questions from 10,000 internal PDFs, cite its sources, and stay accurate as documents are updated, with low engineering effort. What fits best?</p>
+        <ul>
+          <li>A) Fine-tune a foundation model on the PDFs so it memorizes their content.</li>
+          <li>B) Use Vertex AI Agent Builder RAG over the indexed PDFs to ground answers and cite sources.</li>
+          <li>C) Paste the full set of PDFs into the prompt context on every request.</li>
+          <li>D) Train an AutoML text-classification model on the PDF corpus.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> RAG retrieves the relevant passages at query time, so answers stay grounded with citations and update automatically as the corpus changes &mdash; with minimal infrastructure.</p>
+          <p class="quiz-why"><strong>A:</strong> Fine-tuning is costly, can't cite, and goes stale on every document change. <strong>C:</strong> The corpus far exceeds the context window and is expensive per call. <strong>D:</strong> Classification assigns labels; it doesn't answer questions with citations.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <span></span>
+      <a href="guide_s2.html" class="nav-link">Managing Data &amp; Models Across Teams &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/ml_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/ml_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

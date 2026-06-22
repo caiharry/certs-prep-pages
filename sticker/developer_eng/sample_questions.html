@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Developer - Official Sample Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #0b0f19; --dark-card: #151d30; --dark-border: rgba(255,255,255,0.08);
+            --dark-accent: #3b82f6; --dark-accent-hover: #2563eb; --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af; --dark-correct: #10b981; --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b; --dark-header: #0e1626;
+            --classic-bg: #f3f4f6; --classic-card: #ffffff; --classic-border: #d1d5db;
+            --classic-accent: #1e3a8a; --classic-accent-hover: #172554; --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563; --classic-correct: #15803d; --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309; --classic-header: #e5e7eb;
+            --font-display: 'Outfit', sans-serif; --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg: var(--dark-bg); --card: var(--dark-card); --border: var(--dark-border);
+            --accent: var(--dark-accent); --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary); --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct); --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged); --header: var(--dark-header);
+        }
+        body.classic-mode {
+            --bg: var(--classic-bg); --card: var(--classic-card); --border: var(--classic-border);
+            --accent: var(--classic-accent); --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary); --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct); --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged); --header: var(--classic-header);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        .selectable, code, pre { user-select: text; }
+        body { background-color: var(--bg); color: var(--text-primary); font-family: var(--font-sans);
+               transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column;
+               min-height: 100vh; overflow-x: hidden; }
+        code { font-family: var(--font-mono); background-color: rgba(255,255,255,0.08); padding: 2px 6px;
+               border-radius: 4px; font-size: 0.9em; color: var(--text-primary);
+               border: 1px solid rgba(255,255,255,0.04); word-break: break-all;
+               overflow-wrap: break-word; white-space: pre-wrap; }
+        body.classic-mode code { background-color: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        header { background-color: var(--header); border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+                 display: flex; justify-content: space-between; align-items: center; position: sticky;
+                 top: 0; z-index: 50; backdrop-filter: blur(10px);
+                 transition: background-color 0.3s, border-color 0.3s; }
+        .logo-section { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+                      width: 32px; height: 32px; border-radius: 8px; display: flex;
+                      align-items: center; justify-content: center; color: white; font-weight: bold;
+                      font-family: var(--font-display); }
+        .title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .portal-link { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;
+                       text-decoration: none; padding: 6px 12px; border: 1px solid var(--border);
+                       border-radius: 6px; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+        .portal-link:hover { color: var(--accent); border-color: var(--accent); }
+        .timer-box { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+                     font-weight: bold; font-size: 1.2rem; background: rgba(0,0,0,0.15);
+                     padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+                     color: var(--text-primary); }
+        .timer-box.warning { color: var(--incorrect); animation: pulse 1s infinite alternate; border-color: var(--incorrect); }
+        @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.02); } }
+        .btn { background-color: var(--card); border: 1px solid var(--border); color: var(--text-primary);
+               padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+               font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+               transition: all 0.2s ease; }
+        .btn:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        main { display: flex; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; position: relative; }
+        .content-area { flex: 1; padding: 2.5rem; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
+        .progress-bar-container { width: 100%; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #10b981); width: 0%; transition: width 0.3s ease; }
+        .question-meta { display: flex; justify-content: space-between; align-items: center; }
+        .question-number { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--text-primary); }
+        .multi-badge { background-color: rgba(245,158,11,0.15); color: var(--flagged);
+                       border: 1px solid rgba(245,158,11,0.3); padding: 4px 12px; border-radius: 99px;
+                       font-size: 0.8rem; font-weight: 600; display: none; }
+        .question-box { background-color: var(--card); border: 1px solid var(--border); border-radius: 12px;
+                        padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .question-text { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
+        .question-text p { margin-bottom: 1rem; }
+        .question-text ul, .question-text ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .question-text li { margin-bottom: 0.3rem; }
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-item { display: flex; align-items: flex-start; gap: 14px; padding: 1rem;
+                       background-color: rgba(0,0,0,0.02); border: 1px solid var(--border);
+                       border-radius: 8px; cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .option-item:hover { border-color: var(--accent); background-color: rgba(59,130,246,0.03); }
+        .option-item.selected { border-color: var(--accent); background-color: rgba(59,130,246,0.08); box-shadow: 0 0 0 1px var(--accent); }
+        .option-item.struck-out { text-decoration: line-through; opacity: 0.35; background-color: rgba(0,0,0,0.05) !important; border-color: var(--border) !important; box-shadow: none !important; }
+        .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+                        display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                        flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-radio { border-color: var(--accent); background-color: var(--accent); }
+        .option-radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: white; display: none; }
+        .option-item.selected .option-radio-dot { display: block; }
+        .option-checkbox { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border);
+                           display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                           flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-checkbox { border-color: var(--accent); background-color: var(--accent); }
+        .option-checkbox-mark { width: 12px; height: 12px; display: none; color: white; }
+        .option-item.selected .option-checkbox-mark { display: block; }
+        .option-text { flex: 1; min-width: 0; word-break: break-word; overflow-wrap: break-word;
+                       font-size: 1rem; line-height: 1.5; color: var(--text-primary); }
+        .sidebar { width: 320px; border-left: 1px solid var(--border); background-color: var(--header);
+                   padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+                   position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto;
+                   transition: background-color 0.3s, border-color 0.3s; }
+        .sidebar-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+                         display: flex; justify-content: space-between; align-items: center; }
+        .grid-navigation { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .grid-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border); display: flex;
+                     align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;
+                     cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .grid-cell:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .grid-cell.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .grid-cell.answered { background-color: rgba(16,185,129,0.15); border-color: var(--correct); color: var(--correct); }
+        .grid-cell.flagged { background-color: rgba(245,158,11,0.15); border-color: var(--flagged); color: var(--flagged); }
+        .grid-cell.post-correct { background-color: rgba(16,185,129,0.3) !important; border-color: #059669 !important; color: #34d399 !important; font-weight: 700; }
+        .grid-cell.post-incorrect { background-color: rgba(239,68,68,0.3) !important; border-color: #dc2626 !important; color: #fca5a5 !important; font-weight: 700; }
+        body.classic-mode .grid-cell.post-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        body.classic-mode .grid-cell.post-incorrect { background-color: #fee2e2 !important; border-color: #f87171 !important; color: #991b1b !important; }
+        .grid-cell.flagged::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background-color: var(--flagged); border-radius: 50%; }
+        .stats-summary { display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; }
+        .flag-checkbox-container { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+        .flag-icon { color: var(--text-secondary); transition: color 0.2s; }
+        .flag-checkbox-container input:checked ~ .flag-icon { color: var(--flagged); }
+        .explanation-box { margin-top: 2rem; border-top: 2px solid var(--border); padding-top: 2rem; display: none; flex-direction: column; gap: 1.5rem; }
+        .explanation-title { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); }
+        .exp-item { padding: 1rem; border-radius: 8px; border-left: 4px solid var(--border); background-color: rgba(0,0,0,0.02); font-size: 0.95rem; line-height: 1.6; }
+        .exp-item.correct-exp { border-left-color: var(--correct); background-color: rgba(16,185,129,0.03); }
+        .exp-item.incorrect-exp { border-left-color: var(--incorrect); background-color: rgba(239,68,68,0.03); }
+        .exp-badge { font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .references-box { margin-top: 1rem; }
+        .references-title { font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .ref-link { color: var(--accent); text-decoration: none; display: inline-block; margin-right: 15px; font-size: 0.85rem; word-break: break-all; }
+        .ref-link:hover { text-decoration: underline; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                         background: rgba(0,0,0,0.85); z-index: 1000; align-items: center;
+                         justify-content: center; backdrop-filter: blur(8px); }
+        .results-card { background-color: var(--card); border: 1px solid var(--border); padding: 3rem;
+                        border-radius: 16px; max-width: 600px; width: 90%; display: flex; flex-direction: column;
+                        align-items: center; text-align: center; gap: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--border);
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        font-family: var(--font-display); margin-bottom: 1rem; }
+        .score-percentage { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .score-label { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .option-item.post-correct { border-color: var(--correct) !important; background-color: rgba(16,185,129,0.08) !important; box-shadow: 0 0 0 1px var(--correct) !important; }
+        .option-item.post-incorrect { border-color: var(--incorrect) !important; background-color: rgba(239,68,68,0.08) !important; box-shadow: 0 0 0 1px var(--incorrect) !important; }
+        .badge-correct { color: var(--correct); font-weight: bold; margin-left: auto; }
+        .badge-incorrect { color: var(--incorrect); font-weight: bold; margin-left: auto; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+                 background: #1e2937; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem;
+                 font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;
+                 transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .scroll-top-btn { display: block; width: fit-content; max-width: 100%; margin: 16px auto 24px;
+                          background: var(--accent); color: white; font-weight: 600; padding: 10px 18px;
+                          border: none; border-radius: 6px; font-size: 0.85rem; font-family: var(--font-sans); cursor: pointer; }
+        .scroll-top-btn:hover { background: var(--accent-hover); }
+        @media (max-width: 1024px) {
+            main { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-left: none; border-top: 1px solid var(--border); }
+            .content-area { padding: 1.5rem; max-width: 100%; }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Developer</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);">OFFICIAL SAMPLE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">120:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+                <div class="multi-badge" id="multi-badge">Select all that apply</div>
+            </div>
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text"></div>
+                <div class="options-list" id="options-list"></div>
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations &amp; Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display:flex;flex-direction:column;gap:1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References &amp; Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display:none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size:0.8rem;font-weight:500;color:var(--text-secondary);" id="review-counter">0/50 Answered</span>
+            </div>
+            <div class="grid-navigation" id="grid-navigation"></div>
+            <div class="stats-summary">
+                <div class="stat-row"><span>Answered:</span><span class="stat-value" id="stat-answered">0</span></div>
+                <div class="stat-row"><span>Flagged:</span><span class="stat-value" id="stat-flagged">0</span></div>
+                <div class="stat-row"><span>Remaining:</span><span class="stat-value" id="stat-remaining">50</span></div>
+            </div>
+            <button id="submit-exam-btn" class="btn btn-primary" style="width:100%;margin-top:auto;padding:12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;">Exam Completed</h1>
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">—</span>
+            </div>
+            <p style="color:var(--text-secondary);line-height:1.5;" id="results-detailed-stats">You answered 0 out of 50 questions correctly.</p>
+            <div style="display:flex;gap:15px;width:100%;">
+                <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex:1;padding:12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Tip: Left-click selects. Right-click crosses out an option.</div>
+
+    <script>
+        const quizData = [
+  {"number":1,"domain":"Cloud Developer","case_study":null,"scenario":"Your organization has deployed a microservices application on Google Kubernetes Engine. Users are complaining about high latency. You want to identify which microservice is causing the latency issues and add end-to-end observability for your application. What should you do?","options":[{"id":"A","text":"Instrument your microservices application with the OpenTelemetry tracing package and update the microservices to send traces to Cloud Trace.","is_correct":true},{"id":"B","text":"Update your microservices to log all HTTP methods to STDOUT, and use a logs router to export your logs to BigQuery to analyze them.","is_correct":false},{"id":"C","text":"Configure GKE workload metrics using kubectl, and select all Pods to send metrics to Cloud Monitoring.","is_correct":false},{"id":"D","text":"Install tcpdump on the GKE nodes, and run tcpdump to capture and analyze network traffic over an extended period of time.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"OpenTelemetry is the standard instrumentation library for distributed tracing; it integrates natively with Cloud Trace to produce end-to-end latency breakdowns across microservices.","B":"Logging HTTP methods to BigQuery shows request patterns but not latency causation across service boundaries — you need distributed tracing, not structured logs.","C":"GKE workload metrics send CPU/memory signals to Cloud Monitoring, not trace-level latency data that shows which service is slow.","D":"tcpdump captures raw packets and is a manual forensic tool, not a scalable observability solution for a production microservices app."},"references":[{"url":"https://cloud.google.com/trace/docs/setup","text":"Cloud Trace setup guide"},{"url":"https://opentelemetry.io/docs/","text":"OpenTelemetry documentation"}]},
+  {"number":2,"domain":"Cloud Developer","case_study":null,"scenario":"You need to containerize a web application and host it on Google Kubernetes Engine behind a global load balancer with SSL certificates. What should you do?","options":[{"id":"A","text":"Host your application on GKE, use Identity-Aware Proxy with Cloud Load Balancing, and configure Google-managed SSL certificates.","is_correct":false},{"id":"B","text":"Host your application on GKE, and deploy NGINX Ingress Controller to handle authentication and SSL termination.","is_correct":false},{"id":"C","text":"Host your application on GKE, and deploy cert-manager to automate provisioning and renewal of SSL certificates.","is_correct":true},{"id":"D","text":"Host your application on Compute Engine, and configure Cloud Endpoints to handle SSL.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"IAP is an authentication proxy, not an SSL certificate manager; this conflates two separate concerns.","B":"NGINX Ingress is a valid approach but is self-managed and adds operational overhead; cert-manager is the Kubernetes-native solution for automated certificate lifecycle management.","C":"cert-manager is the de facto Kubernetes solution for automating SSL certificate provisioning (via Let's Encrypt or Google-managed certs) and renewal without manual intervention.","D":"Moving to Compute Engine loses the GKE requirement and adds more infrastructure to manage."},"references":[{"url":"https://cert-manager.io/docs/","text":"cert-manager documentation"},{"url":"https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs","text":"GKE managed certificates"}]},
+  {"number":3,"domain":"Cloud Developer","case_study":null,"scenario":"An ecommerce platform sends confirmation emails through a third-party email service that sometimes takes more than one minute to respond. A Cloud Run function that calls the email service directly sometimes times out, causing delivery failures. What should you do?","options":[{"id":"A","text":"Increase the Cloud Run function timeout to 9 minutes to accommodate the slow email service response.","is_correct":false},{"id":"B","text":"Configure the sender application to publish outgoing emails as messages to a Pub/Sub topic. Configure a subscriber Cloud Run function to send emails from the topic.","is_correct":true},{"id":"C","text":"Configure the sender application to retry the Cloud Run function every 1 second until successful.","is_correct":false},{"id":"D","text":"Configure the sender application to write emails to Memorystore for Redis, then trigger the Cloud Run function.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Increasing timeout treats the symptom, not the cause; the upstream service is slow and unreliable, so direct calls will still fail intermittently and hold resources.","B":"Decoupling with Pub/Sub makes email sending asynchronous — the sender publishes instantly, and the subscriber handles retries and slow third-party calls without blocking the main application.","C":"Busy-polling with 1-second retries is not resilient (rate limits, thundering herd) and still holds the caller open; Pub/Sub handles this properly.","D":"Memorystore for Redis is a cache/session store, not an event queue; it lacks built-in retry, dead-letter, and push/pull semantics that Pub/Sub provides."},"references":[{"url":"https://cloud.google.com/pubsub/docs/overview","text":"Pub/Sub overview"},{"url":"https://cloud.google.com/run/docs/triggering/pubsub-push","text":"Triggering Cloud Run with Pub/Sub"}]},
+  {"number":4,"domain":"Cloud Developer","case_study":null,"scenario":"You have a web application with private images and videos stored in a Cloud Storage bucket. Users must be authenticated in the web application before they can access the content. The application cannot store content locally. What should you do?","options":[{"id":"A","text":"Generate a signed URL that grants temporary read access to the object, and allow users to access the URL after they authenticate in the web app.","is_correct":true},{"id":"B","text":"Configure Identity-Aware Proxy to authenticate users, and allow users to access the bucket directly after authentication.","is_correct":false},{"id":"C","text":"Grant the Storage Object Viewer role to allUsers on the bucket, and allow users to access the bucket after they authenticate in the web app.","is_correct":false},{"id":"D","text":"Cache authenticated user IP addresses to create a named IP list in Cloud Armor and grant access to users in the named IP list.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Signed URLs grant time-limited access to private objects without making them public; the web app generates them server-side after authenticating the user, keeping the bucket private.","B":"IAP protects App Engine/Cloud Run/GKE services, not Cloud Storage buckets; users cannot access bucket objects directly through IAP.","C":"Granting Storage Object Viewer to allUsers makes the content public to the internet regardless of app authentication — a critical security flaw.","D":"IP-based allowlisting is fragile (NAT, VPNs, shared IPs) and does not constitute authentication; it cannot reliably identify individual users."},"references":[{"url":"https://cloud.google.com/storage/docs/access-control/signed-urls","text":"Cloud Storage signed URLs"},{"url":"https://cloud.google.com/storage/docs/access-control","text":"Cloud Storage access control"}]},
+  {"number":5,"domain":"Cloud Developer","case_study":null,"scenario":"Your application uses Cloud Spanner. New features have occasionally broken connectivity to Spanner. You want to improve test coverage to prevent regression, and tests should run in a Cloud Build pipeline triggered on each commit. What should you do?","options":[{"id":"A","text":"Create a dedicated project with a Cloud Spanner instance and pre-loaded test data; adjust Cloud Build config to use that project for testing.","is_correct":false},{"id":"B","text":"Create a new project with a random name for every build, load required data, and delete the project after tests complete.","is_correct":false},{"id":"C","text":"Create a new Cloud Spanner instance for every build, load the required data, and delete the instance after tests complete.","is_correct":false},{"id":"D","text":"Start the Cloud Spanner emulator locally in the Cloud Build pipeline, load required data, run tests, and shut down the emulator after tests complete.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"A shared project/instance creates test isolation problems and dependency on a persistent external resource that can cause flaky tests.","B":"Creating and deleting projects per build is extremely slow (project creation takes minutes) and accrues real infrastructure costs.","C":"Provisioning real Spanner instances per build incurs cost, takes time to provision, and is unnecessary when an emulator is available.","D":"The Cloud Spanner emulator runs locally in the build environment, is free, starts in seconds, is fully isolated per build, and supports the full Spanner API for connectivity testing."},"references":[{"url":"https://cloud.google.com/spanner/docs/emulator","text":"Cloud Spanner emulator"},{"url":"https://cloud.google.com/build/docs/overview","text":"Cloud Build overview"}]},
+  {"number":6,"domain":"Cloud Developer","case_study":null,"scenario":"You need to deploy an internet-facing microservices application to GKE. You want to validate new features using an A/B testing pattern where 5% of users are routed to the new version. What should you do?","options":[{"id":"A","text":"Configure a CI/CD pipeline to update the Deployment manifest with the new container image tag and gradually replace Pods using a rolling update.","is_correct":false},{"id":"B","text":"Install Cloud Service Mesh on the GKE cluster. Create two Deployments — one for the current version and one for the new version. Use Cloud Service Mesh to route 5% of traffic to the new version.","is_correct":true},{"id":"C","text":"Create a second namespace for the new release, create a Deployment with the new version, and use an Ingress to split traffic between namespaces.","is_correct":false},{"id":"D","text":"Implement a rolling update pattern by replacing Pods gradually with the new release version.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Rolling updates replace all Pods incrementally with no traffic-splitting control; you cannot route exactly 5% of users to a specific version.","B":"Cloud Service Mesh (Istio) provides fine-grained traffic management at the service mesh level, enabling precise percentage-based routing between two running versions without changing replica counts.","C":"Kubernetes Ingress does not support percentage-based traffic splitting between namespaces; this is not a supported Ingress feature.","D":"Rolling updates migrate 100% of traffic to the new version progressively; they are not A/B tests and offer no way to hold at 5% traffic."},"references":[{"url":"https://cloud.google.com/service-mesh/docs/overview","text":"Cloud Service Mesh overview"},{"url":"https://cloud.google.com/service-mesh/docs/traffic-management","text":"Traffic management with Cloud Service Mesh"}]},
+  {"number":7,"domain":"Cloud Developer","case_study":null,"scenario":"A team is writing a backend application to implement the business logic for an interactive voice response (IVR) system. The application must handle bursty traffic and the team wants to minimize operational overhead. What should you do?","options":[{"id":"A","text":"Deploy the backend application on Cloud Run.","is_correct":true},{"id":"B","text":"Deploy the backend application on Cloud Run functions.","is_correct":false},{"id":"C","text":"Deploy the backend application on a GKE cluster in Standard mode.","is_correct":false},{"id":"D","text":"Deploy the backend application on Compute Engine.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Cloud Run is ideal for containerized backend services — it scales to zero, handles bursty IVR traffic automatically, and requires zero infrastructure management.","B":"Cloud Run functions are for event-driven, short-lived single-function handlers; a full backend application with business logic is better served as a containerized service on Cloud Run.","C":"GKE Standard requires cluster management, node sizing, and autoscaler configuration — significantly more operational overhead than Cloud Run.","D":"Compute Engine requires full VM management, OS patching, and manual autoscaling setup — the highest operational overhead of the options."},"references":[{"url":"https://cloud.google.com/run/docs/overview/what-is-cloud-run","text":"Cloud Run overview"},{"url":"https://cloud.google.com/run/docs/about-instance-autoscaling","text":"Cloud Run autoscaling"}]},
+  {"number":8,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing a new application and you want it to be triggered only when a specific file is updated in a Cloud Storage bucket. What should you do?","options":[{"id":"A","text":"Configure a Cloud Run function that executes the app, triggered when any object is created or updated in the bucket.","is_correct":false},{"id":"B","text":"Create an Eventarc trigger that monitors the Cloud Storage bucket for a specific filename and sends the event to a target service.","is_correct":true},{"id":"C","text":"Configure a Firebase function triggered when an object is updated in the bucket.","is_correct":false},{"id":"D","text":"Configure Cloud Storage events to be sent to Pub/Sub, and use Pub/Sub events to trigger a Cloud Build pipeline.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"A Cloud Storage trigger on a Cloud Run function fires on any object change in the bucket, not just a specific file — you'd need to add filtering logic inside the function.","B":"Eventarc supports filtering Cloud Storage events by object name prefix/suffix, allowing you to trigger only on the specific file without code-level filtering.","C":"Firebase functions are for Firebase-backed apps; this application lives on GCP with Cloud Storage, not Firebase Realtime Database or Firestore.","D":"Pub/Sub + Cloud Build is a CI/CD pattern, not appropriate for general application event triggering based on specific file updates."},"references":[{"url":"https://cloud.google.com/eventarc/docs/creating-triggers","text":"Eventarc triggers for Cloud Storage"},{"url":"https://cloud.google.com/eventarc/docs/overview","text":"Eventarc overview"}]},
+  {"number":9,"domain":"Cloud Developer","case_study":null,"scenario":"You have a Go application running in a production GKE cluster that needs to read data from BigQuery. You want to use the most secure authentication approach. What should you do?","options":[{"id":"A","text":"Create a Google service account with BigQuery access, add the JSON key to Secret Manager, and have the application retrieve the key at startup.","is_correct":false},{"id":"B","text":"Create a Google service account with BigQuery access, and add the JSON key as an environment variable in the Pod spec.","is_correct":false},{"id":"C","text":"Create a Google service account with BigQuery access, add the JSON key to a ConfigMap, and mount it as a volume in the Pod.","is_correct":false},{"id":"D","text":"Create a Google service account and a Kubernetes service account. Configure Workload Identity on the cluster and bind the Google service account to the Kubernetes service account.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Retrieving JSON keys from Secret Manager is better than hardcoding, but still creates a long-lived key that can be exfiltrated and is not automatically rotated.","B":"Storing JSON keys in Pod environment variables is a security antipattern — they are visible in kubectl describe and container runtime APIs.","C":"ConfigMaps are not secret stores and expose the key in plaintext in etcd; this is the least secure option.","D":"Workload Identity is the recommended GKE authentication approach — it eliminates service account key files entirely by binding GKE workloads to Google service accounts through short-lived credential federation."},"references":[{"url":"https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity","text":"GKE Workload Identity"},{"url":"https://cloud.google.com/iam/docs/best-practices-for-using-and-managing-service-accounts","text":"Service account best practices"}]},
+  {"number":10,"domain":"Cloud Developer","case_study":null,"scenario":"A flower ordering app has three microservices: Order Service, Order Fulfillment Service, and Notification Service. You want a resilient architecture that can handle bursts in traffic. Which architecture should you use?","options":[{"id":"A","text":"Order request → Order Service → Order Fulfillment Service → Notification Service (direct synchronous chain between all three services).","is_correct":false},{"id":"B","text":"Order request → Order Service → Cloud Storage bucket → Order Fulfillment Service → Cloud Storage bucket → Notification Service.","is_correct":false},{"id":"C","text":"Order request → Order Service → Firestore → Order Fulfillment Service → Firestore → Notification Service.","is_correct":false},{"id":"D","text":"Order request → Order Service → Pub/Sub topic → Order Fulfillment Service → Pub/Sub topic → Notification Service (with Firestore for persistence).","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"A synchronous chain means a slow Notification Service blocks Order Fulfillment, and a slow Order Fulfillment blocks the Order Service — no burst resilience, cascading failures.","B":"Cloud Storage as an inter-service queue requires polling, has no native push delivery, and is not designed for event-driven microservice communication.","C":"Polling Firestore between services adds latency and requires each service to periodically query for new items — not event-driven and not resilient to bursts.","D":"Pub/Sub decouples each service with durable, automatically-scaled queues that absorb burst traffic; each service processes at its own pace without cascading pressure."},"references":[{"url":"https://cloud.google.com/pubsub/docs/overview","text":"Pub/Sub overview"},{"url":"https://cloud.google.com/architecture/event-driven-architectures","text":"Event-driven architectures on GCP"}]},
+  {"number":11,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing a Java web server that needs to interact with the Cloud Storage API on behalf of users. Users should grant the web server permissions using their own Google credentials, and the application must use an access token to call the API. What should you do?","options":[{"id":"A","text":"Prompt the user for their Google username and password, and use those credentials directly to call the Cloud Storage API.","is_correct":false},{"id":"B","text":"Prompt the user for their Google username and password, then exchange the credentials for an access token to call the API.","is_correct":false},{"id":"C","text":"Route the user to an OAuth consent screen with the required Cloud Storage scopes, get an authorization code, exchange it for an access token, and use the token to call the Cloud Storage API.","is_correct":true},{"id":"D","text":"Route the user to an OAuth consent screen, then generate a signed JWT on behalf of the user and use it to call the Cloud Storage API.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Collecting usernames and passwords is a severe security antipattern — credentials are exposed to your application and violate OAuth best practices.","B":"Same problem as A — collecting raw credentials is prohibited; Google's OAuth flow never involves your application seeing the user's password.","C":"The OAuth 2.0 Authorization Code flow is the correct pattern: user consents on Google's screen, your app gets an authorization code, exchanges it for an access token scoped to only the requested permissions.","D":"Signed JWTs are used for service account authentication, not for acting on behalf of an end user; OAuth access tokens are required for delegated user access."},"references":[{"url":"https://developers.google.com/identity/protocols/oauth2","text":"Google OAuth 2.0 overview"},{"url":"https://cloud.google.com/storage/docs/authentication","text":"Cloud Storage authentication"}]},
+  {"number":12,"domain":"Cloud Developer","case_study":null,"scenario":"Your application is running on GKE and is using a logging library that outputs to stdout. You want structured log entries to appear correctly in Cloud Logging. What should you do?","options":[{"id":"A","text":"Update your application to output logs in JSON format and add the necessary metadata fields (such as severity) to the JSON objects.","is_correct":true},{"id":"B","text":"Change your logging library to the Cloud Logging client library and configure it to write logs.","is_correct":false},{"id":"C","text":"Install a Fluent Bit agent on GKE nodes and have the agent export all logs from /var/log to Cloud Logging.","is_correct":false},{"id":"D","text":"Update your application to output logs in CSV format and add the necessary metadata fields.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"GKE's built-in logging agent already collects stdout/stderr; outputting JSON with standard fields (severity, message, timestamp) causes Cloud Logging to parse them as structured log entries automatically.","B":"Switching to the Cloud Logging client library works but is a bigger code change; the simplest approach is JSON stdout since GKE already handles log collection.","C":"GKE already has a built-in Fluent Bit DaemonSet for log collection; adding another agent is redundant and doesn't fix the structured format issue.","D":"CSV is not a supported structured log format for Cloud Logging; JSON is the required format for automatic structured log parsing."},"references":[{"url":"https://cloud.google.com/logging/docs/structured-logging","text":"Structured logging in Cloud Logging"},{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/about-logs","text":"GKE logging overview"}]},
+  {"number":13,"domain":"Cloud Developer","case_study":null,"scenario":"A developer uses Cloud Shell to interact with Google Cloud services and stores user data locally in Cloud Shell. They want to ensure that data is not lost. What should you do?","options":[{"id":"A","text":"Store user data on the Cloud Shell home disk and log in at least every 120 days to prevent deletion.","is_correct":false},{"id":"B","text":"Store user data on a persistent disk attached to a Compute Engine instance.","is_correct":false},{"id":"C","text":"Store user data in a Cloud Storage bucket.","is_correct":true},{"id":"D","text":"Store user data in BigQuery tables.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"The Cloud Shell home disk is deleted after 120 days of inactivity, not guaranteed persistent storage — this is the exact problem the question asks you to solve.","B":"A persistent disk on Compute Engine requires a running VM to access and adds unnecessary infrastructure cost and management overhead.","C":"Cloud Storage is durable, globally accessible, inexpensive object storage — the right place to persist files that need to survive beyond a Cloud Shell session.","D":"BigQuery is an analytics data warehouse for structured data, not a file storage system for general developer data."},"references":[{"url":"https://cloud.google.com/shell/docs/how-cloud-shell-works","text":"How Cloud Shell works — persistent disk"},{"url":"https://cloud.google.com/storage/docs/introduction","text":"Cloud Storage overview"}]},
+  {"number":14,"domain":"Cloud Developer","case_study":null,"scenario":"Your team is developing unit tests for a Cloud Run function. A specific service account has the roles needed to interact with the Cloud Storage API for testing. You want Cloud Build to automatically run unit tests on every commit with minimum required permissions. What should you do?","options":[{"id":"A","text":"Configure Cloud Build to deploy the Cloud Run function; if the code passes tests, send a deployment notification.","is_correct":false},{"id":"B","text":"Configure Cloud Build to deploy the Cloud Run function using the specific service account as the build agent.","is_correct":false},{"id":"C","text":"Configure Cloud Build to run the unit tests; if the code passes, the developer manually deploys the Cloud Run function.","is_correct":false},{"id":"D","text":"Configure Cloud Build to run the unit tests using the specific service account as the build agent. If the code passes, the developer deploys the Cloud Run function.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Deploying on every commit gives Cloud Build deployment permissions it doesn't need for unit testing, violating least privilege.","B":"Using the testing service account to deploy grants it deployment permissions beyond what's needed for running tests against the Storage API.","C":"The developer manually deploying removes the value of CI/CD automation and doesn't follow the principle of minimum required permissions for the build service account.","D":"Using the specific service account only for running tests (Storage API access) means Cloud Build has exactly the permissions needed for the testing step — minimum required; deployment stays with the developer."},"references":[{"url":"https://cloud.google.com/build/docs/securing-builds/configure-user-specified-service-accounts","text":"Cloud Build user-specified service accounts"},{"url":"https://cloud.google.com/iam/docs/understanding-roles","text":"IAM least privilege"}]},
+  {"number":15,"domain":"Cloud Developer","case_study":null,"scenario":"You are deploying a Python application to Cloud Run using a Cloud Build pipeline. The pipeline runs: pip install, docker build (with gcr.io builder), docker push to Artifact Registry, and gcloud run deploy. Builds are slow. You want to optimize deployment times. What should you do?","options":[{"id":"A","text":"Add the --cache-from argument to the Docker build step to reuse previously built layers from Artifact Registry.","is_correct":true},{"id":"B","text":"Deploy a private Docker registry in a VPC and use Cloud Build worker pools inside the VPC.","is_correct":false},{"id":"C","text":"Store image artifacts in a Cloud Storage bucket in the same region as the Cloud Run instance.","is_correct":false},{"id":"D","text":"Remove the step that pushes the container image to Artifact Registry.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"--cache-from tells Docker to pull a previously built image from Artifact Registry and reuse unchanged layers, dramatically reducing build time for Python dependency layers that rarely change.","B":"A private VPC registry adds infrastructure complexity without addressing the root cause — repeated full layer rebuilds.","C":"Cloud Storage is not a container registry and cannot serve as a Docker image cache.","D":"Removing the push step means no image is stored for Cloud Run to pull — the deploy step would fail."},"references":[{"url":"https://cloud.google.com/build/docs/optimize-builds/kaniko-cache","text":"Speeding up builds with Kaniko cache"},{"url":"https://docs.docker.com/build/cache/","text":"Docker layer caching"}]},
+  {"number":16,"domain":"Cloud Developer","case_study":null,"scenario":"You are planning to add unit tests to your application. You need to assert that Pub/Sub messages published by your app are received by subscribers. You want to avoid charges and minimize test startup time. What should you do?","options":[{"id":"A","text":"Create a unique Pub/Sub topic and subscription for each test runner.","is_correct":false},{"id":"B","text":"Implement a mocking framework to simulate Pub/Sub message delivery in tests.","is_correct":false},{"id":"C","text":"Use the Pub/Sub emulator for unit testing.","is_correct":true},{"id":"D","text":"Add a filter by tester ID to an existing subscription.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Creating real Pub/Sub topics per test incurs costs and has provisioning latency, the opposite of what the question asks.","B":"A mock doesn't test real Pub/Sub message serialization, delivery semantics, or subscription filtering logic — it tests your mock, not your code.","C":"The Pub/Sub emulator runs locally, starts in milliseconds, is free, and supports the full Pub/Sub API so your tests exercise real publish/subscribe behavior.","D":"Filtering on an existing shared subscription creates test isolation problems between concurrent test runs."},"references":[{"url":"https://cloud.google.com/pubsub/docs/emulator","text":"Pub/Sub emulator"},{"url":"https://cloud.google.com/pubsub/docs/testing-pubsub","text":"Testing with Pub/Sub"}]},
+  {"number":17,"domain":"Cloud Developer","case_study":null,"scenario":"Before promoting new application code to production, you want to conduct user testing across a variety of users with minimal operational overhead. What should you do?","options":[{"id":"A","text":"Deploy on Cloud Run. Use traffic splitting to direct a subset of user traffic to the new version while retaining the ability to roll back.","is_correct":true},{"id":"B","text":"Deploy on Compute Engine. Use Traffic Director to direct a subset of user traffic to the new version.","is_correct":false},{"id":"C","text":"Deploy on GKE with Cloud Service Mesh. Use traffic splitting to direct a subset of traffic to the new version.","is_correct":false},{"id":"D","text":"Deploy on Cloud Run. Use traffic splitting with custom routing headers to direct traffic to the new version.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Cloud Run traffic splitting is a built-in, zero-overhead feature — you set a percentage in the console or CLI, and Cloud Run handles it; rollback is instant by adjusting the split.","B":"Traffic Director on Compute Engine requires configuring backend services and load balancer rules manually — significantly higher operational overhead.","C":"GKE with Cloud Service Mesh achieves traffic splitting but requires cluster management and service mesh configuration — much higher operational overhead than Cloud Run.","D":"Custom routing headers require changes to client code and header-based routing rules — unnecessary complexity when Cloud Run supports percentage-based splitting natively."},"references":[{"url":"https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration","text":"Cloud Run traffic splitting"},{"url":"https://cloud.google.com/run/docs/managing/revisions","text":"Managing Cloud Run revisions"}]},
+  {"number":18,"domain":"Cloud Developer","case_study":null,"scenario":"You are deploying a new API with three URL paths: /store, /orders, and /inventory. Each path maps to a separate backend Cloud Run function. You want to configure a load balancer to route to the three backends. What should you do?","options":[{"id":"A","text":"Create three Cloud Run functions and expose them as three backend services behind an HTTPS load balancer.","is_correct":false},{"id":"B","text":"Create one Cloud Run function and expose it directly without a load balancer.","is_correct":false},{"id":"C","text":"Create one Cloud Run function as a backend service exposed through an HTTPS load balancer with URL path routing configured.","is_correct":true},{"id":"D","text":"Create three Cloud Run functions and expose them directly without a load balancer.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Three separate backend services behind an HTTPS LB is possible but operationally complex; a single serverless NEG with URL map routing is the recommended pattern for Cloud Run path-based routing.","B":"A single Cloud Run function without a load balancer cannot serve three distinct URL paths from separate backends — there is no routing layer.","C":"A single HTTPS load balancer with URL map rules pointing each path (/store, /orders, /inventory) to its respective Cloud Run serverless NEG backend is the correct, scalable pattern.","D":"Three functions without a load balancer means three separate URLs with no unified domain or path-based routing."},"references":[{"url":"https://cloud.google.com/load-balancing/docs/https/setting-up-https-serverless","text":"Serverless NEG with HTTPS load balancer"},{"url":"https://cloud.google.com/run/docs/mapping-custom-domains","text":"Cloud Run with HTTPS load balancer"}]},
+  {"number":19,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing an event-driven application with a Pub/Sub topic. You want to process each message in the most scalable and cost-effective way. What should you do?","options":[{"id":"A","text":"Deploy code on Cloud Run functions. Use a Pub/Sub trigger to process new messages from the topic.","is_correct":true},{"id":"B","text":"Deploy code on Cloud Run functions with a Pub/Sub trigger and add manual retry logic for failures.","is_correct":false},{"id":"C","text":"Deploy your app on Compute Engine. Use a Pub/Sub push subscription to process new messages.","is_correct":false},{"id":"D","text":"Deploy your app on GKE. Use the Pub/Sub API to create a pull subscription.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Cloud Run functions with Pub/Sub trigger scales to zero when idle (cost-effective) and scales out automatically with message volume — the most cost-effective serverless event processing pattern.","B":"Pub/Sub already handles retries via acknowledgment deadlines; adding manual retry logic is redundant and complicates the function.","C":"Compute Engine runs 24/7 regardless of message volume, is not cost-effective for event-driven workloads, and requires manual scaling and patching.","D":"GKE with a pull subscription adds cluster management overhead and requires you to build your own scaling and retry logic."},"references":[{"url":"https://cloud.google.com/functions/docs/calling/pubsub","text":"Pub/Sub triggers for Cloud Run functions"},{"url":"https://cloud.google.com/pubsub/docs/push","text":"Pub/Sub push subscriptions"}]},
+  {"number":20,"domain":"Cloud Developer","case_study":null,"scenario":"Your app runs in a single GKE cluster split into two Deployments: an order service and a payment service. The order service needs to communicate with the payment service without exposing it to the internet, using the GKE Gateway API. Choose two actions.","options":[{"id":"A","text":"Create a Gateway with the Gateway Class Name set to gke-l7-rilb (internal Application Load Balancer).","is_correct":true},{"id":"B","text":"Create a Service with the annotation networking.gke.io/load-balancer-type: \"Internal\".","is_correct":false},{"id":"C","text":"Create a Service of type LoadBalancer.","is_correct":false},{"id":"D","text":"Create a Service of type NodePort.","is_correct":false},{"id":"E","text":"Create a Service with a selector that matches both Deployments simultaneously.","is_correct":false},{"id":"F","text":"Create an HTTPRoute resource pointing to the backend Services for each Deployment.","is_correct":true}],"correct_answer":["A","F"],"multi_select":true,"explanations":{"A":"The gke-l7-rilb Gateway class provisions an internal Application Load Balancer, keeping traffic within the VPC and not exposed to the internet — correct for internal service-to-service communication.","B":"The networking.gke.io/load-balancer-type annotation is for the legacy Service-based L4 load balancer, not the Gateway API — different API surface.","C":"A Service of type LoadBalancer provisions an external load balancer by default, exposing the service to the internet.","D":"NodePort exposes the service on each node's IP at a static port; it doesn't use the Gateway API and can be accessible outside the cluster.","E":"A single selector cannot match Pods from two different Deployments with different labels; services route to Pods via selectors, not Deployment names.","F":"HTTPRoute is the Gateway API resource that defines routing rules pointing to backend Services; it works together with the Gateway to route HTTP traffic to the correct service."},"references":[{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/gateway-api","text":"GKE Gateway API overview"},{"url":"https://gateway-api.sigs.k8s.io/","text":"Kubernetes Gateway API"}]},
+  {"number":21,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing an application with microservices that must remain internal to the GKE cluster. You want the application to be scalable and support graceful restarts. What should you do?","options":[{"id":"A","text":"Deploy each microservice as a Deployment. Expose each using a Service, and use the Service DNS name to communicate between microservices.","is_correct":true},{"id":"B","text":"Deploy each microservice as a Deployment. Expose each using an Ingress, and use the Ingress DNS name for internal communication.","is_correct":false},{"id":"C","text":"Deploy each microservice as a Pod. Expose each using a Service, and use the Service DNS name for communication.","is_correct":false},{"id":"D","text":"Deploy each microservice as a Pod. Expose each using an Ingress, and use the Ingress DNS name for communication.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Deployments provide replica management and rolling updates (graceful restarts); Services provide stable DNS names and load balance across Pod replicas — the canonical GKE pattern for scalable microservices.","B":"Ingress is for external HTTP/S traffic routing into the cluster, not for internal service-to-service communication; using it internally adds unnecessary complexity.","C":"Bare Pods (not in a Deployment) don't self-heal on failure and don't support rolling updates — no graceful restarts.","D":"Bare Pods with Ingress combines both antipatterns: no rolling restart capability and external-facing routing for internal traffic."},"references":[{"url":"https://kubernetes.io/docs/concepts/workloads/controllers/deployment/","text":"Kubernetes Deployments"},{"url":"https://kubernetes.io/docs/concepts/services-networking/service/","text":"Kubernetes Services"}]},
+  {"number":22,"domain":"Cloud Developer","case_study":null,"scenario":"Your application runs as a container in GKE and needs to access a secret securely. What should you do?","options":[{"id":"A","text":"Create a Kubernetes Secret and pass it as an environment variable to the container.","is_correct":false},{"id":"B","text":"Enable GKE Application-layer Secrets Encryption using Cloud KMS, and store the secret as a Kubernetes Secret.","is_correct":false},{"id":"C","text":"Store the secret in Cloud KMS, create a Google service account with permission to read the secret, and mount it as a volume.","is_correct":false},{"id":"D","text":"Store the secret in Secret Manager, create a Google service account with permission to read the secret, and reference it in the container.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Kubernetes Secrets stored as environment variables are base64-encoded (not encrypted) at rest by default and exposed in kubectl describe output.","B":"Application-layer encryption with KMS encrypts secrets in etcd but they are still Kubernetes Secrets — Secret Manager provides audit logging, versioning, and fine-grained IAM that Kubernetes Secrets lack.","C":"Cloud KMS is an encryption key management service, not a secrets store; secrets stored directly in KMS are not easily retrieved at runtime the way Secret Manager secrets are.","D":"Secret Manager is the GCP-native secret store with automatic versioning, audit logging, fine-grained IAM, and native GKE integration via Workload Identity."},"references":[{"url":"https://cloud.google.com/secret-manager/docs/overview","text":"Secret Manager overview"},{"url":"https://cloud.google.com/secret-manager/docs/using-other-products/kubernetes","text":"Secret Manager with GKE"}]},
+  {"number":23,"domain":"Cloud Developer","case_study":null,"scenario":"You have a microservices application on GKE using Istio with mutual TLS (mTLS) enabled. Some HTTP requests between microservices are being rejected with 403 status codes. What is the most likely cause?","options":[{"id":"A","text":"A Kubernetes NetworkPolicy resource is blocking HTTP traffic between the Pods.","is_correct":false},{"id":"B","text":"The Pod initiating requests is connecting to the target Pod via an incorrect port number.","is_correct":false},{"id":"C","text":"The AuthorizationPolicy of the cluster is blocking HTTP requests for specific paths within your services.","is_correct":true},{"id":"D","text":"The cluster has mTLS configured in permissive mode, but the Pod's sidecar proxy is sending unencrypted traffic.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"NetworkPolicy blocks connections at the TCP level and results in connection timeouts or refused connections, not 403 Forbidden HTTP responses.","B":"An incorrect port would produce connection refused or timeout errors, not 403 Forbidden from the application.","C":"Istio AuthorizationPolicy controls access at the HTTP layer and can deny specific HTTP methods or paths, returning 403 Forbidden — the exact symptom described.","D":"mTLS permissive mode allows both plaintext and mTLS; a mismatch would result in connection errors (TLS handshake failure), not 403 HTTP responses."},"references":[{"url":"https://istio.io/latest/docs/reference/config/security/authorization-policy/","text":"Istio AuthorizationPolicy reference"},{"url":"https://cloud.google.com/service-mesh/docs/security/authorization-policy-overview","text":"Cloud Service Mesh authorization policies"}]},
+  {"number":24,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing a microservice-based application on GKE. Services need to access different Google Cloud APIs. You want to follow security best practices for service account access. Choose two actions.","options":[{"id":"A","text":"Use the service account attached to the GKE node for all workloads.","is_correct":false},{"id":"B","text":"Enable Workload Identity on the GKE cluster.","is_correct":true},{"id":"C","text":"Access Google service account JSON keys from Secret Manager at startup.","is_correct":false},{"id":"D","text":"Store Google service account JSON keys in Secret Manager.","is_correct":false},{"id":"E","text":"Use gcloud to bind the Google service accounts to Kubernetes service accounts using the roles/iam.workloadIdentityUser role.","is_correct":true}],"correct_answer":["B","E"],"multi_select":true,"explanations":{"A":"Using the node service account grants all workloads on the node the same permissions, violating least privilege — one compromised pod can access all APIs the node can reach.","B":"Workload Identity must be enabled on the cluster first; it federates Kubernetes service account identity to Google IAM without requiring key files.","C":"Fetching key files from Secret Manager at startup still creates long-lived credential files in memory/disk that can be exfiltrated.","D":"Storing keys in Secret Manager is safer than plaintext but still relies on long-lived key files; Workload Identity eliminates keys entirely.","E":"Binding a Google service account (GSA) to a Kubernetes service account (KSA) via roles/iam.workloadIdentityUser is the required step to make Workload Identity work — the KSA impersonates the GSA."},"references":[{"url":"https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity","text":"GKE Workload Identity"},{"url":"https://cloud.google.com/iam/docs/workload-identity-federation","text":"Workload Identity Federation"}]},
+  {"number":25,"domain":"Cloud Developer","case_study":null,"scenario":"The product team requires autoscaling for a stateless distributed service on GKE. You want to efficiently autoscale based on the most relevant metric for the workload. What should you do?","options":[{"id":"A","text":"Deploy a Vertical Pod Autoscaler (VPA) and configure it to scale based on CPU load.","is_correct":false},{"id":"B","text":"Deploy a Vertical Pod Autoscaler (VPA) and configure it to scale based on a custom metric.","is_correct":false},{"id":"C","text":"Deploy a Horizontal Pod Autoscaler (HPA) and configure it to scale based on CPU load.","is_correct":false},{"id":"D","text":"Deploy a Horizontal Pod Autoscaler (HPA) and configure it to scale based on a custom metric.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"VPA adjusts the CPU/memory requests of existing Pods (vertical scaling); it doesn't add more Pod replicas to handle distributed load.","B":"VPA does not support custom metrics for scaling decisions; it only adjusts resource requests based on historical usage.","C":"CPU is often not the best metric for stateless services — queue depth, request rate, or latency are more representative of load; HPA is right but CPU is suboptimal.","D":"HPA with a custom metric (e.g., Pub/Sub backlog, requests-per-second from Cloud Monitoring) scales out/in the number of Pod replicas based on the signal most relevant to the workload's actual demand."},"references":[{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/horizontalpodautoscaler","text":"GKE Horizontal Pod Autoscaler"},{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/custom-and-external-metrics","text":"Custom and external metrics for HPA"}]}
+  ,{"number":26,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing an ecommerce platform where users log in, add items to a cart, and check out. You need session and shopping cart data to be shared across all server instances and to persist between user sessions. What should you do?","options":[{"id":"A","text":"Store session and shopping cart information in local server memory and enable cookie-based session affinity on the load balancer.","is_correct":false},{"id":"B","text":"Store shopping cart information in Cloud Storage where the object name is the session ID.","is_correct":false},{"id":"C","text":"Store session and shopping cart information in BigQuery tables.","is_correct":false},{"id":"D","text":"Store the session information and the shopping cart information in Memorystore for Redis.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Local server memory is not shared across instances; session affinity routes a user to one server but breaks on server restart or scale-out events.","B":"Cloud Storage has high latency for per-request reads/writes (tens of milliseconds per object) and is not designed for session data that requires low-latency access on every page load.","C":"BigQuery is an analytics warehouse optimised for large batch queries, not sub-millisecond session lookups for real-time ecommerce traffic.","D":"Memorystore for Redis is a managed, in-memory key-value store with sub-millisecond latency, perfect for shared session data across instances and persistent shopping carts."},"references":[{"url":"https://cloud.google.com/memorystore/docs/redis/redis-overview","text":"Memorystore for Redis overview"},{"url":"https://cloud.google.com/architecture/session-management","text":"Session management on GCP"}]}
+  ,{"number":27,"domain":"Cloud Developer","case_study":null,"scenario":"You need to build a public API that authenticates callers, enforces quotas, and reports metrics. The architecture diagram shows: Client → Cloud Load Balancing → [?] → PHP Application. What should go in [?]?","options":[{"id":"A","text":"Cloud Run","is_correct":false},{"id":"B","text":"Cloud Endpoints","is_correct":true},{"id":"C","text":"Identity-Aware Proxy","is_correct":false},{"id":"D","text":"GKE Ingress for HTTP(S) Load Balancing","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Cloud Run is a compute platform, not an API gateway; it doesn't provide built-in API key authentication, quota enforcement, or developer console metrics.","B":"Cloud Endpoints sits between the load balancer and your backend, providing API key authentication, per-consumer quota enforcement, and automatic metrics to Cloud Monitoring — exactly what the question describes.","C":"IAP authenticates Google accounts for accessing internal apps; it doesn't enforce API quotas or report per-consumer API usage metrics.","D":"GKE Ingress is a load balancer front-end for GKE workloads; it doesn't provide API management features like quota enforcement or API key authentication."},"references":[{"url":"https://cloud.google.com/endpoints/docs/openapi/about-cloud-endpoints","text":"Cloud Endpoints overview"},{"url":"https://cloud.google.com/endpoints/docs/openapi/quotas-overview","text":"Quotas and limits with Cloud Endpoints"}]}
+  ,{"number":28,"domain":"Cloud Developer","case_study":null,"scenario":"A web application transfers log data to a Cloud Storage bucket daily. Users can access data for at most 14 days after it was written. After 14 days, data should move to Coldline storage. You must prevent data deletion for compliance. Choose two actions.","options":[{"id":"A","text":"Use the Bucket Lock feature to set a retention policy on the data.","is_correct":true},{"id":"B","text":"Run a scheduled job to set the storage class to Coldline for objects older than 14 days.","is_correct":false},{"id":"C","text":"Create a JSON Web Token (JWT) for users who need access to Coldline buckets.","is_correct":false},{"id":"D","text":"Create a lifecycle management policy to set the storage class to Coldline for objects older than 14 days.","is_correct":true},{"id":"E","text":"Create a lifecycle management policy to set the storage class to Nearline for objects older than 14 days.","is_correct":false}],"correct_answer":["A","D"],"multi_select":true,"explanations":{"A":"Bucket Lock with a retention policy makes objects WORM (write once, read many) — objects cannot be deleted or overwritten until the retention period expires, satisfying compliance requirements.","B":"A custom scheduled job to change storage class is fragile, error-prone, and unnecessary when lifecycle management handles this automatically.","C":"JWTs are authentication tokens; they have nothing to do with preventing data deletion or changing storage class.","D":"A lifecycle rule with a SetStorageClass action to Coldline after 14 days is the managed, automatic way to transition objects to cheaper storage without writing custom code.","E":"Nearline is for data accessed less than once per month; Coldline is for data accessed less than once per quarter — given users access data for 14 days then not again, Coldline (not Nearline) is the appropriate transition target."},"references":[{"url":"https://cloud.google.com/storage/docs/bucket-lock","text":"Cloud Storage Bucket Lock"},{"url":"https://cloud.google.com/storage/docs/lifecycle","text":"Object lifecycle management"}]}
+  ,{"number":29,"domain":"Cloud Developer","case_study":null,"scenario":"Your application stores and accesses objects in Cloud Storage. A regulatory requirement states that objects must be accessible only for 7 years after their creation date. Choose two actions.","options":[{"id":"A","text":"Set a retention policy on the bucket with a retention period of 7 years.","is_correct":true},{"id":"B","text":"Include the creation time in the prefix of the object name and use IAM Conditions to grant access only within the 7-year window.","is_correct":true},{"id":"C","text":"Enable Object Versioning to prevent accidental deletion of objects for 7 years.","is_correct":false},{"id":"D","text":"Create an object lifecycle policy that moves objects from Standard to Archive storage after 7 years.","is_correct":false},{"id":"E","text":"Implement a Cloud Run function that checks the age of each object and deletes them after 7 years.","is_correct":false}],"correct_answer":["A","B"],"multi_select":true,"explanations":{"A":"A bucket retention policy ensures objects cannot be deleted before the 7-year period expires — the compliance enforcement mechanism.","B":"Including the creation timestamp in the object name prefix and using IAM Conditions with a date-based condition restricts access to only the 7-year window, automatically denying access after expiry.","C":"Object Versioning prevents accidental overwrites/deletes but doesn't enforce a 7-year access window or deletion after the period ends.","D":"Moving to Archive storage after 7 years changes the storage class but doesn't deny access or enforce deletion; objects remain retrievable.","E":"A Cloud Run function could delete objects, but it's a fragile custom solution that requires scheduling, error handling, and doesn't provide the IAM-enforced access restriction."},"references":[{"url":"https://cloud.google.com/storage/docs/bucket-lock","text":"Retention policies with Bucket Lock"},{"url":"https://cloud.google.com/iam/docs/conditions-overview","text":"IAM Conditions overview"}]}
+  ,{"number":30,"domain":"Cloud Developer","case_study":null,"scenario":"You are building a web application with highly variable traffic. Your team is experienced with containers and you want to deploy as a containerized service requiring minimal operational effort. What should you do?","options":[{"id":"A","text":"Build the app with Firestore as the database and deploy to Cloud Run.","is_correct":true},{"id":"B","text":"Build the app with Firestore as the database and deploy to a GKE Standard cluster.","is_correct":false},{"id":"C","text":"Build the app with Cloud SQL as the database and deploy to a GKE Autopilot cluster.","is_correct":false},{"id":"D","text":"Build the app with Firestore as the database and deploy to Compute Engine managed instance groups.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Cloud Run is fully managed, scales to zero during no traffic and to hundreds of instances during peaks — ideal for highly variable traffic; Firestore is serverless and scales automatically with the app.","B":"GKE Standard requires cluster management, node pool sizing, and autoscaler configuration — significantly more operational effort than Cloud Run.","C":"Cloud SQL requires connection pooling configuration to handle Cloud Run's ephemeral instances, and GKE Autopilot still requires cluster-level management decisions.","D":"Compute Engine MIGs require autoscaling policy tuning, instance template management, and health check configuration — high operational overhead."},"references":[{"url":"https://cloud.google.com/run/docs/overview/what-is-cloud-run","text":"Cloud Run overview"},{"url":"https://cloud.google.com/firestore/docs/overview","text":"Firestore overview"}]}
+  ,{"number":31,"domain":"Cloud Developer","case_study":null,"scenario":"Development teams want to use open source operating systems in container images. When images are deployed to a GKE cluster, you need to identify vulnerabilities in the base image. What should you do?","options":[{"id":"A","text":"Enable the Container Analysis API to conduct vulnerability scans on images stored in Artifact Registry.","is_correct":true},{"id":"B","text":"Create a Cloud Run service triggered on code check-in to scan container images for CVEs.","is_correct":false},{"id":"C","text":"Disallow use of non-commercially-supported base images across the organization.","is_correct":false},{"id":"D","text":"Use Cloud Monitoring to review Cloud Build output logs to identify vulnerable versions.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"The Container Analysis API (part of Artifact Analysis) automatically scans container images in Artifact Registry for known CVEs when images are pushed, providing continuous vulnerability reports without custom code.","B":"Building a custom Cloud Run scanner duplicates functionality that Container Analysis already provides as a managed service; it also adds maintenance burden.","C":"Prohibiting open source base images removes access to the majority of the container ecosystem and doesn't identify vulnerabilities — it avoids the problem instead of solving it.","D":"Cloud Build logs show build steps, not container vulnerability data; Cloud Monitoring is for metrics, not static analysis of image contents."},"references":[{"url":"https://cloud.google.com/artifact-analysis/docs/container-scanning-overview","text":"Container scanning with Artifact Analysis"},{"url":"https://cloud.google.com/artifact-registry/docs/analysis","text":"Vulnerability scanning in Artifact Registry"}]}
+  ,{"number":32,"domain":"Cloud Developer","case_study":null,"scenario":"Your CI pipeline uses Cloud Build to build a Docker image (FROM python:3.7-alpine, COPY, RUN pip install, CMD gunicorn), run tests, and push to Artifact Registry. Cloud Build runs are taking longer than expected. Choose two actions to decrease build time.","options":[{"id":"A","text":"Select a virtual machine size with higher CPU for Cloud Build runs.","is_correct":true},{"id":"B","text":"Deploy a Container Registry on a Compute Engine VM in your VPC and use it to store final images.","is_correct":false},{"id":"C","text":"Cache the container image layers for subsequent builds using the --cache-from argument in your build config file.","is_correct":true},{"id":"D","text":"Change the base image to ubuntu:latest and install Python 3.7 using the package manager.","is_correct":false},{"id":"E","text":"Store the application source code on Cloud Storage and configure the pipeline to use gsutil to download it.","is_correct":false}],"correct_answer":["A","C"],"multi_select":true,"explanations":{"A":"A higher-CPU Cloud Build machine type accelerates compilation steps (pip install, test execution) that are CPU-bound; Cloud Build supports machine type selection in the build config.","B":"A self-hosted registry adds network hops and infrastructure to manage, and doesn't address the root cause of slow builds.","C":"--cache-from pulls the previously built image from Artifact Registry and reuses unchanged layers (especially the pip install layer), dramatically reducing rebuild time.","D":"Switching from python:3.7-alpine (small, minimal) to ubuntu:latest (large, full OS) makes the image bigger and slower to build and push — the opposite of the goal.","E":"Downloading source from Cloud Storage is slower than using the built-in source upload in Cloud Build and adds gsutil latency to every build."},"references":[{"url":"https://cloud.google.com/build/docs/optimize-builds/kaniko-cache","text":"Optimizing Cloud Build with caching"},{"url":"https://cloud.google.com/build/docs/build-config-file-schema#machineType","text":"Cloud Build machine types"}]}
+  ,{"number":33,"domain":"Cloud Developer","case_study":null,"scenario":"Your application is hosted on Cloud Run and writes log records as text to local disk files. You need these logs to appear in Cloud Logging. What should you do?","options":[{"id":"A","text":"Import the Cloud Logging client library into your application and use it to write logs.","is_correct":false},{"id":"B","text":"Use your programming language's built-in logger to write logs to standard output (stdout) and standard error (stderr).","is_correct":true},{"id":"C","text":"Expose the log files at a public URL and manually download and upload them to Cloud Logging.","is_correct":false},{"id":"D","text":"Schedule a cron job to copy log files to Cloud Storage once a day.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"The Cloud Logging client library works but is unnecessary; Cloud Run automatically captures stdout/stderr and forwards them to Cloud Logging without any library changes.","B":"Cloud Run's runtime automatically collects everything written to stdout/stderr and streams it to Cloud Logging in real time — the simplest approach requiring no code changes to the logging destination.","C":"Manual download/upload is not a scalable or real-time solution and would not provide the continuous log visibility needed in production.","D":"Daily Cloud Storage copies introduce 24-hour lag in log availability and don't feed into Cloud Logging's query and alerting features."},"references":[{"url":"https://cloud.google.com/run/docs/logging","text":"Cloud Run logging"},{"url":"https://cloud.google.com/logging/docs/overview","text":"Cloud Logging overview"}]}
+  ,{"number":34,"domain":"Cloud Developer","case_study":null,"scenario":"You need to call the Cloud Storage API from a Compute Engine instance that does not have internet access. The instance has the correct service account permissions. What should you do?","options":[{"id":"A","text":"Use Carrier Peering to route traffic to the Cloud Storage API.","is_correct":false},{"id":"B","text":"Use VPC Network Peering with Google's network to route API traffic.","is_correct":false},{"id":"C","text":"Use a Shared VPC network to access Cloud Storage from the instance.","is_correct":false},{"id":"D","text":"Enable Private Google Access on the subnet where the Compute Engine instance resides.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Carrier Peering is for connecting on-premises networks to Google's network via a carrier — not applicable for VMs already inside GCP VPCs.","B":"VPC Network Peering connects two VPC networks together; it doesn't route traffic to Google APIs for instances without external IPs.","C":"Shared VPC shares a VPC across projects but doesn't inherently enable access to Google APIs from instances without external IPs.","D":"Private Google Access allows VM instances with no external IP addresses to reach Google APIs and services (including Cloud Storage) using Google's internal network, without requiring internet access."},"references":[{"url":"https://cloud.google.com/vpc/docs/private-google-access","text":"Private Google Access"},{"url":"https://cloud.google.com/storage/docs/request-endpoints","text":"Cloud Storage request endpoints"}]}
+  ,{"number":35,"domain":"Cloud Developer","case_study":null,"scenario":"Your application performs well locally but is significantly slower when running on Compute Engine. You want to diagnose the cause of the slowdown. What should you do?","options":[{"id":"A","text":"File a ticket with Cloud Support indicating that the application performs faster locally.","is_correct":false},{"id":"B","text":"Use Cloud Debugger snapshots to look at point-in-time execution state.","is_correct":false},{"id":"C","text":"Use Cloud Profiler to determine which functions within the application take the longest to execute.","is_correct":true},{"id":"D","text":"Add logging commands throughout the app and use Cloud Logging to find where the latency problem is.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Filing a support ticket is premature without diagnostic data; the slowdown is likely an application-level issue, not a platform bug.","B":"Cloud Debugger snapshots capture variable state at a specific code line; they don't provide performance profiling or CPU/memory hotspot analysis.","C":"Cloud Profiler continuously profiles CPU and memory usage of running applications and shows which function calls consume the most time — exactly what's needed to diagnose a slowdown.","D":"Adding manual log statements is time-consuming, imprecise, and doesn't provide the statistical sampling that a profiler does for finding hotspots."},"references":[{"url":"https://cloud.google.com/profiler/docs/about-profiler","text":"Cloud Profiler overview"},{"url":"https://cloud.google.com/profiler/docs/profiling-go","text":"Cloud Profiler language support"}]}
+  ,{"number":36,"domain":"Cloud Developer","case_study":null,"scenario":"You are building an ecommerce web app using Cloud Run and Memorystore for Redis. Developers can connect to the Redis instance from their local machines, but the Cloud Run service cannot connect. What is the most likely cause?","options":[{"id":"A","text":"The Memorystore for Redis instance was deployed without a public IP address.","is_correct":false},{"id":"B","text":"The Serverless VPC Access connector is configured in a different region than your Cloud Run service.","is_correct":true},{"id":"C","text":"The firewall rule allowing connections between Cloud Run and Memorystore was removed.","is_correct":false},{"id":"D","text":"The Serverless VPC Access connector is configured on a different subnet than the Redis instance.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Memorystore for Redis intentionally has no public IP — it's accessed via VPC; this is by design, not the cause of the problem.","B":"Serverless VPC Access connectors are regional; a Cloud Run service in us-central1 using a connector in us-east1 cannot route VPC traffic correctly — the connector must be in the same region as the Cloud Run service.","C":"Cloud Run does not use firewall rules directly; connectivity to Memorystore goes through the Serverless VPC Access connector which routes through VPC firewall rules, but a regional mismatch is the more common cause.","D":"The connector and Redis instance subnet don't need to be the same; they need to be in the same VPC and the connector needs to be in the same region as Cloud Run."},"references":[{"url":"https://cloud.google.com/run/docs/configuring/connecting-vpc","text":"Connecting Cloud Run to a VPC"},{"url":"https://cloud.google.com/vpc/docs/configure-serverless-vpc-access","text":"Serverless VPC Access"}]}
+  ,{"number":37,"domain":"Cloud Developer","case_study":null,"scenario":"You are replatforming a legacy monolithic application onto GKE. The monolith has a configuration file that must be shared across all microservices. You want to share this config file across all Pods in the cluster. What should you do?","options":[{"id":"A","text":"Create a Cloud Storage bucket and mount it via Cloud Storage FUSE in each container.","is_correct":false},{"id":"B","text":"Create a persistent disk and mount it as a shared PersistentVolume across all Pods.","is_correct":false},{"id":"C","text":"Create a Filestore instance and mount it as an NFS PersistentVolume in each Pod.","is_correct":false},{"id":"D","text":"Create a ConfigMap and use a volumeMount to store the configuration file contents, making it available to all Pods.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Cloud Storage FUSE adds latency, requires a FUSE sidecar, and is heavy infrastructure for a simple config file that doesn't change often.","B":"A persistent disk (ReadWriteOnce) can only be attached to one node at a time; it cannot be shared across Pods on different nodes.","C":"Filestore (NFS) works for shared file access but is expensive and complex for a simple static configuration file that ConfigMap handles natively.","D":"ConfigMap is the Kubernetes-native solution for configuration data; it can be mounted as a file volume in all Pods simultaneously, updated centrally, and requires no external infrastructure."},"references":[{"url":"https://kubernetes.io/docs/concepts/configuration/configmap/","text":"Kubernetes ConfigMaps"},{"url":"https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/","text":"Configure Pods using ConfigMaps"}]}
+  ,{"number":38,"domain":"Cloud Developer","case_study":null,"scenario":"You are redesigning the ingestion of audit events from an authentication service. You expect a large increase in event volume. Individual audit service instances need to pick up and process events, and each event must be processed exactly once. What should you do?","options":[{"id":"A","text":"Create one Pub/Sub topic and one pull subscription; all audit service instances share the subscription.","is_correct":true},{"id":"B","text":"Create one Pub/Sub topic and one pull subscription per audit service instance.","is_correct":false},{"id":"C","text":"Create one Pub/Sub topic and one push subscription.","is_correct":false},{"id":"D","text":"Create one Pub/Sub topic per authentication service instance and one pull subscription per topic.","is_correct":false},{"id":"E","text":"Create one Pub/Sub topic per authentication service instance and one push subscription per topic.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"A single pull subscription shared across all consumers is the standard competing-consumers pattern in Pub/Sub: each message is delivered to exactly one subscriber, achieving exactly-once processing and natural load distribution.","B":"One subscription per instance means each instance receives all messages — every event would be processed N times (once per instance), not exactly once.","C":"A push subscription delivers to a single endpoint; you'd need logic to distribute work, and it doesn't support the competing-consumers pattern across multiple service instances.","D":"One topic per authentication instance creates operational complexity and doesn't achieve the required exactly-once processing across audit service consumers.","E":"Same problem as D, compounded by push semantics which complicate fan-out distribution."},"references":[{"url":"https://cloud.google.com/pubsub/docs/subscriber","text":"Pub/Sub subscriber overview"},{"url":"https://cloud.google.com/pubsub/docs/pull","text":"Pull subscriptions"}]}
+  ,{"number":39,"domain":"Cloud Developer","case_study":null,"scenario":"You are in the final stage of migrating your data center to Google Cloud. A Web API running on a server being decommissioned needs to be modernized. Requirements: it must autoscale during high traffic at month-end, is written in Python 3.x, and developers must be able to rapidly deploy new versions. You want to minimize cost, effort, and operational overhead. What should you do?","options":[{"id":"A","text":"Modernize the application and deploy it on App Engine flexible environment.","is_correct":false},{"id":"B","text":"Modernize the application and deploy it on Cloud Run.","is_correct":true},{"id":"C","text":"Deploy the modernized application to an n1-standard-1 Compute Engine instance.","is_correct":false},{"id":"D","text":"Ask the development team to rewrite the application to run as a container on GKE.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"App Engine flexible environment runs containers on VMs that don't scale to zero and have a minimum of 1 instance running at all times — higher cost than Cloud Run for variable traffic.","B":"Cloud Run containerizes the Python app, scales to zero between month-end peaks (minimizing cost), supports rapid deployment via CI/CD, and requires zero infrastructure management.","C":"A single fixed Compute Engine instance cannot autoscale and represents exactly the kind of static server being decommissioned; this doesn't modernize anything.","D":"Rewriting for GKE adds development effort, cluster management overhead, and infrastructure costs — the question specifically asks to minimize all three."},"references":[{"url":"https://cloud.google.com/run/docs/overview/what-is-cloud-run","text":"Cloud Run overview"},{"url":"https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service","text":"Deploy a Python service to Cloud Run"}]}
+  ,{"number":40,"domain":"Cloud Developer","case_study":null,"scenario":"You are developing an application using a new programming language that has no Cloud Client Libraries or Google Auth libraries available. You want to authenticate to Google Cloud APIs. What should you do?","options":[{"id":"A","text":"Include an API key with the application and pass the key value in the Authorization header.","is_correct":false},{"id":"B","text":"Retrieve the access token from the Compute Engine metadata server and pass it in the Authorization header.","is_correct":true},{"id":"C","text":"Use an API key for the service account as the value of the GOOGLE_APPLICATION_CREDENTIALS environment variable.","is_correct":false},{"id":"D","text":"Store the output of gcloud auth application-default print-access-token in a file at startup and reference it via GOOGLE_APPLICATION_CREDENTIALS.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"API keys are not service account credentials and don't authenticate to most Google Cloud APIs; they are only for specific public APIs like Maps and do not provide IAM-based access.","B":"The Compute Engine metadata server (http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token) returns short-lived OAuth 2.0 access tokens that can be used in the Authorization: Bearer header for any Google Cloud API call.","C":"GOOGLE_APPLICATION_CREDENTIALS expects a path to a JSON service account key file, not an API key string; this is also not how API keys work for IAM authentication.","D":"gcloud application-default tokens expire quickly; caching them in a file at startup without refresh logic will break when the token expires (typically after 1 hour)."},"references":[{"url":"https://cloud.google.com/compute/docs/metadata/overview","text":"Compute Engine metadata server"},{"url":"https://cloud.google.com/docs/authentication/token-types","text":"Google Cloud token types"}]}
+  ,{"number":41,"domain":"Cloud Developer","case_study":null,"scenario":"You are creating a web application that needs to write a file to any user's Google Drive regardless of their account domain. The application should only write after the user explicitly grants permission. What should you do?","options":[{"id":"A","text":"Use an OAuth Client ID with delegated domain-wide authority.","is_correct":false},{"id":"B","text":"Use a service account with delegated domain-wide authority.","is_correct":false},{"id":"C","text":"Use an OAuth Client ID with the https://www.googleapis.com/auth/drive.file scope to obtain a per-user access token.","is_correct":true},{"id":"D","text":"Use a service account with the https://www.googleapis.com/auth/drive.file scope to generate a signed JWT.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Domain-wide delegation allows acting on behalf of all users in a specific Google Workspace domain; it cannot be used for arbitrary users across any domain.","B":"Service account domain-wide delegation is restricted to a single Workspace domain — it cannot impersonate users from external domains, and doesn't require user consent.","C":"OAuth 2.0 with drive.file scope requests explicit user consent, works for any Google account regardless of domain, and grants the app access only to files it creates — the minimum required permission.","D":"Service account JWTs authenticate the service account itself, not individual users; users cannot grant consent to a service account to write to their personal Drive."},"references":[{"url":"https://developers.google.com/drive/api/guides/api-specific-auth","text":"Drive API authorization"},{"url":"https://developers.google.com/identity/protocols/oauth2/scopes","text":"Google OAuth 2.0 scopes"}]}
+  ,{"number":42,"domain":"Cloud Developer","case_study":null,"scenario":"You have a mobile web application where global users vote on popular topics. You expect millions of votes globally. You need low-latency write processing and near-real-time vote counts and trends. What should you do?","options":[{"id":"A","text":"Save votes to Memorystore for Redis, use Cloud Run functions to insert counts into BigQuery, and display data from BigQuery.","is_correct":false},{"id":"B","text":"Publish votes to Pub/Sub, use a Dataflow pipeline to insert counts and votes into BigQuery, and display data from BigQuery.","is_correct":true},{"id":"C","text":"Publish votes to Pub/Sub, use Cloud Run functions to insert counts into Cloud SQL, and display data from Cloud SQL.","is_correct":false},{"id":"D","text":"Use Firebase to authenticate mobile users, publish votes directly to Firestore, and export to BigQuery for display.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Memorystore has limited capacity and durability for millions of votes; using Cloud Run functions to batch-insert into BigQuery introduces fan-out scalability issues.","B":"Pub/Sub absorbs millions of concurrent votes durably, and Dataflow provides a managed streaming pipeline that aggregates and writes to BigQuery for real-time analytics — the purpose-built architecture for this pattern.","C":"Cloud SQL cannot handle millions of concurrent vote inserts from global users without severe connection and write bottlenecks; it's an OLTP database, not a streaming analytics sink.","D":"Firestore can handle the writes but is not optimised for real-time aggregation queries on millions of records; exporting to BigQuery adds latency before trends can be displayed."},"references":[{"url":"https://cloud.google.com/dataflow/docs/overview","text":"Dataflow overview"},{"url":"https://cloud.google.com/architecture/stream-analytics","text":"Stream analytics on GCP"}]}
+  ,{"number":43,"domain":"Cloud Developer","case_study":null,"scenario":"You have a Cloud Run function in Node.js with source in Git. You want code commits to automatically trigger a Cloud Build pipeline that deletes an old test instance before running tests. The test step must not start until the delete step is complete, but your current config causes build failures. What should you do?","options":[{"id":"A","text":"Change the order of steps in the Cloud Build config so the delete step appears before the test step.","is_correct":false},{"id":"B","text":"Add a waitFor option in the Cloud Build test step that lists the delete step as a dependency.","is_correct":true},{"id":"C","text":"Have the Cloud Build delete step write results to a file and return exit code 0; add a step to check the file.","is_correct":false},{"id":"D","text":"Have the Cloud Build test step set its outcome in an environment variable called result and return exit code 0.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Step order in Cloud Build only controls sequential execution when steps don't have explicit dependencies; without waitFor, steps may run in parallel by default.","B":"waitFor is the Cloud Build mechanism for explicitly declaring step dependencies; setting waitFor: ['-'] runs a step only after all previous steps, or listing a specific step ID ensures the test doesn't start until delete completes.","C":"Writing to a file and returning 0 regardless of the delete outcome hides failures; the test step could start before the delete actually completes.","D":"Storing outcome in an environment variable doesn't establish execution ordering between steps; Cloud Build steps don't share environment variables between steps by default."},"references":[{"url":"https://cloud.google.com/build/docs/configuring-builds/configure-build-step-order","text":"Cloud Build step ordering with waitFor"},{"url":"https://cloud.google.com/build/docs/build-config-file-schema","text":"Cloud Build config schema"}]}
+  ,{"number":44,"domain":"Cloud Developer","case_study":null,"scenario":"Your web app is deployed in a GKE cluster and Pods are experiencing CPU pressure. You need GKE to automatically scale Pods based on CPU, and scale nodes when Pods cannot be scheduled due to insufficient resources. What should you do?","options":[{"id":"A","text":"Modify the managed instance group to enable Autoscaling for max and min nodes based on CPU. Configure HPA to autoscale workloads based on CPU.","is_correct":false},{"id":"B","text":"Enable Cluster Autoscaler on the GKE cluster. Configure HPA to autoscale workloads based on CPU load.","is_correct":true},{"id":"C","text":"Enable Cluster Autoscaler on the GKE cluster. Configure HPA to autoscale workloads based on a custom metric.","is_correct":false},{"id":"D","text":"Modify the managed instance group to enable Autoscaling. Configure HPA to autoscale workloads based on a custom metric.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"GKE node pools are not directly backed by manually managed MIGs in Autopilot/Standard; Cluster Autoscaler is the correct mechanism for scaling GKE node pools.","B":"Cluster Autoscaler watches for unschedulable Pods and adds/removes nodes accordingly; HPA scales Pods horizontally based on CPU utilization — together they solve both halves of the problem.","C":"A custom metric is not needed here; the problem statement explicitly says CPU pressure, so CPU-based HPA is the most direct solution.","D":"MIG Autoscaling doesn't know about Kubernetes Pod scheduling constraints; it can't add nodes in response to unschedulable Pods — only Cluster Autoscaler understands Kubernetes scheduling."},"references":[{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler","text":"GKE Cluster Autoscaler"},{"url":"https://cloud.google.com/kubernetes-engine/docs/concepts/horizontalpodautoscaler","text":"Horizontal Pod Autoscaler"}]}
+  ,{"number":45,"domain":"Cloud Developer","case_study":null,"scenario":"You have a Java application running on Cloud Run. Error messages from the application do not appear in the Error Reporting service. What should you do?","options":[{"id":"A","text":"Ensure that Cloud Monitoring client libraries are bundled with the Java application.","is_correct":false},{"id":"B","text":"Verify that application logs are being written to the correct regional Cloud Storage bucket.","is_correct":false},{"id":"C","text":"Verify that application errors are being written to stderr.","is_correct":true},{"id":"D","text":"Log exceptions using System.out.println() to ensure they appear in Error Reporting.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"Cloud Monitoring client libraries are for custom metrics; Error Reporting works automatically from logs without any client library.","B":"Cloud Run logs go to Cloud Logging automatically via stdout/stderr; they don't go to Cloud Storage by default, and Error Reporting reads from Cloud Logging, not Cloud Storage.","C":"Cloud Run's Error Reporting integration detects errors from stderr; exception stack traces must be written to stderr (not stdout) for Error Reporting to pick them up automatically.","D":"System.out.println() writes to stdout, which Cloud Logging collects as INFO-level log entries; Error Reporting looks for errors on stderr or properly formatted error log entries."},"references":[{"url":"https://cloud.google.com/error-reporting/docs/setup/java","text":"Error Reporting for Java"},{"url":"https://cloud.google.com/run/docs/error-reporting","text":"Cloud Run Error Reporting"}]}
+  ,{"number":46,"domain":"Cloud Developer","case_study":null,"scenario":"You are building a multi-player game expanding globally from the United States. You need to decrease latency for international players. You need a globally distributed database that supports SQL queries. What should you do?","options":[{"id":"A","text":"Use BigQuery as your globally distributed SQL database.","is_correct":false},{"id":"B","text":"Use Cloud SQL with read replicas in each region.","is_correct":false},{"id":"C","text":"Use Cloud Spanner as your globally distributed SQL database.","is_correct":true},{"id":"D","text":"Use Cloud Bigtable as your globally distributed SQL database.","is_correct":false}],"correct_answer":"C","multi_select":false,"explanations":{"A":"BigQuery is an analytics warehouse with query latencies in seconds; it's not designed for low-latency transactional reads/writes needed in a real-time game.","B":"Cloud SQL with read replicas improves read latency globally but replication introduces lag; writes still go to the primary region, adding latency for international players writing data.","C":"Cloud Spanner is Google's globally distributed, strongly consistent relational database that supports ANSI SQL, serves reads from regional replicas with low latency, and handles global writes with external consistency.","D":"Cloud Bigtable is NoSQL (wide-column store) and does not support SQL queries; it's excellent for time-series and analytical workloads but not for relational game state."},"references":[{"url":"https://cloud.google.com/spanner/docs/overview","text":"Cloud Spanner overview"},{"url":"https://cloud.google.com/spanner/docs/instances","text":"Cloud Spanner instance configurations"}]}
+  ,{"number":47,"domain":"Cloud Developer","case_study":null,"scenario":"Your application on Cloud Run receives heavy traffic. You are concerned about the impact of deploying changes on existing users and want to test changes with a small percentage of users with the ability to roll back. What should you do?","options":[{"id":"A","text":"Schedule weekly load tests against the production application.","is_correct":false},{"id":"B","text":"Use a local development environment for load testing outside Google Cloud.","is_correct":false},{"id":"C","text":"Deploy as a new revision, perform smoke tests, then promote to production.","is_correct":false},{"id":"D","text":"Use traffic splitting to route a small percentage of users to the new version, then gradually increase the split until all users are on the new version.","is_correct":true}],"correct_answer":"D","multi_select":false,"explanations":{"A":"Load tests measure performance characteristics, not user impact of code changes; they don't let you test new functionality with a subset of real users.","B":"Local load testing uses synthetic traffic and doesn't reflect real user behaviour or production scale.","C":"Smoke tests on a new revision before promoting to production verify basic functionality but expose 0% of real users to the change during testing — you can't observe real-world impact.","D":"Traffic splitting (canary deployment) routes a configurable percentage (e.g., 5%) of real users to the new revision, letting you observe real impact while the ability to set the split to 0% provides instant rollback."},"references":[{"url":"https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration","text":"Cloud Run traffic splitting and rollbacks"},{"url":"https://cloud.google.com/run/docs/managing/revisions","text":"Managing Cloud Run revisions"}]}
+  ,{"number":48,"domain":"Cloud Developer","case_study":null,"scenario":"Your website is currently running on Compute Engine. The marketing team wants to test conversion rates between three different website designs. You want to minimize the effort required to switch between designs. What should you do?","options":[{"id":"A","text":"Deploy the website on Cloud Run and use traffic splitting to route users across the three design revisions.","is_correct":true},{"id":"B","text":"Deploy the website on Cloud Run as three separate named revisions.","is_correct":false},{"id":"C","text":"Deploy the website as three separate Cloud Run functions.","is_correct":false},{"id":"D","text":"Deploy the website on Cloud Run functions and implement custom routing code to show different designs.","is_correct":false}],"correct_answer":"A","multi_select":false,"explanations":{"A":"Cloud Run traffic splitting across multiple revisions is natively supported — each design is a revision, and you adjust traffic percentages in the console or CLI with zero code changes to switch between them.","B":"Deploying three separate named revisions is part of the solution, but without configuring traffic splitting between them, users always see the same revision; the key step is enabling traffic splitting.","C":"Cloud Run functions are for event-driven single-purpose handlers; a full website with three design variants is better suited to Cloud Run services with revision-based traffic splitting.","D":"Custom routing code adds development and maintenance effort — Cloud Run's built-in traffic splitting already handles this with no code required."},"references":[{"url":"https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration","text":"Cloud Run traffic splitting"},{"url":"https://cloud.google.com/run/docs/managing/revisions","text":"Cloud Run revisions"}]}
+  ,{"number":49,"domain":"Cloud Developer","case_study":null,"scenario":"Your team uses Cloud Run to write every Pub/Sub message to both a Cloud Storage object AND a BigQuery table. You want to minimize operational overhead. Which architecture should you use?","options":[{"id":"A","text":"One topic, one subscription, two Cloud Run services sharing the same push subscription.","is_correct":false},{"id":"B","text":"One topic, two subscriptions, two Cloud Run services — each service has its own dedicated push subscription.","is_correct":true},{"id":"C","text":"One topic, one subscription, one Cloud Run service that writes to BigQuery first then to Cloud Storage sequentially.","is_correct":false},{"id":"D","text":"Two topics, two subscriptions, two Cloud Run services — completely separate pipelines.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"A single push subscription delivers each message to one endpoint; two Cloud Run services cannot both receive every message from the same subscription.","B":"One topic with two independent subscriptions means each Cloud Run service gets every message independently — this is the fan-out pattern in Pub/Sub, and each service scales and fails independently.","C":"Sequential writes in a single Cloud Run service create tight coupling — a BigQuery write failure blocks the Cloud Storage write and vice versa; services cannot scale independently.","D":"Two separate topics require the publisher to duplicate every message to both topics, creating publisher-side complexity and coupling the producer to the consumer architecture."},"references":[{"url":"https://cloud.google.com/pubsub/docs/subscriber","text":"Pub/Sub fan-out with multiple subscriptions"},{"url":"https://cloud.google.com/pubsub/docs/push","text":"Pub/Sub push subscriptions"}]}
+  ,{"number":50,"domain":"Cloud Developer","case_study":null,"scenario":"You are capturing important audit activity in Cloud Logging. You need to read this information to perform real-time analysis and want the solution to be easily scalable in the future. What should you do?","options":[{"id":"A","text":"Write an application to read logs directly from the Cloud Logging API.","is_correct":false},{"id":"B","text":"Set up a Cloud Logging sink that exports logs to Pub/Sub, and read the logs from a Pub/Sub subscription.","is_correct":true},{"id":"C","text":"Write a Cloud Run function endpoint that reads from the Cloud Logging API and copies logs to BigQuery.","is_correct":false},{"id":"D","text":"Set up a Cloud Logging sink that exports logs to Cloud Storage, and read logs from a Cloud Storage bucket.","is_correct":false}],"correct_answer":"B","multi_select":false,"explanations":{"A":"Polling the Cloud Logging API is inefficient at scale, subject to rate limits, and introduces polling latency; it doesn't scale to real-time high-volume audit log processing.","B":"A Cloud Logging sink to Pub/Sub is the recommended real-time export pattern: logs stream to Pub/Sub as they arrive, consumers can scale independently, and multiple consumers can subscribe to the same topic.","C":"A Cloud Run function polling the Logging API has the same rate-limit and latency issues as option A, and adds a custom serverless layer that must be maintained.","D":"Cloud Storage sinks batch logs into files at intervals; this introduces minutes of latency and requires polling for new files — not suitable for real-time analysis."},"references":[{"url":"https://cloud.google.com/logging/docs/export/configure_export_v2","text":"Cloud Logging log sinks"},{"url":"https://cloud.google.com/logging/docs/export/pubsub","text":"Exporting logs to Pub/Sub"}]}
+];
+
+        let currentIdx = 0;
+        let selectedAnswers = {};
+        let flaggedQuestions = {};
+        let struckOptions = {};
+        let examSubmitted = false;
+        let timerInterval = null;
+        const questionNotes = {};
+        let timeLeft = Math.round(quizData.length * 2.4 * 60);
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const el = document.getElementById('exam-timer');
+            el.textContent = formatTime(timeLeft);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                el.textContent = formatTime(timeLeft);
+                if (timeLeft <= 300) el.classList.add('warning');
+                if (timeLeft <= 0) { clearInterval(timerInterval); autoSubmitExam(); }
+            }, 1000);
+        }
+
+        function isAnswered(idx) {
+            const q = quizData[idx];
+            if (q.multi_select) return selectedAnswers[idx] && selectedAnswers[idx].length > 0;
+            return selectedAnswers[idx] !== undefined && selectedAnswers[idx] !== null;
+        }
+
+        function isCorrectAnswer(q, idx) {
+            if (q.multi_select) {
+                const sel = (selectedAnswers[idx] || []).slice().sort().join(',');
+                const correct = (Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer]).slice().sort().join(',');
+                return sel === correct;
+            }
+            return selectedAnswers[idx] === q.correct_answer;
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+            const pct = ((idx + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('question-header').textContent = 'Question ' + (idx + 1) + ' of ' + quizData.length;
+            const multiBadge = document.getElementById('multi-badge');
+            multiBadge.style.display = q.multi_select ? 'block' : 'none';
+
+            const textEl = document.getElementById('question-text');
+            textEl.innerHTML = marked.parse(q.scenario);
+
+            const optList = document.getElementById('options-list');
+            optList.innerHTML = '';
+            const struck = struckOptions[idx] || {};
+            const selAns = selectedAnswers[idx];
+            q.options.forEach(opt => {
+                const li = document.createElement('div');
+                li.className = 'option-item';
+                li.dataset.id = opt.id;
+                const isSelected = q.multi_select ? (Array.isArray(selAns) && selAns.includes(opt.id)) : selAns === opt.id;
+                if (isSelected) li.classList.add('selected');
+                if (struck[opt.id]) li.classList.add('struck-out');
+                if (examSubmitted) {
+                    li.classList.remove('selected');
+                    if (opt.is_correct) li.classList.add('post-correct');
+                    else if (isSelected) li.classList.add('post-incorrect');
+                }
+                const inputEl = q.multi_select
+                    ? '<div class="option-checkbox"><svg class="option-checkbox-mark" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,6 5,9 10,3"/></svg></div>'
+                    : '<div class="option-radio"><div class="option-radio-dot"></div></div>';
+                const badge = examSubmitted && opt.is_correct ? ' <span class="badge-correct">&#10003; Correct</span>' : examSubmitted && isSelected && !opt.is_correct ? ' <span class="badge-incorrect">&#10007; Wrong</span>' : '';
+                li.innerHTML = inputEl + '<div class="option-text">' + opt.text + badge + '</div>';
+                li.addEventListener('click', (e) => handleOptionClick(e, idx, opt.id, q.multi_select));
+                li.addEventListener('contextmenu', (e) => handleRightClick(e, idx, opt.id));
+                optList.appendChild(li);
+            });
+
+            document.getElementById('flag-checkbox').checked = !!flaggedQuestions[idx];
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) { expBox.style.display = 'flex'; renderExplanations(q); }
+            else expBox.style.display = 'none';
+
+            document.getElementById('prev-btn').disabled = idx === 0;
+            document.getElementById('next-btn').disabled = idx === quizData.length - 1;
+            updateStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleOptionClick(e, idx, optId, isMulti) {
+            if (examSubmitted) return;
+            const struck = struckOptions[idx] || {};
+            if (struck[optId]) return;
+            if (isMulti) {
+                if (!selectedAnswers[idx]) selectedAnswers[idx] = [];
+                const pos = selectedAnswers[idx].indexOf(optId);
+                if (pos === -1) selectedAnswers[idx].push(optId);
+                else selectedAnswers[idx].splice(pos, 1);
+            } else {
+                selectedAnswers[idx] = optId;
+            }
+            loadQuestion(idx);
+        }
+
+        function handleRightClick(e, idx, optId) {
+            e.preventDefault();
+            if (examSubmitted) return;
+            if (!struckOptions[idx]) struckOptions[idx] = {};
+            struckOptions[idx][optId] = !struckOptions[idx][optId];
+            if (struckOptions[idx][optId]) {
+                if (quizData[idx].multi_select) {
+                    if (selectedAnswers[idx]) { const pos = selectedAnswers[idx].indexOf(optId); if (pos !== -1) selectedAnswers[idx].splice(pos, 1); }
+                } else { if (selectedAnswers[idx] === optId) selectedAnswers[idx] = null; }
+            }
+            loadQuestion(idx);
+        }
+
+        function toggleFlag() { flaggedQuestions[currentIdx] = !!document.getElementById('flag-checkbox').checked; updateStats(); }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.id = 'grid-cell-' + idx;
+                cell.textContent = idx + 1;
+                cell.addEventListener('click', () => loadQuestion(idx));
+                grid.appendChild(cell);
+            });
+        }
+
+        function prevQuestion() { if (currentIdx > 0) loadQuestion(currentIdx - 1); }
+        function nextQuestion() { if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1); }
+
+        function updateStats() {
+            let answered = 0, flagged = 0;
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById('grid-cell-' + idx);
+                if (!cell) return;
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+                if (examSubmitted) {
+                    cell.classList.add(isCorrectAnswer(q, idx) ? 'post-correct' : 'post-incorrect');
+                } else {
+                    if (isAnswered(idx)) { answered++; cell.classList.add('answered'); }
+                }
+                if (flaggedQuestions[idx]) { flagged++; cell.classList.add('flagged'); }
+            });
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = answered + '/' + quizData.length + ' Answered';
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item ' + (opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+                const label = opt.is_correct ? 'Option ' + opt.id + ' (Correct):' : 'Option ' + opt.id + ' (Incorrect):';
+                item.innerHTML = '<span class="exp-badge" style="color:' + badgeColor + '">' + label + '</span><br>' + marked.parse(q.explanations[opt.id] || 'See official documentation.');
+                container.appendChild(item);
+            });
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            (q.references || []).forEach(ref => {
+                const a = document.createElement('a');
+                a.className = 'ref-link'; a.href = ref.url; a.target = '_blank'; a.textContent = ref.text || ref.url;
+                refContainer.appendChild(a);
+            });
+            if (!q.references || !q.references.length) refContainer.textContent = 'No references available.';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('classic-mode');
+            const isClassic = document.body.classList.contains('classic-mode');
+            const btn = document.getElementById('theme-toggle-btn');
+            btn.innerHTML = isClassic
+                ? '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/></svg><span>Premium Theme</span>'
+                : '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg><span>Classic Theme</span>';
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) { showToast("Exam already submitted!"); return; }
+            const ac = quizData.filter((q, i) => isAnswered(i)).length;
+            if (confirm("Submit exam?\n\nAnswered: " + ac + " of " + quizData.length + (quizData.length - ac > 0 ? "\n\nWARNING: " + (quizData.length - ac) + " unanswered question(s)." : ""))) submitExam();
+        }
+
+        function autoSubmitExam() { if (examSubmitted) return; alert("Time's up! Submitting your exam automatically."); submitExam(); }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            let correctCount = 0;
+            quizData.forEach((q, idx) => { if (isCorrectAnswer(q, idx)) correctCount++; });
+            const pct = Math.round(correctCount / quizData.length * 100);
+            document.getElementById('results-score').textContent = pct + '%';
+            const statusEl = document.getElementById('results-passing-status');
+            statusEl.textContent = pct >= 70 ? 'PASS' : 'FAIL';
+            statusEl.style.color = pct >= 70 ? 'var(--correct)' : 'var(--incorrect)';
+            document.getElementById('results-detailed-stats').textContent = 'You scored ' + correctCount + ' out of ' + quizData.length + ' correct (' + pct + '%). Google Cloud Professional exams typically require ~70-75% to pass.';
+            document.getElementById('results-modal').style.display = 'flex';
+            loadQuestion(currentIdx);
+            updateStats();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Exam Submitted'; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; }
+        }
+
+        function closeResultsModalAndReview() { document.getElementById('results-modal').style.display = 'none'; }
+
+        function resetExam() {
+            selectedAnswers = {}; flaggedQuestions = {}; struckOptions = {};
+            examSubmitted = false; timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            initGrid(); loadQuestion(0); startTimer();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Submit Exam'; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+        }
+
+        function showToast(message, duration = 3000) {
+            const t = document.getElementById('toast');
+            t.textContent = message; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), duration);
+        }
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initGrid(); loadQuestion(0);
+            document.addEventListener('contextmenu', e => { if (e.target.closest('.option-item')) e.preventDefault(); });
+        });
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/developer_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/developer_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="academy" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #3b82f6;
+            --dark-accent-hover: #2563eb;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #1e3a8a;
+            --classic-accent-hover: #172554;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Database Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">48:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Database Engineer",
+    "scenario": "You have a Cloud SQL instance serving production workloads. Previously, your customers have noticed non-availability issues during maintenance events. You want to minimize the impact of such maintenance issues in the future. What should you do? (Choose two.)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use connection pools.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use exponential backoff.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set the order of update to Later.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Remove the maintenance window.",
+        "is_correct": false
+      },
+      {
+        "id": "E",
+        "text": "Opt in to maintenance notifications.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "You can use connection pools to minimize the impact of dropped connections. Although connections between the pooler and the database are dropped during maintenance, the connections between the application and the pooler are preserved. That way, the work of reestablishing the connections is transparent to the application and offloaded to the connection pooler instead.",
+      "B": "If a query fails or a connection is dropped, the system institutes a wait period before retrying, which increases for each subsequent retry. Following this pattern ensures that these failures are corrected without overloading the service.",
+      "C": "Choosing a Later maintenance update only defers the same maintenance event and does not mitigate it.",
+      "D": "Maintenance of the database is important and will be conducted even if you do not set a maintenance window.",
+      "E": "Receiving maintenance notifications alone does not resolve the non-availability issues."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/postgres/maintenance#minim..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/mysql/maintenance#minimize..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/sqlserver/maintenance#minimize-the-impact-of-maintenance",
+        "text": "docs.cloud.google.com/sql/docs/sqlserver/maintenance#mini..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/maintenance",
+        "text": "docs.cloud.google.com/sql/docs/postgres/maintenance"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Database Engineer",
+    "scenario": "You need to export a large Cloud SQL for PostgreSQL instance. The databases in the instance are used heavily in production, and export time is not a concern. You want to conduct the export operation without affecting the performance of the database. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Datastream.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use serverless export.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use Database Migration Service.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Cloud SQL in high availability (HA) mode.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Datastream is used for change data capture between database instances.",
+      "B": "With serverless export, Cloud SQL creates a separate, temporary instance to offload the export operation. Offloading the export operation allows databases on the primary instance to continue to serve queries and perform operations at the usual performance rate.",
+      "C": "Database Migration Service is used to migrate databases to another instance.",
+      "D": "Cloud SQL HA mode is used for high availability and failover when there is unexpected downtime."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/import-export#serverless",
+        "text": "docs.cloud.google.com/sql/docs/postgres/import-export#ser..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Database Engineer",
+    "scenario": "You migrated your on-premises MySQL instances to Cloud SQL on Google Cloud. The instances have been functioning as expected for the past six months. You need to optimize costs. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Review past logs in Cloud Logging to plan virtual machine (VM) resources.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Apply the recommendations from the Cloud SQL overprovisioned recommender.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use Query Insights to identify query performance and plan VM resources accordingly.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Review utilization on Cloud Monitoring dashboards to plan VM resources.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Cloud Logging does not give you enough information on VM utilization to help plan VM sizing.",
+      "B": "The Cloud SQL overprovisioned instance recommender helps you detect instances that are unnecessarily large for a given workload. It then provides recommendations on how to resize such instances and reduce cost.",
+      "C": "Query Insights help you detect query performance, but that is not a strong indicator of optimal VM sizes.",
+      "D": "Cloud Monitoring only gives you a window of information on current utilization, which is not optimal for planning VM sizes."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/recommender-sql-overprovisioned",
+        "text": "docs.cloud.google.com/sql/docs/mysql/recommender-sql-over..."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Database Engineer",
+    "scenario": "You are part of the database maintenance team at your company. You are running a MySQL instance on a Compute Engine virtual machine (VM). The applications team raised a high-priority ticket regarding slow responses to queries running on the database. You need to quickly identify the slow queries. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add application logs before and after each of the queries.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure your application to export spans to Cloud Trace.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Migrate the MySQL instance to Cloud SQL, and then look at Query Insights.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Set the database-flags options for slow_query_log. Then look for mysql-slow.log in the Logs Explorer.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Adding application logs would take more time to code, test, and deploy than setting database flags.",
+      "B": "Trace lists performance insights that can help you understand how to reduce your application's latency, but does not give you detailed information about MySQL query latencies.",
+      "C": "Migrating the database is not the fastest option. Also, using Cloud SQL to run this instance might not be feasible.",
+      "D": "Setting these database flags would be a quick approach to identifying slow queries."
+    },
+    "references": [
+      {
+        "url": "https://dev.mysql.com/doc/refman/8.0/en/slow-query-log.html",
+        "text": "dev.mysql.com/doc/refman/8.0/en/slow-query-log.html"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/flags#tips-general-log",
+        "text": "docs.cloud.google.com/sql/docs/mysql/flags#tips-general-log"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/diagnose-issues#enable-query-logs",
+        "text": "docs.cloud.google.com/sql/docs/mysql/diagnose-issues#enab..."
+      },
+      {
+        "url": "https://cloud.google.com/community/tutorials/stackdriver-monitor-slow-query-mysql",
+        "text": "cloud.google.com/community/tutorials/stackdriver-monitor-..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/trace/docs/setup",
+        "text": "docs.cloud.google.com/trace/docs/setup"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Database Engineer",
+    "scenario": "You are creating applications for your company in the retail industry. Orders are stored in Cloud Spanner, and your flagship store uses storeId \"12345.\" Management wants to regularly run a query on this store for different customers. You want to parameterize this query for performance. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`select productIds from orders where customerId=@customerId and storeId='12345'`",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "`select productIds from orders where customerId=@customerId and storeId=@storeId`",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`select productIds from orders where customerId like @customerId and storeId=@storeId`",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`select productIds from orders where customerId like @customerId and storeId='12345'`",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "If your application needs to execute many similar queries, in which only a literal value changes, you should use a parameter placeholder for that value. The storeId is constant over subsequent query invocations. Leaving the constant as a literal in this case is beneficial because it can improve the specific query plan that's chosen by the query engine.",
+      "B": "Retaining the storeId as a constant would be more performant because it is being reused in subsequent queries.",
+      "C": "Cloud Spanner does not evaluate parameterized LIKE patterns until execution time and therefore this does not improve query performance.",
+      "D": "Cloud Spanner does not evaluate parameterized LIKE patterns until execution time and therefore this does not improve query performance."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices#use_query_parameters_to_speed_up_frequently_executed_queries",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices#use..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices#use-starts_with-instead-of-like",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices#use..."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Database Engineer",
+    "scenario": "Analysts in your company have raised concerns about performance and failed queries from the most recent Thursday to Monday. You look at the logs on Tuesday and discover nearly 50 \"deadlock detected\" errors. In the future, you want to take a more proactive approach to discovering database issues. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Export the logs daily to BigQuery, and run a search for \"deadlock detected\" on the data.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a Cloud Monitoring metric with \"deadlock detected\" as the text payload, and set notifications based on it.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a Cloud Monitoring dashboard, and watch for any issues related to congestion that could indicate a deadlock.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Write a Cloud Function to poll the database logs for \"deadlock detected\" errors, and schedule the Cloud Function to run every hour on Cloud Scheduler.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "A daily export will be delayed in discovering current database issues.",
+      "B": "You can be alerted about specific issues when they happen.",
+      "C": "Watching the dashboard all the time is not a practical solution.",
+      "D": "Running the detector every hour is not as proactive because there could be long time periods when you do not have the latest errors."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/products/databases/learn-how-to-create-alerts-based-on-your-database-logs-in-cloud-sql",
+        "text": "cloud.google.com/blog/products/databases/learn-how-to-cre..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/logging/docs/logs-based-metrics/charts-and-alerts",
+        "text": "docs.cloud.google.com/logging/docs/logs-based-metrics/cha..."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Database Engineer",
+    "scenario": "Each developer and tester has an individual Cloud SQL instance for their own learning and experimenting use. The team works from Monday morning to Friday evening. You want to reduce expenditure on Cloud SQL instances with minimal effort. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure high availability for the Cloud SQL instances, and then configure a maintenance window for the Cloud SQL instances.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Write a Cloud Function to start and stop the Cloud SQL instances, and use Cloud Scheduler to call the function as required.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a virtual machine (VM) on Compute Engine, and create a cron job to schedule the start and stop of the Cloud SQL instances.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a read replica of each independent Cloud SQL instance, and then configure a maintenance window for the Cloud SQL instances.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Creating an HA instance or configuring a maintenance window does not shut down the original machines and reduce costs; instead, this option adds more cost.",
+      "B": "Cloud Functions can have simple, invokable code to start and stop instances, and Cloud Scheduler can schedule these function calls when required.",
+      "C": "Running a Compute Engine instance would not be the most cost-efficient solution.",
+      "D": "Creating a read replica or configuring a maintenance window does not shut down the original machines and reduce costs; instead, this option adds more cost."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/topics/developers-practitioners/lower-development-costs-schedule-cloud-sql-instances-start-and-stop",
+        "text": "cloud.google.com/blog/topics/developers-practitioners/low..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/start-stop-restart-instance",
+        "text": "docs.cloud.google.com/sql/docs/mysql/start-stop-restart-i..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Database Engineer",
+    "scenario": "You are building a mobile application that allows end users to upload images. These images need to go through a series of processing steps, including converting to black and white, cropping, and other editing. Your mobile application has a feature that allows end users to notify their followers when they edit images. You want to create a scalable solution with minimal effort and cost. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Firebase and Compute Engine.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Cloud Spanner and Cloud Run.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Bigtable and Cloud Functions for Firebase.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Firebase and Cloud Functions for Firebase.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Compute Engine will require more manual effort and will incur continuous virtual machine (VM) costs.",
+      "B": "Cloud Spanner and Cloud Run do not have any built-in mechanism for real-time database updates.",
+      "C": "Bigtable does not have built-in real-time database events to notify users of changes.",
+      "D": "Developers can use Cloud Functions to offload to Google Cloud all resource-intensive work (heavy CPU or networking) that wouldn't be practical to run on a user's device. The real-time database feature of Firebase lets you trigger updates to followers. ImageMagick command-line tools are provided for use with Cloud Functions to simplify this work."
+    },
+    "references": [
+      {
+        "url": "https://firebase.google.com/docs/functions/functions-and-firebase",
+        "text": "firebase.google.com/docs/functions/functions-and-firebase"
+      },
+      {
+        "url": "https://firebase.google.com/docs/functions/use-cases",
+        "text": "firebase.google.com/docs/functions/use-cases"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Database Engineer",
+    "scenario": "You previously migrated a business-critical monolith application without modification from on-premises to Google Cloud. You want to re-architect this application to use microservices. The application has a single backend database, but in the future you want to make the database architecture more suitable to microservices. You want to minimize downtime when you make database changes. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Route database connections through a new service. Connect to the new database or databases from the new service only.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Change the frontend to a microservices approach. Make each of the microservices continue to directly connect to the single database.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Change the backend to several databases split from the original database. Retain the frontend as a single application that connects to multiple smaller databases.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Change the frontend to a microservices approach. When the frontend is updated, simultaneously make each of the microservices connect to a new service-specific database.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The new service will provide a loosely coupled interface between the applications and the frontend. This lets you make changes to the backend and database architecture with low impact on the frontend.",
+      "B": "Changes in the backend database will affect all frontend applications directly.",
+      "C": "The application will have to adapt to any future changes in the database architecture.",
+      "D": "Any future changes to the database will affect any directly connected applications."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/microservices-architecture-refactoring-monoliths",
+        "text": "cloud.google.com/architecture/microservices-architecture-..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/microservices-architecture-introduction",
+        "text": "docs.cloud.google.com/architecture/microservices-architec..."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Database Engineer",
+    "scenario": "Approximately 5 TB of data is collected daily in Amazon Simple Storage Service (S3). You want to transfer the data daily into Cloud Storage before importing the data into Cloud SQL. You need a reliable solution that takes minimal effort. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure Storage Transfer Service to perform recurring transfers.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure Cloud Scheduler to run a gsutil job daily to copy the data.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Download the data to a local machine, and then use Transfer Appliance.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure Cloud Scheduler to run a Cloud Function daily to copy the data.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Storage Transfer Service works with HTTPS endpoints like Amazon S3 and can be scheduled.",
+      "B": "gsutil is suitable for smaller amounts of data and also requires more effort to schedule the transfers and maintain the data transfer jobs.",
+      "C": "The size of the data is small and it needs to be transferred on a daily basis. Transfer Appliance is appropriate for quantities of data over 10 TB that would take more than a week to upload.",
+      "D": "Writing a Cloud Function for the transfer and maintaining it would require more effort."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/storage-transfer/docs/create-transfers",
+        "text": "docs.cloud.google.com/storage-transfer/docs/create-transfers"
+      },
+      {
+        "url": "https://docs.cloud.google.com/storage-transfer/docs/create-transfers/agentless/s3",
+        "text": "docs.cloud.google.com/storage-transfer/docs/create-transf..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Database Engineer",
+    "scenario": "A Dedicated Interconnect connection exists between your on-premises network and a nearby Google Cloud region. A Bare Metal Solution for Oracle machine has been set up in another region. You want to use the Bare Metal machine's IP address to connect to the Oracle database. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "In your VPC network, set the dynamic routing mode to global.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "In your VPC network, set the dynamic routing mode to regional.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "In your VPC network, add a VPC peering connection between the two regions.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "In your VPC network, add a high availability VPN connection between the two regions.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The global dynamic routing option lets you dynamically learn routes to and from all regions.",
+      "B": "The regional dynamic routing option will only learn routes in the region in which they were created, and the Oracle database is located in another region.",
+      "C": "VPC peering is not required within the same VPC.",
+      "D": "VPNs are not required within the same VPC."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/bare-metal/docs/bms-setup",
+        "text": "docs.cloud.google.com/bare-metal/docs/bms-setup"
+      },
+      {
+        "url": "https://docs.cloud.google.com/network-connectivity/docs/router/how-to/create-network-set-modes",
+        "text": "docs.cloud.google.com/network-connectivity/docs/router/ho..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Database Engineer",
+    "scenario": "You have set up read replicas for a Cloud SQL instance that is used by your company's application. You need to provide low latency reads for customers located on several continents. You want to follow Google-recommended practices to configure the application. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure the application to use any of the replicas.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure the application to use the replica that is closest to the user.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Configure the application to use a new IP address that reroutes requests to any replica.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a Compute Engine virtual machine (VM) as a jump server to route to any of the replicas.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "You need to connect directly to a read replica, and a database instance further away will have slower response times.",
+      "B": "Physical distance affects latency. An instance closer to the end user will return a faster response.",
+      "C": "A third IP address has to be manually coded and controlled, which is not recommended.",
+      "D": "A Compute Engine instance will need to be manually configured and managed, which is not recommended."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/replication/cross-region-replicas",
+        "text": "docs.cloud.google.com/sql/docs/mysql/replication/cross-re..."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Database Engineer",
+    "scenario": "You have created an instance of Cloud SQL. The data stored in the instance is expected to increase rapidly up to 60 TB. You need to ensure that the database instance is reliable and can increase capacity with minimal intervention. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use local SSD.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable high availability failover.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable automatic storage increases.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use a cron script to increase storage when required.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Using SSDs does not automatically change capacity.",
+      "B": "Failover does not change disk size.",
+      "C": "Google Cloud can automatically increase storage.",
+      "D": "A custom cron script would require more management than enabling automatic storage increases."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/instance-settings#automatic-storage-increase-2ndgen",
+        "text": "docs.cloud.google.com/sql/docs/mysql/instance-settings#au..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Database Engineer",
+    "scenario": "Your customer is building an application for learning foreign languages. The data schema for different language learning levels is different. Followers of a user are notified in real time of progress made by the user. The application's users are also able to interact with each other; interactions may contain emojis, gifs, and voice notes. You want to use a database that supports flexible schema and real-time notifications. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Firestore in Native mode.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Firestore in Datastore mode.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use federated queries between Cloud SQL and BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Cloud Spanner, and create interleaved rows with customers as root rows.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Firestore is a NoSQL, document-oriented database that supports flexible schemas. Native mode supports real-time updates.",
+      "B": "Cloud Firestore in Datastore mode does not support real-time updates.",
+      "C": "BigQuery and Cloud SQL have only limited schema flexibility and do not support real-time updates.",
+      "D": "Cloud Spanner is an RDBMS (Relational Database Management System) with limited schema flexibility and does not support real-time updates."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/datastore/docs/firestore-or-datastore#feature_comparison",
+        "text": "docs.cloud.google.com/datastore/docs/firestore-or-datasto..."
+      },
+      {
+        "url": "https://firebase.google.com/docs/firestore/data-model",
+        "text": "firebase.google.com/docs/firestore/data-model"
+      },
+      {
+        "url": "https://docs.cloud.google.com/firestore/native/docs/overview",
+        "text": "docs.cloud.google.com/firestore/native/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Database Engineer",
+    "scenario": "You are using Cloud SQL for PostgreSQL to hold business-critical data. You want to ensure that, if an error occurs, you can recover the database to the previous state with minimal data loss. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable failover replication.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable automated backups.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable point-in-time recovery.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Write all updates to a log file.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Failover replication does not automatically back up data.",
+      "B": "Automated backups are done once a day and could result in larger amounts of lost data.",
+      "C": "Point-in-time recovery has the most up-to-date recovery capability.",
+      "D": "Manually updating all changes to log files is both insecure and inefficient."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
+        "text": "docs.cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/backups#automated-backups",
+        "text": "docs.cloud.google.com/sql/docs/postgres/backup-recovery/b..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Database Engineer",
+    "scenario": "Your company streams TV shows to audiences around the world. Each show has a landing page that provides a quick overview and an available episode listing that is updated monthly. The website data is stored in a Cloud Spanner database. You need to have a performant way to retrieve the data. You want to design the schema using Google-recommended practices. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Denormalize the table, and store all the data in a single row.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Increase the number of nodes and the capacity of each node.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Store the show data in a root row, and interleave the episodes with the root row.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Execute two parallel queries on the show data and the episodes, and then merge the data.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Denormalizing tables is not a recommended practice in Cloud Spanner for such use cases.",
+      "B": "Increasing the number of nodes or their capacity will not improve the data retrieval latency in this situation.",
+      "C": "If data is frequently written or read together, interleaving can benefit both latency and throughput.",
+      "D": "Executing parallel queries and merging them is less performant."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/whitepapers/optimizing-schema-design#tradeoffs_of_locality",
+        "text": "docs.cloud.google.com/spanner/docs/whitepapers/optimizing..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/sql-best-practices",
+        "text": "docs.cloud.google.com/spanner/docs/sql-best-practices"
+      },
+      {
+        "url": "https://docs.cloud.google.com/spanner/docs/schema-and-data-model#create-interleaved-tables",
+        "text": "docs.cloud.google.com/spanner/docs/schema-and-data-model#..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Database Engineer",
+    "scenario": "Your company serves customers who are primarily located in Germany. In this case, there are no compliance restrictions that data must be stored in Germany or the European Union. You have identified Cloud SQL as a suitable database. You need to choose a region to create the database instance. You want the application to be performant. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create the instance in a Google Cloud region in Germany.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create the instance in any Google Cloud region in Europe.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create the instance in any Google Cloud region around the world.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create the instance in us-central1, Iowa, which has the maximum zones.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The database should be set up closest to where your users are located.",
+      "B": "Physical distance affects latency, and you would want to reduce that.",
+      "C": "Physical distance affects latency, and you would want to reduce that.",
+      "D": "The extra zones do not add to improved performance or speed."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/docs/get-started/consider-geographic-distribution",
+        "text": "docs.cloud.google.com/docs/get-started/consider-geographi..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/locations",
+        "text": "docs.cloud.google.com/sql/docs/mysql/locations"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Database Engineer",
+    "scenario": "Your company has hired a new team of analysts. Your current Cloud SQL database must be repurposed to let the analysts run queries on the data. The analysts must be able to run their queries on all of the data. You need a minimal-effort solution that ensures no performance degradation on the main database. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Memorystore to cache recently used data. Direct the analysts to use only the cached data.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create read replicas of the main database. Provide the analysts with read access to the replicas.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Shard the data and write the data to different shards. Give access to different shards to different analysts.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create views of the data, based on each analyst's need. Provide access to a view to the corresponding analyst.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Data analysis conducted by many analysts uses lots of varying data, which is not a good use case for Memorystore.",
+      "B": "Read replicas will replicate all data, which the analysts will use to read data and reduce read pressure on the main database.",
+      "C": "Sharding the data will let analysts see only part of the data.",
+      "D": "It requires more effort to maintain separate views for each of the analysts."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/replication",
+        "text": "docs.cloud.google.com/sql/docs/mysql/replication"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Database Engineer",
+    "scenario": "The security policy for a Cloud SQL database dictates that it should only be accessed from VPC networks within Google Cloud. You do not want to enable a public IP address for this instance. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure private services access in your VPC.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure your VPC with a firewall rule to allow HTTP(S).",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure authorized networks CIDR with an internal subnet.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure your VPC with a firewall rule to allow the database's port.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The private connection enables virtual machine (VM) instances in your VPC network and the services that you access to communicate using internal IP addresses.",
+      "B": "Enabling HTTP(S) traffic will not let you reach the Cloud SQL instance.",
+      "C": "Cloud SQL instances cannot be reached directly from a subnet's internal, private IP addresses.",
+      "D": "Opening the database's port will not let you reach the Cloud SQL instance."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-private-services-access",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-private-se..."
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-private-ip",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-private-ip"
+      },
+      {
+        "url": "https://docs.cloud.google.com/vpc/docs/private-services-access",
+        "text": "docs.cloud.google.com/vpc/docs/private-services-access"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Database Engineer",
+    "scenario": "You are creating an application that uses a Cloud SQL database in the backend. The database is installed in a single zone. You need to design a reliable database architecture to ensure high availability (HA). What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure an instance for high availability, and fail over to the HA instance if there is a zonal failure.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Cloud Scheduler to create a new database instance in another zone from a backup if there is an instance failure.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create two separate instances of the database in different zones, and write to each of them separately and simultaneously.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create two separate instances of the database in different regions, and write to each of them separately and simultaneously.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "If the primary database fails, Cloud SQL will automatically and quickly switch to the failover database.",
+      "B": "Starting a new database from a backup will take time. That does not meet the requirements of reliability and high availability.",
+      "C": "Self-managing two separate databases and trying to keep them in sync is prone to error and is not reliable.",
+      "D": "Self-managing two separate databases and trying to keep them in sync is prone to error and is not reliable."
+    },
+    "references": [
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
+        "text": "docs.cloud.google.com/sql/docs/mysql/high-availability"
+      },
+      {
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/configure-ha",
+        "text": "docs.cloud.google.com/sql/docs/mysql/configure-ha"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/database_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/database_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Data Engineer &mdash; Storing the Data</title>
+  <style>
+    :root {
+      --bg: #fff7ed; --ink: #1e293b; --accent: #ea580c; --accent-dark: #c2410c;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fed7aa' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #fdba74 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Data Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 3</span><span class="weight">~20%</span>
+      <h1>Storing the Data</h1>
+      <p class="sec-intro">Select the right store, model the warehouse, and govern the lake.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Storage selection</h3>
+      <p>Match access pattern and consistency: <strong>BigQuery</strong> (analytics warehouse), <strong>Bigtable</strong> (high-throughput wide-column/time-series), <strong>Spanner</strong> (global strongly-consistent relational), <strong>AlloyDB/Cloud SQL</strong> (OLTP), <strong>Firestore</strong> (document/mobile), <strong>Cloud Storage</strong> (objects/lake), <strong>Memorystore</strong> (in-memory cache).</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Billions of time-series rows with high write QPS and millisecond key lookups = Bigtable, not BigQuery (which is for scans/aggregations).</div>
+    </section>
+    <section class="lesson">
+      <h3>Warehouse modelling & the lake</h3>
+      <p>Model BigQuery for access patterns — denormalise/nest for analytics, use partitioning and clustering. Govern a lake/lakehouse with <strong>Dataplex</strong> (discovery, lineage, quality) and <strong>BigLake</strong>, building a federated governance model across distributed data.</p>
+    </section>
+    <section class="lesson">
+      <h3>BigQuery cost &amp; performance</h3>
+      <p>BigQuery bills mostly on bytes scanned (on-demand) or reserved <strong>slots</strong> (capacity). Cut both cost and latency:</p>
+      <ul>
+        <li><strong>Partition</strong> tables (by date/ingestion time) so queries prune to the needed days.</li>
+        <li><strong>Cluster</strong> on the columns you filter/sort by to skip blocks.</li>
+        <li>Select only the columns you need &mdash; <code>SELECT *</code> scans everything.</li>
+        <li>Use <strong>materialized views</strong> / BI Engine for repeated aggregations.</li>
+        <li>Choose <strong>editions/slot reservations</strong> for steady, heavy workloads; on-demand for spiky/ad-hoc.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Reduce cost of a frequently-run dashboard query that scans a huge table" = partition + cluster (and maybe a materialized view), not a bigger slot reservation.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Serve billions of IoT readings with very high writes and ms lookups by device+time. Which store?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Bigtable (with a good row key).</strong></p>
+          <p class="quiz-why">Built for high-throughput low-latency wide-column time-series.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Govern a decentralised data ecosystem with discovery, lineage, and quality. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Dataplex.</strong></p>
+          <p class="quiz-why">Unified data management/governance across distributed data.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A dashboard query always filters by event date but scans the whole multi-TB table. Cheapest fix?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Partition the table by date (and cluster on common filters).</strong></p>
+          <p class="quiz-why">Partition pruning means the query reads only the relevant days, slashing bytes scanned.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> A device row key is the current timestamp, causing one node to take all writes. What's wrong?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Hotspotting from a monotonic row key.</strong></p>
+          <p class="quiz-why">Sequential keys send all writes to one tablet; prefix with device ID (field promotion) to spread load.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A fleet of sensors writes billions of readings per day and clients need millisecond lookups by device and time range, at very high write throughput. Which store fits best?</p>
+        <ul>
+          <li>A) BigQuery, querying the readings table per lookup.</li>
+          <li>B) Bigtable with a row key combining device ID and reversed timestamp.</li>
+          <li>C) Cloud SQL with an index on device and timestamp.</li>
+          <li>D) Firestore documents per reading.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Bigtable is built for high-throughput, low-latency wide-column time series; a well-designed row key gives millisecond device+time lookups.</p>
+          <p class="quiz-why"><strong>A:</strong> BigQuery excels at scans/aggregations, not per-key millisecond lookups at high QPS. <strong>C:</strong> Cloud SQL won't sustain that write throughput or scale. <strong>D:</strong> Firestore isn't sized for billions of high-rate time-series writes.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A heavily-used BigQuery dashboard query filters on <code>event_date</code> but repeatedly scans an entire 8 TB table, driving up on-demand cost. What change reduces cost most directly?</p>
+        <ul>
+          <li>A) Switch the query to <code>SELECT *</code> to leverage caching.</li>
+          <li>B) Partition the table by <code>event_date</code> and cluster on the common filter columns.</li>
+          <li>C) Buy a much larger slot reservation.</li>
+          <li>D) Export the table to Cloud Storage and query it as an external table.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Partitioning lets the query prune to the relevant dates and clustering skips blocks &mdash; both cut bytes scanned, which is what on-demand bills.</p>
+          <p class="quiz-why"><strong>A:</strong> <code>SELECT *</code> scans more, not less. <strong>C:</strong> A bigger reservation adds cost without reducing bytes scanned. <strong>D:</strong> External tables on GCS are usually slower and don't inherently prune like native partitioning.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> An organisation has data spread across many BigQuery datasets and Cloud Storage buckets owned by different teams and needs unified discovery, lineage, and data-quality governance. Which service should anchor this?</p>
+        <ul>
+          <li>A) Dataplex for unified governance across the distributed data.</li>
+          <li>B) A spreadsheet catalogue maintained by each team.</li>
+          <li>C) IAM groups per dataset with no central catalogue.</li>
+          <li>D) Cloud Logging sinks aggregating access logs.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: A.</strong> Dataplex provides discovery, lineage, and quality across distributed lakes and warehouses &mdash; federated governance without centralising the data.</p>
+          <p class="quiz-why"><strong>B:</strong> Manual spreadsheets don't scale or stay current. <strong>C:</strong> IAM controls access but isn't a catalogue/lineage tool. <strong>D:</strong> Logging tracks access events, not data discovery or quality.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s2.html" class="nav-link">&larr; Ingesting &amp; Processing the Data</a>
+      <a href="guide_s4.html" class="nav-link">Preparing &amp; Using Data for Analysis &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/data_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/data_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

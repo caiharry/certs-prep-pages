@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Scaling Prototypes into ML Models</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 3</span><span class="weight">~18%</span>
+      <h1>Scaling Prototypes into ML Models</h1>
+      <p class="sec-intro">Build models, train at scale, tune hyperparameters, and choose the right accelerators.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Training at scale</h3>
+      <p><strong>Vertex AI custom training</strong> runs any framework packaged in a container. Use <strong>prebuilt containers</strong> for common frameworks (TF, PyTorch, scikit-learn, XGBoost) and a <strong>custom container</strong> when you need specific dependencies. Point training at a Vertex managed dataset or Cloud Storage, and write checkpoints to GCS so interrupted jobs can resume.</p>
+      <div class="callout mnemonic"><span class="hook">PACK</span> <strong>P</strong>rebuilt container if it fits; otherwise build your own and <strong>P</strong>ush to Artifact Registry.</div>
+    </section>
+    <section class="lesson">
+      <h3>Distributed training</h3>
+      <p>When one machine isn't enough:</p>
+      <ul>
+        <li><strong>Data parallelism</strong> &mdash; replicate the model across workers, split the batch (e.g. <code>MultiWorkerMirroredStrategy</code>). The common case.</li>
+        <li><strong>Model parallelism</strong> &mdash; split a model too big for one device across devices. Needed for very large models.</li>
+        <li><strong>Reduction Server</strong> &mdash; a Vertex feature that speeds the all-reduce gradient step in multi-GPU data-parallel jobs, cutting training time.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Model is too large to fit on a single GPU" = model parallelism. "Speed up multi-GPU all-reduce" = Reduction Server. Don't swap them.</div>
+    </section>
+    <section class="lesson">
+      <h3>Choosing accelerators</h3>
+      <ul>
+        <li><strong>CPU</strong> &mdash; small or classical models, or cheap experimentation.</li>
+        <li><strong>GPU</strong> &mdash; most deep learning; flexible, supports custom ops and PyTorch.</li>
+        <li><strong>TPU</strong> &mdash; very large dense matrix-multiply graphs in TensorFlow/JAX.</li>
+        <li><strong>Reduction Server</strong> &mdash; accelerates multi-GPU gradient all-reduce.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> TPUs win for large TF/JAX matmul workloads; for smaller models, custom ops, or PyTorch, reach for GPUs first.</div>
+      <div class="callout mnemonic"><span class="hook">TPU</span> <strong>T</strong>ensor-heavy, <strong>P</strong>redictable, h<strong>U</strong>ge matmuls.</div>
+    </section>
+    <section class="lesson">
+      <h3>Hyperparameter tuning</h3>
+      <p>The Vertex AI <strong>hyperparameter tuning</strong> service (powered by <strong>Vizier</strong>) runs many trials to optimise a metric you report. Choose a search algorithm (Bayesian by default, or grid/random), set <strong>parallel trials</strong> to trade speed for cost, and enable <strong>early stopping</strong> to kill unpromising trials. Define the metric and search space; let the service do the sweep.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> More parallel trials finish faster but explore less efficiently than sequential Bayesian search. The exam may pit "fastest wall-clock" against "best metric for the budget".</div>
+    </section>
+    <section class="lesson">
+      <h3>Fine-tune, don't reinvent</h3>
+      <p>When a strong base model exists, <strong>fine-tune</strong> it (transfer learning, or supervised tuning of a foundation model in Model Garden) instead of training from scratch. You get a good model with far less data, compute, and time. From-scratch training is reserved for genuinely novel architectures or domains with no suitable base.</p>
+      <div class="callout mnemonic"><span class="hook">REUSE</span> A pretrained base + a little of <em>your</em> data beats burning a GPU farm to relearn the basics.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Very large TensorFlow model, massive matrix multiplications, best price-performance accelerator?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud TPUs.</strong></p>
+          <p class="quiz-why">Purpose-built for large dense matmul graphs.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> You have a strong base LLM and a small domain dataset. Cheapest path to a specialised model?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Fine-tune the foundation model.</strong></p>
+          <p class="quiz-why">Avoids costly from-scratch training.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Your model is too large to fit on a single GPU. Which distribution strategy do you need?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Model parallelism.</strong></p>
+          <p class="quiz-why">It splits the model itself across devices; data parallelism only splits the batch and still needs the whole model per device.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You need a custom training job in PyTorch with a niche C++ dependency. Prebuilt or custom container?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Custom container.</strong></p>
+          <p class="quiz-why">Prebuilt containers cover common stacks; a niche native dependency means building and pushing your own image.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team trains a large TensorFlow recommendation model dominated by dense matrix multiplications and wants the best price-performance at scale. Which accelerator should they choose?</p>
+        <ul>
+          <li>A) High-memory CPU instances with many vCPUs for parallel throughput.</li>
+          <li>B) A single large GPU with model simplification to fit the graph.</li>
+          <li>C) Cloud TPUs, which are purpose-built for large dense matmul graphs.</li>
+          <li>D) A fleet of small GPUs without a Reduction Server.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> TPUs are designed for exactly this &mdash; large, dense TensorFlow matmul workloads &mdash; and give the best price-performance at scale.</p>
+          <p class="quiz-why"><strong>A:</strong> CPUs are far too slow for large deep models. <strong>B:</strong> Forcing the model onto one GPU sacrifices accuracy or scale. <strong>D:</strong> Many small GPUs without all-reduce acceleration is slower and pricier than TPUs here.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> You must specialise a strong foundation LLM for a niche legal domain. You have a few thousand high-quality examples, a tight budget, and two weeks. What is the best approach?</p>
+        <ul>
+          <li>A) Pre-train a new transformer from scratch on the legal corpus.</li>
+          <li>B) Fine-tune (supervised tuning) the foundation model on the labelled examples.</li>
+          <li>C) Run a large hyperparameter sweep over a small model trained from scratch.</li>
+          <li>D) Increase the prompt with all examples on every request instead of training.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Fine-tuning a capable base model on a few thousand examples gives a specialised model cheaply and quickly &mdash; the textbook fit for limited data and budget.</p>
+          <p class="quiz-why"><strong>A:</strong> From-scratch pre-training needs far more data, compute, and time. <strong>C:</strong> A small from-scratch model won't match a tuned foundation model. <strong>D:</strong> Few-shot prompting may help but won't reliably bake in domain behaviour and grows cost per call.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A hyperparameter-tuning job must find a strong configuration within a fixed compute budget, exploring the space efficiently rather than just fastest wall-clock. How should you configure it?</p>
+        <ul>
+          <li>A) Maximise parallel trials so all configurations run at once.</li>
+          <li>B) Use Bayesian optimisation with modest parallelism and early stopping.</li>
+          <li>C) Use exhaustive grid search across every combination.</li>
+          <li>D) Run a single trial with hand-picked values to save budget.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Bayesian search learns from completed trials, so modest parallelism plus early stopping spends the budget where it matters and finds strong configs efficiently.</p>
+          <p class="quiz-why"><strong>A:</strong> Full parallelism is fastest but each trial can't learn from the others, wasting budget. <strong>C:</strong> Grid search explodes combinatorially. <strong>D:</strong> One hand-tuned trial isn't a search at all.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s2.html" class="nav-link">&larr; Managing Data &amp; Models Across Teams</a>
+      <a href="guide_s4.html" class="nav-link">Serving &amp; Scaling Models &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/ml_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/ml_eng/guide_s3.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

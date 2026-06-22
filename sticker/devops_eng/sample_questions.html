@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Database Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #0d9488;
+            --dark-accent-hover: #0f766e;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #115e59;
+            --classic-accent-hover: #134e4a;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud DevOps Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">45:36</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "DevOps Engineer",
+    "scenario": "Your company uses an application that is deployed on Compute Engine virtual machines (VMs) to deliver a service to your customer. You have a Service Level Agreement (SLA) to provide 99% availability per month. Telemetry data over the first 22 days of the month shows that you served 10,000,000 requests with 99.00% availability. The development team has added new features to the application and wants to deploy them. You need to decide on a deployment approach while following Site Reliability Engineering (SRE) practices. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy the new features right away to Confidential VMs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Defer the deployment of the new features until the next month.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Ask the customer to modify the SLOs and deploy new features right away.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Ask the customer to modify the SLA to 98.5% and deploy new features right away.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Confidential VMs do not guarantee high availability for end-user requests.",
+      "B": "There is no error budget remaining so you need to balance stability over feature updates.",
+      "C": "SLOs are an internal measure and do not reflect your service agreement with the customer.",
+      "D": "Changing SLAs when you have a low remaining error budget is not a recommended approach for application delivery."
+    },
+    "references": [
+      {
+        "url": "https://sre.google/workbook/error-budget-policy/",
+        "text": "sre.google/workbook/error-budget-policy"
+      },
+      {
+        "url": "https://sre.google/sre-book/embracing-risk/",
+        "text": "sre.google/sre-book/embracing-risk"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "DevOps Engineer",
+    "scenario": "You have an application served by a single Compute Engine instance in one region. The VM occasionally shuts down and disrupts end user workflows. You need a quick and reliable solution that notifies you when there are VM shutdowns. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Logs Explorer to create a log-based alert for VM instances with the v1.compute.instances.stop payload method name.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Export the logs to BigQuery and run hourly scheduled queries to identify VM instances with the v1.compute.instances.stop payload method name.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Update the application code to identify situations when the VM is close to shutting down, and send a notification.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure Cloud Scheduler to run a randomized health check on the VM with a maximum time gap of one hour.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A log-based alert will notify you if the VM shuts down.",
+      "B": "Exporting the logs to BigQuery and then running queries can cause significant delay in responsiveness.",
+      "C": "The application might not be able to identify all situations when the machine is close to shutting down. Furthermore, the application might not be able to reliably notify you if the VM shuts down.",
+      "D": "If randomized health checks can occur at any point within an hour, the check could run toward the end of the hour and result in a significant delay before the issue is reported."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/logging/docs/alerting/log-based-alerts",
+        "text": "cloud.google.com/logging/docs/alerting/log-based-alerts"
+      },
+      {
+        "url": "https://www.skills.google/focuses/619?parent=catalog",
+        "text": "skills.google/focuses/619?parent=catalog"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/troubleshooting/troubleshooting-reboots",
+        "text": "cloud.google.com/compute/docs/troubleshooting/troubleshoo..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "DevOps Engineer",
+    "scenario": "Your company requires that all employees within a team use a consistent, templated development environment, which includes popular integrated development environments (IDEs). You need to maintain security patches and updates to the development environments. You also need to identify a reliable, Google-recommended way to ensure that all developers within each team use a consistent development environment. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create daily Compute Engine snapshots of a 'golden' machine with all security patches and make the snapshots available for developers to update their own machines.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a checklist of all software updates with update scripts and allow developers to update their own machines.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an image with all up-to-date dependencies and install the image on laptops for the developers to use.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create Cloud Workstations configurations specific to each team.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Relying on the developers to make the update themselves might result in inconsistencies.",
+      "B": "Relying on the developers to make the update themselves might result in inconsistencies.",
+      "C": "Critical patches and updates cannot be reliably rolled out to all developers’ laptops.",
+      "D": "Cloud Workstations configurations provide templates for the creation of consistent workstations across multiple developers, and specify configuration settings such as machine type, disk size, tools, and pre-installed libraries. Any operations performed on a workstation configuration, such as changing the machine type or container image, reflect on each workstation the next time the workstation starts up."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/workstations/docs/overview",
+        "text": "cloud.google.com/workstations/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/workstations/docs/create-configuration",
+        "text": "cloud.google.com/workstations/docs/create-configuration"
+      },
+      {
+        "url": "https://cloud.google.com/workstations/docs/create-workstation",
+        "text": "cloud.google.com/workstations/docs/create-workstation"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=E1cblFqb8nk",
+        "text": "youtube.com/watch?v=E1cblFqb8nk"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=C6Dpmujxp9Q",
+        "text": "youtube.com/watch?v=C6Dpmujxp9Q"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "DevOps Engineer",
+    "scenario": "Your team has received information about a security patch that addresses a critical vulnerability. The patch needs to be applied to Compute Engine instances managed by VM Manager that serve millions of customers across the world. You need to roll out the security patch quickly, while minimizing cost and impact on end customers. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Perform a rollout of the security patch to a small group of instances with a short duration.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use simultaneous patching to update the Compute Engine instances across the world.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Perform scheduled patching across a 24-hour rolling window to occur during each region’s overnight hours.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Perform an A/B rollout, and create a copy of all the instances in Compute Engine. Apply the security patch to the newly created instances, and then switch users.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "A canary rollout with a short duration lets you quickly and cost-effectively identify any side effects of the security patch before you expand the rollout.",
+      "B": "If the security patch has any adverse or unexpected implications, all users could be affected simultaneously.",
+      "C": "This is not an effective strategy, because critical systems in regions that currently serve customers in the day time could be an attack vector.",
+      "D": "This is not cost-effective and would also be time consuming to create a copy of all the services and machines."
+    },
+    "references": [
+      {
+        "url": "https://sre.google/workbook/canarying-releases/",
+        "text": "sre.google/workbook/canarying-releases"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/gcp/how-release-canaries-can-save-your-bacon-cre-life-lessons",
+        "text": "cloud.google.com/blog/products/gcp/how-release-canaries-c..."
+      },
+      {
+        "url": "https://cloud.google.com/compute/vm-manager/docs/patch#patch_deployment_overview",
+        "text": "cloud.google.com/compute/vm-manager/docs/patch#patch_depl..."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "DevOps Engineer",
+    "scenario": "You have an application deployed on Cloud Run with users around the world. You need to configure Cloud Run to route all users to their nearest region so that request responses have low latency. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy the application to any one region, and serve the application at a global anycast IP address behind a global external Application Load Balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy the application to each region, and serve the application at a global anycast IP address behind a global external Application Load Balancer.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Deploy the application to one region per continent and serve the application by using a regional external Application Load Balancer in each region. Attach the same global IP address to all the regional load balancers.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy the application to any one region, and configure Google Cloud Armor in the frontend to allow traffic from all IP addresses.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "All requests would have to be routed to the single Cloud Run instance, which causes latency and congestion.",
+      "B": "The Cloud Run instance needs to be available in the regions closest to where the users are located. The global external Application Load Balancer can be the endpoint for the anycast IP address which will route the request to the closest region with the Cloud Run instance running.",
+      "C": "This is not the most efficient solution. You will have to set up multiple load balancers which are complex in configuration and not unified for the customer.",
+      "D": "Google Cloud Armor allow rules will allow traffic from all over the world, but responses will have higher latency when served from one region."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/multiple-regions",
+        "text": "cloud.google.com/run/docs/multiple-regions"
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/container-contract",
+        "text": "cloud.google.com/run/docs/container-contract"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "DevOps Engineer",
+    "scenario": "Your company is running a legacy database in Google Kubernetes Engine (GKE) that does not respond well to Pod evictions and rescheduling. Your company cannot afford any disruptions to the running database. You need to choose a GKE maintenance strategy to use. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure the GKE maintenance channel to “Stable”.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure a node pool upgrade strategy with max-surge-upgrade set to 0.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a \"PodDisruptionBudget\" object and specify maxUnavailable as 100%.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a maintenance exclusion window with a scope of “No minor or node upgrades”.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "If you choose the stable release channel alone, all updates will be performed on the stable release schedule, which can cause Pod evictions.",
+      "B": "A surge upgrade strategy will not restrict maintenance updates, and that could cause pod evictions.",
+      "D": "The \"No minor or node upgrades\" setting prevents node pool disruption and avoids any eviction and rescheduling of your workloads because of node upgrades."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/maintena..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#scope_of_maintenance_to_exclude",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/maintena..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/release-..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/best-practices/upgrading-clusters",
+        "text": "cloud.google.com/kubernetes-engine/docs/best-practices/up..."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=eqJQTANI_RI",
+        "text": "youtube.com/watch?v=eqJQTANI_RI"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization uses Cloud Run to deploy a containerized application. A new version of the application recently passed internal tests and now needs to be tested in production. You need to implement a configuration so that beta testers can test the application before you roll out the application to end users. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy the Cloud Run application to production, and direct 1% of traffic to the application.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure Google Cloud Armor to reject requests that originate from IP addresses outside of the testing team.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy the container to a private VM instance on Compute Engine, and enable access for the testing team only.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy the Cloud Run application to production with a revision tag and the “--no-traffic“ option, and share the URL with the testing team.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "End users might fall within the 1% and access the application.",
+      "B": "Maintaining a list of IP addresses that the testing team uses is cumbersome and not reliable.",
+      "C": "This deployment environment is different from the production environment, and more effort is required to reliably roll the application out to end users.",
+      "D": "Assigning a tag lets you access the revision at a specific URL without serving traffic."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#deploy-with-tags",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration#tags",
+        "text": "cloud.google.com/run/docs/rollouts-rollbacks-traffic-migr..."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=pi0Ss24bqL4",
+        "text": "youtube.com/watch?v=pi0Ss24bqL4"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "DevOps Engineer",
+    "scenario": "You work for a small company that uses open source Java packages as part of the CI/CD pipeline in Cloud Build. Your security team is concerned that vulnerabilities in the open source packages could be exploited. You need to implement a cost-effective solution to ensure that your production system dependencies are secure. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Pull only the latest versions of GitHub packages into your Cloud Build pipeline.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Pull the packages into Cloud Build from Assured Open Source Software (Assured OSS) packages.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Pull the packages into Cloud Source Repositories, and have the security team validate open source packages.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Pull the open source packages locally, use Cloud Build to scan all packages, and delete any flagged packages.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Pulling the latest open source versions might have bugs and vulnerabilities that have not been discovered yet.",
+      "B": "The Assured OSS Packages are built in Google Cloud’s own secured pipelines and are regularly scanned, analyzed, and fuzz tested for vulnerabilities.",
+      "C": "This is not the most cost-effective solution because Google Cloud already offers open source packages that have been curated and validated.",
+      "D": "Scanning all packages in each build is not cost-effective. Also, builds will not be successful if you delete essential packages."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/assured-open-source-software/docs/remoterepositoryaccess",
+        "text": "cloud.google.com/assured-open-source-software/docs/remote..."
+      },
+      {
+        "url": "https://cloud.google.com/assured-open-source-software/docs/javaaccess",
+        "text": "cloud.google.com/assured-open-source-software/docs/javaac..."
+      },
+      {
+        "url": "https://cloud.google.com/software-supply-chain-security/docs/practices",
+        "text": "cloud.google.com/software-supply-chain-security/docs/prac..."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization has many projects with production environments that have to be migrated to Google Cloud. You manage organizational policies centrally. You want to follow Google-recommended practices to roll out policy changes in the resource hierarchy. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create an organization to experiment with policy changes and a separate one for the production environments.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create an organization for the production environments, and then apply policy changes gradually across this organization going down the hierarchy.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an organization for the production environments and a staging environment for pre-release checks. Perform all experiments in the staging environment.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create an organization for the production environments, and then apply policy changes gradually going up the hierarchy starting from production projects in this organization.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Any change in the resource hierarchy the policy applies to might have far-reaching and unintended consequences. To mitigate this risk, it is a recommended practice to test policy changes in a separate organization before you apply them in your main organization.",
+      "B": "Many policies are applicable to the entire organization. Policy changes to the existing production organization might have far-reaching and unintended consequences.",
+      "C": "Staging environments should reflect the production environment configuration. It's not recommended to change configurations or make the security configurations easier just to do experiments.",
+      "D": "Policy changes to the existing production organization could have unintended consequences."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/architecture/identity/best-practices-for-planning#use_a_separate_organization_for_experimenting",
+        "text": "cloud.google.com/architecture/identity/best-practices-for..."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization runs a fault-tolerant, batch processing application that processes very large amounts of data. The computations are spread over hundreds of VMs for parallel processing. You need to implement a cost-effective solution to perform the data processing at scale. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Allocate Spot VMs to process data.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Allocate sole tenant machines to process data.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a managed instance group with autohealing enabled.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a managed instance group with accelerator-optimized VMs and autoscaling enabled.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Spot VMs are a cost-effective solution for fault-tolerant processing in Compute Engine in comparison to regular VMs.",
+      "B": "Sole tenant VMs are not the most cost-effective solution.",
+      "C": "Autohealing will automatically repair unhealthy VMs, but it won't be the most cost-effective solution with a regular VM configuration.",
+      "D": "Autoscaling allocates VMs as required, but it’s not the most cost-effective solution with an accelerator-optimized VM configuration."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/spot",
+        "text": "cloud.google.com/compute/docs/instances/spot"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/instances/create-use-spot",
+        "text": "cloud.google.com/compute/docs/instances/create-use-spot"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "DevOps Engineer",
+    "scenario": "You need to create a development, UAT, and production environment for a business application. You want to keep these environments as identical as possible, while following Google-recommended practices. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create the production environment using the Google Cloud console. Run Cloud Asset Inventory, list the resources in the production environment, and recreate the resources by using the Google Cloud console.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create the production environment using the Google Cloud console. Run a scan with the Security Command Center, list the resources in the production environment, and recreate the resources by using the gcloud CLI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Terraform configuration to define your environment. Use Terraform to deploy identical environments for development, UAT, and production.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create bash shell scripts to create your environment, and rerun the scripts as required.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Repeatedly recreating entire technical environments manually through the console is not Google-recommended.",
+      "B": "Resources listed in the Security Command Center will not have sufficient information to recreate them. Also, repeatedly recreating entire technical environments manually with the gcloud command line tool is not a Google-recommended practice.",
+      "C": "Infrastructure as code is the recommended way to manage repeatability technical environments. Terraform is the Google-recommended tool for infrastructure as code.",
+      "D": "Repeatedly recreating entire technical environments manually with bash scripts tool is not a Google-recommended practice."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/blog/products/devops-sre/want-repeatable-scale-adopt-infrastructure-as-code-on-gcp",
+        "text": "cloud.google.com/blog/products/devops-sre/want-repeatable..."
+      },
+      {
+        "url": "https://cloud.google.com/docs/terraform",
+        "text": "cloud.google.com/docs/terraform"
+      },
+      {
+        "url": "https://cloud.google.com/docs/terraform/best-practices-for-terraform",
+        "text": "cloud.google.com/docs/terraform/best-practices-for-terraform"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "DevOps Engineer",
+    "scenario": "You are using Cloud Build for a CI pipeline that uses containerized builds. Your monitoring data reveals that the builds are taking longer than expected to run. You want to reduce the build times. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Specify a cached image that can be used for subsequent builds.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Delete the .gcloudignore file in your code directory.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create the container layer with the most frequent changes as the first layer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Choose the latest version of the operating system for the base image.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Using a cached image accelerates subsequent builds.",
+      "B": "You can exclude files not needed by your build with a .gcloudignore file to optimize the upload time. Deleting the file doesn’t accelerate builds.",
+      "C": "To speed up builds, enable caching and ensure that the layers built earlier do not change.",
+      "D": "The latest version of the operating system in the base image is not guaranteed to be faster for builds."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/build/docs/optimize-builds/speeding-up-builds",
+        "text": "cloud.google.com/build/docs/optimize-builds/speeding-up-b..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/optimize-builds/kaniko-cache",
+        "text": "cloud.google.com/build/docs/optimize-builds/kaniko-cache"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "DevOps Engineer",
+    "scenario": "Your colleague noticed an increasing amount of suspicious traffic entering your project's virtual private cloud (VPC) while on call at night. Your colleague updated the configuration of Google Cloud Armor to stop the traffic that originates from certain IP addresses. The change reduced the network traffic, but there were escalations from an affected customer, which resulted in penalties for your company. Your team wants to use Google-recommended practices to prevent a recurrence. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Institute a policy that requires that all changes are made during day time when there are additional people to review changes.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a process that requires a second level of review for this colleague for any changes.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Conduct a blameless postmortem to identify core technical issues, and document the learnings for use by the entire team.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create an incident report attributing the incident to your colleague's error and escalate to senior management.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "This is not a viable policy, because configurations would need to be changed at any time. In this case, a potential cyber attack happened at night. The team needs processes that can be applied any time.",
+      "B": "This approach does not follow recommended practices because it focuses specifically on an individual instead of improving the process for everybody.",
+      "C": "This solution takes the DevOps/SRE approach of objectively identifying the technical issue without blaming the individual.",
+      "D": "This approach does not follow recommended practices, because it focuses on blaming the individual instead of improving the process."
+    },
+    "references": [
+      {
+        "url": "https://sre.google/workbook/postmortem-culture/",
+        "text": "sre.google/workbook/postmortem-culture"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/gcp/fearless-shared-postmortems-cre-life-lessons",
+        "text": "cloud.google.com/blog/products/gcp/fearless-shared-postmo..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "DevOps Engineer",
+    "scenario": "You are creating a software delivery pipeline for your company. New application features delivered by the development team must be deployed by using Cloud Deploy in testing, staging, and then production. The corresponding deployment targets are already defined. You instantiated the delivery pipeline by creating a release. You need to perform the deployments while following Google-recommended practices. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create an image for each stage in Artifact Registry and apply each image in the corresponding stage.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure Binary Authorization to approve the deployment before each stage.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an independent delivery pipeline for each of the delivery stages.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Promote the initial release through the staging and production stages.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Creating separate images for each deployment is not the recommended approach.",
+      "B": "Binary authorization provides a security check prior to deployment. However, it is not a solution for deployment itself.",
+      "C": "Creating separate delivery pipelines in Cloud Deploy is not recommended for this use case. The recommended approach is to promote the deployment to the next stage.",
+      "D": "Instantiating the release will deploy to the first target. You can promote it to go to staging and then again to go to production."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/deploy/docs/deploy-app-run",
+        "text": "cloud.google.com/deploy/docs/deploy-app-run"
+      },
+      {
+        "url": "https://cloud.google.com/deploy/docs/promote-release",
+        "text": "cloud.google.com/deploy/docs/promote-release"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "DevOps Engineer",
+    "scenario": "Your organization runs many builds on Google Cloud daily. You need to ensure that VMs do not have public IP addresses and secure the build machines against data exfiltration. You want to use Google-recommended practices to create a customizable, easily-managed solution for your builds that can scale to the demands of your organization. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Implement private pools in Cloud Build with VPC Service Controls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Run and configure the builds in a default pool in Cloud Build for required privacy.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a build environment by using Compute Engine VMs in a custom VPC. Use Jenkins to run the builds.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a build environment by using Compute Engine Spot VM instances in a custom VPC. Use Jenkins to run the builds.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Using VPC Service Controls and running builds in a private pool gives you more security and allows multiple customizations that the default pool does not allow.",
+      "B": "The default pool does not allow customization to limit VM configurations such as public IP addresses.",
+      "C": "This custom approach incurs more effort and is not the recommended approach on Google Cloud.",
+      "D": "This custom approach incurs more effort and is not the recommended approach on Google Cloud."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/build/docs/private-pools/private-pools-overview",
+        "text": "cloud.google.com/build/docs/private-pools/private-pools-o..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/private-pools/using-vpc-service-controls",
+        "text": "cloud.google.com/build/docs/private-pools/using-vpc-servi..."
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/private-pools/set-up-private-pool-to-use-in-vpc-network",
+        "text": "cloud.google.com/build/docs/private-pools/set-up-private-..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "DevOps Engineer",
+    "scenario": "Your company has a major sales event planned in September. You have identified a group of employees to support operations during the sales event. You want to follow Google-recommended practices to provide the employees with access to Google Cloud resources for September only. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add a firewall rule to allow traffic from the identified employees’ machines to the resources. Change the firewall rule to deny traffic at the end of September.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a group that contains the identified employees. Assign the group permissions to access the resources and configure an Identity and Access Management (IAM) condition with a date/time expression for September.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a group that contains the identified employees and assign the group a custom Identity and Access Management (IAM) role that has permissions to access the resources. Delete the custom role at the end of September.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Assign a custom Identity and Access Management (IAM) role that has permissions to access the resources to each of the identified employees. Create a Cloud Scheduler task to delete the custom role at the end of September.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "The firewall rules might allow network traffic, but that does not mean that the user has the IAM permissions to work on the resources.",
+      "B": "IAM conditions automatically assign the required permissions for the designated period only.",
+      "C": "You need to remember to remove the role at the end of September, which is not recommended. Also, the permissions apply right away, which is not necessary.",
+      "D": "Assigning roles to individual users is not recommended. Also, using Cloud Scheduler to later delete the role is not the recommended practice."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/conditions-overview",
+        "text": "cloud.google.com/iam/docs/conditions-overview"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "DevOps Engineer",
+    "scenario": "Your company runs applications that serve users in Europe. Industry regulations require you to use resources only in specific regions. You need to ensure that all projects in your Google Cloud organization follow this requirement. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a log-based alert to identify resources created outside of the allowed list of regions. Delete any non-compliant resources.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run an hourly Asset Inventory scan to catalog all resources. Delete any instance outside of the allowed list of regions.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a limited group of users with permission to create new instances. Create processes to verify compliance.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure the \"Resource Location Restriction\" organization policy to only allow regions in Europe.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "This option allows a resource to be created, which is a breach of the regulation.",
+      "B": "This option allows a resource to be created, which is a breach of the regulation.",
+      "C": "This is not reliable, because the team might still accidentally or maliciously create resources in the wrong regions.",
+      "D": "The organization policy constraint preempts the creation of a resource if it is not in the allowed regions."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations#gcloud",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+      },
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/overview",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "DevOps Engineer",
+    "scenario": "Your application has a module that performs a computationally intensive task. Your development team wants to optimize this module by experimenting with different algorithms. You need to help the team test the algorithms in both the staging and production environments to gather detailed data on the performance of each algorithm. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Instrument the code with profiling libraries. Visualize the data in Cloud Profiler as flame graphs.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Instrument the code to capture the flow of requests and responses. Review the request latencies in Cloud Trace.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Instrument the code with log statements at various parts of the algorithm. Send log-based notifications to collect data on the algorithm's execution.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Instrument the code with log statements at various parts of the algorithm. Send notifications based on log-metrics when the same control structures are called multiple times.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Flame graphs in Cloud Profiler help you visualize the call stack within a program. This lets you identify bottlenecks and guides you in optimizing the code and algorithms.",
+      "B": "Cloud Trace does not provide sufficient information on benchmarking code. It is better suited for distributed tracing of applications with multiple calls between them.",
+      "C": "Log statements affect the timing of algorithms. Data collected in this way is inconvenient to visualize and is not detailed enough to provide guidance on bottlenecks.",
+      "D": "Log statements affect the timing of algorithms. Data collected in this way is inconvenient to visualize and is not detailed enough to provide guidance on bottlenecks."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/profiler/docs/concepts-profiling",
+        "text": "cloud.google.com/profiler/docs/concepts-profiling"
+      },
+      {
+        "url": "https://cloud.google.com/profiler/docs/measure-app-performance",
+        "text": "cloud.google.com/profiler/docs/measure-app-performance"
+      },
+      {
+        "url": "https://cloud.google.com/profiler/docs/concepts-flame",
+        "text": "cloud.google.com/profiler/docs/concepts-flame"
+      },
+      {
+        "url": "https://codelabs.developers.google.com/cloud-profiler-go#0",
+        "text": "codelabs.developers.google.com/cloud-profiler-go#0"
+      },
+      {
+        "url": "https://codelabs.developers.google.com/codelabs/otel-cloudtrace-go#0",
+        "text": "codelabs.developers.google.com/codelabs/otel-cloudtrace-go#0"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "DevOps Engineer",
+    "scenario": "Your code is stored on GitHub and built with Cloud Build, both manually and with webhooks. Building the code requires accessing confidential information. You want to follow Google-recommended practices to ensure the security of the confidential information. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Trigger the builds from the command line each time, and supply the required confidential information as parameters.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create an encrypted file in your GitHub repository to only contain the confidential information, and reference the encrypted file in your Cloud Build file.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an entry in Secret Manager, specify the URI for the confidential secrets in the Cloud Build file, and reference the secret as parameters in the build steps.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Retain the code in Github. Create a new repository only for confidential information in Cloud Source Repositories, and reference the new repository in your Cloud Build file.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "This solution does not work for those cases when webhooks trigger the build.",
+      "B": "As a rule, any confidential information, secrets, and credentials should not be stored in a source repository. Others who have access to the GitHub repository would have access to the credentials, thus breaking the principle of least privilege.",
+      "C": "Secret Manager can be configured with Identity and Access Management (IAM) to follow the principle of least privilege. Cloud Build can reference Secret Manager and you can include the secrets in the build steps by using parameter substitution.",
+      "D": "As a rule, any confidential information, secrets, and credentials should not be stored in a source repository. Isolating confidential information in a separate repository is also not acceptable. Others who have access to the Cloud Source Repositories repository would have access to the information, thus breaking the principle of least privilege."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/build/docs/securing-builds/use-secrets",
+        "text": "cloud.google.com/build/docs/securing-builds/use-secrets"
+      },
+      {
+        "url": "https://cloud.google.com/build/docs/configuring-builds/substitute-variable-values",
+        "text": "cloud.google.com/build/docs/configuring-builds/substitute..."
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/devops_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/devops_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

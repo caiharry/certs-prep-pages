@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Security Operations Engineer &mdash; Data Management</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --ink: #1e293b; --accent: #475569; --accent-dark: #334155;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23cbd5e1' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #cbd5e1 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Security Operations Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 2</span><span class="weight">~14%</span>
+      <h1>Data Management</h1>
+      <p class="sec-intro">Ingest, parse, and normalise logs into the Unified Data Model, and build entity context.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Ingestion & the UDM</h3>
+      <p>All ingested logs are normalised into the <strong>Unified Data Model (UDM)</strong> — one schema that detections and searches reference. <strong>Parsers</strong> map raw logs to UDM fields; build or extend a parser when a custom source's fields don't map. Assess which logs you actually need and <strong>manage ingestion cost</strong> by prioritising high-value sources.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> If custom-app fields aren't queryable in detections, create/extend a parser to normalise them into UDM — don't write rules against raw text.</div>
+    </section>
+    <section class="lesson">
+      <h3>Event vs entity context</h3>
+      <p>Distinguish <strong>event</strong> data (activity, e.g., Cloud Audit Logs) from <strong>entity</strong> data (context about users/assets, e.g., Active Directory org context). Enrich events with entity data using aliasing fields so detections and investigations have context.</p>
+    </section>
+    <section class="lesson">
+      <h3>Parsers, parser extensions & the data pipeline</h3>
+      <p>Most common sources have a <strong>default (Google-managed) parser</strong> that maps raw logs to UDM automatically. When fields go missing or a source is bespoke, you have three escalating moves — and the exam wants the <em>least invasive</em> one that works:</p>
+      <ul>
+        <li><strong>Parser extension</strong> — a small overlay that adds or remaps a handful of fields on top of the default parser without forking it. Reach for this first.</li>
+        <li><strong>Custom parser</strong> — a full parser you author when there is no default (a truly bespoke app log format).</li>
+        <li><strong>Data normalisation fields</strong> — choose UDM field types deliberately (noun vs metadata, principal vs target) so detections match correctly.</li>
+      </ul>
+      <p>Validate parser changes against sample logs <em>before</em> promoting them, and remember mappings are <em>forward-looking</em> — only newly ingested logs pick up the change.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> A parser edit does <strong>not</strong> retroactively reparse old data. If old logs are mis-mapped, you must reingest/backfill — editing the parser only fixes events ingested afterward.</div>
+    </section>
+    <section class="lesson">
+      <h3>Cost, retention & data tiers</h3>
+      <p>Ingestion is priced and capacity is finite, so data management is partly an economics exercise. Triage every prospective source by detection value versus volume:</p>
+      <ul>
+        <li>Prioritise high-signal logs (auth, audit, EDR, DNS) over chatty low-value noise (verbose debug/app logs).</li>
+        <li>Use <strong>data tiers</strong> to keep hot, frequently-searched data fast while pushing rarely-touched logs to cheaper retention.</li>
+        <li>Tune at the source — drop or filter fields you will never detect on rather than paying to store them.</li>
+      </ul>
+      <div class="callout mnemonic"><span class="hook">VALUE/VOLUME</span> Before adding a feed, ask: does its detection <strong>value</strong> justify its ingest <strong>volume</strong>? If not, filter at source.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A custom app's log fields don't map to the schema so detections can't reference them. What do you do?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Create or extend a parser to normalise into UDM.</strong></p>
+          <p class="quiz-why">Parsers map raw fields to UDM so rules/searches can use them.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> What is the single normalised schema all SecOps logs are mapped into?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>The Unified Data Model (UDM).</strong></p>
+          <p class="quiz-why">Detections and searches operate over UDM fields.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> A Google-managed parser maps most of a source correctly but drops two fields you need. What's the least invasive fix?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>A parser extension overlaying the default parser.</strong></p>
+          <p class="quiz-why">Extensions add/remap a few fields without forking the whole default parser.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You fixed a parser mapping, but yesterday's already-ingested logs are still wrong. Why?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Parser changes are forward-looking; they don't reparse historical data.</strong></p>
+          <p class="quiz-why">Only events ingested after the change pick up the new mapping — old data needs reingestion.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A new SaaS source ingests via its default parser, but the username lands in a generic text field instead of the principal, so your user-based detections never fire on it. You want the fix scoped to this one source without affecting other tenants of the same parser. What do you do?</p>
+        <ul>
+          <li>A) Author a brand-new custom parser for the source and disable the Google-managed default</li>
+          <li>B) Rewrite each affected YARA-L rule to read the generic text field instead of the principal</li>
+          <li>C) Create a parser extension that maps the username into the correct UDM principal field</li>
+          <li>D) Add the usernames to a reference list so detections can resolve them at match time</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: C.</strong> A parser extension overlays just the field mapping you need onto the existing default parser, fixing the principal mapping for this source without forking or replacing the managed parser.</p>
+          <p class="quiz-why"><strong>A:</strong> A full custom parser is heavy, throws away the working default mappings, and is more than this single-field gap requires. <strong>B:</strong> Rewriting rules to chase a mis-mapped field scatters the workaround across every detection and breaks portability of shared rules. <strong>D:</strong> Reference lists hold reusable values for matching; they cannot relocate a value into the correct UDM field.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Your SecOps ingest bill is dominated by verbose application debug logs that no detection or hunt has ever referenced, while you want to onboard high-value EDR telemetry within the same budget. What is the right data-management move?</p>
+        <ul>
+          <li>A) Shorten retention on every source uniformly so total stored volume drops across the board</li>
+          <li>B) Filter the unused debug logs at the source so they are not ingested, freeing budget for EDR</li>
+          <li>C) Move all logs into a cold data tier to cut cost, then onboard EDR into the same cold tier</li>
+          <li>D) Route the debug logs to Security Command Center instead so they no longer count against SIEM ingest</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Filtering low-value, never-referenced logs at the source removes their ingest cost directly, which is the textbook value-versus-volume trade that frees budget for high-signal EDR data.</p>
+          <p class="quiz-why"><strong>A:</strong> Blanket retention cuts also shorten your valuable logs' searchable history and don't target the actual cost driver. <strong>C:</strong> A cold tier slows the EDR telemetry you most want fast and still pays to ingest the useless debug logs. <strong>D:</strong> SCC is a posture tool, not a dumping ground for application logs, and this misroutes data rather than reducing it.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> During an investigation you must correlate a sign-in event with the user's department and manager — context that isn't in the auth log itself. Which kind of data do you bring in, and from where?</p>
+        <ul>
+          <li>A) More event data, by lowering the auth source's filtering so additional fields are ingested</li>
+          <li>B) A retrohunt over historical auth logs to reconstruct the department from past activity</li>
+          <li>C) A parser extension on the auth log to synthesise department and manager fields locally</li>
+          <li>D) Entity context data, such as identity/org records, enriched onto events via aliasing fields</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: D.</strong> Department and manager describe <em>who the user is</em>, which is entity context (from identity/org sources); SecOps joins it onto events through aliasing so investigations and detections gain that context.</p>
+          <p class="quiz-why"><strong>A:</strong> The auth log is event data about an action; it does not contain HR org attributes no matter how much filtering you relax. <strong>B:</strong> A retrohunt finds past matching events but cannot manufacture org context that was never logged. <strong>C:</strong> A parser maps fields that exist in the raw log; it cannot invent department/manager that the source never sent.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s1.html" class="nav-link">&larr; Platform Operations</a>
+      <a href="guide_s3.html" class="nav-link">Threat Hunting &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/secops_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/secops_eng/guide_s2.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

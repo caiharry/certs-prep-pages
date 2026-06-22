@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 5 Revision Guide - Load Balancing, Cloud DNS &amp; Cloud CDN</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-green-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #f0fdf4;
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--rev-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="theme4_gke.html" class="nav-link">&larr; Back to Theme 4</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
+      <a href="theme6_security.html" class="nav-link">Go to Theme 6: Network Security &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 5: Load Balancing, Cloud DNS &amp; Cloud CDN</h1>
+      <p>Application, proxy, and passthrough load balancers, Cloud DNS routing policies, and Cloud CDN</p>
+      <div class="section-badge">Theme 5 🟢</div>
+    </header>
+
+    <!-- 5.1 Load Balancing Taxonomy -->
+    <h2>5.1 Load Balancing Taxonomy: The Speed Demons</h2>
+    <p>Google Cloud Load Balancing is built on Google's software-defined network virtualization stack (Maglev and Andromeda). It is incredibly fast, highly scalable, and doesn't require pre-warming! To pass this exam, you must memorize the <strong>current load balancer taxonomy</strong> and their distinct behaviors: ⚖️</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Load Balancer Type</th>
+            <th>Layer</th>
+            <th>Proxy vs. Passthrough</th>
+            <th>Deployment Modes</th>
+            <th>Key Features &amp; Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Application Load Balancer (ALB)</strong></td>
+            <td>Layer 7 (HTTP/S)</td>
+            <td><strong>Proxy</strong> (terminates client connection, starts new one to backend)</td>
+            <td>Global external, Regional external, Regional internal, Cross-region internal</td>
+            <td>Content-based routing (URL maps), traffic splitting, URL rewrites, SSL offloading. Best for web apps! 🌐</td>
+          </tr>
+          <tr>
+            <td><strong>Proxy Network Load Balancer (NLB)</strong></td>
+            <td>Layer 4 (TCP/SSL)</td>
+            <td><strong>Proxy</strong> (terminates client connection)</td>
+            <td>Global external, Regional external, Regional internal, Cross-region internal</td>
+            <td>Reverse proxy for non-HTTP TCP traffic. Supports SSL offloading and single global IP. Best for global databases or mail servers.</td>
+          </tr>
+          <tr>
+            <td><strong>Passthrough Network Load Balancer (NLB)</strong></td>
+            <td>Layer 4 (TCP/UDP/ESP/ICMP)</td>
+            <td><strong>Passthrough</strong> (does not terminate connection; packets pass through unchanged)</td>
+            <td>Regional external, Regional internal</td>
+            <td><strong>Preserves client source IP address</strong>, Direct Server Return (DSR). Blistering speed! Best for high-performance gaming, UDP, or tunneling. ⚡</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Client IP Preservation Trap!</strong> If an exam question asks you to design a load-balanced architecture where the backend servers <strong>MUST see the original client source IP address</strong> natively in the packet header, you <strong>cannot</strong> use an Application Load Balancer or Proxy Network Load Balancer (they terminate the connection, replacing the source IP with the LB's proxy IP). You <strong>MUST</strong> use a <strong>Passthrough Network Load Balancer</strong>!
+    </div>
+
+    <p>That taxonomy tells you <em>what</em> each load balancer is. This next matrix is the one that wins exam questions — it lines up the <strong>discriminators</strong> examiners use to separate the right answer from the plausible-looking wrong ones. Burn it into memory: 🔥</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Application LB (proxy, L7)</th>
+            <th>Proxy NLB (proxy, L4)</th>
+            <th>Passthrough NLB (L4)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IPv6 / dual-stack</strong></td>
+            <td>✅ Yes</td>
+            <td>✅ Yes</td>
+            <td>✅ Yes (modern backend-service based)</td>
+          </tr>
+          <tr>
+            <td><strong>Port translation</strong> (frontend port ≠ backend port)</td>
+            <td>✅ Yes</td>
+            <td>✅ Yes</td>
+            <td>❌ <strong>No</strong> — same port end to end</td>
+          </tr>
+          <tr>
+            <td><strong>Content-based routing</strong> (URL maps, host/path)</td>
+            <td>✅ Yes</td>
+            <td>❌ No</td>
+            <td>❌ No</td>
+          </tr>
+          <tr>
+            <td><strong>TLS / SSL passthrough</strong> (no termination at LB)</td>
+            <td>❌ No (terminates)</td>
+            <td>❌ No (terminates)</td>
+            <td>✅ Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Preserves client source IP</strong></td>
+            <td>❌ No (X-Forwarded-For instead)</td>
+            <td>❌ No</td>
+            <td>✅ Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Global access</strong> (reach from any region / on-prem)</td>
+            <td>✅ Yes (global &amp; cross-region modes)</td>
+            <td>✅ Yes (global &amp; cross-region modes)</td>
+            <td>✅ Internal, with global access enabled</td>
+          </tr>
+          <tr>
+            <td><strong>Usable as a route next hop</strong> (for NVAs)</td>
+            <td>❌ No</td>
+            <td>❌ No</td>
+            <td>✅ <strong>Internal passthrough NLB only</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Proxy-only subnet required</strong></td>
+            <td>✅ Yes (internal/regional ALB)</td>
+            <td>✅ Yes (internal/regional proxy NLB)</td>
+            <td>❌ No</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Port-Translation Trap!</strong> A <strong>passthrough</strong> load balancer delivers packets to the backend on the <em>same</em> port the forwarding rule received them — it can never map, say, frontend port 700 to backend port 800. The moment a scenario needs a <strong>different frontend and backend port</strong>, you need a <strong>proxy</strong> load balancer. (Don't fall for the old "passthrough NLBs don't support IPv6" reasoning — modern backend-service-based passthrough NLBs <em>do</em> support IPv6; port translation is the real discriminator.)
+    </div>
+
+    <div class="exam-trap">
+      <strong>The Proxy-Only Subnet Prerequisite!</strong> Before you can create an <strong>internal (or regional) Application Load Balancer</strong>, the region must already have a <strong>proxy-only subnet</strong> (purpose <code>REGIONAL_MANAGED_PROXY</code>). It's a prerequisite, not an afterthought — the Envoy proxies live there. Firewall rules and a reserved IP, by contrast, can be added <em>after</em> the LB exists.
+    </div>
+
+    <div class="exam-trap">
+      <strong>The NVA High-Availability Pattern!</strong> To send traffic through two network virtual appliances <strong>simultaneously</strong> with automatic failover, put them behind an <strong>internal passthrough Network Load Balancer</strong> and point a custom static route (e.g. <code>10.0.0.0/8</code>) at that LB as its <strong>next hop</strong>. Only the internal passthrough NLB can be a route next hop — proxy LBs cannot, and two priority routes only give active/standby (not both at once, and no health checking).
+    </div>
+
+    <!-- 5.2 Traffic Management & Backends -->
+    <h2>5.2 Traffic Management &amp; Backends</h2>
+    <p>Load balancers distribute traffic to backends. GCP supports several backend types:</p>
+    <ul>
+      <li><strong>Instance Groups:</strong> Managed (MIGs) or Unmanaged. MIGs support auto-scaling based on CPU or load balancer capacity.</li>
+      <li><strong>Network Endpoint Groups (NEGs):</strong>
+        <ul>
+          <li><strong>Zonal NEGs:</strong> Direct routing to GKE Pod IPs (container-native load balancing).</li>
+          <li><strong>Internet NEGs:</strong> Routes traffic to external backends located on-premises or in other clouds.</li>
+          <li><strong>Serverless NEGs:</strong> Integrates the load balancer with Cloud Run, Cloud Functions, or App Engine.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>🚗 Advanced Traffic Management on Application Load Balancers</h3>
+      <p>Global External Application Load Balancers support advanced Layer 7 routing rules configured in <strong>URL Maps</strong>:</p>
+      <ul>
+        <li><strong>Traffic Splitting (Canary Deployments):</strong> Route 95% of traffic to production and 5% to a new "canary" release backend service.</li>
+        <li><strong>Traffic Mirroring:</strong> Copy 100% of live production traffic and send it to a test environment in the background to profile performance without affecting users!</li>
+        <li><strong>URL Rewrites &amp; Redirects:</strong> Automatically rewrite incoming request paths (e.g., <code>/images/logo.png</code> to <code>/static/logo.png</code>) or redirect HTTP to HTTPS at the edge.</li>
+      </ul>
+    </div>
+
+    <!-- 5.3 Cloud CDN -->
+    <h2>5.3 Cloud CDN: Speeding Up the Edge</h2>
+    <p><strong>Cloud CDN</strong> (Content Delivery Network) caches static content at Google's global edge co-location facilities (Points of Presence - PoPs), bringing content closer to users and reducing load on your backends.</p>
+    <ul>
+      <li><strong>Supported Origins:</strong> Managed Instance Groups, Cloud Storage buckets, Cloud Run, and external backends (via Internet NEGs).</li>
+      <li><strong>Cache Invalidation:</strong> If you update an image or file, you don't want users seeing the old cached version. You can trigger a <strong>Cache Invalidation</strong> command to purge the cached content globally. <em>Warning: Purging the entire cache (<code>/</em></code>) can overload your origin databases and servers as they get hit with a flood of new requests!*</li>
+    </ul>
+
+    <!-- 5.4 Cloud DNS -->
+    <h2>5.4 Cloud DNS: The Global Address Book</h2>
+    <p>Cloud DNS is a highly available, global managed DNS service. Let's look at the advanced routing policies that examiners absolutely love to test:</p>
+
+    <div class="rev-card warn">
+      <h3>🗺️ Advanced DNS Routing Policies</h3>
+      <p>Cloud DNS allows you to configure dynamic traffic steering on your resource record sets:</p>
+      <ul>
+        <li><strong>Weighted Round Robin (WRR):</strong> Distributes traffic across multiple IP addresses based on custom weights (e.g., sending 80% of queries to IP A and 20% to IP B). Excellent for canary testing or capacity balancing.</li>
+        <li><strong>Geolocation (GEO):</strong> Directs users to the nearest healthy region.
+          <ul>
+            <li><strong>Geofencing (<code>--enable-geo-fencing</code>):</strong> If enabled, traffic is strictly restricted to that region. If all endpoints in that region are unhealthy, queries <strong>will not</strong> failover to other regions (useful for strict data residency compliance). If disabled (default <code>false</code>), Cloud DNS will failover and route queries to the next nearest healthy region! 🌍</li>
+          </ul>
+        </li>
+        <li><strong>Failover:</strong> Configures a primary IP (like an active load balancer) and a backup IP (like a DR site).
+          <ul>
+            <li><strong>Trickle Ratio (<code>--backup-data-trickle-ratio</code>):</strong> A value between <code>0</code> and <code>1</code>. It sends a tiny, continuous percentage of live traffic to the backup target <strong>even when the primary is completely healthy</strong>! This is a massive best practice because it ensures your standby/DR environment is actually warm and working under live conditions, rather than failing silently on game day! 💧</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="joke-box">
+      "Why did the DNS record set apply a trickle ratio to its failover policy? Because it wanted to keep its backup environment warm, just in case the primary got a cold!" 🥶
+    </div>
+
+    <!-- 5.5 Hybrid DNS Architecture -->
+    <h2>5.5 Hybrid DNS Architecture: Resolving Across the Boundary</h2>
+    <p>Routing policies steer traffic <em>within</em> a zone. Hybrid DNS is a different beast: it's about <strong>which resolver answers a query</strong> when names live on-premises, in another VPC, or in Google Cloud. Three building blocks do all the work — get the direction right and these questions become easy. 🧭</p>
+
+    <div class="rev-card tip">
+      <h3>🧭 The Three Building Blocks (and which way they point)</h3>
+      <ul>
+        <li><strong>Forwarding zone (outbound):</strong> A Cloud DNS private zone whose queries are <strong>forwarded out to a specific set of on-premises (or external) DNS servers</strong>. Scope it to the exact private zones you want resolved on-prem — not everything. This is how Google Cloud VMs resolve <em>on-premises</em> names.</li>
+        <li><strong>DNS peering (VPC → VPC):</strong> Lets one VPC <strong>hand its queries to another VPC's Cloud DNS configuration</strong>. In a hub-and-spoke design, the spokes peer to the hub so they inherit the hub's forwarding zone — you configure forwarding <em>once</em> on the hub instead of in every spoke.</li>
+        <li><strong>Server policy (inbound / outbound):</strong> Attached to a VPC.
+          <ul>
+            <li><strong>Inbound:</strong> creates an <strong>inbound forwarder IP</strong> so <em>on-premises</em> servers can resolve Google Cloud private names (the reverse direction).</li>
+            <li><strong>Outbound (alternative name servers):</strong> sends <strong>all</strong> queries from the VPC to the listed servers — a blunt instrument, not zone-scoped.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🛰️ The Hub-and-Spoke Forwarding Pattern</h3>
+      <p>Want VMs in <em>every</em> spoke VPC to resolve a specific set of private zones via on-premises DNS? Don't apply a forwarding zone to each spoke (that advertises the same DNS proxy range from every VPC and your on-prem router can't tell who asked → dropped queries). Instead:</p>
+      <ul>
+        <li>Create the <strong>forwarding zone on the hub VPC</strong> only, pointing at the on-prem DNS servers.</li>
+        <li>From each spoke, create a <strong>DNS peering zone</strong> to the hub.</li>
+      </ul>
+      <p>One forwarding config, scoped to the zones you choose, inherited by every spoke.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The 35.199.192.0/19 Trap!</strong> For <strong>outbound</strong> resolution (Google Cloud → on-prem), forwarded DNS queries leave Google from the source range <strong>35.199.192.0/19</strong>. You must <strong>advertise that range to on-premises via Cloud Router</strong> and allow it through on-prem firewalls, or the queries never arrive. The lookalike <code>169.254.169.254</code> is the <strong>metadata DNS server</strong> — wrong answer. (And remember: an <em>inbound</em> server policy is for the opposite direction, on-prem resolving Google Cloud names.)
+    </div>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Which load balancer type should you use to preserve the client's original source IP address natively?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Passthrough Network Load Balancer (NLB)</strong>. Because it is not a proxy, packets are received by backend VMs with unchanged source and destination IP addresses.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> What happens in a Geolocation DNS routing policy if geofencing is enabled (<code>--enable-geo-fencing</code>) and all endpoints in the nearest region fail health checks?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Queries will still be resolved to that region!</strong> Geofencing prevents traffic from failing over to other regions, prioritizing data residency compliance over availability. If disabled (default), it would fail over to the next nearest healthy region.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What is the purpose of the <code>--backup-data-trickle-ratio</code> flag in a Cloud DNS Failover routing policy?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          It <strong>sends a tiny percentage of live traffic to the backup/standby target</strong> while the primary is healthy. This continuously tests and warms the DR environment so you know it works before an actual disaster occurs.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> Can you use a Global External Application Load Balancer with Standard Tier network routing?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>No!</strong> Standard Tier only supports regional load balancers. Global load balancing strictly requires Premium Tier routing.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 5 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style load balancing and DNS routing brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A global web app needs path-based routing (<code>/api</code> to a backend pool, <code>/static</code> to Cloud Storage), TLS termination at the edge, and traffic mirroring for background testing. Which load balancer should you deploy?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Global External Proxy Network Load Balancer with TCP SSL offloading and a URL-map header-routing rule for the path splits.</li>
+          <li data-option="B">B) Internal passthrough Network Load Balancer paired with Cloud NAT doing SNAT to provide the public path and traffic mirroring.</li>
+          <li data-option="C">C) Global External Application Load Balancer, which provides URL-map path routing, SSL offload, and traffic mirroring at the edge.</li>
+          <li data-option="D">D) Regional External Passthrough Network Load Balancer fronting an internal Application Load Balancer transit layer in each region.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> The <strong>Global External Application Load Balancer</strong> is the L7 product. URL maps give path-based routing, it terminates TLS (SSL offload), and it supports traffic mirroring natively at Google's edge. 🌐</p>
+          <ul>
+            <li><strong>A:</strong> Proxy NLB is Layer 4 (TCP) &mdash; it can't parse HTTP paths or URLs, so no path routing or URL maps.</li>
+            <li><strong>B:</strong> Internal passthrough NLB is private and L4; Cloud NAT doesn't turn it into a public global L7 with SSL termination.</li>
+            <li><strong>D:</strong> Passthrough NLB is L4 and regional; stacking an internal ALB behind it is needlessly complex and breaks single-point SSL offload.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> You run active-passive DR with a primary Application Load Balancer in <code>us-east1</code> and a standby in <code>europe-west1</code>. Cloud DNS must auto-route users to the standby if the primary fails, and you also want a steady 1% of live traffic hitting the standby so it stays warm and verified. How should you configure Cloud DNS?</p>
+        <ul class="option-list">
+          <li data-option="A">A) A FAILOVER routing policy with the primary on the <code>us-east1</code> LB and the backup a GEO policy to <code>europe-west1</code>, health checks on, and <code>--backup-data-trickle-ratio</code> set to <code>0.01</code>.</li>
+          <li data-option="B">B) A Geolocation policy with geofencing on, the European LB as a dynamic fallback, and a Cloud Run script polling the primary region's health.</li>
+          <li data-option="C">C) A Geolocation policy whose primary and passive weights a Cloud Scheduler job rewrites hourly, plus a separate weighted CNAME that sends 1% of queries over.</li>
+          <li data-option="D">D) A Weighted Round Robin policy with equal weights on both LBs and DNS health checks disabled on the passive region to avoid traffic shifting.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> The <strong>FAILOVER</strong> policy auto-switches to the backup on health-check failure, and <code>--backup-data-trickle-ratio 0.01</code> continuously sends exactly 1% of queries to the standby &mdash; keeping it warm and verified under live load. 💧</p>
+          <ul>
+            <li><strong>B:</strong> Geolocation doesn't do active-passive failover with a trickle ratio, and an external Cloud Run poller isn't wired into Cloud DNS's automatic failover.</li>
+            <li><strong>C:</strong> Hourly Cloud Scheduler reweighting is slow and lacks sub-minute, health-based failover.</li>
+            <li><strong>D:</strong> Equal weights with no health checks is active-active &mdash; it sends ~50% to the passive site and keeps sending even when it's unhealthy.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> A multiplayer game backend on Compute Engine talks UDP and needs very low latency, and the servers must see each player's original public IP for matchmaking. Which load balancer should you choose?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Global External Application Load Balancer with a Proxy Protocol v2 header to carry the client IP to the instance group.</li>
+          <li data-option="B">B) Regional External Passthrough Network Load Balancer, which forwards UDP unchanged so backends see the real client IP.</li>
+          <li data-option="C">C) Global External Proxy Network Load Balancer with SSL session-ticket resumption to keep UDP latency low.</li>
+          <li data-option="D">D) Regional Internal Application Load Balancer with Private Service Connect endpoints in each regional subnet.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> The <strong>passthrough Network Load Balancer</strong> is L4 and doesn't terminate the connection; packets reach backends with the original source IP intact, and it supports UDP &mdash; exactly what low-latency matchmaking needs. ⚡</p>
+          <ul>
+            <li><strong>A:</strong> ALBs handle HTTP/S only (not raw UDP) and terminate the connection; Proxy Protocol is a proxy-only feature.</li>
+            <li><strong>C:</strong> Proxy NLB terminates the connection and doesn't natively pass raw UDP or the unmodified client IP.</li>
+            <li><strong>D:</strong> Internal LBs aren't reachable from the public internet, and PSC is for private service consumption, not public game clients.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> A Geolocation DNS policy sends users to the nearest of three regional Application Load Balancers. For GDPR, European users must always be routed to the European LB and must never fail over to a US LB &mdash; even if the European LB is fully down. How should you configure this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) A standard Geolocation policy with no extra flags, plus IAM rules to stop US instances from resolving the European IP ranges.</li>
+          <li data-option="B">B) A Weighted Round Robin policy with 100% weight on Europe and 0% on the US, backed by a Cloud DNS forwarding zone.</li>
+          <li data-option="C">C) Disable health checks on the European LB and enable global Cloud CDN so US edges serve European responses during an outage.</li>
+          <li data-option="D">D) A Geolocation policy with geofencing enabled (<code>--enable-geo-fencing</code>) on the European record set.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> <strong>Geofencing</strong> pins queries from a region to that region's endpoints <em>even when they're all unhealthy</em> &mdash; no cross-jurisdiction failover, which is exactly what the data-residency rule requires. 🌍</p>
+          <ul>
+            <li><strong>A:</strong> Without geofencing, Geolocation fails European users over to the US on an outage, and IAM can't control public DNS resolution.</li>
+            <li><strong>B:</strong> WRR ignores the user's location, so it can't keep European users in Europe or US users out.</li>
+            <li><strong>C:</strong> Disabling health checks doesn't enforce a geofence, and caching European data in US edges breaks residency.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/load-balancing/docs/choosing-load-balancer" class="doc-link" target="_blank">
+          <strong>Choosing a Load Balancer</strong>
+          <span>Official guide comparing Application, Proxy, and Passthrough load balancers.</span>
+        </a>
+        <a href="https://cloud.google.com/dns/docs/configure-routing-policies" class="doc-link" target="_blank">
+          <strong>Configuring DNS Routing Policies</strong>
+          <span>How to set up Weighted, Geolocation, and Failover policies with health checks.</span>
+        </a>
+        <a href="https://cloud.google.com/cdn/docs/overview" class="doc-link" target="_blank">
+          <strong>Cloud CDN Overview</strong>
+          <span>Caching static content at Google's edge, origins, and invalidation.</span>
+        </a>
+      </div>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/network_eng/theme5_lb_dns_cdn.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/network_eng/theme5_lb_dns_cdn.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

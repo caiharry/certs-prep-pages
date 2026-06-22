@@ -1,0 +1,70 @@
+/* ============================================================
+   SKIN · STICKER BOOK  — "most playful"
+   Comic Neue, chunky 3px black borders, heavy 6px black block
+   shadows, ribbons. The original CGP revision-guide spirit,
+   formalised onto the brand tokens. Visual rules scoped under
+   html.ds-skin so the exam simulators stay untouched.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&family=Ovo&display=swap');
+@import url('tokens.css');
+
+/* ---- Keep the playful palette but tidy the loudest hues ---- */
+:root {
+  --rev-yellow: #FEF3B0;  --rev-yellow-dark: var(--ds-golden);
+  --rev-green-dark: #0E7C6B;
+  --shadow: 6px 6px 0 #000; --shadow-soft: 4px 4px 0 #000;
+  --line: #000; --radius: 14px;
+  /* simulator: re-accent only; body type stays readable */
+  --dark-accent: var(--ds-alchemy); --dark-accent-hover: var(--ds-alchemy-700);
+  --classic-accent: var(--ds-alchemy); --classic-accent-hover: var(--ds-alchemy-700);
+  --accent: var(--ds-alchemy); --accent-hover: var(--ds-alchemy-700);
+  --font-display: var(--ds-font-playful);
+}
+
+/* ---- Type: Comic Neue everywhere ---- */
+html.ds-skin body { font-family: var(--ds-font-playful) !important; }
+html.ds-skin .nav-link, html.ds-skin .btn-rev, html.ds-skin .show-answer-btn,
+html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn, html.ds-skin button,
+html.ds-skin .sec-badge, html.ds-skin .badge-rev { font-family: var(--ds-font-playful) !important; }
+html.ds-skin h1, html.ds-skin h2, html.ds-skin header h1 { font-weight: 700; }
+
+/* ---- Standardise the heavy black block on cards ---- */
+html.ds-skin .rev-card, html.ds-skin .cert-card, html.ds-skin .section-card,
+html.ds-skin .intro-section, html.ds-skin .warm-up, html.ds-skin .practice-exam,
+html.ds-skin .table-container, html.ds-skin .fact-card, html.ds-skin .know-card {
+  border: 3px solid #000 !important;
+  box-shadow: 6px 6px 0 #000 !important;
+}
+html.ds-skin .cert-card:hover, html.ds-skin .section-card:hover { box-shadow: 8px 8px 0 #000 !important; }
+
+/* keep accent variety: colour the LEFT edge per meaning, block stays black */
+html.ds-skin .rev-card.tip { border-left: 8px solid var(--ds-alchemy) !important; }
+html.ds-skin .rev-card.warn { border-left: 8px solid var(--ds-warn) !important; }
+html.ds-skin .mnemonic { border: 3px solid #000 !important; box-shadow: 6px 6px 0 var(--ds-mnemonic) !important; }
+html.ds-skin .mnemonic strong { color: var(--ds-mnemonic-ink) !important; }
+html.ds-skin .further-reading { border: 3px solid #000 !important; box-shadow: 6px 6px 0 var(--ds-cloud-700) !important; }
+
+/* exam trap: dashed, NO shadow (the one card that never lifts) */
+html.ds-skin .exam-trap, html.ds-skin .trap {
+  border: 3px dashed var(--ds-golden) !important;
+  box-shadow: none !important;
+  background: #FFF8E6 !important;
+}
+html.ds-skin .exam-trap::before { background: var(--ds-golden) !important; color: var(--ds-deep) !important; }
+
+/* ---- Buttons: chunky black blocks ---- */
+html.ds-skin .btn-rev, html.ds-skin .nav-link, html.ds-skin .show-answer-btn,
+html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn {
+  border: 2px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+}
+html.ds-skin .btn-primary { background: var(--ds-golden) !important; color: #000 !important; }
+html.ds-skin .btn-exam { background: #BFD3FF !important; color: #000 !important; }
+html.ds-skin .btn-official { background: var(--ds-cloud) !important; color: #0E3F37 !important; }
+
+/* ---- Cheatsheet deck: give the modern slides the sticker block ---- */
+html.ds-skin .slide, html.ds-skin .know-card, html.ds-skin .nav-panel {
+  border: 3px solid #000 !important; box-shadow: 6px 6px 0 #000 !important; border-radius: 14px !important; }
+html.ds-skin .hero { border: 3px solid #000 !important; box-shadow: 6px 6px 0 #000 !important; }
+html.ds-skin .slide-badge, html.ds-skin .weight-card { border: 2px solid #000 !important; }
+html.ds-skin .doc-link { border: 2px solid #000 !important; box-shadow: 2px 2px 0 #000 !important; }

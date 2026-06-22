@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer &mdash; Automating &amp; Orchestrating Pipelines</title>
+  <style>
+    :root {
+      --bg: #fdf2f8; --ink: #1e293b; --accent: #db2777; --accent-dark: #be185d;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f9a8d4 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP ML Engineer Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 5</span><span class="weight">~22%</span>
+      <h1>Automating &amp; Orchestrating Pipelines</h1>
+      <p class="sec-intro">The largest section: build reproducible end-to-end pipelines, automate retraining, and track metadata.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Orchestration choice</h3>
+      <p>Pick the orchestrator by the shape of the workflow:</p>
+      <ul>
+        <li><strong>Vertex AI Pipelines (KFP)</strong> &mdash; the default for ML: serverless, ML-native, reproducible, with built-in lineage via Vertex ML Metadata.</li>
+        <li><strong>Cloud Composer (Airflow)</strong> &mdash; broad, cross-system workflow orchestration (data + ML + ops) when you already run Airflow.</li>
+        <li><strong>TFX</strong> &mdash; standard components (ExampleGen, Transform, Trainer, Evaluator, Pusher) for TensorFlow pipelines, runnable on Vertex Pipelines.</li>
+      </ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> ML-specific, serverless, reproducible pipeline = Vertex AI Pipelines. Composer is for general workflow orchestration across many systems.</div>
+    </section>
+    <section class="lesson">
+      <h3>Reusable, parameterised components</h3>
+      <p>Build pipelines from versioned, containerised <strong>components</strong> with typed inputs/outputs, so steps are reusable and cacheable (unchanged steps are skipped on re-runs). Parameterise data paths, hyperparameters, and thresholds so the same pipeline serves dev, staging, and prod.</p>
+      <div class="callout mnemonic"><span class="hook">REUSE</span> One pipeline, many parameters &mdash; promote the <em>definition</em>, change only the inputs.</div>
+    </section>
+    <section class="lesson">
+      <h3>Automated retraining triggers</h3>
+      <p>Kick off retraining from: a <strong>schedule</strong> (Cloud Scheduler), a <strong>drift/skew signal</strong> from Model Monitoring, or <strong>new data</strong> landing (Pub/Sub / Eventarc on a GCS drop). The pipeline should retrain, evaluate, and only promote if the new model beats the incumbent.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Retrain when production data drifts" wires Model Monitoring alerts to trigger the pipeline &mdash; not a fixed nightly cron that retrains regardless.</div>
+    </section>
+    <section class="lesson">
+      <h3>CI/CD for ML (a validation gate)</h3>
+      <p>Use <strong>Cloud Build</strong> to test pipeline code and trigger runs. Add a <strong>model-evaluation gate</strong>: the pipeline compares candidate metrics against the current production model and a minimum bar, and the <strong>Pusher</strong>/registration step deploys only if the candidate passes. This is "CD for models," not just code.</p>
+      <div class="callout mnemonic"><span class="hook">GATE</span> Train &rarr; Evaluate &rarr; <em>only then</em> Deploy. A failing eval blocks the rollout automatically.</div>
+    </section>
+    <section class="lesson">
+      <h3>Metadata &amp; reproducibility</h3>
+      <p>Every run logs artifacts, parameters, and executions to <strong>Vertex ML Metadata</strong>, giving end-to-end lineage: which data + code + hyperparameters produced which model. That makes models auditable and lets you reproduce or roll back a specific version with confidence.</p>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> Need a serverless, reproducible ML pipeline with artifact lineage. Which orchestrator?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex AI Pipelines.</strong></p>
+          <p class="quiz-why">ML-native, serverless, integrates with Vertex ML Metadata.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> What records model artifact versions and data lineage on Vertex AI?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Vertex ML Metadata.</strong></p>
+          <p class="quiz-why">Tracks lineage and versions for reproducibility.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You must retrain only when production input distributions drift, not on a fixed timer. How do you trigger it?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Wire a Model Monitoring drift alert to trigger the pipeline.</strong></p>
+          <p class="quiz-why">Retraining fires on the signal that actually matters, saving compute when nothing changed.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> Your CD must deploy a new model only if it beats the current one. What do you add to the pipeline?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>An evaluation/validation gate before the deploy step.</strong></p>
+          <p class="quiz-why">The Pusher/registration step runs only when the candidate clears the metric bar.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A team needs a serverless, reproducible training-and-deployment pipeline that records full artifact lineage and skips unchanged steps on re-runs, with the least operational overhead. What should they use?</p>
+        <ul>
+          <li>A) Cloud Composer (Airflow) DAGs running each ML step as a task.</li>
+          <li>B) Vertex AI Pipelines with containerised KFP components and caching.</li>
+          <li>C) A Cloud Run service that chains the steps with custom code.</li>
+          <li>D) Cron-triggered scripts on a Compute Engine VM.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Vertex AI Pipelines is serverless and ML-native, gives lineage through ML Metadata, and caches unchanged steps &mdash; minimal ops for an ML workflow.</p>
+          <p class="quiz-why"><strong>A:</strong> Composer is for broad cross-system orchestration and adds a managed Airflow to run. <strong>C/D:</strong> Hand-rolled services or cron scripts give no lineage, caching, or reproducibility.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Retraining is currently a nightly cron that runs whether or not anything changed, wasting compute. The team wants retraining to happen only when it's actually needed. What is the best trigger?</p>
+        <ul>
+          <li>A) Keep the nightly cron but on a larger machine to finish faster.</li>
+          <li>B) Trigger the pipeline from Vertex AI Model Monitoring drift/skew alerts.</li>
+          <li>C) Retrain manually whenever someone notices accuracy drop.</li>
+          <li>D) Retrain on every single new row via a streaming trigger.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Drift/skew alerts fire when the data actually shifts, so retraining runs when it adds value and is skipped otherwise.</p>
+          <p class="quiz-why"><strong>A:</strong> A faster cron still wastes runs. <strong>C:</strong> Manual noticing is slow and unreliable. <strong>D:</strong> Per-row retraining is wildly expensive and unstable.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Leadership requires that a retrained model is promoted to production only if it outperforms the incumbent on a holdout set. How do you enforce this automatically?</p>
+        <ul>
+          <li>A) Always deploy the latest model and roll back later if metrics look bad.</li>
+          <li>B) Add an evaluation gate that compares candidate vs production metrics, deploying only on pass.</li>
+          <li>C) Email the metrics to a reviewer who approves deployments by hand.</li>
+          <li>D) Deploy both versions permanently and let users pick.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A built-in evaluation/validation step gates the Pusher: the candidate is registered and deployed only when it clears the bar, enforcing the policy automatically.</p>
+          <p class="quiz-why"><strong>A:</strong> Deploy-then-rollback risks shipping a worse model. <strong>C:</strong> Manual approval doesn't scale and isn't automatic. <strong>D:</strong> Keeping both forever isn't a promotion policy.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s4.html" class="nav-link">&larr; Serving &amp; Scaling Models</a>
+      <a href="guide_s6.html" class="nav-link">Monitoring AI Solutions &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/ml_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/ml_eng/guide_s5.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

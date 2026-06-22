@@ -15,6 +15,33 @@ git push
 
 GitHub Pages deploys automatically on push to `main`.
 
+## Visual skins (A/B/C)
+
+The portal ships in **three visual skins** of one design system, for comparison
+testing with colleagues. The root [`index.html`](index.html) is a chooser that
+routes into a skin (or randomly assigns + remembers one):
+
+| Skin | URL | Feel |
+|---|---|---|
+| Academy | [`academy/`](academy/) | Ovo + Work Sans, alchemy blue, soft border-matched block shadows |
+| Sticker Book | [`sticker/`](sticker/) | Comic Neue, heavy black blocks — the original CGP feel |
+| Briefing | [`briefing/`](briefing/) | Hairline cards, quiet colour, no block shadows |
+
+- **Design tokens & skin sheets** live in [`assets/ds/`](assets/ds/)
+  (`tokens.css` is the single source of truth; `skin-*.css` are the three skins).
+- **Source of truth = the unskinned pages** in each `<cert>/` folder. The skin
+  folders are **generated** — never hand-edit them.
+- Edit a guide in `<cert>/`, tweak a look in `assets/ds/skin-*.css`, then
+  regenerate from the parent repo:
+
+```bash
+cd ..              # parent certs-prep repo
+python3 build_skins.py
+```
+
+This rewrites `academy/`, `sticker/` and `briefing/` from the `<cert>/` sources.
+
+
 Then update the submodule pointer in the parent repo:
 
 ```bash

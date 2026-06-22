@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 0 Revision Guide - Network Foundations &amp; Jargon Buster</title>
+  <style>
+    :root {
+      --bg-light: #f5f3ff; /* Very light purple/violet background */
+      --ink: #1e293b;
+      --rev-violet: #8b5cf6; /* Theme 0 primary violet */
+      --rev-violet-light: #ede9fe;
+      --rev-violet-border: #6d28d9;
+      --rev-green: #16a34a;
+      --rev-green-light: #dcfce7;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ddd6fe' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #a78bfa 0%, var(--rev-violet) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-violet-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #fdf4ff;
+      border-color: var(--rev-violet);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-violet-border);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--rev-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fbfbfe;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet-border);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; Back to Revision Hub</a>
+      <a href="theme1_vpc_design.html" class="nav-link">Go to Theme 1: VPC Foundations &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 0: Network Foundations &amp; Jargon Buster</h1>
+      <p>Laying down the absolute basics so you can navigate VPCs, BGP, and GKE like a cloud native networking wizard!</p>
+      <div class="section-badge">Theme 0 🟣</div>
+    </header>
+
+    <!-- 0.1 IPv4 Addressing & CIDR Notation Demystified -->
+    <h2>0.1 IPv4 &amp; CIDR Notation Demystified</h2>
+    <p>Welcome to Lesson Zero! If you've ever looked at an IP address like <code>10.128.0.0/20</code> and immediately felt a cold sweat coming on, don't worry. Networking people love to use scary-sounding acronyms to keep their salaries high, but we're about to bust that door down. 🚪💥</p>
+    
+    <p>An <strong>IPv4 Address</strong> is just a 32-bit digital address written in four decimal parts (called <strong>octets</strong>) separated by dots (e.g., <code>192.168.1.50</code>). Each octet is 8 bits, meaning its value can range from <code>0</code> to <code>255</code>.</p>
+
+    <div class="rev-card tip">
+      <h3>🌍 RFC 1918: The Private Playground</h3>
+      <p>Computers on the public internet must have globally unique IP addresses. But inside our own private networks (like your home Wi-Fi or a GCP VPC), we use a special set of "un-routable" IP ranges reserved by the internet gods under a document called <strong>RFC 1918</strong>. These are completely free for anyone to use internally:</p>
+      <ul class="bullet-chk">
+        <li><strong><code>10.0.0.0/8</code></strong>: The heavy lifter. Huge range (16.7 million IPs). GCP defaults to using subnets from this space.</li>
+        <li><strong><code>172.16.0.0/12</code></strong>: The middle-child range (1.04 million IPs). Often used to avoid overlaps with on-prem networks.</li>
+        <li><strong><code>192.168.0.0/16</code></strong>: The home-classic (65,536 IPs). Most home routers live here.</li>
+      </ul>
+    </div>
+
+    <h3>📏 CIDR Math: How to Calculate Subnet Sizes in Your Head</h3>
+    <p>How do we carve up these private playgrounds into smaller chunks? We use <strong>Classless Inter-Domain Routing (CIDR)</strong>. The slash notation (e.g., <code>/24</code>) tells us how many bits are locked in for the "network" part of the address. The remaining bits are left free for "hosts" (like VMs or Kubernetes pods).</p>
+    
+    <p>Since an IPv4 address is 32 bits, the number of free bits is <code>32 - [slash number]</code>. The total number of IPs in a CIDR block is <code>2<sup>(32 - slash)</sup></code>.</p>
+
+    <p>But you don't need a calculator under exam pressure! Just remember these three anchor points and the <strong>Doubling Rule</strong>:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>CIDR Slash</th>
+            <th>Total IP Addresses</th>
+            <th>Typical GCP Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><code>/32</code></strong></td>
+            <td><strong>1 IP</strong> (2<sup>32-32</sup> = 2<sup>0</sup> = 1)</td>
+            <td>A single Virtual Machine's external IP address.</td>
+          </tr>
+          <tr>
+            <td><strong><code>/24</code></strong></td>
+            <td><strong>256 IPs</strong> (2<sup>32-24</sup> = 2<sup>8</sup> = 256)</td>
+            <td>A standard regional subnet for standard microservices.</td>
+          </tr>
+          <tr>
+            <td><strong><code>/16</code></strong></td>
+            <td><strong>65,536 IPs</strong> (2<sup>32-16</sup> = 2<sup>16</sup> = 65.5k)</td>
+            <td>A large VPC-wide address space or heavy-duty GKE cluster.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 The Doubling Rule (CIDR Cheat Code!)</h3>
+      <p>Subtracting <strong>1</strong> from the CIDR slash number <strong>DOUBLES</strong> the host capacity. Adding <strong>1</strong> cuts it in <strong>HALF</strong>!</p>
+      <ul>
+        <li>If <strong><code>/24</code></strong> is 256 IPs...</li>
+        <li>Then <strong><code>/23</code></strong> is <strong>512 IPs</strong> (256 &times; 2)</li>
+        <li>And <strong><code>/22</code></strong> is <strong>1,024 IPs</strong> (512 &times; 2)</li>
+        <li>And <strong><code>/21</code></strong> is <strong>2,048 IPs</strong> (1,024 &times; 2)</li>
+        <li>And <strong><code>/25</code></strong> is <strong>128 IPs</strong> (256 &divide; 2)</li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The "GCP 5-IP Subtraction" Examiner Favorite!</strong><br>
+      In traditional physical networking, you lose 2 IP addresses per subnet (the first for the Network ID, the last for the Broadcast address). But Google Cloud isn't traditional! Google reserves <strong>5 IP addresses</strong> in every subnet. If you deploy a <code>10.0.0.0/24</code> subnet (256 total IPs), the following are strictly reserved:
+      <ol>
+        <li><code>10.0.0.0</code>: Network ID</li>
+        <li><code>10.0.0.1</code>: Default Gateway (for VMs to talk outside the subnet)</li>
+        <li><code>10.0.0.2</code>: Google DNS server</li>
+        <li><code>10.0.0.3</code>: Reserved by Google for future infrastructure wizardry</li>
+        <li><code>10.0.0.255</code>: Subnet Broadcast address</li>
+      </ol>
+      This leaves you with <strong>251 usable IPs</strong>! If the examiner asks you to size a subnet for 252 database nodes and you choose a <code>/24</code>, you've fallen right into their trap! 🕳️
+    </div>
+
+    <div class="joke-box">
+      "Why did the cloud architect break up with the network engineer? Because there was no route to host and they kept dropping packets!" 💔
+    </div>
+
+
+    <!-- 0.2 Layer 3 vs Layer 4: Packets vs. Connections -->
+    <h2>0.2 Layer 3 vs Layer 4: Packets, Connections &amp; Ports</h2>
+    <p>To master firewalls and load balancing, you have to understand where they operate. We're zooming in on two layers of the famous <strong>OSI Model</strong>:</p>
+
+    <h3>📬 Layer 3 (Network Layer) — Packets &amp; Postcards</h3>
+    <p>Layer 3 is all about <strong>IP addresses and packets</strong>. It is completely stateless and doesn't care if the destination computer is actually online, listening, or if the packet gets wet and ruined on the way. It just slaps the destination IP on the envelope and drops it in the mailbox.</p>
+
+    <h3>🤝 Layer 4 (Transport Layer) — TCP vs. UDP</h3>
+    <p>Layer 4 sits on top of Layer 3 and handles the actual "conversation." It offers two completely different personalities:</p>
+
+    <div class="rev-card tip">
+      <h3>🤝 TCP (Transmission Control Protocol) — The Reliable Handshaker</h3>
+      <p>TCP is the polite, organized, and reliable protocol. It is <strong>connection-oriented</strong>, meaning it won't send a single byte of actual data until both computers perform a friendly 3-way handshake:</p>
+      <ol>
+        <li><strong>SYN:</strong> "Hello! I'd like to open a connection."</li>
+        <li><strong>SYN-ACK:</strong> "Hi there! I hear you, and I am ready to connect too!"</li>
+        <li><strong>ACK:</strong> "Excellent, let the data flow!"</li>
+      </ol>
+      <p>TCP guarantees that every single packet arrives safely, in the exact correct order, and will re-transmit any that get lost. It's like a telephone call. 📞</p>
+    </div>
+
+    <div class="rev-card warn">
+      <h3>📣 UDP (User Datagram Protocol) — The Fast-and-Furious Screamer</h3>
+      <p>UDP is the chaotic, high-speed speedster. It is completely <strong>connectionless</strong>. It doesn't perform handshakes, doesn't verify if anyone is listening, and doesn't care if packets arrive out of order or get lost in a routing storm. It just screams packets out of a megaphone. 📣</p>
+      <p>Why use it? It has zero setup overhead, making it incredibly fast. Perfect for live streaming, gaming, and VoIP calls where a lost packet is just a tiny blip but a delay is fatal.</p>
+    </div>
+
+    <h3>🏢 Port Numbers: The Apartment Numbers</h3>
+    <p>An IP address gets a packet to the right building (the server), but how does it get to the right door (the application)? We use <strong>Port Numbers</strong>! Ports range from <code>1</code> to <code>65,535</code>. You must memorize these high-yield common ports for the exam:</p>
+    <ul class="bullet-chk">
+      <li><strong>Port 80 (HTTP) &amp; Port 443 (HTTPS)</strong>: Web traffic. HTTPS is encrypted!</li>
+      <li><strong>Port 22 (SSH)</strong>: Secure Shell (remotely managing Linux VMs).</li>
+      <li><strong>Port 3389 (RDP)</strong>: Remote Desktop Protocol (remotely managing Windows VMs).</li>
+      <li><strong>Port 53 (DNS)</strong>: Domain Name System (resolving domain names to IP addresses).</li>
+    </ul>
+
+
+    <!-- 0.3 The GCP Networking Mindset (SDN Shift) -->
+    <h2>0.3 The GCP Networking Mindset (The SDN Shift)</h2>
+    <p>Forget everything you know about hardware rack cabinets and yellow ethernet cables. In Google Cloud, networking is entirely virtual! It is a <strong>Software-Defined Network (SDN)</strong> called <strong>Andromeda</strong>.</p>
+    
+    <p>This SDN architecture gives GCP some incredible characteristics that are major exam topics:</p>
+
+    <div class="rev-card tip">
+      <h3>🚀 The Global VPC</h3>
+      <p>In other clouds (like AWS or Azure), virtual networks are bound to a single region. If you want resources in Virginia to talk to resources in Dublin, you have to configure peering links. </p>
+      <p>In GCP, the <strong>VPC is Global</strong>! A single VPC spans the entire planet. While subnets inside that VPC are regional (meaning <code>subnet-us</code> lives in Iowa and <code>subnet-eu</code> lives in Belgium), they can communicate out-of-the-box over Google's ultra-fast private fiber backplane without any complex configuration. 🌎✨</p>
+    </div>
+
+    <div class="mnemonic">
+      <h3>🛡️ Stateful Firewalls Demystified</h3>
+      <p>GCP Firewall Rules (and NGFW policies) are <strong>stateful</strong>. This means once a packet is allowed through a rule in one direction, the returning response traffic is <strong>automatically allowed</strong> in the opposite direction, regardless of other rules! </p>
+      <p>If you allow ingress (incoming) traffic on Port <code>443</code> so users can load your website, you do NOT need to write an egress (outgoing) rule to let the website content travel back to the user's browser. Andromeda keeps track of the connection state and waves the return traffic right through!</p>
+    </div>
+
+
+    <!-- 0.4 The Foundational Jargon Buster -->
+    <h2>0.4 The Foundational Jargon Buster</h2>
+    <p>Keep this handy glossary in your back pocket. These terms pop up in almost every exam question:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>What it actually means</th>
+            <th>Why it matters for GCP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MTU (Max Transmission Unit)</strong></td>
+            <td>The maximum size (in bytes) of a single packet. If a packet exceeds this, it must be chopped up (fragmented) or dropped.</td>
+            <td>GCP networks support standard <strong>1500 bytes</strong> or jumbo <strong>8896 bytes</strong>. HA VPN tunnels require exactly <strong>1460 bytes</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Next Hop</strong></td>
+            <td>The routing term for "where do we send this packet next to reach its destination?"</td>
+            <td>GCP routes traffic based on Next Hops (like a default internet gateway, a VPN tunnel, or an Internal Load Balancer).</td>
+          </tr>
+          <tr>
+            <td><strong>BGP (Border Gateway Protocol)</strong></td>
+            <td>The postal system of the internet. Routers use BGP to dynamically advertise which IP addresses live on their side of the fence.</td>
+            <td>Used by GCP's <strong>Cloud Router</strong> to exchange routing paths dynamically with your on-premises routers.</td>
+          </tr>
+          <tr>
+            <td><strong>DNS (Domain Name System)</strong></td>
+            <td>The system that translates human-readable names (e.g., <code>google.com</code>) into computer-readable IPs (e.g., <code>142.250.190.46</code>).</td>
+            <td>Crucial for private GKE endpoints and hybrid setups. Managed via <strong>Cloud DNS</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Latency vs. Bandwidth</strong></td>
+            <td>Latency is the delay (time) for a packet to travel round-trip. Bandwidth is the volume of data that can be sent per second.</td>
+            <td>Think of latency as how fast the delivery truck drives, and bandwidth as how wide the highway is. Gcp Premium Tier minimizes latency!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> If you configure a subnet range with a <code>/24</code> CIDR block in Google Cloud, how many VMs can you assign a private IP address to?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>252 VMs!</strong> A <code>/24</code> contains 256 total IP addresses, but Google Cloud reserves <strong>4 IP addresses</strong> in every primary IPv4 range (network address, default gateway, second-to-last, and broadcast), leaving 252 usable host IPs.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> You have a subnet with CIDR block <code>10.0.0.0/22</code>. You need to double the number of available IP addresses. What should your new CIDR block slash notation be?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong><code>10.0.0.0/21</code>!</strong> According to the Doubling Rule, subtracting 1 from the slash number doubles the host capacity (from 1,024 IPs in a <code>/22</code> to 2,048 IPs in a <code>/21</code>).
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> If you write an ingress firewall rule in GCP to block all incoming traffic on Port 80, will this prevent an established outbound web request (initiated by a VM inside the network) from receiving its response on Port 80?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>No!</strong> GCP firewall rules are <strong>stateful</strong>. Since the outbound request was allowed egress, the return traffic is automatically tracked and allowed back in, bypassing the ingress block!
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> Which transport protocol should you use for real-time video streaming where speed is critical and a few missing pixels are preferable to buffering delays?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>UDP (User Datagram Protocol)!</strong> UDP has no handshake overhead or connection-tracking delay, making it the perfect choice for fire-and-forget, low-latency streaming workloads.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 0 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these foundational networking and GCP mindset brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> You are assigning the primary IPv4 range for a new subnet in a custom-mode VPC. The service will grow to roughly 500 instances, each needing an internal IP, and the network team wants the smallest range that still fits so address space isn't wasted. Accounting for Google Cloud's reserved addresses, which range should you choose?</p>
+        <ul class="option-list">
+          <li data-option="A">A) <code>10.8.0.0/24</code></li>
+          <li data-option="B">B) <code>10.8.0.0/23</code></li>
+          <li data-option="C">C) <code>10.8.0.0/22</code></li>
+          <li data-option="D">D) <code>10.8.0.0/25</code></li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> A <code>/23</code> holds 512 addresses. Google Cloud reserves <strong>4</strong> addresses in every subnet's primary IPv4 range (network address, default gateway, second-to-last, and broadcast), leaving <code>512 - 4 = 508</code> usable. That is the smallest standard block that still covers ~500 instances, so it fits without wasting space.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option A (/24):</strong> 256 total minus 4 reserved leaves only 252 usable &mdash; well short of 500.<br>
+          <strong>Option C (/22):</strong> 1,024 total leaves 1,020 usable. It works, but it wastes roughly 500 addresses, breaking the "smallest range that fits" requirement.<br>
+          <strong>Option D (/25):</strong> 128 total leaves only 124 usable &mdash; far too small.</p>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> A VM with no external IP has an ingress firewall rule that denies all inbound TCP 443, yet it still receives the responses to HTTPS requests it makes to an external API. A colleague wants to add an ingress <em>allow</em> rule so the replies keep working. What is the correct explanation?</p>
+        <ul class="option-list">
+          <li data-option="A">A) The VPC's implied allow-ingress rule already permits established TCP traffic on ephemeral source ports, so the reply packets match it.</li>
+          <li data-option="B">B) Cloud NAT rewrites the reply packets onto an internal flow, which lets them skip firewall evaluation on the way back in.</li>
+          <li data-option="C">C) Egress rules automatically generate a matching temporary ingress rule for every new outbound connection a VM opens.</li>
+          <li data-option="D">D) VPC firewall rules are stateful, so replies to a connection the VM initiated are tracked and allowed without any ingress rule.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> Google Cloud VPC firewall rules are <strong>stateful</strong>. Once egress for a new connection is allowed, the return traffic for that connection is tracked and permitted automatically &mdash; the ingress deny rule never applies to it. No extra ingress rule is needed.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option A:</strong> The only implied rules are allow-egress and deny-ingress; there is no "established on ephemeral ports" allow rule. Statefulness, not a port match, is why replies arrive.<br>
+          <strong>Option B:</strong> Cloud NAT provides outbound translation for VMs without external IPs; it does not exempt packets from firewall evaluation.<br>
+          <strong>Option C:</strong> Egress rules never spawn ingress rules. Connection tracking, not rule generation, is what lets replies through.</p>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Architects from another cloud ask how much routing you must configure for a VM in <code>us-central1</code> to reach a VM in <code>europe-west1</code> over internal IPs, where both VMs live in the same custom-mode VPC. What should you tell them?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Nothing extra &mdash; a VPC is a global resource, so subnet routes for every region exist automatically and internal traffic crosses Google's backbone.</li>
+          <li data-option="B">B) Enable global dynamic routing and run a Cloud Router in each region so that each one advertises the other region's subnets over BGP.</li>
+          <li data-option="C">C) Create VPC Network Peering between the two regions and add static routes that point at each region's internal gateway address.</li>
+          <li data-option="D">D) Build an HA VPN tunnel mesh between the regions, because subnets in different regions are isolated from one another by default.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> In Google Cloud a <strong>VPC spans all regions</strong>. Subnets are regional, but their subnet routes are global by default, so a VM in one region reaches a VM in another over internal IPs with no extra routing &mdash; the traffic simply rides Google's private backbone.</p>
+          <p><strong>Why the other options are wrong:</strong><br>
+          <strong>Option B:</strong> Global dynamic routing and Cloud Routers control how BGP-learned (on-prem) routes propagate across regions, not intra-VPC reachability, which is already automatic.<br>
+          <strong>Option C:</strong> VPC Network Peering connects <em>separate</em> VPCs; subnets that already share one VPC don't peer with themselves.<br>
+          <strong>Option D:</strong> HA VPN is for hybrid or cross-cloud links. Subnets in the same VPC are not region-isolated, so a tunnel mesh is unnecessary.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Want to go deeper into the absolute basics? Here are some invaluable links to official GCP docs:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/vpc/docs/vpc" class="doc-link" target="_blank">
+          <strong>GCP VPC Networks Overview</strong>
+          <span>Global VPCs, regional subnets, and routing fundamentals.</span>
+        </a>
+        <a href="https://cloud.google.com/vpc/docs/firewalls" class="doc-link" target="_blank">
+          <strong>VPC Firewalls Overview</strong>
+          <span>Understanding stateful rules, targets, and logging.</span>
+        </a>
+        <a href="https://cloud.google.com/vpn/docs/concepts/overview" class="doc-link" target="_blank">
+          <strong>Cloud VPN Overview</strong>
+          <span>IPsec tunnels, MTU constraints, and MSS Clamping.</span>
+        </a>
+      </div>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/network_eng/theme0_foundations.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/network_eng/theme0_foundations.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="academy" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Network Engineer - Updated Sample Exam (2026)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #0b0f19; --dark-card: #151d30; --dark-border: rgba(255,255,255,0.08);
+            --dark-accent: #3b82f6; --dark-accent-hover: #2563eb; --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af; --dark-correct: #10b981; --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b; --dark-header: #0e1626;
+            --classic-bg: #f3f4f6; --classic-card: #ffffff; --classic-border: #d1d5db;
+            --classic-accent: #1e3a8a; --classic-accent-hover: #172554; --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563; --classic-correct: #15803d; --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309; --classic-header: #e5e7eb;
+            --font-display: 'Outfit', sans-serif; --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg: var(--dark-bg); --card: var(--dark-card); --border: var(--dark-border);
+            --accent: var(--dark-accent); --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary); --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct); --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged); --header: var(--dark-header);
+        }
+        body.classic-mode {
+            --bg: var(--classic-bg); --card: var(--classic-card); --border: var(--classic-border);
+            --accent: var(--classic-accent); --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary); --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct); --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged); --header: var(--classic-header);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        .selectable, code, pre { user-select: text; }
+        body { background-color: var(--bg); color: var(--text-primary); font-family: var(--font-sans);
+               transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column;
+               min-height: 100vh; overflow-x: hidden; }
+        code { font-family: var(--font-mono); background-color: rgba(255,255,255,0.08); padding: 2px 6px;
+               border-radius: 4px; font-size: 0.9em; color: var(--text-primary);
+               border: 1px solid rgba(255,255,255,0.04); word-break: break-all;
+               overflow-wrap: break-word; white-space: pre-wrap; }
+        body.classic-mode code { background-color: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        header { background-color: var(--header); border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+                 display: flex; justify-content: space-between; align-items: center; position: sticky;
+                 top: 0; z-index: 50; backdrop-filter: blur(10px);
+                 transition: background-color 0.3s, border-color 0.3s; }
+        .logo-section { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+                      width: 32px; height: 32px; border-radius: 8px; display: flex;
+                      align-items: center; justify-content: center; color: white; font-weight: bold;
+                      font-family: var(--font-display); }
+        .title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .portal-link { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;
+                       text-decoration: none; padding: 6px 12px; border: 1px solid var(--border);
+                       border-radius: 6px; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+        .portal-link:hover { color: var(--accent); border-color: var(--accent); }
+        .timer-box { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+                     font-weight: bold; font-size: 1.2rem; background: rgba(0,0,0,0.15);
+                     padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+                     color: var(--text-primary); }
+        .timer-box.warning { color: var(--incorrect); animation: pulse 1s infinite alternate; border-color: var(--incorrect); }
+        @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.02); } }
+        .btn { background-color: var(--card); border: 1px solid var(--border); color: var(--text-primary);
+               padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+               font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+               transition: all 0.2s ease; }
+        .btn:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        main { display: flex; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; position: relative; }
+        .content-area { flex: 1; padding: 2.5rem; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
+        .progress-bar-container { width: 100%; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #10b981); width: 0%; transition: width 0.3s ease; }
+        .question-meta { display: flex; justify-content: space-between; align-items: center; }
+        .question-number { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--text-primary); }
+        .multi-badge { background-color: rgba(245,158,11,0.15); color: var(--flagged);
+                       border: 1px solid rgba(245,158,11,0.3); padding: 4px 12px; border-radius: 99px;
+                       font-size: 0.8rem; font-weight: 600; display: none; }
+        .question-box { background-color: var(--card); border: 1px solid var(--border); border-radius: 12px;
+                        padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .question-text { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
+        .question-text p { margin-bottom: 1rem; }
+        .question-text ul, .question-text ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .question-text li { margin-bottom: 0.3rem; }
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-item { display: flex; align-items: flex-start; gap: 14px; padding: 1rem;
+                       background-color: rgba(0,0,0,0.02); border: 1px solid var(--border);
+                       border-radius: 8px; cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .option-item:hover { border-color: var(--accent); background-color: rgba(59,130,246,0.03); }
+        .option-item.selected { border-color: var(--accent); background-color: rgba(59,130,246,0.08); box-shadow: 0 0 0 1px var(--accent); }
+        .option-item.struck-out { text-decoration: line-through; opacity: 0.35; background-color: rgba(0,0,0,0.05) !important; border-color: var(--border) !important; box-shadow: none !important; }
+        .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+                        display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                        flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-radio { border-color: var(--accent); background-color: var(--accent); }
+        .option-radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: white; display: none; }
+        .option-item.selected .option-radio-dot { display: block; }
+        .option-checkbox { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border);
+                           display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                           flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-checkbox { border-color: var(--accent); background-color: var(--accent); }
+        .option-checkbox-mark { width: 12px; height: 12px; display: none; color: white; }
+        .option-item.selected .option-checkbox-mark { display: block; }
+        .option-text { flex: 1; min-width: 0; word-break: break-word; overflow-wrap: break-word;
+                       font-size: 1rem; line-height: 1.5; color: var(--text-primary); }
+        .sidebar { width: 320px; border-left: 1px solid var(--border); background-color: var(--header);
+                   padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+                   position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto;
+                   transition: background-color 0.3s, border-color 0.3s; }
+        .sidebar-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+                         display: flex; justify-content: space-between; align-items: center; }
+        .grid-navigation { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .grid-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border); display: flex;
+                     align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;
+                     cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .grid-cell:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .grid-cell.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .grid-cell.answered { background-color: rgba(16,185,129,0.15); border-color: var(--correct); color: var(--correct); }
+        .grid-cell.flagged { background-color: rgba(245,158,11,0.15); border-color: var(--flagged); color: var(--flagged); }
+        .grid-cell.post-correct { background-color: rgba(16,185,129,0.3) !important; border-color: #059669 !important; color: #34d399 !important; font-weight: 700; }
+        .grid-cell.post-incorrect { background-color: rgba(239,68,68,0.3) !important; border-color: #dc2626 !important; color: #fca5a5 !important; font-weight: 700; }
+        body.classic-mode .grid-cell.post-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        body.classic-mode .grid-cell.post-incorrect { background-color: #fee2e2 !important; border-color: #f87171 !important; color: #991b1b !important; }
+        .grid-cell.flagged::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background-color: var(--flagged); border-radius: 50%; }
+        .stats-summary { display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; }
+        .flag-checkbox-container { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+        .flag-icon { color: var(--text-secondary); transition: color 0.2s; }
+        .flag-checkbox-container input:checked ~ .flag-icon { color: var(--flagged); }
+        .explanation-box { margin-top: 2rem; border-top: 2px solid var(--border); padding-top: 2rem; display: none; flex-direction: column; gap: 1.5rem; }
+        .explanation-title { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); }
+        .exp-item { padding: 1rem; border-radius: 8px; border-left: 4px solid var(--border); background-color: rgba(0,0,0,0.02); font-size: 0.95rem; line-height: 1.6; }
+        .exp-item.correct-exp { border-left-color: var(--correct); background-color: rgba(16,185,129,0.03); }
+        .exp-item.incorrect-exp { border-left-color: var(--incorrect); background-color: rgba(239,68,68,0.03); }
+        .exp-badge { font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .references-box { margin-top: 1rem; }
+        .references-title { font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .ref-link { color: var(--accent); text-decoration: none; display: inline-block; margin-right: 15px; font-size: 0.85rem; word-break: break-all; }
+        .ref-link:hover { text-decoration: underline; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                         background: rgba(0,0,0,0.85); z-index: 1000; align-items: center;
+                         justify-content: center; backdrop-filter: blur(8px); }
+        .results-card { background-color: var(--card); border: 1px solid var(--border); padding: 3rem;
+                        border-radius: 16px; max-width: 600px; width: 90%; display: flex; flex-direction: column;
+                        align-items: center; text-align: center; gap: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--border);
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        font-family: var(--font-display); margin-bottom: 1rem; }
+        .score-percentage { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .score-label { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .option-item.post-correct { border-color: var(--correct) !important; background-color: rgba(16,185,129,0.08) !important; box-shadow: 0 0 0 1px var(--correct) !important; }
+        .option-item.post-incorrect { border-color: var(--incorrect) !important; background-color: rgba(239,68,68,0.08) !important; box-shadow: 0 0 0 1px var(--incorrect) !important; }
+        .badge-correct { color: var(--correct); font-weight: bold; margin-left: auto; }
+        .badge-incorrect { color: var(--incorrect); font-weight: bold; margin-left: auto; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+                 background: #1e2937; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem;
+                 font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;
+                 transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .scroll-top-btn { display: block; width: fit-content; max-width: 100%; margin: 16px auto 24px;
+                          background: var(--accent); color: white; font-weight: 600; padding: 10px 18px;
+                          border: none; border-radius: 6px; font-size: 0.85rem; font-family: var(--font-sans); cursor: pointer; }
+        .scroll-top-btn:hover { background: var(--accent-hover); }
+        @media (max-width: 1024px) {
+            main { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-left: none; border-top: 1px solid var(--border); }
+            .content-area { padding: 1.5rem; max-width: 100%; }
+        }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Network Engineer</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);">UPDATED SAMPLE EXAM &middot; 2026 LANDSCAPE</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                </svg>
+                <span>Classic Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+                <div class="multi-badge" id="multi-badge">Select all that apply</div>
+            </div>
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text"></div>
+                <div class="options-list" id="options-list"></div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations &amp; Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display:flex;flex-direction:column;gap:1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References &amp; Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display:none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size:0.8rem;font-weight:500;color:var(--text-secondary);" id="review-counter">0/25 Answered</span>
+            </div>
+            <div class="grid-navigation" id="grid-navigation"></div>
+            <div class="stats-summary">
+                <div class="stat-row"><span>Answered:</span><span class="stat-value" id="stat-answered">0</span></div>
+                <div class="stat-row"><span>Flagged:</span><span class="stat-value" id="stat-flagged">0</span></div>
+                <div class="stat-row"><span>Remaining:</span><span class="stat-value" id="stat-remaining">25</span></div>
+            </div>
+            <button id="submit-exam-btn" class="btn btn-primary" style="width:100%;margin-top:auto;padding:12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;">Exam Completed</h1>
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">—</span>
+            </div>
+            <p style="color:var(--text-secondary);line-height:1.5;" id="results-detailed-stats">You answered 0 out of 25 questions correctly.</p>
+            <div style="display:flex;gap:15px;width:100%;">
+                <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex:1;padding:12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Tip: Left-click selects. Right-click crosses out an option.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Network Engineer",
+    "scenario": "You are designing a new application that has backends internally exposed on port 800. The application will be exposed externally using both IPv4 and IPv6 via TCP on port 700. You want to ensure high availability for this application. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create an external passthrough Network Load Balancer that uses a backend service with one instance group of two instances.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a proxy Network Load Balancer (TCP proxy) that uses a backend service containing an instance group with two instances.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create an external passthrough Network Load Balancer that uses a target pool backend with two instances.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a proxy Network Load Balancer (TCP proxy) that uses a zonal network endpoint group containing one instance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "UPDATED (2026): The decisive requirement is the port mismatch \u2014 traffic arrives on port 700 and must reach backends on port 800. Only a proxy load balancer can translate ports; a passthrough LB delivers to backends on the same port the forwarding rule received, so it cannot map 700\u2192800. A and C are wrong: external passthrough NLBs are now IPv6/dual-stack capable (IPv6 is no longer the discriminator) but still cannot translate ports, and target pools are a legacy passthrough construct. D is wrong because a single-instance NEG gives no high availability \u2014 you need at least two backends. NOTE: the original sample said 'NLB does not support IPv6' \u2014 that reasoning is outdated; the answer is still the proxy, for the port-translation reason.",
+      "B": "UPDATED (2026): The decisive requirement is the port mismatch \u2014 traffic arrives on port 700 and must reach backends on port 800. Only a proxy load balancer can translate ports; a passthrough LB delivers to backends on the same port the forwarding rule received, so it cannot map 700\u2192800. A and C are wrong: external passthrough NLBs are now IPv6/dual-stack capable (IPv6 is no longer the discriminator) but still cannot translate ports, and target pools are a legacy passthrough construct. D is wrong because a single-instance NEG gives no high availability \u2014 you need at least two backends. NOTE: the original sample said 'NLB does not support IPv6' \u2014 that reasoning is outdated; the answer is still the proxy, for the port-translation reason.",
+      "C": "UPDATED (2026): The decisive requirement is the port mismatch \u2014 traffic arrives on port 700 and must reach backends on port 800. Only a proxy load balancer can translate ports; a passthrough LB delivers to backends on the same port the forwarding rule received, so it cannot map 700\u2192800. A and C are wrong: external passthrough NLBs are now IPv6/dual-stack capable (IPv6 is no longer the discriminator) but still cannot translate ports, and target pools are a legacy passthrough construct. D is wrong because a single-instance NEG gives no high availability \u2014 you need at least two backends. NOTE: the original sample said 'NLB does not support IPv6' \u2014 that reasoning is outdated; the answer is still the proxy, for the port-translation reason.",
+      "D": "UPDATED (2026): The decisive requirement is the port mismatch \u2014 traffic arrives on port 700 and must reach backends on port 800. Only a proxy load balancer can translate ports; a passthrough LB delivers to backends on the same port the forwarding rule received, so it cannot map 700\u2192800. A and C are wrong: external passthrough NLBs are now IPv6/dual-stack capable (IPv6 is no longer the discriminator) but still cannot translate ports, and target pools are a legacy passthrough construct. D is wrong because a single-instance NEG gives no high availability \u2014 you need at least two backends. NOTE: the original sample said 'NLB does not support IPv6' \u2014 that reasoning is outdated; the answer is still the proxy, for the port-translation reason."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/passthrough-network-load-balancer",
+        "text": "https://cloud.google.com/load-balancing/docs/passthrough-network-load-balancer"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/network/networklb-backend-service",
+        "text": "https://cloud.google.com/load-balancing/docs/network/networklb-backend-service"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/tcp",
+        "text": "https://cloud.google.com/load-balancing/docs/tcp"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Network Engineer",
+    "scenario": "You are responsible for designing a new connectivity solution between your organization\u2019s on-premises data center and your Google Cloud Virtual Private Cloud (VPC) network. Currently, there is no end-to-end connectivity. You must ensure a service level agreement (SLA) of 99.99% availability. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use one Dedicated Interconnect connection in a single metropolitan area. Configure one Cloud Router and enable global routing in the VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use a Direct Peering connection between your on-premises data center and Google Cloud. Configure Classic VPN with two tunnels and one Cloud Router.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use two Dedicated Interconnect connections in different metropolitan areas. Configure one Cloud Router per region and enable global routing in the VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use HA VPN. Configure one tunnel from each interface of the VPN gateway to connect to the corresponding interfaces on the peer gateway on-premises. Configure one Cloud Router and enable global routing in the VPC.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because it only provides 99.9% SLA. B is not correct because Direct Peering offers no SLA and Classic VPN offers 99.9% SLA. C is not correct because it does not provide any SLA. D (HA VPN configured correctly) provides a 99.99% SLA.",
+      "B": "A is not correct because it only provides 99.9% SLA. B is not correct because Direct Peering offers no SLA and Classic VPN offers 99.9% SLA. C is not correct because it does not provide any SLA. D (HA VPN configured correctly) provides a 99.99% SLA.",
+      "C": "A is not correct because it only provides 99.9% SLA. B is not correct because Direct Peering offers no SLA and Classic VPN offers 99.9% SLA. C is not correct because it does not provide any SLA. D (HA VPN configured correctly) provides a 99.99% SLA.",
+      "D": "A is not correct because it only provides 99.9% SLA. B is not correct because Direct Peering offers no SLA and Classic VPN offers 99.9% SLA. C is not correct because it does not provide any SLA. D (HA VPN configured correctly) provides a 99.99% SLA."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/overview#comparison_table",
+        "text": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/overview#comparison_table"
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability",
+        "text": "https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability"
+      },
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#ensuring-ha-peer",
+        "text": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#ensuring-ha-peer"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Network Engineer",
+    "scenario": "You deployed a hub-and-spoke architecture in your Google Cloud environment that uses VPC Network Peering to connect the spokes to the hub. For security reasons, you deployed a private Google Kubernetes Engine (GKE) cluster in one of the spoke projects. You need to allow administrators in the other spoke projects to reach the GKE control plane, without deploying bastion hosts or proxies and without relying on VPC Network Peering transitivity. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable the DNS-based endpoint on the cluster (--enable-dns-access). Grant the administrators an IAM role that includes container.clusters.connect (for example, roles/container.developer), and control network access with VPC Service Controls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add a VPC firewall rule that allows TCP port 443 from the other spoke project subnets to the GKE nodes.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure the IP-based control-plane authorized networks to include the subnet ranges of the other spoke projects.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy a proxy in the spoke project that hosts the GKE nodes, and have the other spokes connect to the control plane through that proxy.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "UPDATED (2026): The DNS-based control-plane endpoint exposes the control plane through Google's API frontend at a unique FQDN reachable from any network that can reach Google APIs \u2014 including other spokes \u2014 so it sidesteps VPC Network Peering transitivity entirely. Access is gated by IAM (container.clusters.connect) and VPC Service Controls, not IP allowlists. B is wrong because peering is non-transitive, so other spokes can't route to the nodes/control plane via the hub. C is wrong because authorized networks apply only to the IP-based endpoint and still need transitive routes that don't exist. D (deploy a proxy) is wrong \u2014 that is exactly the legacy workaround the DNS-based endpoint removes, and was the original sample's answer.",
+      "B": "UPDATED (2026): The DNS-based control-plane endpoint exposes the control plane through Google's API frontend at a unique FQDN reachable from any network that can reach Google APIs \u2014 including other spokes \u2014 so it sidesteps VPC Network Peering transitivity entirely. Access is gated by IAM (container.clusters.connect) and VPC Service Controls, not IP allowlists. B is wrong because peering is non-transitive, so other spokes can't route to the nodes/control plane via the hub. C is wrong because authorized networks apply only to the IP-based endpoint and still need transitive routes that don't exist. D (deploy a proxy) is wrong \u2014 that is exactly the legacy workaround the DNS-based endpoint removes, and was the original sample's answer.",
+      "C": "UPDATED (2026): The DNS-based control-plane endpoint exposes the control plane through Google's API frontend at a unique FQDN reachable from any network that can reach Google APIs \u2014 including other spokes \u2014 so it sidesteps VPC Network Peering transitivity entirely. Access is gated by IAM (container.clusters.connect) and VPC Service Controls, not IP allowlists. B is wrong because peering is non-transitive, so other spokes can't route to the nodes/control plane via the hub. C is wrong because authorized networks apply only to the IP-based endpoint and still need transitive routes that don't exist. D (deploy a proxy) is wrong \u2014 that is exactly the legacy workaround the DNS-based endpoint removes, and was the original sample's answer.",
+      "D": "UPDATED (2026): The DNS-based control-plane endpoint exposes the control plane through Google's API frontend at a unique FQDN reachable from any network that can reach Google APIs \u2014 including other spokes \u2014 so it sidesteps VPC Network Peering transitivity entirely. Access is gated by IAM (container.clusters.connect) and VPC Service Controls, not IP allowlists. B is wrong because peering is non-transitive, so other spokes can't route to the nodes/control plane via the hub. C is wrong because authorized networks apply only to the IP-based endpoint and still need transitive routes that don't exist. D (deploy a proxy) is wrong \u2014 that is exactly the legacy workaround the DNS-based endpoint removes, and was the original sample's answer."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation"
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/control-plane-security",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/concepts/control-plane-security"
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/best-practices/networking",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/best-practices/networking"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Network Engineer",
+    "scenario": "You are responsible for configuring firewall policies for your company in Google Cloud. Your security team requires: always allow SSH from your corporate IP addresses, and restrict SSH access from all other IP addresses. There are multiple projects and VPCs in your organization. You need to ensure that other VPC firewall rules cannot bypass the security team\u2019s requirements. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "1. Configure a hierarchical firewall policy on the organization node to allow TCP port 22 for your corporate IP addresses with priority 0. 2. Configure a hierarchical firewall policy on the organization node to deny TCP port 22 for all IP addresses with priority 1.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "1. Configure a hierarchical firewall policy on the organization node to allow TCP port 22 for your corporate IP addresses with priority 1. 2. Configure a hierarchical firewall policy on the organization node to deny TCP port 22 for all IP addresses with priority 0.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "1. Configure a VPC firewall rule to allow TCP port 22 for your corporate IP addresses with priority 0. 2. Configure a VPC firewall rule to deny TCP port 22 for all IP addresses with priority 1.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "1. Configure a VPC firewall rule to allow TCP port 22 for your corporate IP addresses with priority 1. 2. Configure a VPC firewall rule to deny TCP port 22 for all IP addresses with priority 0.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because a hierarchical deny policy with priority 0 is processed before the allow policy with priority 1. C is not correct because a VPC firewall rule with priority 0 could be created to override the deny rule. D is not correct because priority 0 is highest and is processed first, blocking all SSH. Hierarchical firewall policies (A) cannot be bypassed by lower-level VPC rules.",
+      "B": "B is not correct because a hierarchical deny policy with priority 0 is processed before the allow policy with priority 1. C is not correct because a VPC firewall rule with priority 0 could be created to override the deny rule. D is not correct because priority 0 is highest and is processed first, blocking all SSH. Hierarchical firewall policies (A) cannot be bypassed by lower-level VPC rules.",
+      "C": "B is not correct because a hierarchical deny policy with priority 0 is processed before the allow policy with priority 1. C is not correct because a VPC firewall rule with priority 0 could be created to override the deny rule. D is not correct because priority 0 is highest and is processed first, blocking all SSH. Hierarchical firewall policies (A) cannot be bypassed by lower-level VPC rules.",
+      "D": "B is not correct because a hierarchical deny policy with priority 0 is processed before the allow policy with priority 1. C is not correct because a VPC firewall rule with priority 0 could be created to override the deny rule. D is not correct because priority 0 is highest and is processed first, blocking all SSH. Hierarchical firewall policies (A) cannot be bypassed by lower-level VPC rules."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/firewall-policies",
+        "text": "https://cloud.google.com/vpc/docs/firewall-policies"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Network Engineer",
+    "scenario": "You are in the process of deploying an internal Application Load Balancer (internal HTTP(S) load balancer) for your web server virtual machine (VM) instances. What two prerequisite tasks must be completed before creating the load balancer? (Choose 2)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Choose a region.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create firewall rules for health checks.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Reserve a static IP address for the load balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Determine the subnet mask for a proxy-only subnet.",
+        "is_correct": true
+      },
+      {
+        "id": "E",
+        "text": "Determine the subnet mask for Serverless VPC Access.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": true,
+    "explanations": {
+      "A": "Correct answers are A and D. B is not correct because firewall rules can be created after the load balancer. C is not correct because the IP can be reserved after the load balancer. E is not correct because we are not creating a subnet for managed/serverless services. The internal Application Load Balancer is regional (A) and requires a proxy-only subnet (D) as a prerequisite.",
+      "B": "Correct answers are A and D. B is not correct because firewall rules can be created after the load balancer. C is not correct because the IP can be reserved after the load balancer. E is not correct because we are not creating a subnet for managed/serverless services. The internal Application Load Balancer is regional (A) and requires a proxy-only subnet (D) as a prerequisite.",
+      "C": "Correct answers are A and D. B is not correct because firewall rules can be created after the load balancer. C is not correct because the IP can be reserved after the load balancer. E is not correct because we are not creating a subnet for managed/serverless services. The internal Application Load Balancer is regional (A) and requires a proxy-only subnet (D) as a prerequisite.",
+      "D": "Correct answers are A and D. B is not correct because firewall rules can be created after the load balancer. C is not correct because the IP can be reserved after the load balancer. E is not correct because we are not creating a subnet for managed/serverless services. The internal Application Load Balancer is regional (A) and requires a proxy-only subnet (D) as a prerequisite.",
+      "E": "Correct answers are A and D. B is not correct because firewall rules can be created after the load balancer. C is not correct because the IP can be reserved after the load balancer. E is not correct because we are not creating a subnet for managed/serverless services. The internal Application Load Balancer is regional (A) and requires a proxy-only subnet (D) as a prerequisite."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/l7-internal/setting-up-l7-internal",
+        "text": "https://cloud.google.com/load-balancing/docs/l7-internal/setting-up-l7-internal"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/l7-internal/proxy-only-subnets",
+        "text": "https://cloud.google.com/load-balancing/docs/l7-internal/proxy-only-subnets"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Network Engineer",
+    "scenario": "Your company is migrating to Google Cloud in a hub and spoke VPC design. You need to configure DNS, and you want to leverage on-premises DNS for a specific set of private zones across all of your VPCs running in Google Cloud. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure a DNS policy in each VPC that specifies the IP address of the on-premises DNS server as an alternative DNS server.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "For each zone you want forwarded, configure a DNS forwarding zone and apply it to each VPC network. Specify the on-premises DNS server IP address in the destination DNS server field.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure a DNS policy in one VPC that specifies the on-premises DNS server as an alternative DNS server. Set up a DNS peering zone from each of your other VPCs to that VPC.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "For each zone you want forwarded, configure a DNS forwarding zone that specifies the on-premises DNS server IP address in the destination DNS server field. Apply this private zone to the hub VPC network. Set up a DNS peering zone from each of your other VPCs to the VPC associated with the forwarding zone.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "A and C are not correct because an alternative-name-server DNS policy forwards everything to on-premises, not specific zones. B is not correct because applying the same forwarding zone to every VPC advertises the same DNS proxy range from each VPC to on-premises, so the on-premises router can't tell which VPC originated a query, causing dropped/misrouted queries. D centralizes forwarding on the hub and uses DNS peering from spokes, scoping it to specific zones.",
+      "B": "A and C are not correct because an alternative-name-server DNS policy forwards everything to on-premises, not specific zones. B is not correct because applying the same forwarding zone to every VPC advertises the same DNS proxy range from each VPC to on-premises, so the on-premises router can't tell which VPC originated a query, causing dropped/misrouted queries. D centralizes forwarding on the hub and uses DNS peering from spokes, scoping it to specific zones.",
+      "C": "A and C are not correct because an alternative-name-server DNS policy forwards everything to on-premises, not specific zones. B is not correct because applying the same forwarding zone to every VPC advertises the same DNS proxy range from each VPC to on-premises, so the on-premises router can't tell which VPC originated a query, causing dropped/misrouted queries. D centralizes forwarding on the hub and uses DNS peering from spokes, scoping it to specific zones.",
+      "D": "A and C are not correct because an alternative-name-server DNS policy forwards everything to on-premises, not specific zones. B is not correct because applying the same forwarding zone to every VPC advertises the same DNS proxy range from each VPC to on-premises, so the on-premises router can't tell which VPC originated a query, causing dropped/misrouted queries. D centralizes forwarding on the hub and uses DNS peering from spokes, scoping it to specific zones."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dns/docs/zones#creating-forwarding-zones",
+        "text": "https://cloud.google.com/dns/docs/zones#creating-forwarding-zones"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones",
+        "text": "https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Network Engineer",
+    "scenario": "You are designing a Google Kubernetes Engine cluster. The current size is 10 nodes, 20 Pods per node, 150 services. Planned growth over 2 years: 100 nodes, 200 Pods per node, 1500 services. You want VPC-native clusters with alias IP ranges, while minimizing address consumption. How should you design this topology?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a subnet of size /25 with 2 secondary ranges: /17 for Pods and /21 for Services. Create a VPC-native cluster and specify those ranges.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a subnet of size /28 with 2 secondary ranges: /24 for Pods and /24 for Services. Create a VPC-native cluster and specify those ranges. When the services are ready, resize the subnets.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use gcloud container clusters create [CLUSTER_NAME] --enable-ip-alias to create a VPC-native cluster.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use gcloud container clusters create [CLUSTER_NAME] to create a VPC-native cluster.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because secondary ranges are immutable \u2014 you cannot resize them after the cluster is created, so you must size for projected growth up front. C is not correct because the default ranges are far larger than needed, wasting address space. D is not correct because it does not create a VPC-native cluster and also uses oversized defaults. A sizes Pods (/17) and Services (/21) for the 2-year growth while minimizing consumption.",
+      "B": "B is not correct because secondary ranges are immutable \u2014 you cannot resize them after the cluster is created, so you must size for projected growth up front. C is not correct because the default ranges are far larger than needed, wasting address space. D is not correct because it does not create a VPC-native cluster and also uses oversized defaults. A sizes Pods (/17) and Services (/21) for the 2-year growth while minimizing consumption.",
+      "C": "B is not correct because secondary ranges are immutable \u2014 you cannot resize them after the cluster is created, so you must size for projected growth up front. C is not correct because the default ranges are far larger than needed, wasting address space. D is not correct because it does not create a VPC-native cluster and also uses oversized defaults. A sizes Pods (/17) and Services (/21) for the 2-year growth while minimizing consumption.",
+      "D": "B is not correct because secondary ranges are immutable \u2014 you cannot resize them after the cluster is created, so you must size for projected growth up front. C is not correct because the default ranges are far larger than needed, wasting address space. D is not correct because it does not create a VPC-native cluster and also uses oversized defaults. A sizes Pods (/17) and Services (/21) for the 2-year growth while minimizing consumption."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#range_management",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#range_management"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/using-vpc#expand-subnet",
+        "text": "https://cloud.google.com/vpc/docs/using-vpc#expand-subnet"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Network Engineer",
+    "scenario": "Your company has a single VPC network in Google Cloud with on-premises connectivity already in place over Cloud Interconnect. You are deploying a new application using GKE. Administrators in your on-premises data center must reach the GKE control plane through private connectivity only (no public internet path), and you want to avoid IP-based authorized networks. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable the cluster's DNS-based endpoint and access it privately through Private Service Connect (with a DNS record for the gke.goog domain) over your existing Interconnect. Authorize on-premises administrators with IAM (container.clusters.connect) and protect the endpoint with VPC Service Controls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a GKE private cluster with a private IP endpoint. Configure VPC Network Peering export/import routes and custom route advertisements on the Cloud Routers, and configure IP authorized networks for the on-premises subnets.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a GKE private cluster with a public IP endpoint, and configure IP authorized networks for the on-premises subnets.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a GKE public cluster and configure IP authorized networks for the on-premises subnets.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "UPDATED (2026): The DNS-based endpoint reached through Private Service Connect keeps all control-plane traffic on your private Interconnect path while removing IP authorized-networks management; access is governed by IAM and VPC Service Controls. B (the original sample's answer) relies on the legacy IP endpoint and IP authorized-networks model the question asks you to avoid, plus peering/route-advertisement complexity. C and D expose the control plane on a public endpoint.",
+      "B": "UPDATED (2026): The DNS-based endpoint reached through Private Service Connect keeps all control-plane traffic on your private Interconnect path while removing IP authorized-networks management; access is governed by IAM and VPC Service Controls. B (the original sample's answer) relies on the legacy IP endpoint and IP authorized-networks model the question asks you to avoid, plus peering/route-advertisement complexity. C and D expose the control plane on a public endpoint.",
+      "C": "UPDATED (2026): The DNS-based endpoint reached through Private Service Connect keeps all control-plane traffic on your private Interconnect path while removing IP authorized-networks management; access is governed by IAM and VPC Service Controls. B (the original sample's answer) relies on the legacy IP endpoint and IP authorized-networks model the question asks you to avoid, plus peering/route-advertisement complexity. C and D expose the control plane on a public endpoint.",
+      "D": "UPDATED (2026): The DNS-based endpoint reached through Private Service Connect keeps all control-plane traffic on your private Interconnect path while removing IP authorized-networks management; access is governed by IAM and VPC Service Controls. B (the original sample's answer) relies on the legacy IP endpoint and IP authorized-networks model the question asks you to avoid, plus peering/route-advertisement complexity. C and D expose the control plane on a public endpoint."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/concepts/network-isolation"
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/control-plane-security",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/concepts/control-plane-security"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Network Engineer",
+    "scenario": "Your company runs an enterprise platform on-premises using VMs. Your internet customers have created tens of thousands of DNS records pointing to your public IP addresses allocated to the VMs. You are migrating the platform to Compute Engine and want to minimize disruption. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a VPC and request static external IP addresses from Google Cloud. Assign them to the Compute Engine instances. Notify customers of the new IP addresses so they can update their DNS records.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Verify ownership of your IP addresses. After verification, Google Cloud advertises and provisions the IP prefix for you. Assign the IP addresses to the Compute Engine instances.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a VPC with the same IP address range as your on-premises network. Assign the IP addresses to the Compute Engine instances.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Verify ownership of your IP addresses. Use live migration to import the prefix. Assign the IP addresses to the Compute Engine instances.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because notifying customers to update all their DNS records is disruptive. B is not correct because importing an advertised prefix without live migration can cause unexpected routing and packet loss. C is not correct because you cannot simply create a VPC with the same public IP range. D (BYOIP live migration) imports your prefix without disruption.",
+      "B": "A is not correct because notifying customers to update all their DNS records is disruptive. B is not correct because importing an advertised prefix without live migration can cause unexpected routing and packet loss. C is not correct because you cannot simply create a VPC with the same public IP range. D (BYOIP live migration) imports your prefix without disruption.",
+      "C": "A is not correct because notifying customers to update all their DNS records is disruptive. B is not correct because importing an advertised prefix without live migration can cause unexpected routing and packet loss. C is not correct because you cannot simply create a VPC with the same public IP range. D (BYOIP live migration) imports your prefix without disruption.",
+      "D": "A is not correct because notifying customers to update all their DNS records is disruptive. B is not correct because importing an advertised prefix without live migration can cause unexpected routing and packet loss. C is not correct because you cannot simply create a VPC with the same public IP range. D (BYOIP live migration) imports your prefix without disruption."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/bring-your-own-ip#live-migration",
+        "text": "https://cloud.google.com/vpc/docs/bring-your-own-ip#live-migration"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Network Engineer",
+    "scenario": "Your organization has Compute Engine instances in us-east1, us-west2, and us-central1, plus an existing Cloud Interconnect physical connection on the US East Coast with a single VLAN attachment and Cloud Router in us-east1. You need high availability so that if a region goes down you still have access to all your other VPC subnets, in the most cost-effective manner. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "1. Create a Cloud Router. 2. Configure VPC routing in global mode. 3. Add an additional Cloud Interconnect VLAN attachment in us-east1, and configure a Cloud Router in us-east1.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "1. Create a Cloud Router. 2. Configure VPC routing in global mode. 3. Add an additional Cloud Interconnect VLAN attachment in us-west2, and configure a Cloud Router in us-west2.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "1. Create a Cloud Router. 2. Configure VPC routing in regional mode. 3. Add an additional Cloud Interconnect VLAN attachment in us-east1, and configure a Cloud Router in us-east1.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "1. Create a Cloud Router. 2. Configure VPC routing in regional mode. 3. Add additional Cloud Interconnect VLAN attachments in us-west2 and us-central1, and configure Cloud Routers there.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because if all of us-east1 goes down you lose reachability. C is not correct because regional mode does not advertise subnets in other regions. D is not correct because it works but is more costly than B. B places a second attachment in a different region (us-west2) with global routing, giving regional HA cost-effectively.",
+      "B": "A is not correct because if all of us-east1 goes down you lose reachability. C is not correct because regional mode does not advertise subnets in other regions. D is not correct because it works but is more costly than B. B places a second attachment in a different region (us-west2) with global routing, giving regional HA cost-effectively.",
+      "C": "A is not correct because if all of us-east1 goes down you lose reachability. C is not correct because regional mode does not advertise subnets in other regions. D is not correct because it works but is more costly than B. B places a second attachment in a different region (us-west2) with global routing, giving regional HA cost-effectively.",
+      "D": "A is not correct because if all of us-east1 goes down you lose reachability. C is not correct because regional mode does not advertise subnets in other regions. D is not correct because it works but is more costly than B. B places a second attachment in a different region (us-west2) with global routing, giving regional HA cost-effectively."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview#dynamic-routing-mode",
+        "text": "https://cloud.google.com/network-connectivity/docs/router/concepts/overview#dynamic-routing-mode"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Network Engineer",
+    "scenario": "Your company has a single Shared VPC network with subnets in multiple regions and on-premises access via Cloud Interconnect. You are migrating an application to GKE. The application uses HTTP(S) with TLS passthrough and is latency-sensitive. You need the cluster's services accessible outside the cluster from any region in the same VPC and any on-premises location using only private connectivity. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Expose the application through an external passthrough Network Load Balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Expose the application through an internal passthrough Network Load Balancer (internal TCP/UDP load balancer).",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Expose the application through an external Application Load Balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Expose the application through an internal Application Load Balancer.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because a LoadBalancer Service provisions an external passthrough NLB, which isn't private. C is not correct because that provisions an external (internet-facing) Application Load Balancer. D is not correct because an internal Application Load Balancer is a proxy that terminates TLS (no passthrough). The internal passthrough NLB supports global access (reachable from any region and on-prem privately) and passes TLS straight to the backends.",
+      "B": "A is not correct because a LoadBalancer Service provisions an external passthrough NLB, which isn't private. C is not correct because that provisions an external (internet-facing) Application Load Balancer. D is not correct because an internal Application Load Balancer is a proxy that terminates TLS (no passthrough). The internal passthrough NLB supports global access (reachable from any region and on-prem privately) and passes TLS straight to the backends.",
+      "C": "A is not correct because a LoadBalancer Service provisions an external passthrough NLB, which isn't private. C is not correct because that provisions an external (internet-facing) Application Load Balancer. D is not correct because an internal Application Load Balancer is a proxy that terminates TLS (no passthrough). The internal passthrough NLB supports global access (reachable from any region and on-prem privately) and passes TLS straight to the backends.",
+      "D": "A is not correct because a LoadBalancer Service provisions an external passthrough NLB, which isn't private. C is not correct because that provisions an external (internet-facing) Application Load Balancer. D is not correct because an internal Application Load Balancer is a proxy that terminates TLS (no passthrough). The internal passthrough NLB supports global access (reachable from any region and on-prem privately) and passes TLS straight to the backends."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing",
+        "text": "https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing"
+      },
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/internal#global_access",
+        "text": "https://cloud.google.com/load-balancing/docs/internal#global_access"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Network Engineer",
+    "scenario": "You are migrating a three-tier application from on-premises to Google Cloud. As a first step, you create a new VPC with an external Application Load Balancer that forwards traffic back to the on-premises compute resources running the presentation tier. You must stop malicious traffic at the edge by filtering IP addresses and stopping cross-site scripting (XSS) attacks. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Google Cloud Armor policy, and apply it to a backend service that uses an internet network endpoint group (NEG) backend.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a Google Cloud Armor policy, and apply it to a backend service that uses an unmanaged instance group backend.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a hierarchical firewall ruleset, and apply it to the VPC\u2019s parent organization resource node.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a VPC firewall ruleset, and apply it to all instances in unmanaged instance groups.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because for hybrid/multi-cloud backends, Cloud Armor requires internet NEGs, not unmanaged instance groups. C and D are not correct because firewall rules act on VMs, not at the load balancer edge, and can't stop XSS. Cloud Armor on a backend service with an internet NEG (A) filters at the edge and provides the WAF rules for XSS.",
+      "B": "B is not correct because for hybrid/multi-cloud backends, Cloud Armor requires internet NEGs, not unmanaged instance groups. C and D are not correct because firewall rules act on VMs, not at the load balancer edge, and can't stop XSS. Cloud Armor on a backend service with an internet NEG (A) filters at the edge and provides the WAF rules for XSS.",
+      "C": "B is not correct because for hybrid/multi-cloud backends, Cloud Armor requires internet NEGs, not unmanaged instance groups. C and D are not correct because firewall rules act on VMs, not at the load balancer edge, and can't stop XSS. Cloud Armor on a backend service with an internet NEG (A) filters at the edge and provides the WAF rules for XSS.",
+      "D": "B is not correct because for hybrid/multi-cloud backends, Cloud Armor requires internet NEGs, not unmanaged instance groups. C and D are not correct because firewall rules act on VMs, not at the load balancer edge, and can't stop XSS. Cloud Armor on a backend service with an internet NEG (A) filters at the edge and provides the WAF rules for XSS."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/armor/docs/security-policy-overview",
+        "text": "https://cloud.google.com/armor/docs/security-policy-overview"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Network Engineer",
+    "scenario": "You want Cloud CDN to serve a static image file hosted in a private Cloud Storage bucket using the USE_ORIGIN_HEADERS cache mode. You receive an HTTP 403 error and see a Cache-Control: private, max-age=0 response header. How should you correct this issue?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure a Cloud Storage bucket permission that gives allUsers the Storage Legacy Object Reader role.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable negative caching for the backend bucket.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Increase the default time-to-live (TTL) for the backend service.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Change the cache mode to Force cache all content.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because negative caching sets TTLs per status code, not access. C is not correct because with USE_ORIGIN_HEADERS the default TTL doesn't apply. D is not correct because the cache mode doesn't make the bucket publicly accessible. The 403 is an access problem \u2014 granting allUsers the object-reader role (A) lets the CDN read the object.",
+      "B": "B is not correct because negative caching sets TTLs per status code, not access. C is not correct because with USE_ORIGIN_HEADERS the default TTL doesn't apply. D is not correct because the cache mode doesn't make the bucket publicly accessible. The 403 is an access problem \u2014 granting allUsers the object-reader role (A) lets the CDN read the object.",
+      "C": "B is not correct because negative caching sets TTLs per status code, not access. C is not correct because with USE_ORIGIN_HEADERS the default TTL doesn't apply. D is not correct because the cache mode doesn't make the bucket publicly accessible. The 403 is an access problem \u2014 granting allUsers the object-reader role (A) lets the CDN read the object.",
+      "D": "B is not correct because negative caching sets TTLs per status code, not access. C is not correct because with USE_ORIGIN_HEADERS the default TTL doesn't apply. D is not correct because the cache mode doesn't make the bucket publicly accessible. The 403 is an access problem \u2014 granting allUsers the object-reader role (A) lets the CDN read the object."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/cdn/docs/troubleshooting-steps#responses-not-cached",
+        "text": "https://cloud.google.com/cdn/docs/troubleshooting-steps#responses-not-cached"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Network Engineer",
+    "scenario": "Your organization uses a Shared VPC architecture with a host project and three service projects, with Compute Engine instances in the service projects, and critical workloads in your on-premises data center. You need Google Cloud instances to resolve on-premises hostnames via the Dedicated Interconnect you deployed. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure a Cloud DNS private zone in the host project. Set up DNS forwarding on your on-premises DNS servers to the inbound forwarder IP in your host project. In your Cloud Router, add a custom route advertisement for 169.254.169.254 to on-premises.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure a Cloud DNS private zone in the host project. Set up DNS forwarding on your on-premises DNS servers to the inbound forwarder IP. Configure a DNS policy in the Shared VPC to allow inbound query forwarding with your on-premises DNS server as the alternative DNS server.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Cloud DNS private forwarding zone in the host project that forwards to the on-premises DNS servers. In your Cloud Router, add a custom route advertisement for 169.254.169.254 to on-premises.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a Cloud DNS private forwarding zone in the host project that forwards to the on-premises DNS servers. In your Cloud Router, add a custom route advertisement for 35.199.192.0/19 to on-premises.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "A and B describe inbound (reverse) resolution from on-premises to Google Cloud, not the required outbound resolution. C is not correct because you must advertise Google's 35.199.192.0/19 source range to on-premises, not 169.254.169.254 (the metadata DNS server). D uses a forwarding zone and advertises 35.199.192.0/19 so on-premises accepts the outbound DNS queries.",
+      "B": "A and B describe inbound (reverse) resolution from on-premises to Google Cloud, not the required outbound resolution. C is not correct because you must advertise Google's 35.199.192.0/19 source range to on-premises, not 169.254.169.254 (the metadata DNS server). D uses a forwarding zone and advertises 35.199.192.0/19 so on-premises accepts the outbound DNS queries.",
+      "C": "A and B describe inbound (reverse) resolution from on-premises to Google Cloud, not the required outbound resolution. C is not correct because you must advertise Google's 35.199.192.0/19 source range to on-premises, not 169.254.169.254 (the metadata DNS server). D uses a forwarding zone and advertises 35.199.192.0/19 so on-premises accepts the outbound DNS queries.",
+      "D": "A and B describe inbound (reverse) resolution from on-premises to Google Cloud, not the required outbound resolution. C is not correct because you must advertise Google's 35.199.192.0/19 source range to on-premises, not 169.254.169.254 (the metadata DNS server). D uses a forwarding zone and advertises 35.199.192.0/19 so on-premises accepts the outbound DNS queries."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dns/docs/best-practices#hybrid-architecture-using-single-shared-vpc-network",
+        "text": "https://cloud.google.com/dns/docs/best-practices#hybrid-architecture-using-single-shared-vpc-network"
+      },
+      {
+        "url": "https://cloud.google.com/dns/docs/best-practices#use_forwarding_zones_to_query_on-premises_servers",
+        "text": "https://cloud.google.com/dns/docs/best-practices#use_forwarding_zones_to_query_on-premises_servers"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Network Engineer",
+    "scenario": "Your on-premises network is connected to a VPC using a Cloud VPN tunnel. You have a static route of 0.0.0.0/0 with the VPN tunnel as its next hop. All internet-bound traffic currently passes through on-premises. You configured Cloud NAT to translate the primary IP addresses of Compute Engine instances in one region, so traffic should reach the internet directly. Traffic from the VMs is not translating as expected. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add a default static route to the VPC with the default internet gateway as the next hop, the network tag of the Compute Engine instances, and a higher priority than the default route to the VPN tunnel.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add firewall rules that allow ingress and egress of the external NAT IP address, with a target tag on the instances and a higher priority than the default route to the VPN gateway.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Lower the TCP Established Connection Idle Timeout for the NAT gateway.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Increase the default min-ports-per-vm setting for the Cloud NAT gateway.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because no special firewall rules are needed for NAT IPs. C is not correct because timeouts don't enable NAT. D is not correct because more ports per VM won't enable NAT. Cloud NAT requires a default route to the internet gateway; a higher-priority tagged route (A) sends the instances' internet traffic out via NAT instead of the VPN tunnel.",
+      "B": "B is not correct because no special firewall rules are needed for NAT IPs. C is not correct because timeouts don't enable NAT. D is not correct because more ports per VM won't enable NAT. Cloud NAT requires a default route to the internet gateway; a higher-priority tagged route (A) sends the instances' internet traffic out via NAT instead of the VPN tunnel.",
+      "C": "B is not correct because no special firewall rules are needed for NAT IPs. C is not correct because timeouts don't enable NAT. D is not correct because more ports per VM won't enable NAT. Cloud NAT requires a default route to the internet gateway; a higher-priority tagged route (A) sends the instances' internet traffic out via NAT instead of the VPN tunnel.",
+      "D": "B is not correct because no special firewall rules are needed for NAT IPs. C is not correct because timeouts don't enable NAT. D is not correct because more ports per VM won't enable NAT. Cloud NAT requires a default route to the internet gateway; a higher-priority tagged route (A) sends the instances' internet traffic out via NAT instead of the VPN tunnel."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/nat/docs/overview#specs-routes-firewalls",
+        "text": "https://cloud.google.com/nat/docs/overview#specs-routes-firewalls"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Network Engineer",
+    "scenario": "Your organization must monitor all egress traffic payloads from VMs in region us-west2. You deployed an intrusion detection system (IDS) virtual appliance in the same region. You need to integrate the IDS to monitor all egress traffic payloads. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create an internal passthrough Network Load Balancer (internal TCP/UDP load balancer) for Packet Mirroring, and add a packet mirroring policy filter for egress traffic.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable VPC Flow Logs. Create a sink in Cloud Logging to send filtered egress VPC Flow Logs to the IDS.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an internal Application Load Balancer for Packet Mirroring, and add a packet mirroring policy filter for egress traffic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable firewall logging, and forward all filtered egress firewall logs to the IDS.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because VPC Flow Logs are sampled and have no payload visibility. C is not correct because internal Application Load Balancers can't be used for Packet Mirroring. D is not correct because firewall logs don't show payloads. Packet Mirroring uses an internal passthrough NLB as the collector (A) and captures full payloads.",
+      "B": "B is not correct because VPC Flow Logs are sampled and have no payload visibility. C is not correct because internal Application Load Balancers can't be used for Packet Mirroring. D is not correct because firewall logs don't show payloads. Packet Mirroring uses an internal passthrough NLB as the collector (A) and captures full payloads.",
+      "C": "B is not correct because VPC Flow Logs are sampled and have no payload visibility. C is not correct because internal Application Load Balancers can't be used for Packet Mirroring. D is not correct because firewall logs don't show payloads. Packet Mirroring uses an internal passthrough NLB as the collector (A) and captures full payloads.",
+      "D": "B is not correct because VPC Flow Logs are sampled and have no payload visibility. C is not correct because internal Application Load Balancers can't be used for Packet Mirroring. D is not correct because firewall logs don't show payloads. Packet Mirroring uses an internal passthrough NLB as the collector (A) and captures full payloads."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/packet-mirroring#how_it_works",
+        "text": "https://cloud.google.com/vpc/docs/packet-mirroring#how_it_works"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Network Engineer",
+    "scenario": "You maintain a Shared VPC in a host project. Several departments have infrastructure in different service projects attached to the Shared VPC. VPC Network Peering is also set up between the Shared VPC and a common services VPC that is not in a service project. Several users have failed connectivity between certain instances in different service projects and between certain instances and the internet. You need to validate the network configuration to identify whether a misconfiguration is the root cause. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Run Connectivity Tests from Network Intelligence Center to check connectivity between the affected endpoints and the internet.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable VPC Flow Logs for all VPCs, and review the logs in Cloud Logging for the affected instances.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Review the VPC audit logs in Cloud Logging for the affected instances.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use SSH to connect to the affected instances and run a series of PING tests to the other endpoints and 8.8.8.8.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B is not correct because Flow Logs only show flows that work, not configuration errors in the datapath. C is not correct because audit logs answer 'who did what, where, when', not datapath config. D is not correct because PING only confirms a problem exists, not where or why. Connectivity Tests (A) analyze the configuration along the path.",
+      "B": "B is not correct because Flow Logs only show flows that work, not configuration errors in the datapath. C is not correct because audit logs answer 'who did what, where, when', not datapath config. D is not correct because PING only confirms a problem exists, not where or why. Connectivity Tests (A) analyze the configuration along the path.",
+      "C": "B is not correct because Flow Logs only show flows that work, not configuration errors in the datapath. C is not correct because audit logs answer 'who did what, where, when', not datapath config. D is not correct because PING only confirms a problem exists, not where or why. Connectivity Tests (A) analyze the configuration along the path.",
+      "D": "B is not correct because Flow Logs only show flows that work, not configuration errors in the datapath. C is not correct because audit logs answer 'who did what, where, when', not datapath config. D is not correct because PING only confirms a problem exists, not where or why. Connectivity Tests (A) analyze the configuration along the path."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview",
+        "text": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Network Engineer",
+    "scenario": "You are connecting Google Cloud to your on-premises network, which does not support BGP. The on-premises network has 30 CIDR ranges that must be reachable from Google Cloud. Your VPN gateway creates a unique child security association (SA) per CIDR. Following Google-recommended practices, which two methods can you use? (Choose 2)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create multiple Cloud VPN tunnels that use policy-based routing so each tunnel has one CIDR for its local traffic selector and one CIDR for its remote traffic selector. Connect each tunnel to the same peer IP address.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create multiple Cloud VPN tunnels that use policy-based routing so each tunnel has one CIDR for its local traffic selector and one CIDR for its remote traffic selector. Connect each tunnel to unique peer IP addresses.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a single Cloud VPN tunnel that uses a route-based VPN.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create a single Cloud VPN tunnel that uses policy-based routing with 30 CIDRs as the remote traffic selectors.",
+        "is_correct": false
+      },
+      {
+        "id": "E",
+        "text": "Create multiple Cloud VPN tunnels that use policy-based routing with 10 CIDRs per tunnel as the remote traffic selectors.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "multi_select": true,
+    "explanations": {
+      "A": "Correct answers are B and C. A is not correct because each tunnel must connect to a unique peer IP from the same Classic VPN gateway. D is not correct because 30 CIDRs in one policy-based tunnel creates multiple child SAs per tunnel, which is unsupported \u2014 the connection fails. E is not correct for the same reason (multiple child SAs per tunnel). B (one CIDR pair per tunnel to unique peer IPs) and C (a route-based VPN) both work.",
+      "B": "Correct answers are B and C. A is not correct because each tunnel must connect to a unique peer IP from the same Classic VPN gateway. D is not correct because 30 CIDRs in one policy-based tunnel creates multiple child SAs per tunnel, which is unsupported \u2014 the connection fails. E is not correct for the same reason (multiple child SAs per tunnel). B (one CIDR pair per tunnel to unique peer IPs) and C (a route-based VPN) both work.",
+      "C": "Correct answers are B and C. A is not correct because each tunnel must connect to a unique peer IP from the same Classic VPN gateway. D is not correct because 30 CIDRs in one policy-based tunnel creates multiple child SAs per tunnel, which is unsupported \u2014 the connection fails. E is not correct for the same reason (multiple child SAs per tunnel). B (one CIDR pair per tunnel to unique peer IPs) and C (a route-based VPN) both work.",
+      "D": "Correct answers are B and C. A is not correct because each tunnel must connect to a unique peer IP from the same Classic VPN gateway. D is not correct because 30 CIDRs in one policy-based tunnel creates multiple child SAs per tunnel, which is unsupported \u2014 the connection fails. E is not correct for the same reason (multiple child SAs per tunnel). B (one CIDR pair per tunnel to unique peer IPs) and C (a route-based VPN) both work.",
+      "E": "Correct answers are B and C. A is not correct because each tunnel must connect to a unique peer IP from the same Classic VPN gateway. D is not correct because 30 CIDRs in one policy-based tunnel creates multiple child SAs per tunnel, which is unsupported \u2014 the connection fails. E is not correct for the same reason (multiple child SAs per tunnel). B (one CIDR pair per tunnel to unique peer IPs) and C (a route-based VPN) both work."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/choosing-networks-routing#ts-ip-ranges",
+        "text": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/choosing-networks-routing#ts-ip-ranges"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Network Engineer",
+    "scenario": "You are developing an HTTP API hosted on a Compute Engine VM instance that must be invoked only by multiple clients within the same VPC. You want clients to be able to get the IP address of the service. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Reserve a static external IP address and assign it to an HTTP(S) load balancing forwarding rule. Clients use this IP to connect.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Reserve a static external IP address and assign it to an HTTP(S) load balancing forwarding rule. Define an A record in Cloud DNS. Clients use the A record name.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Ensure clients use Compute Engine internal DNS by connecting to the instance name with the URL https://[INSTANCE_NAME].[ZONE].c.[PROJECT_ID].internal/.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Ensure clients use Compute Engine internal DNS by connecting to the instance name with the URL https://[API_NAME]/[API_VERSION]/.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because an external IP doesn't help clients discover the service and is meant for external consumption, not 'within the same VPC'. B is not correct because clients within the VPC have no public IP to reach an external HTTP(S) LB. D is not correct because that isn't the Compute Engine internal DNS format. C uses the correct internal DNS FQDN format.",
+      "B": "A is not correct because an external IP doesn't help clients discover the service and is meant for external consumption, not 'within the same VPC'. B is not correct because clients within the VPC have no public IP to reach an external HTTP(S) LB. D is not correct because that isn't the Compute Engine internal DNS format. C uses the correct internal DNS FQDN format.",
+      "C": "A is not correct because an external IP doesn't help clients discover the service and is meant for external consumption, not 'within the same VPC'. B is not correct because clients within the VPC have no public IP to reach an external HTTP(S) LB. D is not correct because that isn't the Compute Engine internal DNS format. C uses the correct internal DNS FQDN format.",
+      "D": "A is not correct because an external IP doesn't help clients discover the service and is meant for external consumption, not 'within the same VPC'. B is not correct because clients within the VPC have no public IP to reach an external HTTP(S) LB. D is not correct because that isn't the Compute Engine internal DNS format. C uses the correct internal DNS FQDN format."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/compute/docs/internal-dns",
+        "text": "https://cloud.google.com/compute/docs/internal-dns"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Network Engineer",
+    "scenario": "Your organization has a single project containing multiple VPCs. You need to secure API access to your Cloud Storage buckets and BigQuery datasets by allowing API access only from resources in your corporate public networks. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a VPC Service Controls perimeter for each VPC with an access context policy that allows your corporate public network IP ranges.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a VPC Service Controls perimeter for your project with an access context policy that allows your corporate public network IP ranges.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a firewall rule to block API access to Cloud Storage and BigQuery from unauthorized networks.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create an access context policy that allows your VPC and corporate public network IP ranges, and attach the policy to Cloud Storage and BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because VPC Service Controls perimeters are project-scoped, not VPC-scoped. C is not correct because firewall rules don't apply to Cloud Storage or BigQuery. D is not correct because access context policies attach to a VPC-SC perimeter, not directly to services. B creates a project-scoped perimeter with an access level for the corporate IP ranges.",
+      "B": "A is not correct because VPC Service Controls perimeters are project-scoped, not VPC-scoped. C is not correct because firewall rules don't apply to Cloud Storage or BigQuery. D is not correct because access context policies attach to a VPC-SC perimeter, not directly to services. B creates a project-scoped perimeter with an access level for the corporate IP ranges.",
+      "C": "A is not correct because VPC Service Controls perimeters are project-scoped, not VPC-scoped. C is not correct because firewall rules don't apply to Cloud Storage or BigQuery. D is not correct because access context policies attach to a VPC-SC perimeter, not directly to services. B creates a project-scoped perimeter with an access level for the corporate IP ranges.",
+      "D": "A is not correct because VPC Service Controls perimeters are project-scoped, not VPC-scoped. C is not correct because firewall rules don't apply to Cloud Storage or BigQuery. D is not correct because access context policies attach to a VPC-SC perimeter, not directly to services. B creates a project-scoped perimeter with an access level for the corporate IP ranges."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "https://cloud.google.com/vpc-service-controls/docs/overview"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Network Engineer",
+    "scenario": "You suspect that one of the VMs in your default VPC is under a denial-of-service attack. You need to analyze the incoming traffic for the VM to understand where the traffic is coming from. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Data Access audit logs of the subnet. Analyze the logs and get the source IP addresses from the networks.get field.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable Data Access audit logs of the VPC. Analyze the logs and get the source IP addresses from the subnetworks.get field.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable VPC Flow Logs for the subnet. Analyze the logs and get the source IP addresses from the connection field.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Enable VPC Flow Logs for the VPC. Analyze the logs and get the source IP addresses from the src_location field.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "A and B are not correct because Data Access audit logs don't contain source IPs. D is not correct because VPC Flow Logs are enabled per subnet (not per VPC), and src_location holds geo metadata, not the IP. C enables Flow Logs on the subnet and reads source IPs from the connection field.",
+      "B": "A and B are not correct because Data Access audit logs don't contain source IPs. D is not correct because VPC Flow Logs are enabled per subnet (not per VPC), and src_location holds geo metadata, not the IP. C enables Flow Logs on the subnet and reads source IPs from the connection field.",
+      "C": "A and B are not correct because Data Access audit logs don't contain source IPs. D is not correct because VPC Flow Logs are enabled per subnet (not per VPC), and src_location holds geo metadata, not the IP. C enables Flow Logs on the subnet and reads source IPs from the connection field.",
+      "D": "A and B are not correct because Data Access audit logs don't contain source IPs. D is not correct because VPC Flow Logs are enabled per subnet (not per VPC), and src_location holds geo metadata, not the IP. C enables Flow Logs on the subnet and reads source IPs from the connection field."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/flow-logs#record_format",
+        "text": "https://cloud.google.com/vpc/docs/flow-logs#record_format"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Network Engineer",
+    "scenario": "You have two Google Cloud projects in a perimeter to prevent data exfiltration. You need to move a third project inside the perimeter, but the move could negatively impact the existing environment. You need to validate the impact of the change. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Modify the existing VPC Service Controls policy to include the new project in dry run mode.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable VPC Flow Logs inside the third project, and monitor the logs for negative impact.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Enable Firewall Rules Logging inside the third project.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Monitor the Resource Manager audit logs inside the perimeter.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "B, C, and D are not correct because Flow Logs, firewall logs, and Resource Manager audit logs do not show VPC Service Controls policy violations. Dry run mode (A) logs what the policy would block without enforcing it, so you can validate impact safely.",
+      "B": "B, C, and D are not correct because Flow Logs, firewall logs, and Resource Manager audit logs do not show VPC Service Controls policy violations. Dry run mode (A) logs what the policy would block without enforcing it, so you can validate impact safely.",
+      "C": "B, C, and D are not correct because Flow Logs, firewall logs, and Resource Manager audit logs do not show VPC Service Controls policy violations. Dry run mode (A) logs what the policy would block without enforcing it, so you can validate impact safely.",
+      "D": "B, C, and D are not correct because Flow Logs, firewall logs, and Resource Manager audit logs do not show VPC Service Controls policy violations. Dry run mode (A) logs what the policy would block without enforcing it, so you can validate impact safely."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/dry-run-mode",
+        "text": "https://cloud.google.com/vpc-service-controls/docs/dry-run-mode"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Network Engineer",
+    "scenario": "You recently deployed two network virtual appliances in us-central1 that provide connectivity to your on-premises network, 10.0.0.0/8. You need to configure VPC routing so that: all access to on-premises goes through the appliances; on-premises access survives a single appliance failure; and both appliances are used simultaneously. Which method should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure an internal passthrough Network Load Balancer (internal TCP/UDP load balancer) with the two appliances as backends. Configure a route for 10.0.0.0/8 with the internal load balancer as the next hop.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure an external passthrough Network Load Balancer for the two appliances. Configure a route for 10.0.0.0/8 with the network load balancer as the next hop.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure two routes for 10.0.0.0/8 with different priorities, each pointing to a separate appliance.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure an internal Application Load Balancer with the two appliances as backends. Configure a route for 10.0.0.0/8 with the internal Application Load Balancer as the next hop.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "Only an internal passthrough Network Load Balancer can be used as a next hop for a custom static route (A), spreading traffic across both active appliances and failing over on health-check failure. B is not correct because an external passthrough NLB is internet-facing and isn't a supported next hop here. C is not correct because different priorities give active/standby (not both simultaneously) and don't health-check. D is not correct because a proxy Application Load Balancer can't be a route next hop.",
+      "B": "Only an internal passthrough Network Load Balancer can be used as a next hop for a custom static route (A), spreading traffic across both active appliances and failing over on health-check failure. B is not correct because an external passthrough NLB is internet-facing and isn't a supported next hop here. C is not correct because different priorities give active/standby (not both simultaneously) and don't health-check. D is not correct because a proxy Application Load Balancer can't be a route next hop.",
+      "C": "Only an internal passthrough Network Load Balancer can be used as a next hop for a custom static route (A), spreading traffic across both active appliances and failing over on health-check failure. B is not correct because an external passthrough NLB is internet-facing and isn't a supported next hop here. C is not correct because different priorities give active/standby (not both simultaneously) and don't health-check. D is not correct because a proxy Application Load Balancer can't be a route next hop.",
+      "D": "Only an internal passthrough Network Load Balancer can be used as a next hop for a custom static route (A), spreading traffic across both active appliances and failing over on health-check failure. B is not correct because an external passthrough NLB is internet-facing and isn't a supported next hop here. C is not correct because different priorities give active/standby (not both simultaneously) and don't health-check. D is not correct because a proxy Application Load Balancer can't be a route next hop."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/internal/ilb-next-hop-overview",
+        "text": "https://cloud.google.com/load-balancing/docs/internal/ilb-next-hop-overview"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Network Engineer",
+    "scenario": "You are configuring a new HTTP application exposed externally behind both IPv4 and IPv6 virtual IP addresses, using ports 80, 8080, and 443, with backends in us-west1 and us-east1. You want lowest-possible latency with high availability and autoscaling, native content-based rules using the HTTP hostname and request path, and the client IP addresses must be visible to the backends. Which configuration should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use an external passthrough Network Load Balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use a proxy Network Load Balancer (TCP proxy) with PROXY protocol enabled.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use a global external Application Load Balancer with URL Maps and custom headers.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a global external Application Load Balancer with URL Maps and an X-Forwarded-For header.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is not correct because a passthrough Network Load Balancer doesn't support URL maps / content-based routing. B is not correct because a TCP proxy NLB doesn't support HTTP port 80 content-based rules. C is not correct because custom headers don't log the client IP. D uses a global external Application Load Balancer with URL maps and records the client IP in the X-Forwarded-For header.",
+      "B": "A is not correct because a passthrough Network Load Balancer doesn't support URL maps / content-based routing. B is not correct because a TCP proxy NLB doesn't support HTTP port 80 content-based rules. C is not correct because custom headers don't log the client IP. D uses a global external Application Load Balancer with URL maps and records the client IP in the X-Forwarded-For header.",
+      "C": "A is not correct because a passthrough Network Load Balancer doesn't support URL maps / content-based routing. B is not correct because a TCP proxy NLB doesn't support HTTP port 80 content-based rules. C is not correct because custom headers don't log the client IP. D uses a global external Application Load Balancer with URL maps and records the client IP in the X-Forwarded-For header.",
+      "D": "A is not correct because a passthrough Network Load Balancer doesn't support URL maps / content-based routing. B is not correct because a TCP proxy NLB doesn't support HTTP port 80 content-based rules. C is not correct because custom headers don't log the client IP. D uses a global external Application Load Balancer with URL maps and records the client IP in the X-Forwarded-For header."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/load-balancing/docs/https#target-proxies",
+        "text": "https://cloud.google.com/load-balancing/docs/https#target-proxies"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Network Engineer",
+    "scenario": "You have provisioned a Partner Interconnect connection to extend connectivity from your on-premises data center to Google Cloud. You need to configure a Cloud Router and create a VLAN attachment. You must configure an Autonomous System number (ASN) for the Cloud Router and the VLAN attachment. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use a 2-byte private ASN 64512-65535.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use a 4-byte private ASN 4200000000-4294967294.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use a public Google ASN 16550.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use a public Google ASN 15169.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "A and B are not correct because VLAN attachments with Partner Interconnect require the Cloud Router ASN to be 16550. D is not correct because 15169 is Google's general public ASN, not the Partner Interconnect ASN. Partner Interconnect requires ASN 16550 (C).",
+      "B": "A and B are not correct because VLAN attachments with Partner Interconnect require the Cloud Router ASN to be 16550. D is not correct because 15169 is Google's general public ASN, not the Partner Interconnect ASN. Partner Interconnect requires ASN 16550 (C).",
+      "C": "A and B are not correct because VLAN attachments with Partner Interconnect require the Cloud Router ASN to be 16550. D is not correct because 15169 is Google's general public ASN, not the Partner Interconnect ASN. Partner Interconnect requires ASN 16550 (C).",
+      "D": "A and B are not correct because VLAN attachments with Partner Interconnect require the Cloud Router ASN to be 16550. D is not correct because 15169 is Google's general public ASN, not the Partner Interconnect ASN. Partner Interconnect requires ASN 16550 (C)."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner/creating-vlan-attachments",
+        "text": "https://cloud.google.com/network-connectivity/docs/interconnect/how-to/partner/creating-vlan-attachments"
+      }
+    ]
+  }
+];
+
+        let currentIdx = 0;
+        // selectedAnswers: idx -> string (single) or Set (multi-select)
+        let selectedAnswers = {};
+        let flaggedQuestions = {};
+        let struckOptions = {};
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60);
+        let timerInterval;
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); autoSubmitExam(); return; }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            const el = document.getElementById('exam-timer');
+            el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            if (timeLeft <= 300) el.classList.add('warning'); else el.classList.remove('warning');
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = 'grid-cell-' + idx;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function isAnswered(idx) {
+            const ans = selectedAnswers[idx];
+            if (!ans) return false;
+            if (ans instanceof Set) return ans.size > 0;
+            return true;
+        }
+
+        function isCorrectAnswer(q, idx) {
+            const ans = selectedAnswers[idx];
+            if (!ans) return false;
+            const correctIds = q.options.filter(o => o.is_correct).map(o => o.id);
+            if (q.multi_select) {
+                if (!(ans instanceof Set)) return false;
+                if (ans.size !== correctIds.length) return false;
+                return correctIds.every(id => ans.has(id));
+            } else {
+                return ans === correctIds[0];
+            }
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+            document.getElementById('question-header').textContent = 'Question ' + q.number + ' of ' + quizData.length;
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Multi-select badge
+            const badge = document.getElementById('multi-badge');
+            badge.style.display = q.multi_select ? 'block' : 'none';
+
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+            if (q.multi_select && !(selectedAnswers[idx] instanceof Set)) {
+                if (!selectedAnswers[idx]) selectedAnswers[idx] = new Set();
+            }
+
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+
+                const isSelected = q.multi_select
+                    ? (selectedAnswers[idx] instanceof Set && selectedAnswers[idx].has(opt.id))
+                    : selectedAnswers[idx] === opt.id;
+
+                if (isSelected) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                if (examSubmitted) {
+                    if (opt.is_correct) item.classList.add('post-correct');
+                    else if (isSelected) item.classList.add('post-incorrect');
+                }
+
+                item.onclick = () => selectOption(opt.id, item, q.multi_select);
+                item.oncontextmenu = (e) => { e.preventDefault(); toggleStrike(opt.id, item); };
+
+                // Radio or checkbox indicator
+                const indicator = document.createElement('div');
+                if (q.multi_select) {
+                    indicator.className = 'option-checkbox';
+                    const mark = document.createElement('svg');
+                    mark.className = 'option-checkbox-mark';
+                    mark.setAttribute('viewBox', '0 0 12 12');
+                    mark.setAttribute('fill', 'none');
+                    mark.setAttribute('stroke', 'white');
+                    mark.setAttribute('stroke-width', '2');
+                    mark.innerHTML = '<polyline points="1,6 4,10 11,2"/>';
+                    indicator.appendChild(mark);
+                } else {
+                    indicator.className = 'option-radio';
+                    const dot = document.createElement('div');
+                    dot.className = 'option-radio-dot';
+                    indicator.appendChild(dot);
+                }
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = '<strong>' + opt.id + '.</strong> ' + marked.parseInline(opt.text);
+
+                item.appendChild(indicator);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (isSelected) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('active'));
+            document.getElementById('grid-cell-' + idx).classList.add('active');
+
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            document.getElementById('progress-bar').style.width = ((idx + 1) / quizData.length * 100) + '%';
+        }
+
+        function selectOption(letter, element, isMulti) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return;
+
+            if (isMulti) {
+                if (!(selectedAnswers[currentIdx] instanceof Set)) selectedAnswers[currentIdx] = new Set();
+                const set = selectedAnswers[currentIdx];
+                if (set.has(letter)) {
+                    set.delete(letter);
+                    element.classList.remove('selected');
+                } else {
+                    set.add(letter);
+                    element.classList.add('selected');
+                }
+            } else {
+                selectedAnswers[currentIdx] = letter;
+                document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+                element.classList.add('selected');
+            }
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            const isSelected = quizData[currentIdx].multi_select
+                ? (selectedAnswers[currentIdx] instanceof Set && selectedAnswers[currentIdx].has(letter))
+                : selectedAnswers[currentIdx] === letter;
+            if (isSelected) return;
+            const arr = struckOptions[currentIdx];
+            const fi = arr.indexOf(letter);
+            if (fi > -1) { arr.splice(fi, 1); element.classList.remove('struck-out'); }
+            else { arr.push(letter); element.classList.add('struck-out'); }
+        }
+
+        function toggleFlag() {
+            flaggedQuestions[currentIdx] = document.getElementById('flag-checkbox').checked;
+            updateStats();
+        }
+
+        function prevQuestion() { if (currentIdx > 0) loadQuestion(currentIdx - 1); }
+        function nextQuestion() { if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1); }
+
+        function updateStats() {
+            let answered = 0, flagged = 0;
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById('grid-cell-' + idx);
+                if (!cell) return;
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+                if (examSubmitted) {
+                    if (isCorrectAnswer(q, idx)) cell.classList.add('post-correct');
+                    else cell.classList.add('post-incorrect');
+                } else {
+                    if (isAnswered(idx)) { answered++; cell.classList.add('answered'); }
+                }
+                if (flaggedQuestions[idx]) { flagged++; cell.classList.add('flagged'); }
+            });
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = answered + '/' + quizData.length + ' Answered';
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item ' + (opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+                const badgeText = opt.is_correct ? 'Option ' + opt.id + ' (Correct):' : 'Option ' + opt.id + ' (Incorrect):';
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+                const exp = q.explanations[opt.id] || 'See official Google Cloud documentation.';
+                item.innerHTML = '<span class="exp-badge" style="color:' + badgeColor + '">' + badgeText + '</span><br>' + marked.parse(exp);
+                container.appendChild(item);
+            });
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.url;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = 'No references available.';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('classic-mode');
+            const isClassic = document.body.classList.contains('classic-mode');
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/></svg><span>Premium Theme</span>';
+            } else {
+                btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg><span>Classic Theme</span>';
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) { showToast("Exam already submitted!"); return; }
+            const ac = quizData.filter((q,i) => isAnswered(i)).length;
+            const msg = "Submit exam?\n\nAnswered: " + ac + " of " + quizData.length + (quizData.length - ac > 0 ? "\n\nWARNING: " + (quizData.length - ac) + " unanswered question(s)." : "");
+            if (confirm(msg)) submitExam();
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Submitting your exam automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            let correctCount = 0;
+            quizData.forEach((q, idx) => { if (isCorrectAnswer(q, idx)) correctCount++; });
+            const pct = Math.round(correctCount / quizData.length * 100);
+            document.getElementById('results-score').textContent = pct + '%';
+            const statusEl = document.getElementById('results-passing-status');
+            if (pct >= 70) { statusEl.textContent = 'PASS'; statusEl.style.color = 'var(--correct)'; }
+            else { statusEl.textContent = 'FAIL'; statusEl.style.color = 'var(--incorrect)'; }
+            document.getElementById('results-detailed-stats').textContent = 'You scored ' + correctCount + ' out of ' + quizData.length + ' correct (' + pct + '%). Google Cloud Professional exams typically require ~70-75% to pass.';
+            document.getElementById('results-modal').style.display = 'flex';
+            loadQuestion(currentIdx);
+            updateStats();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Exam Submitted'; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; }
+        }
+
+        function closeResultsModalAndReview() { document.getElementById('results-modal').style.display = 'none'; }
+
+        function resetExam() {
+            selectedAnswers = {}; flaggedQuestions = {}; struckOptions = {};
+            examSubmitted = false; timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            initGrid(); loadQuestion(0); startTimer();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Submit Exam'; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+        }
+
+        function showToast(message, duration=3000) {
+            const t = document.getElementById('toast');
+            t.textContent = message; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/network_eng/sample_questions_updated.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/network_eng/sample_questions_updated.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

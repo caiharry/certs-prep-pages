@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="sticker" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Cloud Security Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #8b5cf6;
+            --dark-accent-hover: #7c3aed;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #6d28d9;
+            --classic-accent-hover: #5b21b6;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Cloud Security Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Security Engineer",
+    "scenario": "Your organization is implementing a centralized identity strategy using an external Okta directory as your primary SAML 2.0 Identity Provider (IdP). To comply with strict privacy policies, you are forbidden from synchronizing corporate user identities into Cloud Identity. However, users must be able to sign in to the Google Cloud console, and you must authorize access to resources based on their Okta user groups (e.g. `gcp-security-admins`). The Okta SAML assertion includes a custom attribute named `user_groups` containing a list of the user's groups.\n\nHow should you configure this federated authorization?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure Workforce Identity Federation with a SAML provider, map `google.groups = assertion.user_groups`, and grant the role on the organization to `principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/group/gcp-security-admins`.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure Workload Identity Federation with a SAML provider, map `google.groups = assertion.user_groups`, and grant the role to `principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/group/gcp-security-admins`.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Google Cloud Directory Sync to sync the groups into Cloud Identity, configure Workforce Identity Federation for authentication only, map `google.subject = assertion.subject`, and grant roles to the synced groups.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure Workforce Identity Federation with a SAML provider, map `google.groups = assertion.user_groups`, and grant the role to `principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/attribute.user_groups/gcp-security-admins`.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Workforce Identity Federation authenticates and authorizes human employees from an external IdP without provisioning them into Cloud Identity, satisfying the no-sync constraint; group assertions mapped to the reserved `google.groups` attribute are referenced in IAM with the `/group/GROUP_NAME` principal syntax.",
+      "B": "Workload Identity Federation is for machine/software workloads (apps on AWS, GKE, CI runners), not human console sign-in, and its pool principal paths are project-scoped — wrong federation product for a workforce.",
+      "C": "GCDS provisions user/group objects into Cloud Identity, which is exactly the synchronization the privacy policy forbids, so the residency of identities is violated regardless of how authentication is wired.",
+      "D": "Because the groups are mapped to the special reserved `google.groups` attribute, the principal must use `/group/NAME`; the generic `attribute.user_groups/NAME` form only applies to ordinary custom attributes and will not match here."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workforce-sign-in-saml",
+        "text": "cloud.google.com/iam/docs/workforce-sign-in-saml"
+      },
+      {
+        "url": "https://cloud.google.com/iam/docs/workforce-identity-federation",
+        "text": "cloud.google.com/iam/docs/workforce-identity-federation"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Security Engineer",
+    "scenario": "An application running on an AWS EC2 instance assumes the AWS IAM role `arn:aws:iam::111122223333:role/billing-processor`. It must write monthly report files to a private Cloud Storage bucket `corp-billing-data`. Compliance prohibits generating or storing long-lived service account JSON keys. You configure Workload Identity Federation, and the grant must cover every instance assuming this AWS role regardless of its individual STS session name or transient EC2 instance ID.\n\nHow should you configure the attribute mapping and IAM policy?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Map `google.subject = assertion.arn` and grant `roles/storage.objectCreator` on the bucket to `principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/subject/arn:aws:sts::111122223333:assumed-role/billing-processor/*`.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Map `google.subject = assertion.arn` and `attribute.aws_role = assertion.arn.extract('assumed-role/{role}/')`, then grant `roles/storage.objectCreator` on the bucket to `principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.aws_role/billing-processor`.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Configure Workforce Identity Federation with AWS as an OIDC provider, map `google.subject = assertion.arn`, and grant the role to `principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/attribute.aws_role/billing-processor`.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Map only `google.subject = assertion.arn` and grant `roles/storage.objectCreator` on the bucket to `principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.aws_role/billing-processor`.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "An assumed-role STS ARN is per-session (`.../assumed-role/billing-processor/session-id`), so mapping it to `google.subject` makes each session a distinct subject, and `principal://.../subject/...` bindings do not support a trailing `*` wildcard, so the binding never matches.",
+      "B": "Extracting the role name into a custom `attribute.aws_role` with the `.extract()` CEL function collapses all sessions of the role to one value, and a `principalSet://.../attribute.aws_role/billing-processor` binding then authorizes every instance assuming that role with no keys involved.",
+      "C": "Workforce Identity Federation is for human users; a server-to-server EC2 workload must use Workload Identity Federation, and the workforce pool principal path shown here cannot represent a machine workload.",
+      "D": "The `principalSet` references `attribute.aws_role`, but that attribute is never created — custom attributes only exist if explicitly declared in the provider's attribute mapping, so the binding resolves to nothing."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds",
+        "text": "cloud.google.com/iam/docs/workload-identity-federation-wi..."
+      },
+      {
+        "url": "https://cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "text": "cloud.google.com/iam/docs/best-practices-for-using-worklo..."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Security Engineer",
+    "scenario": "To comply with strict security standards, you must ensure that absolutely no user — including administrators holding `roles/owner` or `roles/storage.admin` — can delete Cloud Storage buckets or objects in a sensitive audit project `corp-compliance-archive`. However, one designated automated service account, `compliance-cleanup-sa`, must still be able to prune expired objects on a schedule.\n\nHow should you enforce this control?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a project IAM deny policy denying `storage.googleapis.com/buckets.delete` and `objects.delete` to all principals, with `compliance-cleanup-sa` under `exceptionPrincipals`.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Revoke `roles/owner` and `roles/storage.admin` from all human users and replace them with a custom IAM role that omits `storage.buckets.delete` and `storage.objects.delete`.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Configure an organization policy with the constraint `constraints/gcp.resourceLocations` and exclude `compliance-cleanup-sa` from its scope.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable a locked Bucket Lock retention policy of 7 years on every bucket in the project so that no deletion can occur during the retention window.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "IAM deny policies are evaluated before allow policies and override even Owner, so the deny on `buckets.delete`/`objects.delete` stops every human while `exceptionPrincipals` carves out exactly the cleanup service account; note deny permissions use the `service.googleapis.com/resource.verb` format.",
+      "B": "This is fragile to maintain and not actually a guarantee — anyone later granted Owner or Storage Admin (or who edits the custom role) silently regains delete, so it fails the \"absolutely no user, including admins\" requirement.",
+      "C": "`constraints/gcp.resourceLocations` restricts the geographic regions in which resources may be created; it has no bearing on who may delete buckets or objects.",
+      "D": "Bucket Lock enforces minimum object retention but does not stop deletion of empty buckets, and worse, it would also block the cleanup service account — you cannot grant a per-principal exception to a locked retention policy."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/deny-overview",
+        "text": "cloud.google.com/iam/docs/deny-overview"
+      },
+      {
+        "url": "https://cloud.google.com/iam/docs/deny-access",
+        "text": "cloud.google.com/iam/docs/deny-access"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Security Engineer",
+    "scenario": "Your organization is adopting Privileged Access Manager (PAM) for just-in-time access for on-call engineers. You are building an entitlement so members of `oncall-eng@company.com` can self-elevate into a production project, and you want it to offer two grantable options: elevated `roles/iam.securityAdmin`, and broad `roles/editor`. The PAM API accepts the entitlement with `roles/iam.securityAdmin` but rejects it as soon as you add `roles/editor`.\n\nWhat is the cause and how do you resolve it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "PAM supports only custom roles, not predefined roles, so you must create a custom role that mirrors editor permissions and reference that instead.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "PAM does not support legacy basic roles (`roles/owner`, `roles/editor`, `roles/viewer`); replace `roles/editor` with the specific predefined roles the on-call work actually needs (e.g. `roles/compute.admin`, `roles/storage.admin`).",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Your account holds `roles/privilegedaccessmanager.admin` but is missing `roles/resourcemanager.organizationAdmin`, which is required before any entitlement can grant editor.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Legacy basic roles require an org-level approver; add the organization super admin as a required approver on the entitlement and the validation passes.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "PAM fully supports predefined roles (it accepted `roles/iam.securityAdmin`), so the premise is false and rebuilding editor as a custom role is unnecessary work that also reintroduces the same over-broad permission set.",
+      "B": "PAM explicitly disallows the legacy basic roles because their coarse, project-wide grants defeat least-privilege JIT elevation; the fix is to enumerate the fine-grained predefined roles the task requires.",
+      "C": "This is an API validation rule about the role being requested, not a permission shortfall on your administrator identity; no additional org admin role would make a basic role acceptable to PAM.",
+      "D": "Approvers govern who signs off on a grant request, not whether a role is eligible; adding an approver does nothing to bypass PAM's rejection of basic roles."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/pam-overview",
+        "text": "cloud.google.com/iam/docs/pam-overview"
+      },
+      {
+        "url": "https://cloud.google.com/iam/docs/pam-create-entitlements",
+        "text": "cloud.google.com/iam/docs/pam-create-entitlements"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Security Engineer",
+    "scenario": "A finance team owns a service account, `reporting-sa@app-prod.iam.gserviceaccount.com`, that holds powerful BigQuery roles. A new analytics job running as `analyst-runner@analytics.iam.gserviceaccount.com` needs to act as the reporting account for a nightly export, but security requires that no service account key ever be created, the elevated identity is used only by that one runner, and the action is fully attributable in audit logs.\n\nHow should you grant this access?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Grant `analyst-runner` the role `roles/iam.serviceAccountUser` on `reporting-sa` so it inherits the reporting account's BigQuery roles directly when it runs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Grant `analyst-runner` the role `roles/iam.serviceAccountTokenCreator` on `reporting-sa`, and have the job call `generateAccessToken` to obtain short-lived credentials for the reporting account.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a JSON key for `reporting-sa`, store it in Secret Manager, and grant `analyst-runner` `roles/secretmanager.secretAccessor` so it fetches the key only at runtime.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Grant `analyst-runner` the role `roles/iam.serviceAccountKeyAdmin` on `reporting-sa` so it can mint and use a short-lived key for each nightly run.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "`serviceAccountUser` is the deploy-time role that lets a principal attach a service account to a resource it creates; it does not let `analyst-runner` mint tokens to call BigQuery as the reporting account in an already-running job.",
+      "B": "`serviceAccountTokenCreator` lets the runner impersonate the reporting account and call `generateAccessToken` for a short-lived OAuth token — no key material exists, and impersonation events are recorded with both the caller and target identity for full attribution.",
+      "C": "This still creates a long-lived JSON key, which the requirement explicitly forbids; storing it in Secret Manager hides the key but does not eliminate the long-lived credential or its compromise/rotation burden.",
+      "D": "`serviceAccountKeyAdmin` is precisely the permission to create service account keys, which violates the no-key mandate, and service account keys are long-lived rather than short-lived regardless of how often you rotate them."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/iam/docs/service-account-impersonation",
+        "text": "cloud.google.com/iam/docs/service-account-impersonation"
+      },
+      {
+        "url": "https://cloud.google.com/iam/docs/create-short-lived-credentials-direct",
+        "text": "cloud.google.com/iam/docs/create-short-lived-credentials-..."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Security Engineer",
+    "scenario": "A secure data-processing app in `project-consumer` queries a BigQuery table in `project-data`, which sits inside a VPC Service Controls perimeter named `data-perimeter`. The query fails with an access-denied error. You need to diagnose the block from Cloud Logging in `project-data` and then grant the narrowest possible cross-perimeter access for just that one consumer service account.\n\nWhat should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Locate `jsonPayload.vpcServiceControlsUniqueIdentifier`, paste it into the Violation Analyzer, and resolve the block by creating a perimeter bridge between the consumer and data projects.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Search `protoPayload.status.message` for `VPC_SC_VIOLATION`, then move `project-consumer` into `data-perimeter` and disable Private Google Access.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Locate `protoPayload.metadata.vpcServiceControlsUniqueId`, paste it into the Violation Analyzer, and if it is an ingress violation, add an ingress rule on `data-perimeter` permitting that consumer service account to call BigQuery.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Locate `resource.labels.project_id` and filter on `vpc_sc_denied = true`, then resolve the block by creating a Private Service Connect endpoint in the consumer network.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "The unique ID lives under `protoPayload.metadata.vpcServiceControlsUniqueId`, not `jsonPayload`, and a perimeter bridge merges entire perimeters' project access — far broader than the \"just that one service account\" requirement.",
+      "B": "Pulling `project-consumer` into the perimeter subjects all of its services to the perimeter and exposes more than intended, and disabling Private Google Access would break private API reachability rather than fix the ACL.",
+      "C": "VPC-SC logs the troubleshooting token at `protoPayload.metadata.vpcServiceControlsUniqueId`, the Violation Analyzer decodes the identity/source/direction, and an ingress rule scoped to that single service account and the BigQuery service is the least-privilege way to admit the call across the boundary.",
+      "D": "The log path is fabricated, and PSC does not bypass a VPC-SC perimeter — traffic to a protected service is still evaluated against the perimeter's ingress/egress rules."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/troubleshooting",
+        "text": "cloud.google.com/vpc-service-controls/docs/troubleshooting"
+      },
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules",
+        "text": "cloud.google.com/vpc-service-controls/docs/ingress-egress..."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Security Engineer",
+    "scenario": "A public web application hosted on Compute Engine instances behind an external Application Load Balancer is being hit by a credential-stuffing attack: a botnet sends a high volume of POST requests to `/login` from thousands of rotating IPs, and the traffic pattern shifts daily so a static IP blocklist cannot keep up. You must throttle abusive clients and automatically adapt to evolving Layer 7 attack patterns, with minimal changes to the application.\n\nWhat should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Cloud Armor security policy using preconfigured OWASP ModSecurity rules at sensitivity level 4 to block the SQL-injection and XSS signatures in the attack.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A hierarchical firewall policy at the organization that rate-limits inbound connections to the load balancer's frontend IP and drops sources exceeding the threshold.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A VPC ingress firewall rule on the instance subnet denying source ranges identified in VPC Flow Logs as high-volume, refreshed nightly by a scheduled job.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Cloud Armor security policy with a `rate_based_ban` rule keyed on the client and Adaptive Protection enabled on the backend service to auto-detect and propose mitigations for anomalous L7 traffic.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "The OWASP preconfigured rules detect injection/XSS payloads, but credential stuffing is volumetric request abuse with valid-looking POSTs, so signature rules will not match it and the flood continues.",
+      "B": "Hierarchical firewall policies operate at L3/L4 and cannot rate-limit on HTTP request rate per client or distinguish `/login` POSTs; they also cannot adapt to a shifting pattern.",
+      "C": "A nightly-refreshed IP denylist is always a day behind a botnet that rotates IPs daily, and L3/L4 firewall rules cannot key on the targeted URL path or request rate.",
+      "D": "Cloud Armor rate-based bans throttle/ban clients exceeding a request threshold, and Adaptive Protection (in Managed Protection Plus) uses ML to baseline normal traffic and surface tuned rules for evolving L7 floods — exactly the adaptive, app-light control needed."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/armor/docs/rate-limiting-overview",
+        "text": "cloud.google.com/armor/docs/rate-limiting-overview"
+      },
+      {
+        "url": "https://cloud.google.com/armor/docs/adaptive-protection-overview",
+        "text": "cloud.google.com/armor/docs/adaptive-protection-overview"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Security Engineer",
+    "scenario": "Your company requires all outbound HTTP/HTTPS traffic from a Shared VPC to be decrypted and inspected for malicious payloads (command-and-control beacons, data exfiltration) using IPS threat signatures, with the ability to actively drop matching connections inline.\n\nWhich design enables this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy standard VPC firewall rules, upload a private TLS certificate to Secret Manager, and reference it in the firewall rule properties to decrypt and inspect egress.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy Cloud IDS, enable packet mirroring on all subnets to mirror egress to the IDS endpoint, and turn on inline blocking of detected threats.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy Secure Web Proxy with a TLS inspection policy keyed by a self-signed key in Cloud KMS, and install the SWP agent on every Compute Engine instance.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure a Cloud NGFW Enterprise firewall policy, create a TLS inspection policy backed by a Certificate Authority Service subordinate CA, and attach an intrusion-prevention security profile to the policy rules.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Standard VPC firewall rules are L3/L4 and have no concept of TLS decryption, payload inspection, or threat signatures, and there is no firewall property that references a Secret Manager certificate.",
+      "B": "Cloud IDS is detection-only and out-of-path via packet mirroring; it logs and alerts but cannot block, so the \"actively drop inline\" requirement is unmet.",
+      "C": "Secure Web Proxy is an explicit-proxy egress URL/web filter, not a general IPS for arbitrary outbound traffic, and it is gateway-based with no per-instance agent to install.",
+      "D": "Cloud NGFW Enterprise performs inline L7 inspection — a TLS inspection policy uses a CAS subordinate CA to mint certificates and decrypt HTTPS, and an attached IPS security profile scans the cleartext against Palo Alto-powered signatures and can drop matches inline."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/firewall/docs/about-intrusion-prevention",
+        "text": "cloud.google.com/firewall/docs/about-intrusion-prevention"
+      },
+      {
+        "url": "https://cloud.google.com/firewall/docs/about-tls-inspection",
+        "text": "cloud.google.com/firewall/docs/about-tls-inspection"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Security Engineer",
+    "scenario": "You are securing a private GKE cluster in a VPC with no default internet route. Workloads must pull software updates from `*.github.com` and `github-releases.githubusercontent.com` over HTTPS; all other outbound internet access must be blocked. You must enforce this outbound URL filtering at a network gateway, without container sidecars or application code changes.\n\nHow should you configure egress?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure Cloud NAT with DNS-over-HTTPS filtering enabled, plus a Cloud DNS private zone that resolves only the approved GitHub hostnames and nothing else.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a Cloud Armor security policy with rules matching the allowed GitHub domains and bind the policy to the GKE Ingress load balancer.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy Secure Web Proxy with a gateway and security policy whose rule matches the GitHub hosts via a CEL `host()` matcher, and route node/pod traffic through it with `http_proxy`/`https_proxy`.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create a hierarchical firewall policy with an L7 egress rule that targets the GKE node subnets and lists the permitted external GitHub domains.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Cloud NAT performs no URL or domain filtering, and DNS-based allowlisting is trivially bypassed by connecting to a raw IP, so it is not a gateway-enforced egress control.",
+      "B": "Cloud Armor is an inbound WAF for external load balancers; it inspects traffic arriving at your app, not egress leaving GKE pods, so it cannot filter outbound destinations.",
+      "C": "Secure Web Proxy is the managed explicit egress proxy; CEL `host()` session matchers express the GitHub allowlist, traffic is forced through the gateway with standard proxy environment variables, and nothing is installed in the pods.",
+      "D": "Hierarchical firewall policies are L3/L4 and cannot match HTTP hostnames or wildcard domains; there is no \"L7 egress rule with domains\" in firewall policy."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/secure-web-proxy/docs/overview",
+        "text": "cloud.google.com/secure-web-proxy/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/secure-web-proxy/docs/initial-setup-steps",
+        "text": "cloud.google.com/secure-web-proxy/docs/initial-setup-steps"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Security Engineer",
+    "scenario": "You consume a partner-hosted payment service published on Google Cloud as a Private Service Connect (PSC) service attachment. To prevent exfiltration, only workloads in your `secure-payment-processing` subnet may reach the partner's PSC endpoint; every other subnet in your VPC must be blocked from it.\n\nHow should you implement this egress restriction?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ask the partner to set their service attachment's consumer-acceptance list to authorize only your `secure-payment-processing` subnet.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Wrap the consumer project in a VPC Service Controls perimeter and add a PSC egress restriction in Access Context Manager scoped to the secure subnet.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Cloud NGFW egress rule that names the partner's PSC service-attachment URI as the destination and targets only the secure subnet.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Allocate the PSC endpoint's forwarding-rule IP from the secure subnet range, add an egress allow rule with the secure VMs' service account as target and the endpoint IP as destination, and add a lower-priority egress deny rule to that IP for everything else.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Consumer acceptance lists authorize at the project or network level; the producer has no visibility into which of your subnets a connection originates from, so per-subnet restriction is impossible there.",
+      "B": "VPC-SC perimeters protect Google-managed API surfaces and cross-project data movement; they do not filter internal IP-to-IP routing to a PSC endpoint within your VPC.",
+      "C": "Firewall rules match IP ranges, tags, or service accounts — not Google resource URIs — so a service-attachment URI cannot be used as a destination matcher.",
+      "D": "A PSC endpoint is just an internal IP in your VPC, so standard egress firewall rules apply — allowing the secure VMs' service account to reach that IP and denying everyone else at lower priority enforces exactly the subnet-scoped access."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc/docs/private-service-connect",
+        "text": "cloud.google.com/vpc/docs/private-service-connect"
+      },
+      {
+        "url": "https://cloud.google.com/vpc/docs/about-accessing-vpc-hosts-by-internal-IP-address",
+        "text": "cloud.google.com/vpc/docs/about-accessing-vpc-hosts-by-in..."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Security Engineer",
+    "scenario": "To reduce public exposure, security mandates that no Compute Engine VM may be created with an external IP — but only for projects tagged in the resource hierarchy with the Resource Manager tag `environment=production`. Dev and test projects must remain exempt, and new dev/test projects must stay exempt automatically with no manual upkeep.\n\nHow should you implement this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Bind the tag `environment=production` to the production folders/projects and set `constraints/compute.vmExternalIpAccess` at the organization with a conditional rule that enforces the deny only where the resource carries that tag.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add an IAM deny policy on the production folder denying `compute.instances.create` whenever the request specifies an external IP.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set the org policy constraint `constraints/compute.vmExternalIpAccess` to deny-all at the organization, then add per-project overrides re-allowing it in every dev/test project.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Apply `constraints/compute.vmExternalIpAccess` in dry-run mode at the organization and watch the violations surface in Security Command Center.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Org policies support conditions on Resource Manager tags, so a tag-gated `vmExternalIpAccess` deny enforces only on tagged production resources and inherits automatically to any new project that carries (or is under a folder carrying) the tag.",
+      "B": "IAM deny policies act on permission names, not on deep request payload fields, so they cannot inspect whether a create request includes an `accessConfig` external IP.",
+      "C": "Org-wide deny plus per-project allow overrides works but requires touching every existing and future dev/test project by hand — exactly the manual upkeep the requirement rules out.",
+      "D": "Dry-run only logs would-be violations; it never blocks the VM from being created with an external IP, so production is not actually protected."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/resource-manager/docs/organization-policy/tags-organization-policy",
+        "text": "cloud.google.com/resource-manager/docs/organization-polic..."
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#disableexternalip",
+        "text": "cloud.google.com/compute/docs/ip-addresses/reserve-static..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Security Engineer",
+    "scenario": "A European bank deploys Cloud SQL for sensitive transaction data. Digital-sovereignty law requires that the encryption keys remain in the bank's own on-premises HSM and never reside in Google's infrastructure, and that if a Google engineer ever attempts to decrypt the data during a support session, the request can be inspected and rejected by the bank before any decryption occurs.\n\nWhich solution meets these requirements?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set up Cloud External Key Manager (Cloud EKM) against the on-prem HSM, enable Key Access Justifications, and have the external key manager inspect each request's `justification` field and deny it unless the reason is approved.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable Access Approval and Access Transparency, create a CMEK in Cloud HSM, and attach a Key Access Justifications policy that requires approval for the key.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Customer-Supplied Encryption Keys (CSEK) for the Cloud SQL instance, supplying the HSM-held key in each API call so Google never persists it.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a VPC Service Controls perimeter around Cloud SQL and rely on Access Transparency logs to review any Google access after the fact.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Cloud EKM keeps the key in the external HSM and only ever receives a wrapped reference, and Key Access Justifications sends a signed justification code (e.g. `CUSTOMER_INITIATED_SUPPORT`) that the bank's key manager can programmatically reject, giving true pre-decryption cryptographic veto.",
+      "B": "A CMEK in Cloud HSM keeps the key inside Google's HSM, not the bank's on-prem HSM, so it fails the \"key never resides in Google\" requirement even though KAJ would provide justification visibility.",
+      "C": "Cloud SQL does not support CSEK at all (CSEK is limited to a few services like Compute Engine and Cloud Storage), so this design is not implementable, and CSEK provides no justification-based veto mechanism either.",
+      "D": "VPC-SC and Access Transparency provide boundary control and after-the-fact audit logs, but neither holds the key nor can block a decryption at the cryptographic layer before it happens."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kms/docs/ekm",
+        "text": "cloud.google.com/kms/docs/ekm"
+      },
+      {
+        "url": "https://cloud.google.com/cloud-provider-access-management/key-access-justifications/docs/overview",
+        "text": "cloud.google.com/cloud-provider-access-management/key-acc..."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Security Engineer",
+    "scenario": "A team encrypts a Cloud Storage bucket of regulated data with a CMEK in Cloud KMS. The compliance officer wants a verifiable \"cryptographic kill switch\": if a breach is suspected, security must be able to render every object in the bucket instantly and irreversibly unreadable to all readers — including users who already hold `roles/storage.objectViewer` — without deleting the objects or rewriting them.\n\nWhat should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Remove `roles/storage.objectViewer` and `roles/cloudkms.cryptoKeyDecrypter` from all principals on the bucket and the key, revoking read access organization-wide.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Apply a retention lock and an IAM deny policy on the bucket denying `storage.objects.get` to all principals.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Disable (and if needed schedule destruction of) the CMEK key version in Cloud KMS so Cloud Storage can no longer unwrap the objects' data-encryption keys.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Rotate the CMEK to a new key version so the old version can no longer decrypt the existing objects.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Revoking IAM is not instantaneous or guaranteed irreversible (cached grants, future re-grants, and admins can restore it), so it is weaker than removing the ability to decrypt at the crypto layer.",
+      "B": "A deny policy can block reads but is an access-layer control that an admin can lift, and a retention lock governs deletion windows, not readability — neither makes the ciphertext cryptographically unrecoverable.",
+      "C": "With CMEK, Cloud Storage must call KMS to unwrap each object's DEK on read; disabling the key version makes every unwrap fail immediately for everyone regardless of IAM, and the objects stay in place — the canonical kill switch.",
+      "D": "Rotation creates a new version for future writes but leaves the prior version enabled to decrypt existing objects, so the data remains readable — rotation is not revocation."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kms/docs/key-states",
+        "text": "cloud.google.com/kms/docs/key-states"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys",
+        "text": "cloud.google.com/storage/docs/encryption/using-customer-m..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Security Engineer",
+    "scenario": "Two medical research organizations want to jointly train a model over their respective proprietary, encrypted datasets in Google Cloud. Neither will share raw data with the other, and both require that no administrator — including Google personnel or a project owner with KMS access — can read the data while it is being processed. The decryption keys must be released only to a verified, untampered analysis workload.\n\nHow should you design this pipeline?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Put both datasets in one VPC Service Controls perimeter and run the shared training app on a private GKE cluster the two organizations jointly operate.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run the analysis container on a Confidential VM (AMD SEV-SNP) and bind a service account that holds KMS decrypt permission on both parties' keys to the VM.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run the container in a Confidential Space workload (SEV-SNP), have the Attestation Service measure the image, and scope each party's KMS key to release only to a principal presenting a matching attestation token.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Encrypt both datasets under one shared symmetric KMS key and run the joint analysis on an App Engine flexible instance with memory encryption enabled.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "VPC-SC stops cross-perimeter exfiltration but does nothing against a project owner or cluster admin reading the data or VM memory in-place, so the \"no admin can read it\" requirement fails.",
+      "B": "A Confidential VM encrypts memory in use, but binding a normal service account with decrypt rights means anyone who can act as that VM's identity (or its owner) can obtain the keys — there is no attestation that the exact code is what releases them.",
+      "C": "Confidential Space runs a measured, hardened workload in a SEV-SNP enclave, the Attestation Service issues an OIDC token only for the approved image digest, and each party's KMS key is scoped to release solely to that attested principal — so keys reach only the verified code and no human admin.",
+      "D": "A single shared key lets either party (and Google admins with KMS access) decrypt the other's raw data, and App Engine flexible offers no hardware enclave or code attestation."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview",
+        "text": "cloud.google.com/confidential-computing/confidential-spac..."
+      },
+      {
+        "url": "https://cloud.google.com/confidential-computing/confidential-space/docs/create-customize-workloads",
+        "text": "cloud.google.com/confidential-computing/confidential-spac..."
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Security Engineer",
+    "scenario": "A BigQuery table stores customer Primary Account Numbers (PANs). For compliance the PANs must not be stored in plaintext, yet a downstream billing service must be able to reverse the transformation to recover the original PAN during transactions, and the stored values must keep the original 16-digit numeric length and format so existing schemas and validation logic still work.\n\nWhich Sensitive Data Protection configuration should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "An inspect template targeting the `CREDIT_CARD_NUMBER` infoType, applying a redaction transformation to remove the matched values.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A de-identification template using `CryptoHashConfig` (SHA-256) with the hashing key held in Secret Manager for the team.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Encrypt the whole BigQuery table at rest with a CMEK in Cloud KMS so the column values are never stored in plaintext.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A de-identification template using `CryptoReplaceFfxFpeConfig` (format-preserving encryption) with a numeric alphabet and a KMS-wrapped key, plus a re-identification template using the same key.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Redaction replaces the value with a placeholder like `[CREDIT_CARD_NUMBER]`, which is irreversible and breaks the 16-digit numeric format the downstream schema requires.",
+      "B": "Cryptographic hashing is one-way, so the billing service can never recover the original PAN, and the hash output does not preserve the 16-digit format.",
+      "C": "CMEK encrypts the storage layer transparently, so authorized queries still return plaintext PANs in results — it does not tokenize the column values for the people querying the table.",
+      "D": "FPE in FFX mode (`CryptoReplaceFfxFpeConfig`) with a numeric alphabet produces a same-length, same-format ciphertext, is keyed by a KMS-wrapped key, and is reversible via a re-identification template using the same key — meeting tokenization, reversibility, and format-preservation at once."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sensitive-data-protection/docs/pseudonymization",
+        "text": "cloud.google.com/sensitive-data-protection/docs/pseudonym..."
+      },
+      {
+        "url": "https://cloud.google.com/sensitive-data-protection/docs/transformations-reference#fpe",
+        "text": "cloud.google.com/sensitive-data-protection/docs/transform..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Security Engineer",
+    "scenario": "A public web app on Compute Engine is vulnerable to Server-Side Request Forgery: an attacker can coerce the server into fetching `http://169.254.169.254/computeMetadata/v1/` to steal the instance's default service account token. You must harden the instances so that this metadata-exfiltration path is closed off, following Google's recommended controls.\n\nWhat should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Disable the legacy `v1beta1` metadata endpoint via `constraints/compute.disableLegacyMetadataEndpoints`, enable OS Login, and keep metadata on the `v1` API that requires `Metadata-Flavor: Google`.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add a VPC egress firewall rule on the instances that blocks all outbound traffic to the metadata server address `169.254.169.254`.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Remove the default service account from the instances and have the application authenticate to Google APIs as a human user account instead.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Put an external Application Load Balancer in front and add a Cloud Armor rule blocking any inbound request whose body contains the string `computeMetadata`.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "The `v1` metadata API requires the `Metadata-Flavor: Google` header that SSRF typically cannot inject, so the real fix is disabling the header-free legacy `v1beta1` endpoint org-wide and keeping access on the header-protected `v1` API; OS Login further hardens the host.",
+      "B": "The metadata server is reachable on a link-local address served by the hypervisor, not through the VPC data plane, so VPC firewall rules cannot block traffic to `169.254.169.254`.",
+      "C": "A VM cannot authenticate to Google APIs as a human user account; machine workloads require service accounts, so this both breaks the app and leaves the metadata path open.",
+      "D": "SSRF abuses a server-side fetch triggered by application logic, and the malicious request to the metadata server originates from the instance — not as an inbound `computeMetadata` string Cloud Armor would see at the edge."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/compute/docs/metadata/overview",
+        "text": "cloud.google.com/compute/docs/metadata/overview"
+      },
+      {
+        "url": "https://cloud.google.com/compute/docs/metadata/querying-metadata",
+        "text": "cloud.google.com/compute/docs/metadata/querying-metadata"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Security Engineer",
+    "scenario": "A database service stores its master credential in Secret Manager. Audit requirements are: the application must always read the current credential without a redeploy after rotation, the credential must rotate automatically on a schedule, and the secret payload must be encrypted with a key the security team controls and can revoke.\n\nHow should you configure the secret?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Store the credential as a secret with a CMEK from Cloud KMS, configure a rotation schedule with a Pub/Sub-triggered Cloud Function to set new versions, and have the app resolve the secret at the `latest` alias each time.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Store the credential as a secret encrypted with the default Google-managed key, and have the app cache the secret value at startup, redeploying whenever the credential changes.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Store the credential in Secret Manager, grant the app `roles/secretmanager.admin`, and let the app rotate and re-read its own secret versions on a timer.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Store the credential as a secret pinned to version `1`, and rotate by editing version `1` in place so the app's reference never has to change.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Secret Manager supports CMEK so the security team controls and can revoke the encryption key, a rotation schedule emits Pub/Sub events that drive a function to add new versions, and resolving the `latest` alias means the app always reads the current value with no redeploy.",
+      "B": "The default Google-managed key gives the security team no key to revoke, and caching at startup with redeploy-on-change directly violates the \"read current credential without a redeploy\" requirement.",
+      "C": "`secretmanager.admin` is far more than the app needs (it can delete secrets and change IAM), violating least privilege, and it ignores the CMEK requirement entirely.",
+      "D": "Secret Manager versions are immutable — you cannot edit version `1` in place; rotation works by adding new versions, so this approach is not even possible."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/secret-manager/docs/cmek",
+        "text": "cloud.google.com/secret-manager/docs/cmek"
+      },
+      {
+        "url": "https://cloud.google.com/secret-manager/docs/rotation-recommendations",
+        "text": "cloud.google.com/secret-manager/docs/rotation-recommendat..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Security Engineer",
+    "scenario": "A healthcare provider's Vertex AI environment must satisfy three controls: (1) raw patient data in Cloud Storage cannot be exfiltrated to the public internet during custom training jobs, (2) Vertex AI Pipelines must run inside a protected network boundary, and (3) all models and output artifacts must be encrypted with customer-managed keys.\n\nWhich configuration meets all three?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Disable public IPs on Vertex AI Workbench instances and add a VPC egress firewall rule blocking all instance traffic to `0.0.0.0/0`.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enclose the Vertex AI and Storage projects in a VPC-SC perimeter, run custom training with internet access disabled, and enable CMEK on the datasets, pipelines, and metadata store.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Host the training on a private GKE cluster and use Vertex AI TensorBoard for experiment monitoring and artifact tracking.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy Cloud NAT in the VPC and create an organization policy restricting all Vertex AI API calls to private IP addresses only.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Disabling Workbench public IPs only covers notebooks; the managed custom-training and pipeline jobs run on Google-managed infrastructure that a per-instance firewall rule does not constrain, so exfiltration via those services is still possible.",
+      "B": "A VPC-SC perimeter around the Vertex AI and Storage projects blocks managed-service data egress, running custom training with internet access disabled keeps jobs inside the boundary, and CMEK on datasets/pipelines/metadata satisfies customer-managed encryption — all three controls in one design.",
+      "C": "Moving training onto GKE sidesteps the native Vertex AI training/pipeline/metadata services without securing them and provides no CMEK or exfiltration boundary for the Vertex AI managed components.",
+      "D": "Cloud NAT enables rather than blocks outbound traffic, and there is no built-in organization policy that confines Vertex AI to private IPs — exfiltration prevention here requires VPC-SC."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/general/vpc-service-controls",
+        "text": "cloud.google.com/vertex-ai/docs/general/vpc-service-controls"
+      },
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/general/cmek",
+        "text": "cloud.google.com/vertex-ai/docs/general/cmek"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Security Engineer",
+    "scenario": "You must automatically raise a high-severity Security Command Center finding whenever anyone creates a Cloud SQL instance whose authorized networks include `0.0.0.0/0`, exposing it to the entire internet. The detection must be a managed, declarative SCC capability rather than custom glue code.\n\nHow should you implement this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure the org policy constraint `constraints/sql.restrictAuthorizedNetworks`, run it in dry-run mode, and review the violations it surfaces in the policy logs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a Cloud Logging sink filtering Cloud SQL creation events and route it through Pub/Sub to a Cloud Function that writes a finding into SCC.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Security Health Analytics custom module scoping `sqladmin.googleapis.com/Instance`, with a CEL predicate that matches an authorized network of `0.0.0.0/0` and severity `HIGH`.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create an IAM condition that denies Cloud SQL instance creation whenever the request's authorized client IP range is set to `0.0.0.0/0`.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "An org policy enforces or blocks configuration but does not generate findings in the SCC findings dashboard, and dry-run only logs would-be violations rather than raising a security finding.",
+      "B": "A sink-plus-function pipeline can synthesize findings but is exactly the bespoke glue code the requirement excludes, and it carries ongoing maintenance and reliability burden versus the native module.",
+      "C": "SHA custom modules are the managed, declarative SCC mechanism — a `resourceSelector` scopes to the Cloud SQL instance type, a CEL predicate inspects the resource's authorized-network config, and a matching resource emits a `HIGH` finding directly in SCC.",
+      "D": "IAM conditions evaluate identity/context attributes, not the deep request payload such as an authorized-network range, so they cannot key on `0.0.0.0/0` — and this blocks rather than detects."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/custom-modules-sha-overview",
+        "text": "cloud.google.com/security-command-center/docs/custom-modu..."
+      },
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/custom-modules-sha-code",
+        "text": "cloud.google.com/security-command-center/docs/custom-modu..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Security Engineer",
+    "scenario": "A new security team inherits an organization where Security Command Center is on the Standard tier. Leadership wants managed detection of cryptomining and anomalous IAM behaviour from log analysis, automatic vulnerability and misconfiguration scanning across projects, and the ability to detect threats from data-plane activity — at the lowest tier that includes these as built-in, Google-managed detectors.\n\nWhich change should you make?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Upgrade Security Command Center to the Premium (or Enterprise) tier, which adds Event Threat Detection, full Security Health Analytics, and the other managed detection services.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Stay on Standard and enable the free subset of Security Health Analytics, then add log-based alerting policies in Cloud Monitoring for cryptomining and IAM anomalies.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Stay on Standard and deploy Cloud IDS with packet mirroring so threat detection comes from the network data plane instead of paying for a higher SCC tier.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Upgrade only the relevant projects to Premium individually while leaving the rest of the organization on Standard to minimize cost.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Event Threat Detection (cryptomining, anomalous IAM grants, malware via log analysis) and the full Security Health Analytics misconfiguration scanner are managed detectors that activate at the Premium tier (and above in Enterprise), which is the lowest tier meeting all the stated needs.",
+      "B": "Standard only includes a limited free subset of SHA and no Event Threat Detection, so hand-built Monitoring alerts would be custom, partial replacements for the managed detectors the team explicitly wants built in.",
+      "C": "Cloud IDS inspects mirrored network traffic and does not provide log-based ETD detections like anomalous IAM or cryptomining-from-logs, so it does not cover the requirement and is not an SCC tier feature.",
+      "D": "SCC Premium is activated at the organization level for built-in services; you cannot enable the Premium managed detectors on a per-project basis while the org stays Standard."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/service-tiers",
+        "text": "cloud.google.com/security-command-center/docs/service-tiers"
+      },
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/concepts-event-threat-detection-overview",
+        "text": "cloud.google.com/security-command-center/docs/concepts-ev..."
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Security Engineer",
+    "scenario": "You must enforce a supply-chain policy: no container image may deploy to production GKE unless it has (1) passed an Artifact Analysis vulnerability scan and (2) been manually signed off by the QA team. Each check must produce a cryptographic attestation, and GKE must block any image missing either signature.\n\nHow should you configure this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Set a Binary Authorization default rule of \"disallow all\" and create a single attestor whose trusted keys include both the scanner's and the QA team's public keys.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable Artifact Analysis automatic scanning and configure Security Command Center to alert on Container Threat Detection findings for the GKE cluster.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create two Binary Authorization attestors — scan and QA — and require attestations by both in the cluster rule, with each tool signing into its own attestor.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Deploy a custom GKE admission webhook that queries an external approvals database to verify each image is marked approved before allowing it.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Binding two keys to one attestor creates a logical OR — either signature alone admits the image — so the \"both checks required\" (logical AND) constraint is not enforced.",
+      "B": "Scanning and SCC alerting provide visibility after the fact but do not block deployment, so unvetted images can still reach the nodes.",
+      "C": "Distinct attestors for scan and QA, both listed in the cluster's `requireAttestationsBy`, create the AND relationship so an image deploys only when both signatures are present, and each tool signs into its own attestor.",
+      "D": "A custom webhook can technically gate deployments but is bespoke code to build and maintain, whereas Binary Authorization is the managed, native service purpose-built for this enforcement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/overview",
+        "text": "cloud.google.com/binary-authorization/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/binary-authorization/docs/key-concepts",
+        "text": "cloud.google.com/binary-authorization/docs/key-concepts"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Security Engineer",
+    "scenario": "A bare workload deadline is approaching and your team needs GKE nodes that run only Google-vetted, integrity-verified host software and refuse to boot if the bootloader or kernel has been tampered with, with the boot integrity measurements verifiable and monitorable. You must use Google-recommended, managed node hardening rather than third-party agents.\n\nWhat should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Run a File Integrity Monitoring DaemonSet on every node and ship its measurements to Cloud Logging for alerting.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable GKE Sandbox (gVisor) on the node pools so untrusted workloads run in a user-space kernel isolated from the host.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Apply a restrictive Pod Security admission policy that blocks privileged pods and host-path mounts across all namespaces.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable Shielded GKE Nodes with Secure Boot and integrity monitoring on the node pools, running the Container-Optimized OS image.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A FIM DaemonSet watches the filesystem at runtime but does nothing for boot-time integrity or Secure Boot, and it is a third-party agent rather than the managed control the requirement specifies.",
+      "B": "gVisor sandboxes the workload-to-kernel boundary for untrusted containers; it does not verify or protect the node's own boot integrity, which is what the scenario asks for.",
+      "C": "Pod Security admission constrains pod security context at admission time and is unrelated to host boot integrity or verified node software.",
+      "D": "Shielded GKE Nodes provide Secure Boot (refusing to boot unsigned/tampered boot components), virtual TPM-backed measured boot, and integrity monitoring you can verify and alert on, and Container-Optimized OS is the hardened, Google-maintained node image — the managed host-hardening answer."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes",
+        "text": "cloud.google.com/kubernetes-engine/docs/how-to/shielded-g..."
+      },
+      {
+        "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/node-images",
+        "text": "cloud.google.com/kubernetes-engine/docs/concepts/node-images"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Security Engineer",
+    "scenario": "Your company wins a contract with an EU government agency mandating that (1) all customer data resides strictly within EU boundaries, (2) only EU-based Google personnel may perform support or administrative actions on your resources, and (3) you retain administrative and cryptographic authority to approve or deny any support-related data access.\n\nHow should you configure your Google Cloud environment?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a folder structure and apply an organization policy with `constraints/gcp.resourceLocations` restricted to the EU regions.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy an Assured Workloads folder with an EU sovereignty regime that enforces residency, limits support to EU personnel, and enables Access Transparency and Approval.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Build a Shared VPC limited to European subnets and terminate Cloud VPN against your on-premises key managers in the EU.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy all workloads to `europe-west3` and create custom IAM roles that block all non-EU users from accessing the resources.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "`gcp.resourceLocations` confines where resources are created but does nothing about the nationality/location of Google support staff or about gating their data access — only requirement (1) is partly met.",
+      "B": "An Assured Workloads folder with an EU sovereignty regime bundles all three controls: it enforces the resource-location org policies, limits Google support to EU-based personnel, and turns on Access Transparency and Access Approval so you can review and veto support data access.",
+      "C": "Network routing and VPN choices govern packet paths, not where data is stored at rest, who at Google can support the environment, or support-access approval.",
+      "D": "Custom IAM roles act on your own principals and cannot control the location of Google's internal support personnel or provide the support-access approval workflow."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/assured-workloads/docs/overview",
+        "text": "cloud.google.com/assured-workloads/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/assured-workloads/docs/control-package-eu-regions-support",
+        "text": "cloud.google.com/assured-workloads/docs/control-package-e..."
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Security Engineer",
+    "scenario": "With Access Transparency and Access Approval enabled, a Google engineer needs temporary access to your Cloud SQL storage to troubleshoot an active outage. Your compliance lead asks exactly when an approval request is generated, what it contains, and where the resulting activity is recorded.\n\nWhich statement is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The request arrives via email or Pub/Sub and contains the engineer's name and personal employee ID; the approval action is recorded in your project's Cloud Billing logs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "The request fires when Google personnel need to access customer content, contains a justification code, target resource, and support ticket reference, and the access lands in Access Transparency logs.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "The request fires only when the engineer signs in at a physical Google data-center terminal, and the access is recorded in your organization's System Event audit logs.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Google administrators can bypass Access Approval at will using a root super-admin account, and the bypass action is recorded only in your project's Data Access logs.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "The request carries professional justification metadata (reason code, resource, ticket), not personal identifiers like an employee ID, and the activity is recorded in Access Transparency logs rather than billing logs.",
+      "B": "Access Approval intercepts Google personnel attempts to access customer content, the request includes a justification code, target resource, and ticket reference, and once approved the engineer's access is written to Access Transparency logs inside Cloud Audit Logs for a complete trail.",
+      "C": "Access Approval requests are triggered programmatically when an action targets your customer content, not by a physical terminal login, and the record is an Access Transparency entry, not a System Event log.",
+      "D": "When Access Approval is active there is no routine root bypass; the rare emergency-access exceptions are themselves logged and flagged in Access Transparency, not silently in Data Access logs."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/assured-workloads/access-approval/docs/overview",
+        "text": "cloud.google.com/assured-workloads/access-approval/docs/o..."
+      },
+      {
+        "url": "https://cloud.google.com/assured-workloads/access-transparency/docs/overview",
+        "text": "cloud.google.com/assured-workloads/access-transparency/do..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Security Engineer",
+    "scenario": "A retailer must protect a BigQuery dataset of customer records so that, even if an over-privileged analyst or a compromised IAM principal with `roles/bigquery.dataViewer` runs a query, the data cannot be copied or exported out to a project or destination outside an approved boundary. The control must hold regardless of IAM grants.\n\nWhat should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "An IAM deny policy on the BigQuery project denying `bigquery.tables.export` and `bigquery.tables.getData` to all but a small allowlist of principals.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A hierarchical firewall policy denying egress from the analysts' subnets to all destinations except the approved project's IP ranges.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Private Google Access plus the `restricted.googleapis.com` VIP so BigQuery is reachable only over private, restricted endpoints.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A VPC Service Controls perimeter enclosing the BigQuery project, so attempts to move data to resources outside the perimeter are blocked even for principals with valid IAM.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A deny policy restricts which principals can call those operations, but it is still an identity control — the requirement is to stop data movement even by a principal who legitimately holds the permission, which a deny on the same principals cannot express cleanly.",
+      "B": "BigQuery is a serverless API reached over Google's front ends, not traffic that traverses the analysts' subnet egress, so a firewall policy does not govern where query results or exports can land.",
+      "C": "The `restricted.googleapis.com` VIP and Private Google Access control how the API is reached over the network; they do not constrain which projects or destinations data may be exported to, so exfiltration to another in-network project is still possible.",
+      "D": "VPC Service Controls draws a data-exfiltration boundary around the managed BigQuery service: copy/export/query-results crossing the perimeter are denied at the service layer even when the caller's IAM would otherwise allow it — exactly the \"holds regardless of IAM\" requirement."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/overview",
+        "text": "cloud.google.com/vpc-service-controls/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/vpc-service-controls/docs/supported-products",
+        "text": "cloud.google.com/vpc-service-controls/docs/supported-prod..."
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/security_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/security_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

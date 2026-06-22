@@ -1,0 +1,59 @@
+/* ============================================================
+   Datatonic Academy — GCP Study Guide Design System
+   tokens.css · the single source of truth
+   ------------------------------------------------------------
+   Brand, semantic, neutral and structural tokens shared by all
+   three skins (Academy · Sticker Book · Briefing). Change a
+   value here and every skin that references it updates.
+   ============================================================ */
+:root {
+  /* ---- Brand ---- */
+  --ds-alchemy:      #2A5CFF;   /* primary   */
+  --ds-alchemy-700:  #1f4cdb;
+  --ds-deep:         #1C1831;   /* secondary */
+  --ds-cloud:        #A8E6DB;   /* accent    */
+  --ds-cloud-700:    #2BAE9C;
+  --ds-golden:       #ECBF42;   /* accent    */
+  --ds-golden-700:   #9A7A12;
+  --ds-white:        #FFFFFF;
+
+  /* ---- Semantic (component meaning) ---- */
+  --ds-tip:          #2A5CFF;
+  --ds-trap:         #ECBF42;   /* label ink #9A7A12 */
+  --ds-trap-ink:     #9A7A12;
+  --ds-mnemonic:     #2BAE9C;   /* label ink #0E7C6B */
+  --ds-mnemonic-ink: #0E7C6B;
+  --ds-practice:     #2A5CFF;
+  --ds-warn:         #E5484D;
+
+  /* ---- Neutrals ---- */
+  --ds-ink:          #1C1831;   /* headings        */
+  --ds-body:         #34344A;   /* body text       */
+  --ds-muted:        #6B6780;   /* secondary text  */
+  --ds-line:         #ECEDF3;   /* hairline border */
+  --ds-surface:      #FFFFFF;
+  --ds-paper:        #F4F6FB;   /* page background */
+  --ds-soft:         #EAEFFF;   /* tinted fill     */
+
+  /* ---- Type ---- */
+  --ds-font-display: 'Ovo', Georgia, serif;
+  --ds-font-ui:      'Work Sans', system-ui, sans-serif;
+  --ds-font-playful: 'Comic Neue', 'Comic Sans MS', cursive;
+  --ds-font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* ---- Spacing (4-step) ---- */
+  --ds-space-1: 4px;   --ds-space-2: 8px;   --ds-space-3: 12px;
+  --ds-space-4: 16px;  --ds-space-5: 20px;  --ds-space-6: 24px;
+  --ds-card-pad: 18px;
+
+  /* ---- Radius ---- */
+  --ds-radius-sm:  8px;     /* controls       */
+  --ds-radius:    12px;     /* default card   */
+  --ds-radius-lg: 16px;     /* feature card   */
+  --ds-radius-pill: 999px;
+
+  /* ---- Elevation (solid blocks, never glows) ---- */
+  --ds-shadow-hairline: 0 1px 2px rgba(28,24,49,.06);
+  --ds-shadow-block:    5px 5px 0;   /* + border colour */
+  --ds-shadow-heavy:    6px 6px 0 #000;
+}

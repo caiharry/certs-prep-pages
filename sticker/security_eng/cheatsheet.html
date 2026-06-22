@@ -1,0 +1,1799 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="cheatsheet" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCSE (Security) Exam Guide Cheat Sheet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fc;
+      --ink: #142033;
+      --muted: #64748b;
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-solid: #ffffff;
+      --surface-soft: #f8fafc;
+      --line: #dbe3ef;
+      --blue: #2563eb;
+      --blue-dark: #1e40af;
+      --teal: #0f766e;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --green: #15803d;
+      --violet: #7c3aed;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.06);
+      --radius: 24px;
+      --slide-min: min(860px, calc(100svh - 32px));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 18px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(185, 28, 28, 0.12), transparent 32rem),
+        radial-gradient(circle at 95% 10%, rgba(37, 99, 235, 0.16), transparent 28rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 44%, #eef4ff 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: #eef2ff;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      color: #1e3a8a;
+      font-size: 0.92em;
+      padding: 0.08rem 0.32rem;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - clamp(20px, 5vw, 56px)));
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 38px) 0 72px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.24), transparent 22rem),
+        linear-gradient(135deg, #0f172a 0%, #1e3a8a 52%, #b91c1c 120%);
+      border-radius: clamp(22px, 4vw, 34px);
+      box-shadow: var(--shadow);
+      color: #fff;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding: clamp(26px, 7vw, 58px);
+      position: relative;
+    }
+
+    .eyebrow {
+      color: #bfdbfe;
+      font-size: clamp(0.75rem, 1.8vw, 0.86rem);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 5.6rem);
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+      margin-bottom: 20px;
+      max-width: 940px;
+    }
+
+    .subtitle {
+      color: #e0f2fe;
+      font-size: clamp(1rem, 2.1vw, 1.22rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .weight-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      padding: 14px;
+      border-top: 4px solid var(--card-accent, rgba(255, 255, 255, 0.5));
+    }
+
+    .weight-card span {
+      color: #bfdbfe;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .weight-card strong {
+      display: block;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1;
+      margin: 8px 0 6px;
+    }
+
+    .weight-card p {
+      color: #dbeafe;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .deck-layout {
+      align-items: start;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .nav-panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      max-height: calc(100svh - 32px);
+      overflow: auto;
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .nav-panel h2 {
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .nav-group:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .nav-group strong {
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .nav-panel a {
+      border-radius: 10px;
+      color: #475569;
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      padding: 7px 9px;
+    }
+
+    .nav-panel a:hover {
+      background: #eff6ff;
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    .mobile-jump {
+      display: none;
+    }
+
+    .slides {
+      display: grid;
+      gap: 22px;
+      scroll-snap-type: y proximity;
+    }
+
+    .slide {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      min-height: var(--slide-min);
+      overflow: hidden;
+      padding: clamp(22px, 4vw, 36px);
+      scroll-snap-align: start;
+      --accent: var(--blue);
+      --accent-soft: #eff6ff;
+      --accent-line: #bfdbfe;
+      border-top: 5px solid var(--accent);
+    }
+
+    /* ── Per-section colour coding ─────────────────────────── */
+    .slide.sec1 { --accent: #2563eb; --accent-soft: #eff6ff; --accent-line: #bfdbfe; }
+    .slide.sec2 { --accent: #7c3aed; --accent-soft: #f5f3ff; --accent-line: #ddd6fe; }
+    .slide.sec3 { --accent: #0f766e; --accent-soft: #ecfdf5; --accent-line: #99f6e4; }
+    .slide.sec4 { --accent: #c2410c; --accent-soft: #fff7ed; --accent-line: #fed7aa; }
+    .slide.sec5 { --accent: #b91c1c; --accent-soft: #fef2f2; --accent-line: #fecaca; }
+    .slide.secsyn { --accent: #15803d; --accent-soft: #f0fdf4; --accent-line: #bbf7d0; }
+
+    .slide-header {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      margin-bottom: 22px;
+    }
+
+    .slide-kicker {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .slide h2 {
+      font-size: clamp(1.7rem, 4.8vw, 3rem);
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+      margin-bottom: 10px;
+    }
+
+    .objective {
+      color: var(--muted);
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .weight {
+      align-self: start;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      border-radius: 18px;
+      color: var(--accent);
+      font-weight: 850;
+      min-width: 112px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .weight span {
+      color: var(--muted);
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .section-pill {
+      background: #f1f5f9;
+      border: 1px solid var(--accent-line);
+      border-radius: 999px;
+      color: #334155;
+      display: inline-flex;
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin: 0 7px 8px 0;
+      padding: 6px 10px;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 0.88fr 1.12fr;
+    }
+
+    .guide-card,
+    .know-card,
+    .callout,
+    .matrix,
+    .quick-grid > div {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .guide-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-left: 4px solid var(--accent-line);
+    }
+
+    .guide-card h3,
+    .know-card h3,
+    .matrix h3 {
+      color: #334155;
+      font-size: 0.84rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.18rem;
+    }
+
+    li + li {
+      margin-top: 0.42rem;
+    }
+
+    .guide-card li {
+      color: #475569;
+    }
+
+    .know-card ul {
+      padding-left: 1rem;
+    }
+
+    .know-card li::marker {
+      color: var(--accent);
+    }
+
+    .quick-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+
+    .quick-grid strong {
+      display: block;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .quick-grid p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+      margin: 0;
+    }
+
+    .callout {
+      margin-top: 14px;
+      position: relative;
+      padding-left: 46px;
+    }
+
+    .callout::before {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .callout.exam {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #7c2d12;
+    }
+
+    .callout.exam::before { content: "\26A0\FE0F"; }
+
+    .callout.rule {
+      background: #ecfeff;
+      border-color: #a5f3fc;
+      color: #164e63;
+    }
+
+    .callout.rule::before { content: "\1F9ED"; }
+
+    .callout.warn {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #7f1d1d;
+    }
+
+    .callout.warn::before { content: "\1F6AB"; }
+
+    /* ── Reference / further-reading chips ─────────────────── */
+    .refs {
+      margin-top: 16px;
+      background: var(--surface-soft);
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 13px 15px;
+    }
+
+    .refs h4 {
+      margin: 0 0 9px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .refs h4::before { content: "\1F4DA"; }
+
+    .refs ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .refs li { margin: 0; }
+
+    .refs a {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.79rem;
+      font-weight: 650;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 11px;
+      color: var(--blue-dark);
+    }
+
+    .refs a::after {
+      content: "\2197";
+      font-size: 0.7rem;
+      opacity: 0.55;
+    }
+
+    .refs a:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── "Updated" inline flag ─────────────────────────────── */
+    .upd {
+      display: inline-block;
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      color: #155e75;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      vertical-align: middle;
+    }
+
+    /* ── Tables ────────────────────────────────────────────── */
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-top: 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 560px;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 11px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: #334155;
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(even) td { background: #fbfcfe; }
+    tr:last-child td { border-bottom: 0; }
+    td strong { color: var(--ink); }
+
+    td.yes { color: var(--green); font-weight: 800; }
+    td.no { color: var(--red); font-weight: 800; }
+    td.partial { color: var(--amber); font-weight: 800; }
+
+    /* ── Coloured category badges ──────────────────────────── */
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.prevent  { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge.detect   { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .badge.network  { background: #ecfdf5; color: #0f766e; border: 1px solid #99f6e4; }
+    .badge.identity { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge.data     { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .badge.key      { background: #fefce8; color: #a16207; border: 1px solid #fde68a; }
+
+    /* ── Lightweight CSS diagrams ──────────────────────────── */
+    .diagram {
+      margin-top: 16px;
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .diagram .cap {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    /* horizontal flow of steps */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .flow .step {
+      flex: 1 1 0;
+      min-width: 120px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      color: var(--accent);
+      font-weight: 800;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .flow .step small {
+      display: block;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 3px;
+    }
+
+    .flow .arrow {
+      align-self: center;
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .flow .gate {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #c2410c;
+      flex: 0 0 auto;
+      min-width: auto;
+    }
+
+    /* nested resource hierarchy */
+    .hier { font-size: 0.86rem; }
+
+    .hier .lvl {
+      border-left: 2px solid var(--accent-line);
+      margin-left: 12px;
+      padding-left: 16px;
+      padding-top: 4px;
+    }
+
+    .hier .lvl:first-child {
+      border-left: 0;
+      margin-left: 0;
+      padding-left: 0;
+    }
+
+    .hier .box {
+      display: inline-block;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+      border-radius: 10px;
+      padding: 5px 11px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 4px 0;
+    }
+
+    .hier .box small {
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .hier .inherit {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* horizontal comparison bars (blast radius etc.) */
+    .bars {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 0.82rem;
+    }
+
+    .bars .row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bars .lbl { color: #334155; font-weight: 700; }
+
+    .bars .track {
+      background: #f1f5f9;
+      border-radius: 7px;
+      height: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bars .bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 7px;
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .bars .row.good .bar { background: var(--green); }
+    .bars .row.mid .bar { background: var(--amber); }
+    .bars .row.bad .bar { background: var(--red); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 24px 0 0;
+      text-align: center;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 24px auto 0;
+      background: var(--green, #16a34a);
+      color: white;
+      font-weight: 700;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft, 0 4px 12px rgba(0,0,0,0.1));
+    }
+
+    .scroll-top-btn:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 24px, 860px);
+      }
+
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel {
+        display: none;
+      }
+
+      .mobile-jump {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        gap: 8px;
+        margin: 0 0 16px;
+        overflow-x: auto;
+        padding: 10px;
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .mobile-jump a {
+        background: #f1f5f9;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #334155;
+        flex: 0 0 auto;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 8px 11px;
+      }
+
+      .content-grid,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: auto;
+        scroll-snap-align: none;
+      }
+
+      .slides {
+        scroll-snap-type: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 18px;
+      }
+
+      .slide-header {
+        grid-template-columns: 1fr;
+      }
+
+      .weight {
+        justify-self: start;
+        min-width: auto;
+        text-align: left;
+      }
+
+      table {
+        min-width: 480px;
+      }
+
+      .bars .row { grid-template-columns: 104px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero,
+      .slide,
+      .nav-panel {
+        box-shadow: none;
+      }
+
+      .deck-layout {
+        display: block;
+      }
+
+      .nav-panel,
+      .mobile-jump {
+        display: none;
+      }
+
+      .slide {
+        break-inside: avoid;
+        min-height: auto;
+        margin-bottom: 16px;
+      }
+
+      .refs a { border-color: #cbd5e1; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <nav style="max-width:1040px;margin:0 auto;padding:14px 16px 0;display:flex;gap:10px;flex-wrap:wrap;font-family:system-ui,sans-serif;">
+    <a href="../index.html" style="flex:1 1 auto;text-align:center;background:#fff;color:#000;text-decoration:none;font-weight:700;padding:8px 14px;border:2px solid #000;border-radius:8px;box-shadow:3px 3px 0 #000;">&larr; Main Certs Hub</a>
+    <a href="index.html" style="flex:1 1 auto;text-align:center;background:#fef08a;color:#000;text-decoration:none;font-weight:700;padding:8px 14px;border:2px solid #000;border-radius:8px;box-shadow:3px 3px 0 #000;">&larr; Study Portal</a>
+    <a href="practice_questions.html" style="flex:1 1 auto;text-align:center;background:#fff;color:#000;text-decoration:none;font-weight:700;padding:8px 14px;border:2px solid #000;border-radius:8px;box-shadow:3px 3px 0 #000;">Practice Questions &rarr;</a>
+  </nav>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Google Cloud Professional Cloud Security Engineer</p>
+      <h1>Exam Guide Cheat Sheet</h1>
+      <p class="subtitle">A scroll-through final-prep deck. Each slide opens with the official exam guide, then compresses the practical Google Cloud security decisions worth memorising. Exam-trap callouts teach the <em>discriminator</em> the exam tests &mdash; deliberately framed as concepts rather than mirroring the official sample questions, so your sample run stays a clean diagnostic. Source links sit on each slide.</p>
+      <div class="hero-grid" aria-label="Exam section weights">
+        <div class="weight-card" style="--card-accent:#60a5fa"><span>Section 1</span><strong>~25%</strong><p>Configuring access (IAM)</p></div>
+        <div class="weight-card" style="--card-accent:#a78bfa"><span>Section 2</span><strong>~22%</strong><p>Boundary &amp; communications</p></div>
+        <div class="weight-card" style="--card-accent:#2dd4bf"><span>Section 3</span><strong>~23%</strong><p>Data protection</p></div>
+        <div class="weight-card" style="--card-accent:#fb923c"><span>Section 4</span><strong>~19%</strong><p>Managing operations</p></div>
+        <div class="weight-card" style="--card-accent:#f87171"><span>Section 5</span><strong>~11%</strong><p>Compliance</p></div>
+      </div>
+    </header>
+
+    <nav class="mobile-jump" aria-label="Mobile section jump list">
+      <a href="#s1-1">1.1</a>
+      <a href="#s1-2">1.2</a>
+      <a href="#s1-3">1.3</a>
+      <a href="#s1-4">1.4</a>
+      <a href="#s1-5">1.5</a>
+      <a href="#s2-1">2.1</a>
+      <a href="#s2-2">2.2</a>
+      <a href="#s2-3">2.3</a>
+      <a href="#s3-1">3.1</a>
+      <a href="#s3-2">3.2</a>
+      <a href="#s3-3">3.3</a>
+      <a href="#s4-1">4.1</a>
+      <a href="#s4-2">4.2</a>
+      <a href="#s5-1">5.1</a>
+      <a href="#syn-1">Keys</a>
+      <a href="#syn-2">Net</a>
+    </nav>
+
+    <div class="deck-layout">
+      <nav class="nav-panel" aria-label="Exam guide table of contents">
+        <h2>Exam Guide</h2>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#2563eb"></span>1. Configuring access (~25%)</strong>
+          <a href="#s1-1">1.1 Cloud Identity</a>
+          <a href="#s1-2">1.2 Service accounts</a>
+          <a href="#s1-3">1.3 Authentication</a>
+          <a href="#s1-4">1.4 Authorization controls</a>
+          <a href="#s1-5">1.5 Resource hierarchy</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#7c3aed"></span>2. Boundary protection (~22%)</strong>
+          <a href="#s2-1">2.1 Perimeter security</a>
+          <a href="#s2-2">2.2 Boundary segmentation</a>
+          <a href="#s2-3">2.3 Private connectivity</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#0f766e"></span>3. Data protection (~23%)</strong>
+          <a href="#s3-1">3.1 Sensitive data &amp; secrets</a>
+          <a href="#s3-2">3.2 Encryption &amp; keys</a>
+          <a href="#s3-3">3.3 Securing AI workloads</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#c2410c"></span>4. Managing operations (~19%)</strong>
+          <a href="#s4-1">4.1 Security automation</a>
+          <a href="#s4-2">4.2 Logging, monitoring, SCC</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#b91c1c"></span>5. Compliance (~11%)</strong>
+          <a href="#s5-1">5.1 Regulatory standards</a>
+        </div>
+        <div class="nav-group">
+          <strong><span class="nav-dot" style="background:#15803d"></span>Synthesis</strong>
+          <a href="#syn-1">Encryption / key matrix</a>
+          <a href="#syn-2">Connectivity &amp; perimeter matrix</a>
+        </div>
+      </nav>
+
+      <article class="slides">
+
+        <!-- ─────────────────────────── 1.1 ─────────────────────────── -->
+        <section class="slide sec1" id="s1-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.1</p>
+              <h2>Managing Cloud Identity</h2>
+              <p class="objective">Centralise identity: bring users under Cloud Identity, federate to your IdP for SSO, automate the user lifecycle, and lock down the super admin.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~25%</div>
+          </div>
+          <span class="section-pill">Cloud Identity</span>
+          <span class="section-pill">GCDS</span>
+          <span class="section-pill">SSO / SAML</span>
+          <span class="section-pill">Super admin</span>
+          <span class="section-pill">Workforce Identity Federation</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring Google Cloud Directory Sync and implementing SSO with a third-party IdP.</li>
+                <li>Managing a super administrator account.</li>
+                <li>Automating the user lifecycle management process.</li>
+                <li>Administering user accounts and groups programmatically.</li>
+                <li>Configuring Workforce Identity Federation.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Identity</strong> is the IdP/identity source of truth for Google Cloud &mdash; the fix for developers using personal Gmail accounts (centralised management + enforceable security).</li>
+                <li><strong>GCDS</strong> (Google Cloud Directory Sync) one-way syncs users/groups from <strong>AD/LDAP</strong> into Cloud Identity (it never writes back to your directory).</li>
+                <li><strong>SSO</strong>: Cloud Identity can act as <strong>SAML IdP</strong> for third-party SaaS, or as a <strong>SAML SP</strong> federating to your existing IdP (Okta, ADFS, Ping) so users authenticate against your directory.</li>
+                <li><strong>Super admin</strong>: very few, hardware-key 2SV, no day-to-day use, break-glass only; don't use it as a project owner.</li>
+                <li><strong>Workforce Identity Federation</strong>: let <strong>external workforce</strong> identities access Google Cloud <em>without</em> provisioning them into Cloud Identity &mdash; short-lived access via your existing IdP.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "developers using consumer Gmail for company work" &rarr; bring them under <strong>Cloud Identity</strong> (centralised control), not just adding 2SV to the Gmail accounts. "Keep using our existing directory as source of truth" &rarr; <strong>federate</strong> (Cloud Identity as SAML SP / Workforce Identity Federation), don't migrate users away from it.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/identity/docs/overview">Cloud Identity</a></li>
+              <li><a href="https://support.google.com/a/answer/106368">Google Cloud Directory Sync</a></li>
+              <li><a href="https://cloud.google.com/architecture/identity/single-sign-on">SSO reference</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/workforce-identity-federation">Workforce Identity Federation</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 1.2 ─────────────────────────── -->
+        <section class="slide sec1" id="s1-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.2</p>
+              <h2>Managing service accounts</h2>
+              <p class="objective">Go keyless wherever possible. Prefer Workload Identity Federation and impersonation over downloaded keys, and protect the default service accounts.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~25%</div>
+          </div>
+          <span class="section-pill">Workload Identity Federation</span>
+          <span class="section-pill">Impersonation</span>
+          <span class="section-pill">Short-lived credentials</span>
+          <span class="section-pill">Key hygiene</span>
+          <span class="section-pill">Default SAs</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Securing and protecting service accounts (including default service accounts).</li>
+                <li>Identifying scenarios requiring service accounts.</li>
+                <li>Creating, disabling, and authorizing service accounts.</li>
+                <li>Securing, auditing, and mitigating the usage of service account keys.</li>
+                <li>Managing and creating short-lived credentials.</li>
+                <li>Configuring Workload Identity Federation.</li>
+                <li>Managing service account impersonation.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Keyless first</strong>: attach a SA to the resource (VM/GKE/Cloud Run) or use <strong>Workload Identity Federation</strong> for external/CI workloads (GitHub Actions, other clouds, on-prem). Avoid downloaded JSON keys.</li>
+                <li><strong>Impersonation</strong> + <strong>short-lived credentials</strong> (<code>generateAccessToken</code>) let a user/SA act as another SA for a bounded time &mdash; better than handing out keys.</li>
+                <li><strong>If keys are unavoidable</strong>: rotate centrally, distribute from a controlled location (never commit to source), restrict who can create them, and use the <strong>disable SA key creation</strong> org policy.</li>
+                <li><strong>Default SAs</strong>: the Compute/App Engine defaults are over-privileged (Editor). Disable automatic role grants, replace with least-privilege user-managed SAs.</li>
+                <li>Use <strong>SA Insights / Policy Intelligence</strong> to find unused SAs and keys.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Credential preference order (most &rarr; least secure)</div>
+            <div class="flow">
+              <div class="step">Attached SA<small>VM / GKE / Run</small></div>
+              <div class="arrow">&gt;</div>
+              <div class="step">Workload Identity Fed.<small>external / CI, keyless</small></div>
+              <div class="arrow">&gt;</div>
+              <div class="step">Impersonation<small>short-lived tokens</small></div>
+              <div class="arrow">&gt;</div>
+              <div class="step gate">Downloaded key<small>last resort, rotate</small></div>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> external system (CI, another cloud, on-prem) needs Google Cloud access &rarr; <strong>Workload Identity Federation</strong> (keyless), not a downloaded key. If a question forces managed keys, the "best practice" is <strong>centralised rotation + controlled distribution</strong>, never keys in a repo or per-developer self-service key creation.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/iam/docs/workload-identity-federation">Workload Identity Federation</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/service-account-impersonation">SA impersonation</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys">SA key best practices</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/best-practices-service-accounts">Default SA hardening</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 1.3 ─────────────────────────── -->
+        <section class="slide sec1" id="s1-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.3</p>
+              <h2>Managing authentication</h2>
+              <p class="objective">Strong, enforced authentication: password and session policies, SAML/OAuth federation, and mandatory 2-step verification (ideally phishing-resistant security keys).</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~25%</div>
+          </div>
+          <span class="section-pill">Password policy</span>
+          <span class="section-pill">Session management</span>
+          <span class="section-pill">SAML / OAuth</span>
+          <span class="section-pill">2-Step Verification</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Creating a password and session management policy for user accounts.</li>
+                <li>Setting up SAML and OAuth.</li>
+                <li>Configuring and enforcing 2-step verification.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Password policy</strong>: enforce length/strength and reuse rules in the Admin console; <strong>Google Cloud session length</strong> controls reauthentication frequency for the Console/gcloud.</li>
+                <li><strong>SAML</strong> = federated SSO (authentication). <strong>OAuth 2.0 / OIDC</strong> = delegated authorization to apps/APIs. Restrict which third-party OAuth apps can access org data (app access control).</li>
+                <li><strong>2SV</strong>: enforce org-wide; <strong>security keys / passkeys</strong> are phishing-resistant and the strongest factor &mdash; preferred for admins and sensitive roles.</li>
+                <li><strong>Context-Aware Access</strong> can layer device/location conditions on top of authentication.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> "phishing-resistant MFA" &rarr; <strong>security keys (FIDO) / passkeys</strong>, not SMS/OTP. "SSO across SaaS" &rarr; <strong>SAML</strong>; "let an app act on a user's behalf to an API" &rarr; <strong>OAuth</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://support.google.com/cloudidentity/answer/33319">Password policy</a></li>
+              <li><a href="https://cloud.google.com/blog/products/identity-security/how-to-set-session-length-for-google-cloud-services">Session length</a></li>
+              <li><a href="https://support.google.com/a/answer/175197">Enforce 2SV</a></li>
+              <li><a href="https://cloud.google.com/context-aware-access/docs/overview">Context-Aware Access</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 1.4 ─────────────────────────── -->
+        <section class="slide sec1" id="s1-4">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.4</p>
+              <h2>Authorization controls</h2>
+              <p class="objective">Least privilege done with the full IAM toolbox: predefined/custom roles, conditions, deny policies, groups, Policy Intelligence, Access Context Manager, and PAM for just-in-time elevation.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~25%</div>
+          </div>
+          <span class="section-pill">Least privilege</span>
+          <span class="section-pill">IAM conditions / deny</span>
+          <span class="section-pill">Policy Intelligence</span>
+          <span class="section-pill">Access Context Manager</span>
+          <span class="section-pill">Privileged Access Manager</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Managing privileged roles and separation of duties with IAM roles and permissions.</li>
+                <li>Managing IAM and ACL permissions.</li>
+                <li>Granting permissions using IAM conditions and IAM deny policies.</li>
+                <li>Defining access control at org/folder/project/resource level using least privilege.</li>
+                <li>Configuring Access Context Manager.</li>
+                <li>Applying Policy Intelligence.</li>
+                <li>Managing permissions through groups.</li>
+                <li>Identifying use cases and configuring Privileged Access Manager.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Roles</strong>: prefer <strong>predefined</strong> over basic (Owner/Editor/Viewer are too broad); build <strong>custom</strong> roles when predefined is too wide. Grant to <strong>groups</strong>, not individuals.</li>
+                <li><strong>IAM conditions</strong>: attribute-based grants (time, resource name, request). <strong>IAM deny policies</strong>: explicit denials that <strong>override allows</strong> &mdash; guardrails even if someone grants a role.</li>
+                <li><strong>Policy Intelligence</strong>: <strong>Recommender</strong> trims over-granted roles, <strong>Policy Analyzer</strong> answers "who can do what", <strong>Policy Troubleshooter</strong> explains an access decision.</li>
+                <li><strong>Access Context Manager</strong>: defines <strong>access levels</strong> (IP, device, region) used by VPC Service Controls and Context-Aware Access.</li>
+                <li><strong>PAM</strong>: just-in-time, time-bound, approval-gated elevation (entitlements &rarr; grants) instead of standing privilege. <span class="upd">JIT access</span></li>
+                <li><strong>Separation of duties</strong>: split sensitive abilities (e.g. key admin vs key user; deployer vs approver).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">IAM evaluation: deny beats allow; lower scopes inherit higher grants</div>
+            <div class="flow">
+              <div class="step">Request</div>
+              <div class="arrow">&rarr;</div>
+              <div class="step gate">Deny policy?<small>explicit deny wins</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Allow (role) + condition<small>incl. inherited from org/folder</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Access granted</div>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "give the security team visibility, no change rights" &rarr; <strong>Viewer-class predefined roles</strong> (e.g. Org Viewer + Project Viewer), never Owner/Admin. Need a hard guardrail that survives future mis-grants &rarr; <strong>IAM deny policy</strong> or org policy, not just "don't grant the role".</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/iam/docs/understanding-roles">IAM roles</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/deny-overview">IAM deny policies</a></li>
+              <li><a href="https://cloud.google.com/policy-intelligence/docs/overview">Policy Intelligence</a></li>
+              <li><a href="https://cloud.google.com/access-context-manager/docs/overview">Access Context Manager</a></li>
+              <li><a href="https://cloud.google.com/iam/docs/pam-overview">Privileged Access Manager</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 1.5 ─────────────────────────── -->
+        <section class="slide sec1" id="s1-5">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 1.5</p>
+              <h2>Defining the resource hierarchy</h2>
+              <p class="objective">Org &rarr; folders &rarr; projects &rarr; resources. IAM and org policies inherit downward &mdash; set guardrails high, and use org policies to prevent (not just detect) bad configurations.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 1: ~25%</div>
+          </div>
+          <span class="section-pill">Org / folders / projects</span>
+          <span class="section-pill">Inheritance</span>
+          <span class="section-pill">Org Policy Service</span>
+          <span class="section-pill">Custom org policies</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Managing folders and projects at scale.</li>
+                <li>Managing pre-built or custom organization policies for the org, folders, and projects.</li>
+                <li>Using the resource hierarchy for access control and permissions inheritance.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Inheritance</strong>: IAM and org policies flow <strong>downward</strong>; apply at the highest level that avoids repetition (org/folder), with project-level overrides where allowed.</li>
+                <li><strong>Org Policy Service</strong> sets <strong>constraints</strong> that <em>block non-compliant creation</em> up front: Resource Location Restriction (residency), domain-restricted sharing, disable SA key creation, restrict external IPs, require OS Login, etc.</li>
+                <li><strong>Custom org policies</strong> (custom constraints) extend the catalogue to your own rules.</li>
+                <li>Org policy is <strong>preventive</strong>; SCC / Security Health Analytics is <strong>detective</strong> &mdash; the exam loves this distinction.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Policy &amp; IAM inheritance flows down</div>
+            <div class="hier">
+              <div class="lvl"><span class="box">Organization <small>example.com</small></span><span class="inherit">&larr; baseline IAM + org policies (residency, domain restriction)</span>
+                <div class="lvl"><span class="box">Folder <small>Prod</small></span><span class="inherit">&larr; environment guardrails</span>
+                  <div class="lvl"><span class="box">Project <small>payments-prod</small></span>
+                    <div class="lvl"><span class="box">Resources <small>VMs, buckets, keys</small></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "ensure resources can only be created in the EU" &rarr; <strong>Resource Location Restriction org policy</strong> (prevents creation), not an SCC finding or a log alert (those detect <em>after</em> the resource already exists &mdash; already a breach).</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy">Resource hierarchy</a></li>
+              <li><a href="https://cloud.google.com/resource-manager/docs/organization-policy/overview">Org Policy Service</a></li>
+              <li><a href="https://cloud.google.com/resource-manager/docs/organization-policy/creating-managing-custom-constraints">Custom constraints</a></li>
+              <li><a href="https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations">Resource Location Restriction</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 2.1 ─────────────────────────── -->
+        <section class="slide sec2" id="s2-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.1</p>
+              <h2>Perimeter security</h2>
+              <p class="objective">Layered edge defence: Cloud NGFW for L3-L7 filtering, Cloud Armor for WAF/DDoS, IAP for app-level access, plus DNS security and CA Service for certs.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~22%</div>
+          </div>
+          <span class="section-pill">Cloud NGFW</span>
+          <span class="section-pill">Cloud Armor (WAF)</span>
+          <span class="section-pill">IAP</span>
+          <span class="section-pill">Secure Web Proxy</span>
+          <span class="section-pill">Cloud DNS / DNSSEC</span>
+          <span class="section-pill">CA Service</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring network perimeter controls (Cloud NGFW rules/policies, IAP, load balancers, Certificate Authority Service).</li>
+                <li>Setting up application-layer (L7) inspection on Cloud NGFW.</li>
+                <li>Differentiating private and public IP addressing.</li>
+                <li>Configuring web application firewalls (Google Cloud Armor).</li>
+                <li>Deploying Secure Web Proxy.</li>
+                <li>Configuring Cloud DNS security settings.</li>
+                <li>Continually monitoring and restricting configured APIs.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud NGFW</strong>: hierarchical/global/network firewall <strong>policies</strong>, FQDN &amp; geo &amp; threat-intel objects, and <strong>L7 inspection / intrusion prevention</strong>. Prefer <strong>service-account-targeted</strong> rules over network tags (tags can be self-assigned by anyone who can edit a VM).</li>
+                <li><strong>Cloud Armor</strong>: edge <strong>WAF + DDoS</strong> on external load balancers &mdash; OWASP rules, rate limiting, geo/IP allow/deny, bot management.</li>
+                <li><strong>IAP</strong>: identity-based access to apps/VMs/SSH without a VPN &mdash; the answer for "differentiated access by user identity over HTTPS".</li>
+                <li><strong>Secure Web Proxy</strong>: secured, policy-controlled <strong>egress</strong> to the internet (URL/domain allow-lists, TLS inspection).</li>
+                <li><strong>Cloud DNS</strong>: enable <strong>DNSSEC</strong>; use DNS policies / response policy zones to control resolution.</li>
+                <li><strong>CA Service</strong>: managed private CA for issuing internal TLS certs.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "differentiated access to an app by user identity over the web" &rarr; <strong>IAP</strong>, not VPC firewall rules (which only allow/deny traffic, not <em>who</em>). "Restrict use of a firewall rule so only authorised engineers can rely on it" &rarr; target a <strong>service account</strong>, not a network tag.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/firewall/docs/about-firewalls">Cloud NGFW</a></li>
+              <li><a href="https://cloud.google.com/armor/docs/security-policy-overview">Cloud Armor</a></li>
+              <li><a href="https://cloud.google.com/iap/docs/concepts-overview">Identity-Aware Proxy</a></li>
+              <li><a href="https://cloud.google.com/secure-web-proxy/docs/overview">Secure Web Proxy</a></li>
+              <li><a href="https://cloud.google.com/certificate-authority-service/docs">CA Service</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 2.2 ─────────────────────────── -->
+        <section class="slide sec2" id="s2-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.2</p>
+              <h2>Boundary segmentation</h2>
+              <p class="objective">Segment with VPC design, firewall rules, and Shared VPC; then wrap data services in a VPC Service Controls perimeter to stop exfiltration even by authorised identities.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~22%</div>
+          </div>
+          <span class="section-pill">VPC / Shared VPC / peering</span>
+          <span class="section-pill">Firewall rules</span>
+          <span class="section-pill">N-tier isolation</span>
+          <span class="section-pill">VPC Service Controls</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring security properties of a VPC, VPC peering, Shared VPC, and firewall rules.</li>
+                <li>Configuring network isolation and data encapsulation for N-tier applications.</li>
+                <li>Identifying use cases and configuring VPC Service Controls.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Shared VPC</strong>: central host project owns the network; service projects attach &mdash; one team owns networking/security for many projects.</li>
+                <li><strong>VPC peering</strong>: private RFC 1918 connectivity between two VPCs, <strong>non-transitive</strong>; peers stay administratively separate.</li>
+                <li><strong>Firewall rules</strong>: default = deny ingress / allow egress. Segment N-tier apps (web/app/db) with SA-targeted rules and separate subnets; deny egress by default for sensitive tiers.</li>
+                <li><strong>VPC Service Controls</strong>: a <strong>service perimeter</strong> around managed APIs (Cloud Storage, BigQuery, etc.) to prevent <strong>data exfiltration</strong> &mdash; even a stolen credential can't move data outside the perimeter. Use <strong>access levels</strong> + ingress/egress rules; dry-run first.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "stop data being exfiltrated from BigQuery/Cloud Storage even with valid creds" &rarr; <strong>VPC Service Controls</strong> perimeter (it's <em>not</em> a tool to <em>find</em> sensitive data &mdash; that's SDP). "Many projects share one network centrally" &rarr; <strong>Shared VPC</strong>; "connect two existing VPCs privately" &rarr; <strong>peering</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/vpc/docs/shared-vpc">Shared VPC</a></li>
+              <li><a href="https://cloud.google.com/vpc/docs/vpc-peering">VPC peering</a></li>
+              <li><a href="https://cloud.google.com/vpc-service-controls/docs/overview">VPC Service Controls</a></li>
+              <li><a href="https://cloud.google.com/firewall/docs/firewalls">Firewall rules</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 2.3 ─────────────────────────── -->
+        <section class="slide sec2" id="s2-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 2.3</p>
+              <h2>Establishing private connectivity</h2>
+              <p class="objective">Reach Google APIs and on-prem privately: Private Google Access and PSC for APIs, HA VPN / Interconnect for data centres, Cloud NAT for controlled egress.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2: ~22%</div>
+          </div>
+          <span class="section-pill">Private Google Access</span>
+          <span class="section-pill">Private Service Connect</span>
+          <span class="section-pill">HA VPN / Interconnect</span>
+          <span class="section-pill">Cloud NAT</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Private connectivity between VPCs and projects (Shared VPC, peering, Private Google Access for on-prem).</li>
+                <li>Private connectivity and encryption between data centers and VPC (HA VPN, Cloud Interconnect).</li>
+                <li>Private connectivity between VPC and Google APIs (Private Google Access, restricted Google access, Private Service Connect).</li>
+                <li>Using Cloud NAT to enable outbound traffic.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Private Google Access</strong>: VMs with <strong>no external IP</strong> reach Google APIs over internal IPs. <strong>restricted.googleapis.com</strong> VIP keeps API access inside a VPC-SC perimeter.</li>
+                <li><strong>Private Service Connect</strong>: private endpoints to Google APIs or to producer services &mdash; no peering, your own internal IP.</li>
+                <li><strong>HA VPN</strong> (IPsec over internet, 99.99%) vs <strong>Cloud Interconnect</strong> (Dedicated/Partner, private, high bandwidth, low latency) for data-centre links. Interconnect alone isn't encrypted &mdash; add MACsec/IPsec if required.</li>
+                <li><strong>Cloud NAT</strong>: managed, scalable <strong>egress</strong> for instances without external IPs &mdash; outbound only, nothing inbound.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "VMs with no public IP must call Google APIs" &rarr; <strong>Private Google Access</strong>. "Outbound internet for private VMs without exposing them" &rarr; <strong>Cloud NAT</strong>. "Private, high-bandwidth, consistent link to a data centre" &rarr; <strong>Dedicated Interconnect</strong> (HA VPN if over the internet is acceptable).</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/vpc/docs/private-google-access">Private Google Access</a></li>
+              <li><a href="https://cloud.google.com/vpc/docs/private-service-connect">Private Service Connect</a></li>
+              <li><a href="https://cloud.google.com/network-connectivity/docs/how-to/choose-product">Choose connectivity</a></li>
+              <li><a href="https://cloud.google.com/nat/docs/overview">Cloud NAT</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 3.1 ─────────────────────────── -->
+        <section class="slide sec3" id="s3-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.1</p>
+              <h2>Sensitive data &amp; secrets</h2>
+              <p class="objective">Discover and de-identify PII with Sensitive Data Protection, lock data services down (VPC-SC, IAM, public-access prevention), and keep credentials in Secret Manager.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~23%</div>
+          </div>
+          <span class="section-pill">Sensitive Data Protection</span>
+          <span class="section-pill">De-identify / redact</span>
+          <span class="section-pill">Secret Manager</span>
+          <span class="section-pill">Restrict data services</span>
+          <span class="section-pill">VM metadata</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring Sensitive Data Protection (discover/redact PII, pseudonymization, format-preserving encryption).</li>
+                <li>Restricting access to data services (BigQuery, Cloud Storage, Cloud SQL).</li>
+                <li>Securing secrets with Secret Manager.</li>
+                <li>Protecting and managing compute instance metadata.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Sensitive Data Protection</strong> (formerly Cloud DLP): <strong>discover</strong>, <strong>inspect</strong>, and <strong>de-identify</strong> PII in storage and streams. Techniques: redaction, masking, <strong>tokenization/pseudonymization</strong>, <strong>format-preserving encryption</strong>, date shifting. <span class="upd">SDP</span></li>
+                <li><strong>infoTypes</strong>: built-in detectors + <strong>custom regex</strong> / dictionary / stored infoTypes &mdash; use a <strong>regex custom infoType</strong> to match a pattern (e.g. an internal email domain) reliably rather than a hand-maintained list.</li>
+                <li><strong>Restrict data services</strong>: bucket-level least-privilege IAM, <strong>public access prevention</strong> + uniform bucket-level access, VPC-SC perimeter, and signed URLs for scoped access.</li>
+                <li><strong>Secret Manager</strong>: versioned secrets, IAM-scoped, CMEK-encryptable, with rotation &mdash; never hardcode creds or commit them.</li>
+                <li><strong>VM metadata</strong>: protect/lock metadata, disable legacy endpoints, enforce <strong>OS Login</strong>, and don't store secrets in startup scripts/metadata.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "find where PII lives / redact it" &rarr; <strong>Sensitive Data Protection</strong> (VPC-SC and Bucket Lock do <em>not</em> locate PII). "Redact some emails but keep an internal domain" &rarr; <strong>regex custom infoType</strong>, not a static dictionary that drifts and misses entries.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/sensitive-data-protection/docs">Sensitive Data Protection</a></li>
+              <li><a href="https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-regex">Custom regex infoType</a></li>
+              <li><a href="https://cloud.google.com/secret-manager/docs/overview">Secret Manager</a></li>
+              <li><a href="https://cloud.google.com/storage/docs/public-access-prevention">Public access prevention</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 3.2 ─────────────────────────── -->
+        <section class="slide sec3" id="s3-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.2</p>
+              <h2>Encryption &amp; key management</h2>
+              <p class="objective">Everything is encrypted at rest by default. The exam is about choosing default vs CMEK vs CSEK vs EKM, software vs HSM keys, and managing rotation/revocation. Full matrix on the synthesis slide.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~23%</div>
+          </div>
+          <span class="section-pill">Default / CMEK / CSEK / EKM</span>
+          <span class="section-pill">Cloud KMS / HSM</span>
+          <span class="section-pill">Key rotation / revocation</span>
+          <span class="section-pill">Object lifecycle</span>
+          <span class="section-pill">Confidential Computing</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Identifying use cases for Google default encryption, CMEK, and Cloud EKM.</li>
+                <li>Determining when to use software and hardware keys.</li>
+                <li>Creating and managing encryption keys for CMEK and EKM (rotation, revocation, import).</li>
+                <li>Applying encryption methods to various use cases.</li>
+                <li>Configuring object lifecycle policies for Cloud Storage.</li>
+                <li>Enabling Confidential Computing.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Default</strong>: Google-managed keys, AES-256, zero config &mdash; encryption at rest is always on.</li>
+                <li><strong>CMEK</strong>: <em>you</em> control keys in <strong>Cloud KMS</strong> (software or <strong>HSM</strong> level, or <strong>imported</strong>) &mdash; rotation, disable/destroy, IAM separation of duties.</li>
+                <li><strong>CSEK</strong>: customer-<strong>supplied</strong> raw AES-256 key provided per request; Google never stores it (Cloud Storage / Compute).</li>
+                <li><strong>EKM</strong>: keys live in an <strong>external</strong> key manager (or Key Access Justifications) &mdash; for "hold your own keys outside Google / off-cloud control".</li>
+                <li><strong>Confidential Computing</strong>: encrypts data <strong>in use</strong> in memory (Confidential VMs/GKE).</li>
+                <li><strong>Object lifecycle</strong>: transition storage classes / delete by age &mdash; a cost/retention tool, <em>not</em> an immutability control (that's Bucket Lock retention).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "use our <em>existing on-prem</em> keys with Cloud Storage" &rarr; <strong>CSEK</strong> (you supply the raw key) &mdash; CMEK uses Google-hosted KMS keys, not your on-prem KMS. "Keys must stay <em>outside</em> Google" &rarr; <strong>Cloud EKM</strong>. Lifecycle rules don't prevent manual deletion &mdash; use <strong>Bucket Lock</strong> for immutable retention.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/docs/security/encryption/default-encryption">Default encryption</a></li>
+              <li><a href="https://cloud.google.com/kms/docs/cmek">CMEK</a></li>
+              <li><a href="https://cloud.google.com/kms/docs/ekm">Cloud EKM</a></li>
+              <li><a href="https://cloud.google.com/storage/docs/encryption/customer-supplied-keys">CSEK</a></li>
+              <li><a href="https://cloud.google.com/confidential-computing/docs">Confidential Computing</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 3.3 ─────────────────────────── -->
+        <section class="slide sec3" id="s3-3">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 3.3</p>
+              <h2>Securing AI workloads</h2>
+              <p class="objective">Treat data, models, and endpoints as assets: least-privilege IAM, private networking and VPC-SC around Vertex AI, CMEK on data/models, and guardrails against data/model exploitation.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3: ~23%</div>
+          </div>
+          <span class="section-pill">Vertex AI controls</span>
+          <span class="section-pill">VPC-SC / private endpoints</span>
+          <span class="section-pill">CMEK on models/data</span>
+          <span class="section-pill">Model Armor / safety</span>
+          <span class="section-pill">IaaS vs PaaS training</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Implementing security and privacy controls for AI/ML systems to protect against unintentional exploitation of data or models.</li>
+                <li>Determining security requirements for IaaS-hosted and PaaS-hosted training models.</li>
+                <li>Implementing security controls for Vertex AI.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Vertex AI controls</strong>: least-privilege IAM on datasets/models/endpoints, <strong>VPC-SC</strong> perimeter and <strong>private endpoints</strong> to keep training data and inference traffic off the internet, and <strong>CMEK</strong> on data and model artifacts.</li>
+                <li><strong>Protect against exploitation</strong>: sanitise training data (no secrets/PII &mdash; run it through SDP), control who can read/export models (model exfiltration), and guard prompts/responses (<strong>Model Armor</strong> / safety filters) against prompt injection and sensitive-data leakage.</li>
+                <li><strong>PaaS vs IaaS</strong>: PaaS (Vertex AI) inherits Google's managed security &mdash; you focus on IAM/network/keys. <strong>IaaS</strong> (self-managed training on GCE/GKE) means you also own OS hardening, patching, and image security.</li>
+                <li><strong>Supply chain</strong>: scan training containers, pin trusted base images, and apply Binary Authorization to model-serving deployments.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Exam signal:</strong> AI questions reduce to the same primitives &mdash; <strong>IAM least privilege + private networking/VPC-SC + CMEK + clean data (SDP)</strong>. "Stop the model leaking sensitive data / prompt-injection" &rarr; <strong>Model Armor / safety filters</strong> plus de-identified training data.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/vertex-ai/docs/general/vpc-service-controls">Vertex AI + VPC-SC</a></li>
+              <li><a href="https://cloud.google.com/vertex-ai/docs/general/cmek">Vertex AI CMEK</a></li>
+              <li><a href="https://cloud.google.com/security-command-center/docs/model-armor-overview">Model Armor</a></li>
+              <li><a href="https://cloud.google.com/architecture/framework/security">Security best practices</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 4.1 ─────────────────────────── -->
+        <section class="slide sec4" id="s4-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.1</p>
+              <h2>Automating security</h2>
+              <p class="objective">Shift security left: scan for CVEs in CI/CD, gate deploys with Binary Authorization, harden and patch images automatically, and manage posture/drift at scale.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~19%</div>
+          </div>
+          <span class="section-pill">Artifact Analysis</span>
+          <span class="section-pill">Binary Authorization</span>
+          <span class="section-pill">Image hardening / VM Manager</span>
+          <span class="section-pill">SHA custom modules</span>
+          <span class="section-pill">CSPM / drift</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Automating CVE scanning through a CI/CD pipeline.</li>
+                <li>Configuring Binary Authorization to secure GKE or Cloud Run.</li>
+                <li>Automating VM and container image creation (hardening, maintenance, patch management).</li>
+                <li>Managing policy and drift detection at scale (CSPM, custom org policies, custom modules for Security Health Analytics).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Artifact Analysis</strong> (a.k.a. Container Analysis): automatic <strong>vulnerability scanning</strong> of images in Artifact Registry; surfaces CVEs but does <em>not</em> patch.</li>
+                <li><strong>Binary Authorization</strong>: deploy-time policy &mdash; only images with required <strong>attestations</strong> run on GKE/Cloud Run. Pair with scanning; use <strong>dry-run</strong> before enforce.</li>
+                <li><strong>Keep images current</strong>: build on <strong>Google-managed base images</strong> (patched upstream) rather than startup-time update scripts; use <strong>VM Manager</strong> for OS patch management and <strong>Shielded/Confidential VMs</strong> for integrity.</li>
+                <li><strong>Posture at scale</strong>: <strong>Security Health Analytics</strong> (in SCC) detects misconfigurations; write <strong>custom modules</strong> for org-specific checks, and <strong>custom org policies</strong> to prevent drift.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram">
+            <div class="cap">Supply-chain gate before workloads run</div>
+            <div class="flow">
+              <div class="step">Build<small>Cloud Build</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Artifact Analysis<small>scan CVEs</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Attest<small>sign trusted image</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step gate">Binary Authorization<small>verify or block</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">Run on GKE / Cloud Run</div>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "prevent images with known CVEs from running" &rarr; <strong>vulnerability scanning + Binary Authorization deployment policy</strong> together. "Keep container bases patched" &rarr; <strong>Google-managed base images</strong>, not a startup update script (slow boots) and not "use private images" (they go stale too).</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/artifact-analysis/docs/container-scanning-overview">Artifact Analysis</a></li>
+              <li><a href="https://cloud.google.com/binary-authorization/docs/overview">Binary Authorization</a></li>
+              <li><a href="https://cloud.google.com/compute/docs/vm-manager">VM Manager (patch)</a></li>
+              <li><a href="https://cloud.google.com/security-command-center/docs/custom-modules-sha-overview">SHA custom modules</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 4.2 ─────────────────────────── -->
+        <section class="slide sec4" id="s4-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 4.2</p>
+              <h2>Logging, monitoring &amp; detection</h2>
+              <p class="objective">Capture the right logs (audit, network, data access), route them securely with sinks, watch threats in Security Command Center, and export to your SIEM.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 4: ~19%</div>
+          </div>
+          <span class="section-pill">Cloud Audit Logs</span>
+          <span class="section-pill">VPC Flow / Cloud IDS / Packet Mirroring</span>
+          <span class="section-pill">Aggregated sinks</span>
+          <span class="section-pill">Security Command Center</span>
+          <span class="section-pill">SIEM export</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Configuring and analyzing network logs (Cloud NGFW, VPC Flow Logs, Packet Mirroring, Cloud IDS, Log Analytics).</li>
+                <li>Designing an effective logging strategy and secure access to logs.</li>
+                <li>Logging, monitoring, responding to, and remediating security incidents.</li>
+                <li>Exporting logs to external security systems.</li>
+                <li>Configuring and analyzing Cloud Audit Logs and data access logs.</li>
+                <li>Configuring log exports (log sinks and aggregated sinks).</li>
+                <li>Configuring and monitoring Security Command Center.</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Cloud Audit Logs</strong>: <strong>Admin Activity</strong> (always on, free), <strong>Data Access</strong> (must enable; logs reads/writes), System Event, Policy Denied. Enable Data Access logs where the question demands "who read the data".</li>
+                <li><strong>Network logs</strong>: <strong>VPC Flow Logs</strong> (flow metadata), <strong>Cloud IDS</strong> (managed intrusion detection via Packet Mirroring), <strong>Packet Mirroring</strong> (full packet capture to your tools).</li>
+                <li><strong>Routing</strong>: <strong>aggregated sinks</strong> at org/folder level export logs from all projects to a central, access-controlled bucket / BigQuery / <strong>Pub/Sub</strong> (to a SIEM). Lock down the log bucket separately from the projects.</li>
+                <li><strong>Security Command Center</strong>: central posture + threat view &mdash; Security Health Analytics, Event Threat Detection, Container Threat Detection, Web Security Scanner, attack path / exposure. Premium/Enterprise tiers add more.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> "centralise security logs across all projects, tamper-resistant" &rarr; <strong>aggregated sink</strong> at the org/folder to a separate, locked-down destination (BigQuery/GCS/Pub/Sub) &mdash; not per-project copies. "Who accessed the data?" requires <strong>Data Access audit logs</strong> (off by default). Threat findings live in <strong>SCC</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/logging/docs/audit">Cloud Audit Logs</a></li>
+              <li><a href="https://cloud.google.com/logging/docs/export/aggregated_sinks">Aggregated sinks</a></li>
+              <li><a href="https://cloud.google.com/intrusion-detection-system/docs/overview">Cloud IDS</a></li>
+              <li><a href="https://cloud.google.com/security-command-center/docs/security-command-center-overview">Security Command Center</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── 5.1 ─────────────────────────── -->
+        <section class="slide sec5" id="s5-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Section 5.1</p>
+              <h2>Compliance &amp; regulatory standards</h2>
+              <p class="objective">Know the shared-responsibility line, map a regime to GCP controls, scope what's in/out, and use Assured Workloads + Access Transparency/Approval for regulated estates.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 5: ~11%</div>
+          </div>
+          <span class="section-pill">Shared responsibility</span>
+          <span class="section-pill">Assured Workloads</span>
+          <span class="section-pill">Access Transparency / Approval</span>
+          <span class="section-pill">Data regionalization</span>
+          <span class="section-pill">Control mapping</span>
+          <div class="content-grid">
+            <div class="guide-card">
+              <h3>Official guide bullets</h3>
+              <ul>
+                <li>Determining technical needs relative to compute, data, network, and storage.</li>
+                <li>Evaluating the shared responsibility model.</li>
+                <li>Configuring security controls to support compliance (Assured Workloads, org policies, Access Transparency, Access Approval, regionalization).</li>
+                <li>Determining the environment in scope for regulatory compliance.</li>
+                <li>Mapping compliance requirements to Google Cloud services and controls (segmentation, audit log coverage).</li>
+              </ul>
+            </div>
+            <div class="know-card">
+              <h3>What to know</h3>
+              <ul>
+                <li><strong>Shared responsibility</strong>: Google secures the infrastructure; <em>you</em> secure IAM, data, configuration, and access. The line shifts toward Google for PaaS/SaaS vs IaaS.</li>
+                <li><strong>Map regime &rarr; workload</strong>: <strong>PCI DSS</strong> = payment-card / e-commerce / POS; <strong>HIPAA</strong> = health data; <strong>FedRAMP</strong> = US government; <strong>SOX</strong> = financial reporting; <strong>GDPR</strong> = EU personal data.</li>
+                <li><strong>Assured Workloads</strong>: enforces data residency, personnel controls, and compliance guardrails (e.g. regulated regions) for in-scope folders.</li>
+                <li><strong>Access Transparency</strong> logs Google staff access to your data; <strong>Access Approval</strong> requires your explicit approval first.</li>
+                <li><strong>Scope reduction</strong>: segment in-scope workloads (separate projects/VPC-SC perimeters), keep audit-log coverage complete, and regionalize data/services.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> match the <strong>industry to the regime</strong> &mdash; retail/payments &rarr; <strong>PCI DSS</strong>; healthcare &rarr; HIPAA; US gov &rarr; FedRAMP. "Approve/limit Google support access to data" &rarr; <strong>Access Approval + Access Transparency</strong>. "Enforce residency + personnel controls" &rarr; <strong>Assured Workloads</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/architecture/framework/security/shared-responsibility-shared-fate">Shared responsibility</a></li>
+              <li><a href="https://cloud.google.com/assured-workloads/docs/overview">Assured Workloads</a></li>
+              <li><a href="https://cloud.google.com/cloud-provider-access-management/access-approval/docs">Access Approval</a></li>
+              <li><a href="https://cloud.google.com/security/compliance">Compliance offerings</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── SYNTH 1 ─────────────────────────── -->
+        <section class="slide secsyn" id="syn-1">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Synthesis</p>
+              <h2>Encryption &amp; key decision matrix</h2>
+              <p class="objective">High-yield: pick the encryption model by <em>who controls the key</em> and <em>where it lives</em>.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 3</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Option</th><th>Who controls the key</th><th>Where the key lives</th><th>Reach for it when&hellip;</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Default</strong> <span class="badge key">Google</span></td><td>Google</td><td>Google (Cloud KMS internal)</td><td>No specific key-control requirement; always-on AES-256 is enough</td></tr>
+                <tr><td><strong>CMEK</strong> <span class="badge key">You / KMS</span></td><td>You</td><td>Cloud KMS (software, HSM, or imported)</td><td>You must own rotation/disable/destroy &amp; separation of duties, keys can stay in Google</td></tr>
+                <tr><td><strong>CSEK</strong> <span class="badge key">You / supplied</span></td><td>You</td><td><strong>Your side</strong> &mdash; supplied per request, never stored by Google</td><td>You hold the raw AES-256 key (e.g. existing on-prem key) for Cloud Storage / Compute</td></tr>
+                <tr><td><strong>Cloud EKM</strong> <span class="badge key">You / external</span></td><td>You</td><td><strong>External</strong> key manager / partner</td><td>Regulatory need to keep keys <em>outside</em> Google; optional Key Access Justifications</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="diagram">
+            <div class="cap">Software vs hardware vs external (rising assurance &amp; control)</div>
+            <div class="flow">
+              <div class="step">KMS software key<small>default protection level</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">KMS HSM key<small>FIPS 140-2 L3 hardware</small></div>
+              <div class="arrow">&rarr;</div>
+              <div class="step">External (EKM)<small>keys off Google</small></div>
+            </div>
+          </div>
+          <div class="callout rule"><strong>Cue &rarr; choice:</strong> "rotate/revoke our own keys, but Google can host them" = <strong>CMEK</strong>. "Supply our existing key, Google must not store it" = <strong>CSEK</strong>. "Keys must remain outside Google entirely" = <strong>EKM</strong>. "Hardware-backed keys" = <strong>KMS HSM</strong>. "Encrypt data in use / in memory" = <strong>Confidential Computing</strong>.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/docs/security/encryption/default-encryption">Default encryption</a></li>
+              <li><a href="https://cloud.google.com/kms/docs/cmek">CMEK</a></li>
+              <li><a href="https://cloud.google.com/storage/docs/encryption/customer-supplied-keys">CSEK</a></li>
+              <li><a href="https://cloud.google.com/kms/docs/ekm">Cloud EKM</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────── SYNTH 2 ─────────────────────────── -->
+        <section class="slide secsyn" id="syn-2">
+          <div class="slide-header">
+            <div>
+              <p class="slide-kicker">Synthesis</p>
+              <h2>Connectivity &amp; perimeter matrix</h2>
+              <p class="objective">The networking controls cluster &mdash; tell them apart by the problem each solves, and which layer (network vs identity vs data) it lives at.</p>
+            </div>
+            <div class="weight"><span>Weight</span>Section 2</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Control</th><th>Layer</th><th>Solves</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Shared VPC</strong></td><td><span class="badge network">Network</span></td><td>One team centrally owns the network for many service projects</td></tr>
+                <tr><td><strong>VPC peering</strong></td><td><span class="badge network">Network</span></td><td>Private RFC 1918 connectivity between two VPCs (non-transitive)</td></tr>
+                <tr><td><strong>Private Service Connect</strong></td><td><span class="badge network">Network</span></td><td>Private endpoint to Google APIs / a producer service, no peering</td></tr>
+                <tr><td><strong>Private Google Access</strong></td><td><span class="badge network">Network</span></td><td>No-external-IP VMs reach Google APIs over internal IPs</td></tr>
+                <tr><td><strong>Cloud NAT</strong></td><td><span class="badge network">Network</span></td><td>Outbound-only internet for private instances</td></tr>
+                <tr><td><strong>Cloud NGFW</strong></td><td><span class="badge network">Network</span> <span class="badge prevent">Preventive</span></td><td>L3-L7 traffic filtering, IPS, FQDN/geo policies</td></tr>
+                <tr><td><strong>Cloud Armor</strong></td><td><span class="badge network">Edge</span></td><td>WAF + DDoS protection at the external load balancer</td></tr>
+                <tr><td><strong>IAP</strong></td><td><span class="badge identity">Identity</span></td><td>Identity-based access to apps/VMs/SSH, no VPN</td></tr>
+                <tr><td><strong>VPC Service Controls</strong></td><td><span class="badge data">Data</span></td><td>Anti-exfiltration perimeter around managed data APIs</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout exam"><strong>Exam discriminator:</strong> don't confuse layers &mdash; <strong>firewall/NGFW</strong> = allow/deny <em>traffic</em>; <strong>IAP</strong> = allow/deny by <em>identity</em>; <strong>VPC-SC</strong> = stop <em>data</em> leaving a perimeter. A question about "who can reach the app" is identity (IAP), not a firewall rule.</div>
+          <div class="refs">
+            <h4>Further reading</h4>
+            <ul>
+              <li><a href="https://cloud.google.com/vpc/docs/shared-vpc">Shared VPC</a></li>
+              <li><a href="https://cloud.google.com/vpc/docs/private-service-connect">Private Service Connect</a></li>
+              <li><a href="https://cloud.google.com/iap/docs/concepts-overview">IAP</a></li>
+              <li><a href="https://cloud.google.com/vpc-service-controls/docs/overview">VPC Service Controls</a></li>
+            </ul>
+          </div>
+        </section>
+
+      </article>
+    </div>
+
+        <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </main>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/security_eng/cheatsheet.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/security_eng/cheatsheet.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

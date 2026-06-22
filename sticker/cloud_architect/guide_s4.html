@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en" data-skin="sticker" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP Cloud Architect &mdash; Analyzing &amp; Optimizing Processes</title>
+  <style>
+    :root {
+      --bg: #fef2f2; --ink: #1e293b; --accent: #dc2626; --accent-dark: #b91c1c;
+      --yellow: #fef08a; --yellow-dark: #eab308; --red: #ef4444; --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fecaca' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink); font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 24px 15px 60px; }
+    .nav-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold; padding: 8px 14px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.85rem;
+      flex: 1 1 auto; text-align: center; overflow-wrap: anywhere;
+    }
+    .nav-link:hover { background: var(--yellow); }
+    header {
+      background: linear-gradient(135deg, #f87171 0%, var(--accent) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0 #000;
+      padding: 28px 22px; margin-bottom: 26px; position: relative; overflow: hidden; color: var(--ink);
+    }
+    header .pill {
+      display: inline-block; font-size: 0.78rem; font-weight: bold; color: #fff; background: var(--accent-dark);
+      padding: 4px 12px; border-radius: 999px; border: 2px solid #000; margin-bottom: 8px;
+    }
+    .weight { font-size: 0.78rem; font-weight: bold; color: #fff; background: #475569; padding: 3px 10px; border-radius: 6px; border: 2px solid #000; margin-left: 6px; }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 6px 0 8px; text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #fff;
+    }
+    .sec-intro { margin: 0; font-size: 1.05rem; }
+    .lesson {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0 #000;
+      padding: 20px 24px; margin-bottom: 22px;
+    }
+    .lesson h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 1.25rem; }
+    .lesson p { margin: 0 0 10px; }
+    .lesson ul { margin: 0 0 10px; padding-left: 22px; }
+    .lesson li { margin-bottom: 6px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; }
+    .callout { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 0.95rem; border: 2px solid; }
+    .callout.trap { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+    .callout.mnemonic { background: #fffbeb; border-color: var(--yellow-dark); color: #713f12; }
+    .callout.mnemonic .hook { display: inline-block; font-weight: bold; background: var(--yellow); border: 2px solid #000; border-radius: 6px; padding: 1px 8px; margin-right: 6px; }
+    .warmup {
+      background: #f5f3ff; border: 3px dashed var(--accent); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 22px;
+    }
+    .warmup h3 { margin: 0 0 12px; color: var(--accent-dark); }
+    .quiz-item { background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+    .quiz-q { margin: 0 0 6px; }
+    details summary { cursor: pointer; font-weight: bold; color: var(--accent-dark); }
+    .quiz-a { margin: 8px 0 4px; }
+    .quiz-why { margin: 0; font-size: 0.92rem; color: #475569; }
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .scroll-top-btn {
+      display: block; width: fit-content; margin: 24px auto 0; background: var(--yellow); color: #000; font-weight: bold;
+      padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+    }
+    .scroll-top-btn:hover { background: var(--yellow-dark); }
+    @media (max-width: 720px) { .nav-link { width: 100%; } }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-sticker.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; GCP Cloud Architect Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="practice_questions.html" class="nav-link">Practice &rarr;</a>
+    </div>
+
+    <header>
+      <span class="pill">Section 4</span><span class="weight">~15%</span>
+      <h1>Analyzing &amp; Optimizing Processes</h1>
+      <p class="sec-intro">Technical and business processes: SDLC and CI/CD, disaster recovery, change management, and cost optimization.</p>
+    </header>
+
+    <section class="lesson">
+      <h3>Disaster-recovery tiers</h3>
+      <p>Trade cost against <strong>RTO</strong> (time to recover) and <strong>RPO</strong> (acceptable data loss):</p><ul><li><strong>Backup &amp; restore</strong> — cheapest, hours of RTO.</li><li><strong>Cold standby</strong> — rebuild from IaC after outage.</li><li><strong>Warm standby</strong> — scaled-down replica promoted in minutes.</li><li><strong>Hot / active-active</strong> — near-zero RTO/RPO, priciest.</li></ul>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> Match the tier to the stated RTO/RPO and budget. A ~10-minute RTO with small data loss and moderate cost points to <strong>warm standby</strong>, not active-active.</div>
+    </section>
+    <section class="lesson">
+      <h3>Cost optimization levers</h3>
+      <p>Use <strong>committed-use discounts</strong> (resource commitments for steady workloads) and automatic <strong>sustained-use discounts</strong>; <strong>Spot VMs</strong> for fault-tolerant batch; right-size via <strong>Active Assist / Recommender</strong>; apply storage lifecycle policies and autoscaling. Cloud shifts spend from <strong>CapEx</strong> to <strong>OpEx</strong> — a common business-process answer.</p>
+      <div class="callout mnemonic"><span class="hook">CUD</span> Committed-use discounts are commitments on <strong>resources</strong> (vCPU/RAM), not specific VMs — they survive resizing.</div>
+    </section>
+    <section class="lesson">
+      <h3>SDLC, CI/CD &amp; change management</h3>
+      <p>Optimise the delivery process, not just the infrastructure. Automate the path to prod with <strong>Cloud Build</strong> (CI), <strong>Artifact Registry</strong> (artifacts), and <strong>Cloud Deploy</strong> (managed progressive delivery with approvals across environments). Track the <strong>DORA metrics</strong> (deployment frequency, lead time, change-failure rate, MTTR) and gate risky changes with approvals and automated rollback rather than change-advisory-board bottlenecks.</p>
+      <div class="callout trap"><strong>⚠️ Exam Trap:</strong> "Promote a release through dev&rarr;staging&rarr;prod with approvals and easy rollback" points to <strong>Cloud Deploy</strong>, not hand-rolled scripts.</div>
+    </section>
+    <section class="warmup">
+      <h3>🧠 Warm-Up Quiz</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A service must recover within ~10 minutes with only a few minutes of data loss, at moderate cost. Which DR pattern?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Warm standby.</strong></p>
+          <p class="quiz-why">A scaled-down running replica with replication promotes within minutes at moderate cost.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> Steady 24/7 workload, predictable size. Best discount mechanism?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Committed-use discounts.</strong></p>
+          <p class="quiz-why">CUDs reward steady resource usage; Spot is for fault-tolerant batch, not steady production.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> You need managed promotion of a release across dev, staging, and prod with approvals and one-click rollback. Which service?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Cloud Deploy.</strong></p>
+          <p class="quiz-why">It's the managed continuous-delivery service with pipelines, approvals, and rollback across targets.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q4.</strong> You resize committed VMs frequently. Do committed-use discounts still apply?</p>
+        <details><summary>Reveal answer</summary>
+          <p class="quiz-a"><strong>Yes &mdash; CUDs commit to resources (vCPU/RAM), not specific VMs.</strong></p>
+          <p class="quiz-why">The discount applies to the committed amount of resource usage regardless of which VMs consume it.</p>
+        </details>
+      </div>
+    </section>
+    <section class="warmup" style="border-style:solid; background:#fffbeb; border-color:var(--yellow-dark);">
+      <h3>📝 Exam-Style Practice</h3>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q1.</strong> A line-of-business app must come back within roughly 10 minutes of a regional failure, can lose at most a few minutes of data, and the budget is moderate &mdash; not unlimited. Which DR pattern fits best?</p>
+        <ul>
+          <li>A) Backup and restore from nightly snapshots.</li>
+          <li>B) A warm standby: a scaled-down replica kept in sync, promoted on failover.</li>
+          <li>C) A multi-region active-active deployment.</li>
+          <li>D) A cold standby rebuilt from IaC after the outage.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> A warm standby promotes a running, replicating replica within minutes and only loses recent data &mdash; matching the ~10-minute RTO, small RPO, and moderate budget.</p>
+          <p class="quiz-why"><strong>A/D:</strong> Backup-restore and cold standby take far longer than 10 minutes. <strong>C:</strong> Active-active meets the RTO but costs the most, beyond a moderate budget.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q2.</strong> A steady, 24/7 production workload of predictable size runs on Compute Engine and finance wants to cut its bill. Which mechanism gives the best savings without risking interruption?</p>
+        <ul>
+          <li>A) Move the workload to Spot VMs.</li>
+          <li>B) Purchase committed-use discounts for the steady resource usage.</li>
+          <li>C) Rely solely on automatic sustained-use discounts.</li>
+          <li>D) Schedule the VMs to stop overnight.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> CUDs give the deepest discount for steady, predictable usage and never interrupt the workload.</p>
+          <p class="quiz-why"><strong>A:</strong> Spot VMs can be preempted &mdash; unsafe for steady production. <strong>C:</strong> Sustained-use discounts help but are smaller than a commitment. <strong>D:</strong> A 24/7 workload can't be stopped overnight.</p>
+        </details>
+      </div>
+      <div class="quiz-item">
+        <p class="quiz-q"><strong>Q3.</strong> Leadership wants releases promoted automatically through dev, staging, and production, each stage gated by approval, with fast rollback on failure. Which Google Cloud service should anchor this?</p>
+        <ul>
+          <li>A) Cloud Build alone, triggering deploys with custom scripts.</li>
+          <li>B) Cloud Deploy delivery pipelines with targets, approvals, and rollback.</li>
+          <li>C) A Cloud Scheduler job that runs deployment commands nightly.</li>
+          <li>D) Manual gcloud deploys performed by the on-call engineer.</li>
+        </ul>
+        <details><summary>Reveal answer &amp; explanation</summary>
+          <p class="quiz-a"><strong>Correct: B.</strong> Cloud Deploy is the managed CD service with multi-stage pipelines, approvals, and built-in rollback &mdash; exactly the workflow described.</p>
+          <p class="quiz-why"><strong>A:</strong> Cloud Build does CI; promotion/approvals/rollback are Cloud Deploy's job. <strong>C/D:</strong> Cron scripts and manual deploys lack approvals and reliable rollback.</p>
+        </details>
+      </div>
+    </section>
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Designing for Security &amp; Compliance</a>
+      <a href="guide_s5.html" class="nav-link">Managing Implementation &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/cloud_architect/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Sticker Book</span><a href="../../briefing/cloud_architect/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

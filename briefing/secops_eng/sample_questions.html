@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="briefing" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Security Operations Engineer - Official Sample Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #0b0f19; --dark-card: #151d30; --dark-border: rgba(255,255,255,0.08);
+            --dark-accent: #3b82f6; --dark-accent-hover: #2563eb; --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af; --dark-correct: #10b981; --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b; --dark-header: #0e1626;
+            --classic-bg: #f3f4f6; --classic-card: #ffffff; --classic-border: #d1d5db;
+            --classic-accent: #1e3a8a; --classic-accent-hover: #172554; --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563; --classic-correct: #15803d; --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309; --classic-header: #e5e7eb;
+            --font-display: 'Outfit', sans-serif; --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg: var(--dark-bg); --card: var(--dark-card); --border: var(--dark-border);
+            --accent: var(--dark-accent); --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary); --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct); --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged); --header: var(--dark-header);
+        }
+        body.classic-mode {
+            --bg: var(--classic-bg); --card: var(--classic-card); --border: var(--classic-border);
+            --accent: var(--classic-accent); --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary); --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct); --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged); --header: var(--classic-header);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        .selectable, code, pre { user-select: text; }
+        body { background-color: var(--bg); color: var(--text-primary); font-family: var(--font-sans);
+               transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column;
+               min-height: 100vh; overflow-x: hidden; }
+        code { font-family: var(--font-mono); background-color: rgba(255,255,255,0.08); padding: 2px 6px;
+               border-radius: 4px; font-size: 0.9em; color: var(--text-primary);
+               border: 1px solid rgba(255,255,255,0.04); word-break: break-all; overflow-wrap: break-word; white-space: pre-wrap; }
+        body.classic-mode code { background-color: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        header { background-color: var(--header); border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+                 display: flex; justify-content: space-between; align-items: center; position: sticky;
+                 top: 0; z-index: 50; backdrop-filter: blur(10px); transition: background-color 0.3s, border-color 0.3s; }
+        .logo-section { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+                      width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center;
+                      justify-content: center; color: white; font-weight: bold; font-family: var(--font-display); }
+        .title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .portal-link { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; text-decoration: none;
+                       padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; white-space: nowrap;
+                       transition: color 0.2s, border-color 0.2s; }
+        .portal-link:hover { color: var(--accent); border-color: var(--accent); }
+        .timer-box { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-weight: bold;
+                     font-size: 1.2rem; background: rgba(0,0,0,0.15); padding: 6px 14px; border-radius: 6px;
+                     border: 1px solid var(--border); color: var(--text-primary); }
+        .timer-box.warning { color: var(--incorrect); animation: pulse 1s infinite alternate; border-color: var(--incorrect); }
+        @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.02); } }
+        .btn { background-color: var(--card); border: 1px solid var(--border); color: var(--text-primary);
+               padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+               font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .btn:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        main { display: flex; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; position: relative; }
+        .content-area { flex: 1; padding: 2.5rem; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
+        .progress-bar-container { width: 100%; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #10b981); width: 0%; transition: width 0.3s ease; }
+        .question-meta { display: flex; justify-content: space-between; align-items: center; }
+        .question-number { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--text-primary); }
+        .multi-badge { background-color: rgba(245,158,11,0.15); color: var(--flagged); border: 1px solid rgba(245,158,11,0.3);
+                       padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; display: none; }
+        .question-box { background-color: var(--card); border: 1px solid var(--border); border-radius: 12px;
+                        padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .question-text { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
+        .question-text p { margin-bottom: 1rem; }
+        .question-text ul, .question-text ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .question-text li { margin-bottom: 0.3rem; }
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-item { display: flex; align-items: flex-start; gap: 14px; padding: 1rem;
+                       background-color: rgba(0,0,0,0.02); border: 1px solid var(--border);
+                       border-radius: 8px; cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .option-item:hover { border-color: var(--accent); background-color: rgba(59,130,246,0.03); }
+        .option-item.selected { border-color: var(--accent); background-color: rgba(59,130,246,0.08); box-shadow: 0 0 0 1px var(--accent); }
+        .option-item.struck-out { text-decoration: line-through; opacity: 0.35; background-color: rgba(0,0,0,0.05) !important; border-color: var(--border) !important; box-shadow: none !important; }
+        .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+                        display: flex; align-items: center; justify-content: center; margin-top: 2px;
+                        flex-shrink: 0; transition: all 0.2s ease; }
+        .option-item.selected .option-radio { border-color: var(--accent); background-color: var(--accent); }
+        .option-radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: white; display: none; }
+        .option-item.selected .option-radio-dot { display: block; }
+        .option-text { flex: 1; min-width: 0; word-break: break-word; overflow-wrap: break-word; font-size: 1rem; line-height: 1.5; color: var(--text-primary); }
+        .sidebar { width: 320px; border-left: 1px solid var(--border); background-color: var(--header);
+                   padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+                   position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto;
+                   transition: background-color 0.3s, border-color 0.3s; }
+        .sidebar-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+                         display: flex; justify-content: space-between; align-items: center; }
+        .grid-navigation { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .grid-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border); display: flex;
+                     align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;
+                     cursor: pointer; transition: all 0.2s ease; position: relative; }
+        .grid-cell:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .grid-cell.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .grid-cell.answered { background-color: rgba(16,185,129,0.15); border-color: var(--correct); color: var(--correct); }
+        .grid-cell.flagged { background-color: rgba(245,158,11,0.15); border-color: var(--flagged); color: var(--flagged); }
+        .grid-cell.post-correct { background-color: rgba(16,185,129,0.3) !important; border-color: #059669 !important; color: #34d399 !important; font-weight: 700; }
+        .grid-cell.post-incorrect { background-color: rgba(239,68,68,0.3) !important; border-color: #dc2626 !important; color: #fca5a5 !important; font-weight: 700; }
+        body.classic-mode .grid-cell.post-correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        body.classic-mode .grid-cell.post-incorrect { background-color: #fee2e2 !important; border-color: #f87171 !important; color: #991b1b !important; }
+        .grid-cell.flagged::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background-color: var(--flagged); border-radius: 50%; }
+        .stats-summary { display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+        .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; }
+        .flag-checkbox-container { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+        .flag-icon { color: var(--text-secondary); transition: color 0.2s; }
+        .flag-checkbox-container input:checked ~ .flag-icon { color: var(--flagged); }
+        .explanation-box { margin-top: 2rem; border-top: 2px solid var(--border); padding-top: 2rem; display: none; flex-direction: column; gap: 1.5rem; }
+        .explanation-title { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); }
+        .exp-item { padding: 1rem; border-radius: 8px; border-left: 4px solid var(--border); background-color: rgba(0,0,0,0.02); font-size: 0.95rem; line-height: 1.6; }
+        .exp-item.correct-exp { border-left-color: var(--correct); background-color: rgba(16,185,129,0.03); }
+        .exp-item.incorrect-exp { border-left-color: var(--incorrect); background-color: rgba(239,68,68,0.03); }
+        .exp-badge { font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .references-box { margin-top: 1rem; }
+        .references-title { font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .ref-link { color: var(--accent); text-decoration: none; display: inline-block; margin-right: 15px; font-size: 0.85rem; word-break: break-all; }
+        .ref-link:hover { text-decoration: underline; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                         background: rgba(0,0,0,0.85); z-index: 1000; align-items: center;
+                         justify-content: center; backdrop-filter: blur(8px); }
+        .results-card { background-color: var(--card); border: 1px solid var(--border); padding: 3rem;
+                        border-radius: 16px; max-width: 600px; width: 90%; display: flex; flex-direction: column;
+                        align-items: center; text-align: center; gap: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--border);
+                        display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-display); margin-bottom: 1rem; }
+        .score-percentage { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .score-label { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .option-item.post-correct { border-color: var(--correct) !important; background-color: rgba(16,185,129,0.08) !important; box-shadow: 0 0 0 1px var(--correct) !important; }
+        .option-item.post-incorrect { border-color: var(--incorrect) !important; background-color: rgba(239,68,68,0.08) !important; box-shadow: 0 0 0 1px var(--incorrect) !important; }
+        .badge-correct { color: var(--correct); font-weight: bold; margin-left: auto; }
+        .badge-incorrect { color: var(--incorrect); font-weight: bold; margin-left: auto; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+                 background: #1e2937; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem;
+                 font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;
+                 transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .scroll-top-btn { display: block; width: fit-content; max-width: 100%; margin: 16px auto 24px;
+                          background: var(--accent); color: white; font-weight: 600; padding: 10px 18px;
+                          border: none; border-radius: 6px; font-size: 0.85rem; font-family: var(--font-sans); cursor: pointer; }
+        .scroll-top-btn:hover { background: var(--accent-hover); }
+        @media (max-width: 1024px) {
+            main { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-left: none; border-top: 1px solid var(--border); }
+            .content-area { padding: 1.5rem; max-width: 100%; }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Security Operations Engineer</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary);">OFFICIAL SAMPLE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">14:24</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+                <div class="multi-badge" id="multi-badge">Select all that apply</div>
+            </div>
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text"></div>
+                <div class="options-list" id="options-list"></div>
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations &amp; Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display:flex;flex-direction:column;gap:1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References &amp; Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display:none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size:0.8rem;font-weight:500;color:var(--text-secondary);" id="review-counter">0/6 Answered</span>
+            </div>
+            <div class="grid-navigation" id="grid-navigation"></div>
+            <div class="stats-summary">
+                <div class="stat-row"><span>Answered:</span><span class="stat-value" id="stat-answered">0</span></div>
+                <div class="stat-row"><span>Flagged:</span><span class="stat-value" id="stat-flagged">0</span></div>
+                <div class="stat-row"><span>Remaining:</span><span class="stat-value" id="stat-remaining">6</span></div>
+            </div>
+            <button id="submit-exam-btn" class="btn btn-primary" style="width:100%;margin-top:auto;padding:12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;">Exam Completed</h1>
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">—</span>
+            </div>
+            <p style="color:var(--text-secondary);line-height:1.5;" id="results-detailed-stats">You answered 0 out of 6 questions correctly.</p>
+            <div style="display:flex;gap:15px;width:100%;">
+                <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex:1;padding:12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Tip: Left-click selects. Right-click crosses out an option.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "Your company recently started pulling JSON logs from a third-party system into Google Security Operations (SecOps). You notice that some fields in the JSON logs are not being automatically extracted by the prebuilt parser. You need to extract the additional fields with the least amount of effort. What should you do?",
+    "options": [
+      { "id": "A", "text": "Configure auto extraction to add the additional fields.", "is_correct": false },
+      { "id": "B", "text": "Create parser extensions using the no-code approach.", "is_correct": false },
+      { "id": "C", "text": "Create parser extensions using the code snippet approach.", "is_correct": true },
+      { "id": "D", "text": "Submit a parser improvement request to Cloud Customer Care.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Auto extraction in Google SecOps handles common patterns automatically, but it cannot be configured to extract specific custom fields from an existing log format where a prebuilt parser already exists. Auto extraction is not a tool you configure manually for per-field extraction from a third-party JSON source.",
+      "B": "The no-code parser extension approach is suitable for simple field mapping and basic transformations. However, extracting fields from nested JSON structures or applying custom extraction logic typically requires the code snippet approach, which offers more flexibility. The 'least effort' answer depends on complexity, but C is the standard recommendation for extending parsers with custom logic.",
+      "C": "C is correct. Parser extensions using the code snippet approach allow you to write custom Grok/regex extraction logic that supplements an existing prebuilt parser. This is the recommended, lowest-effort path when a prebuilt parser exists but doesn't extract all required fields — you extend it rather than rebuilding from scratch.",
+      "D": "Submitting a parser improvement request to Customer Care is the slowest option — it requires a support ticket, Google engineering effort, and an unspecified wait time. This is appropriate only if you want Google to update the official prebuilt parser, not if you need the fields available immediately with minimal effort."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/ingestion/parser-extensions", "text": "Google SecOps parser extensions" },
+      { "url": "https://cloud.google.com/chronicle/docs/ingestion/default-parsers", "text": "Default parsers in Google SecOps" }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "Your organization recently onboarded Google Security Operations (SecOps) and configured an EDR integration in SOAR. After a few weeks of operation, the security team finds that manually triaging malware alerts from the EDR is taking too long and increasing response times. You need to automate the response to reduce alert triage time. What should you do?",
+    "options": [
+      { "id": "A", "text": "Create a playbook to automatically block malicious IP addresses and isolate network communication when a malware alert is generated.", "is_correct": false },
+      { "id": "B", "text": "Develop a playbook to automatically trigger endpoint isolation when a malware alert is generated.", "is_correct": true },
+      { "id": "C", "text": "Configure a playbook to automatically send a notification to the affected user with instructions on how to remediate the malware.", "is_correct": false },
+      { "id": "D", "text": "Deploy SOAR Remote Agent to the endpoints, and configure the host to execute a PowerShell script to isolate the endpoint.", "is_correct": false }
+    ],
+    "correct_answer": "B",
+    "multi_select": false,
+    "explanations": {
+      "A": "Blocking IP addresses is a network-level response (appropriate for network IOC alerts) and not the primary containment action for a malware alert on an endpoint. When malware is detected on a specific host, isolating that endpoint prevents lateral movement — blocking a single IP does not contain an already-compromised host.",
+      "B": "B is correct. When the EDR integration is configured in SOAR, the most direct automated response to a malware alert is endpoint isolation. The EDR can be instructed via the SOAR playbook to isolate the affected host, preventing lateral movement while investigation continues. This directly reduces the manual triage workload.",
+      "C": "Sending a notification to the affected user is a useful step for low-severity or phishing alerts but is insufficient for active malware. A user cannot self-remediate active malware in a timely or reliable manner. This option does not actually contain the threat or reduce triage time meaningfully.",
+      "D": "Deploying a SOAR Remote Agent to execute PowerShell is a custom, manual approach to endpoint isolation. The SOAR EDR integration already provides native API-based endpoint isolation commands. Building a custom PowerShell-based isolation mechanism duplicates functionality and adds complexity and maintenance overhead."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/soar/soar-overview", "text": "Google SecOps SOAR overview" },
+      { "url": "https://cloud.google.com/chronicle/docs/soar/playbooks-overview", "text": "SOAR playbooks" }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "You have detected a suspicious access pattern in your Google Cloud environment using Google Security Operations (SecOps). The pattern involves a service account performing a sequence of IAM permission changes followed by unusual network activity, all within a 15-minute window. You need to create a detection rule that correlates these events and generates a high-severity alert. What should you do?",
+    "options": [
+      { "id": "A", "text": "Use a single-event YARA-L rule that matches on process creation and network activity from the same service account.", "is_correct": false },
+      { "id": "B", "text": "Create a suppression rule to ignore frequent IAM operations unless a network IOC match also occurs.", "is_correct": false },
+      { "id": "C", "text": "Build a multi-event YARA-L rule with a 15-minute time window and use the principal.user.userid identifier to correlate IAM changes with network anomalies.", "is_correct": true },
+      { "id": "D", "text": "Use the SecOps entity graph to monitor service account behavior and trigger alerts when high-severity events are detected for the same entity.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "A single-event YARA-L rule matches on one event at a time. The scenario describes a *sequence* of events (IAM changes followed by network activity) that must be correlated within a time window. A single-event rule cannot express this temporal sequence — it would fire on either event independently, generating false positives.",
+      "B": "Suppression rules reduce noise by silencing alerts, not by detecting correlated attack sequences. Suppressing IAM operations unless a network IOC also occurs is reactive noise reduction, not proactive detection of a multi-stage attack pattern. This approach would miss the sequence of events described.",
+      "C": "C is correct. Multi-event YARA-L rules in Google SecOps are designed for exactly this use case: correlating multiple events from the same entity (principal.user.userid for a service account) within a defined time window (15 minutes). This models the attack sequence as a detection pattern and generates a targeted high-severity alert.",
+      "D": "The entity graph provides a visualization of entity relationships and historical context, but it is not a real-time rule engine for detecting correlated event sequences. The entity graph is an investigation tool, not a detection rule mechanism for automated alerting."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-overview", "text": "YARA-L 2.0 detection rules" },
+      { "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-multi-event-rules", "text": "Multi-event YARA-L rules" }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "Your team wants to improve Google Security Operations (SecOps) detection rules by integrating threat intelligence from the Applied Threat Intelligence (ATI) Fusion Feed. You want to use this feed to automatically enhance detection coverage with minimal manual rule maintenance. What should you do?",
+    "options": [
+      { "id": "A", "text": "Configure YARA-L detection rules to match IOCs only if they appear in the ATI Fusion Feed with a confidence score above 90.", "is_correct": false },
+      { "id": "B", "text": "Apply retrohunt to all IOC matches in the past 30 days to automatically adjust threat levels based on the ATI feed.", "is_correct": false },
+      { "id": "C", "text": "Use IOC rule templates from managed rule sets in Google SecOps that ingest and correlate with the ATI Fusion Feed automatically.", "is_correct": true },
+      { "id": "D", "text": "Assign an auto-escalation level to any rule using ATI indicators by configuring global IOC threshold settings in SecOps.", "is_correct": false }
+    ],
+    "correct_answer": "C",
+    "multi_select": false,
+    "explanations": {
+      "A": "Writing custom YARA-L rules that reference ATI Fusion Feed confidence scores requires ongoing manual maintenance: you must update the rules as feed contents evolve, manage the confidence threshold logic, and keep rule sets current. This directly contradicts the requirement for minimal manual maintenance.",
+      "B": "Retrohunt searches historical data for IOC matches but operates on past data, not in real time. Retrohunt is an investigation tool for historical analysis — it does not automatically update or enhance forward-looking detection rules based on threat feed changes.",
+      "C": "C is correct. Google SecOps provides managed rule sets that automatically ingest the ATI Fusion Feed and apply pre-built IOC correlation rules. These managed rules update automatically when the threat feed changes, providing continuous detection coverage against known IOCs with minimal maintenance — exactly what the question requires.",
+      "D": "Global IOC threshold settings are a configuration option for sensitivity, but they do not automatically create or maintain detection coverage. Auto-escalation based on global thresholds doesn't provide the rich IOC-to-event correlation that the ATI Fusion Feed enables through managed rule sets."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/detection/ati-overview", "text": "Applied Threat Intelligence in Google SecOps" },
+      { "url": "https://cloud.google.com/chronicle/docs/detection/managed-rules", "text": "Managed detection rules" }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "You are responsible for developing and configuring data ingestion in Google Security Operations (SecOps) for your organization. A new log source is generating logs in a format that is not covered by any existing parser in the Google SecOps parser library. You need to ingest these logs correctly. What should you do?",
+    "options": [
+      { "id": "A", "text": "Design and develop a custom parser.", "is_correct": true },
+      { "id": "B", "text": "Apply any pending updates to the prebuilt parser.", "is_correct": false },
+      { "id": "C", "text": "Implement a parser extension on top of the prebuilt parser.", "is_correct": false },
+      { "id": "D", "text": "Implement middleware to modify the underlying data structure.", "is_correct": false }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is correct. When a log source has no matching parser in the Google SecOps library, the correct approach is to develop a custom parser from scratch. Custom parsers use the Grok-based parser language and allow you to define exactly how fields are extracted and mapped to the Unified Data Model (UDM). This is the only option that directly solves the problem.",
+      "B": "There is no prebuilt parser for this log source — the question explicitly states no existing parser covers this format. Applying updates to a parser that doesn't exist for this log type is not possible.",
+      "C": "Parser extensions supplement an *existing* prebuilt parser by adding or overriding field extractions. Since no prebuilt parser exists for this log format, there is nothing to extend. A full custom parser is required.",
+      "D": "Implementing middleware to modify the data structure before ingestion is a workaround that transforms the log data rather than correctly parsing it. This adds infrastructure complexity, makes logs harder to correlate with other sources, and may distort the original log data. It is not the recommended approach in the SecOps parser ecosystem."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/ingestion/parser-overview", "text": "Parsers in Google SecOps" },
+      { "url": "https://cloud.google.com/chronicle/docs/ingestion/custom-parser-development", "text": "Custom parser development guide" }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Security Operations Engineer",
+    "case_study": null,
+    "scenario": "You are planning log onboarding for a Google Security Operations (SecOps) SIEM deployment in a cloud-heavy enterprise environment. Your organization wants to maximize threat detection value from the first logs ingested. You need to identify the highest-priority log source to onboard first. What should you do?",
+    "options": [
+      { "id": "A", "text": "Onboard IAM logs.", "is_correct": true },
+      { "id": "B", "text": "Onboard EDR logs.", "is_correct": false },
+      { "id": "C", "text": "Onboard network firewall logs.", "is_correct": false },
+      { "id": "D", "text": "Onboard Cloud access security broker (CASB) logs.", "is_correct": false }
+    ],
+    "correct_answer": "A",
+    "multi_select": false,
+    "explanations": {
+      "A": "A is correct. In a cloud-heavy enterprise, IAM logs (Cloud Audit Logs — Admin Activity and Data Access logs) are the highest-priority log source for a SIEM. They capture authentication events, privilege escalation, resource creation/deletion, and API calls — the core signals for detecting unauthorized access, credential compromise, and insider threats in a cloud environment. Every cloud attack path typically touches IAM.",
+      "B": "EDR logs provide rich endpoint telemetry and are critical for detecting malware, lateral movement, and endpoint compromise. However, in a *cloud-heavy* environment (emphasis on cloud), cloud control-plane activity (IAM) covers more attack surface than endpoint telemetry, which is more relevant in on-premises or hybrid scenarios. EDR is second priority.",
+      "C": "Network firewall logs capture network traffic patterns and are valuable for detecting perimeter threats and lateral movement. However, in cloud environments, east-west traffic is often secured at the application/API layer, and cloud-native threats (credential misuse, API abuse) are not visible in network firewall logs. IAM logs provide higher coverage for cloud-specific threats.",
+      "D": "CASB logs provide visibility into cloud SaaS usage and policy enforcement. While useful for shadow IT detection and data exfiltration monitoring, CASB coverage is narrower than IAM logs in a cloud-native environment. CASB is a secondary source after foundational cloud audit logs are established."
+    },
+    "references": [
+      { "url": "https://cloud.google.com/chronicle/docs/ingestion/log-onboarding", "text": "Log onboarding in Google SecOps" },
+      { "url": "https://cloud.google.com/logging/docs/audit", "text": "Cloud Audit Logs overview" }
+    ]
+  }
+];
+
+        let currentIdx = 0;
+        let selectedAnswers = {};
+        let flaggedQuestions = {};
+        let struckOptions = {};
+        let examSubmitted = false;
+        let timerInterval = null;
+        const questionNotes = {};
+        let timeLeft = Math.round(quizData.length * 2.4 * 60);
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const el = document.getElementById('exam-timer');
+            el.textContent = formatTime(timeLeft);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                el.textContent = formatTime(timeLeft);
+                if (timeLeft <= 300) el.classList.add('warning');
+                if (timeLeft <= 0) { clearInterval(timerInterval); autoSubmitExam(); }
+            }, 1000);
+        }
+
+        function isAnswered(idx) {
+            const q = quizData[idx];
+            if (q.multi_select) return selectedAnswers[idx] && selectedAnswers[idx].length > 0;
+            return selectedAnswers[idx] !== undefined && selectedAnswers[idx] !== null;
+        }
+
+        function isCorrectAnswer(q, idx) {
+            if (q.multi_select) {
+                const sel = (selectedAnswers[idx] || []).slice().sort().join(',');
+                const correct = (Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer]).slice().sort().join(',');
+                return sel === correct;
+            }
+            return selectedAnswers[idx] === q.correct_answer;
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+            document.getElementById('progress-bar').style.width = ((idx + 1) / quizData.length * 100) + '%';
+            document.getElementById('question-header').textContent = 'Question ' + (idx + 1) + ' of ' + quizData.length;
+            document.getElementById('multi-badge').style.display = q.multi_select ? 'block' : 'none';
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            const optList = document.getElementById('options-list');
+            optList.innerHTML = '';
+            const struck = struckOptions[idx] || {};
+            const selAns = selectedAnswers[idx];
+            q.options.forEach(opt => {
+                const li = document.createElement('div');
+                li.className = 'option-item';
+                const isSelected = q.multi_select ? (Array.isArray(selAns) && selAns.includes(opt.id)) : selAns === opt.id;
+                if (isSelected) li.classList.add('selected');
+                if (struck[opt.id]) li.classList.add('struck-out');
+                if (examSubmitted) {
+                    li.classList.remove('selected');
+                    if (opt.is_correct) li.classList.add('post-correct');
+                    else if (isSelected) li.classList.add('post-incorrect');
+                }
+                const badge = examSubmitted && opt.is_correct ? ' <span class="badge-correct">&#10003; Correct</span>' : examSubmitted && isSelected && !opt.is_correct ? ' <span class="badge-incorrect">&#10007; Wrong</span>' : '';
+                li.innerHTML = '<div class="option-radio"><div class="option-radio-dot"></div></div><div class="option-text">' + opt.text + badge + '</div>';
+                li.addEventListener('click', (e) => handleOptionClick(e, idx, opt.id, q.multi_select));
+                li.addEventListener('contextmenu', (e) => handleRightClick(e, idx, opt.id));
+                optList.appendChild(li);
+            });
+
+            document.getElementById('flag-checkbox').checked = !!flaggedQuestions[idx];
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) { expBox.style.display = 'flex'; renderExplanations(q); } else expBox.style.display = 'none';
+            document.getElementById('prev-btn').disabled = idx === 0;
+            document.getElementById('next-btn').disabled = idx === quizData.length - 1;
+            updateStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleOptionClick(e, idx, optId, isMulti) {
+            if (examSubmitted) return;
+            if ((struckOptions[idx] || {})[optId]) return;
+            if (isMulti) {
+                if (!selectedAnswers[idx]) selectedAnswers[idx] = [];
+                const pos = selectedAnswers[idx].indexOf(optId);
+                if (pos === -1) selectedAnswers[idx].push(optId); else selectedAnswers[idx].splice(pos, 1);
+            } else { selectedAnswers[idx] = optId; }
+            loadQuestion(idx);
+        }
+
+        function handleRightClick(e, idx, optId) {
+            e.preventDefault();
+            if (examSubmitted) return;
+            if (!struckOptions[idx]) struckOptions[idx] = {};
+            struckOptions[idx][optId] = !struckOptions[idx][optId];
+            if (struckOptions[idx][optId]) {
+                if (quizData[idx].multi_select) { if (selectedAnswers[idx]) { const p = selectedAnswers[idx].indexOf(optId); if (p !== -1) selectedAnswers[idx].splice(p, 1); } }
+                else { if (selectedAnswers[idx] === optId) selectedAnswers[idx] = null; }
+            }
+            loadQuestion(idx);
+        }
+
+        function toggleFlag() { flaggedQuestions[currentIdx] = !!document.getElementById('flag-checkbox').checked; updateStats(); }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell'; cell.id = 'grid-cell-' + idx; cell.textContent = idx + 1;
+                cell.addEventListener('click', () => loadQuestion(idx));
+                grid.appendChild(cell);
+            });
+        }
+
+        function prevQuestion() { if (currentIdx > 0) loadQuestion(currentIdx - 1); }
+        function nextQuestion() { if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1); }
+
+        function updateStats() {
+            let answered = 0, flagged = 0;
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById('grid-cell-' + idx);
+                if (!cell) return;
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+                if (examSubmitted) cell.classList.add(isCorrectAnswer(q, idx) ? 'post-correct' : 'post-incorrect');
+                else if (isAnswered(idx)) { answered++; cell.classList.add('answered'); }
+                if (flaggedQuestions[idx]) { flagged++; cell.classList.add('flagged'); }
+            });
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = answered + '/' + quizData.length + ' Answered';
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item ' + (opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+                item.innerHTML = '<span class="exp-badge" style="color:' + badgeColor + '">' + (opt.is_correct ? 'Option ' + opt.id + ' (Correct):' : 'Option ' + opt.id + ' (Incorrect):') + '</span><br>' + marked.parse(q.explanations[opt.id] || 'See official documentation.');
+                container.appendChild(item);
+            });
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            (q.references || []).forEach(ref => { const a = document.createElement('a'); a.className = 'ref-link'; a.href = ref.url; a.target = '_blank'; a.textContent = ref.text || ref.url; refContainer.appendChild(a); });
+            if (!q.references || !q.references.length) refContainer.textContent = 'No references available.';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('classic-mode');
+            const isClassic = document.body.classList.contains('classic-mode');
+            document.getElementById('theme-toggle-btn').innerHTML = isClassic
+                ? '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/></svg><span>Premium Theme</span>'
+                : '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg><span>Classic Theme</span>';
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) { showToast("Exam already submitted!"); return; }
+            const ac = quizData.filter((q, i) => isAnswered(i)).length;
+            if (confirm("Submit exam?\n\nAnswered: " + ac + " of " + quizData.length + (quizData.length - ac > 0 ? "\n\nWARNING: " + (quizData.length - ac) + " unanswered question(s)." : ""))) submitExam();
+        }
+
+        function autoSubmitExam() { if (examSubmitted) return; alert("Time's up! Submitting your exam automatically."); submitExam(); }
+
+        function submitExam() {
+            examSubmitted = true; clearInterval(timerInterval);
+            let correctCount = 0;
+            quizData.forEach((q, idx) => { if (isCorrectAnswer(q, idx)) correctCount++; });
+            const pct = Math.round(correctCount / quizData.length * 100);
+            document.getElementById('results-score').textContent = pct + '%';
+            const statusEl = document.getElementById('results-passing-status');
+            statusEl.textContent = pct >= 70 ? 'PASS' : 'FAIL';
+            statusEl.style.color = pct >= 70 ? 'var(--correct)' : 'var(--incorrect)';
+            document.getElementById('results-detailed-stats').textContent = 'You scored ' + correctCount + ' out of ' + quizData.length + ' correct (' + pct + '%). Google Cloud Professional exams typically require ~70-75% to pass.';
+            document.getElementById('results-modal').style.display = 'flex';
+            loadQuestion(currentIdx); updateStats();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Exam Submitted'; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; }
+        }
+
+        function closeResultsModalAndReview() { document.getElementById('results-modal').style.display = 'none'; }
+
+        function resetExam() {
+            selectedAnswers = {}; flaggedQuestions = {}; struckOptions = {};
+            examSubmitted = false; timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            initGrid(); loadQuestion(0); startTimer();
+            const btn = document.getElementById('submit-exam-btn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Submit Exam'; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+        }
+
+        function showToast(msg, dur = 3000) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), dur);
+        }
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initGrid(); loadQuestion(0);
+            document.addEventListener('contextmenu', e => { if (e.target.closest('.option-item')) e.preventDefault(); });
+        });
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/secops_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/secops_eng/sample_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

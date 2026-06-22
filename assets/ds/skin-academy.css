@@ -1,0 +1,151 @@
+/* ============================================================
+   SKIN · ACADEMY  — "the middle"
+   Ovo + Work Sans, alchemy/deep-blue palette, border-matched
+   solid block shadows, dotted accents. Warm but polished.
+   Visual rules are scoped under html.ds-skin so the closed-book
+   exam simulators (which only get the :root re-accent) are safe.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Ovo&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('tokens.css');
+
+/* ---- Re-map every legacy palette variable onto the brand ---- */
+:root {
+  --rev-yellow: #FBF1C9;   --rev-yellow-dark: var(--ds-golden);
+  --rev-blue:   var(--ds-alchemy);   --rev-violet: #6E59F2;
+  --rev-teal:   var(--ds-cloud-700); --rev-green:  var(--ds-cloud-700);
+  --rev-green-dark: #0E7C6B; --rev-green-light: #E4F6F1;
+  --rev-orange: #E08A2B;   --rev-red:   var(--ds-warn);
+  --rev-indigo: #4F46E5;   --rev-pink:  #D6409F;
+  --rev-cyan:   #0E9CB0;   --rev-slate: var(--ds-muted);
+  --rev-violet-light: #ECE9FE; --rev-violet-border: #5A46C8;
+  --bg-light:   var(--ds-paper); --ink: var(--ds-ink); --radius: var(--ds-radius-lg);
+
+  --green: var(--ds-alchemy);  --green-dark: var(--ds-alchemy-700);
+  --teal: var(--ds-cloud-700); --amber: var(--ds-golden); --amber-700: var(--ds-golden-700);
+  --red: var(--ds-warn); --blue: var(--ds-alchemy); --violet: #6E59F2;
+  --muted: var(--ds-muted); --line: #DCE3F4;
+  --surface: #fff; --surface-solid: #fff; --surface-soft: var(--ds-soft);
+  --bg: var(--ds-paper);
+  --shadow: 5px 5px 0 #C7D4F7; --shadow-soft: var(--ds-shadow-hairline);
+
+  /* simulator: kept serious, just re-accented + typeface */
+  --dark-accent: var(--ds-alchemy); --dark-accent-hover: var(--ds-alchemy-700);
+  --classic-accent: var(--ds-alchemy); --classic-accent-hover: var(--ds-alchemy-700);
+  --accent: var(--ds-alchemy); --accent-hover: var(--ds-alchemy-700);
+  --font-display: var(--ds-font-display); --font-sans: var(--ds-font-ui);
+}
+
+/* ---- Base type & page ---- */
+html.ds-skin body {
+  font-family: var(--ds-font-ui) !important;
+  background: var(--ds-paper) !important;
+  color: var(--ds-body);
+  line-height: 1.62;
+}
+html.ds-skin h1, html.ds-skin h2, html.ds-skin h3,
+html.ds-skin .sec-title, html.ds-skin .intro-title, html.ds-skin .matrix-title,
+html.ds-skin header h1, html.ds-skin .slide-header h2, html.ds-skin .hero h1 {
+  font-family: var(--ds-font-display) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em;
+  color: var(--ds-ink);
+}
+html.ds-skin h2 { border-bottom: 2px solid var(--ds-line) !important; color: var(--ds-alchemy) !important; }
+html.ds-skin h3 { color: var(--ds-ink); }
+html.ds-skin a { color: var(--ds-alchemy); }
+html.ds-skin code { font-family: var(--ds-font-mono); }
+
+/* ---- Header banner ---- */
+html.ds-skin header {
+  background: linear-gradient(135deg, var(--ds-alchemy) 0%, var(--ds-deep) 100%) !important;
+  border: 2px solid #C7D4F7 !important;
+  box-shadow: 5px 5px 0 #C7D4F7 !important;
+  border-radius: var(--ds-radius-lg) !important;
+  color: #fff !important;
+}
+html.ds-skin header h1, html.ds-skin header p { color: #fff !important; }
+html.ds-skin .section-badge { background: var(--ds-deep) !important; border-color: rgba(255,255,255,.4) !important; }
+html.ds-skin header::after { background: var(--ds-deep) !important; border-color: rgba(255,255,255,.35) !important; }
+html.ds-skin .badge-rev { background: var(--ds-cloud) !important; color: #0E3F37 !important; border: none !important; transform: none !important; }
+html.ds-skin .tagline { font-style: normal; opacity: .95; }
+html.ds-skin .eyebrow, html.ds-skin .slide-kicker { color: var(--ds-cloud) !important; }
+
+/* ---- Cards: white, soft alchemy border-matched block ---- */
+html.ds-skin .rev-card, html.ds-skin .cert-card, html.ds-skin .section-card,
+html.ds-skin .intro-section, html.ds-skin .table-container, html.ds-skin .warm-up,
+html.ds-skin .practice-exam, html.ds-skin .q-box, html.ds-skin .know-card,
+html.ds-skin .guide-card, html.ds-skin .slide, html.ds-skin .fact-card {
+  border-radius: var(--ds-radius-lg) !important;
+}
+html.ds-skin .rev-card, html.ds-skin .cert-card, html.ds-skin .section-card,
+html.ds-skin .intro-section, html.ds-skin .table-container, html.ds-skin .warm-up,
+html.ds-skin .practice-exam, html.ds-skin .know-card, html.ds-skin .fact-card {
+  background: #fff !important;
+  border: 2px solid #C9D7FF !important;
+  box-shadow: 4px 4px 0 #C7D4F7 !important;
+}
+html.ds-skin .cert-card:hover, html.ds-skin .section-card:hover {
+  transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #C7D4F7 !important; }
+html.ds-skin .q-box { border: 1.5px solid #D7DEEA !important; box-shadow: none !important; border-radius: var(--ds-radius) !important; }
+
+/* semantic exceptions */
+html.ds-skin .rev-card.tip { border-color: #C9D7FF !important; box-shadow: 4px 4px 0 #C7D4F7 !important; }
+html.ds-skin .rev-card.tip h3 { color: var(--ds-alchemy) !important; }
+html.ds-skin .rev-card.warn { border-color: var(--ds-warn) !important; box-shadow: 4px 4px 0 #F6C6C7 !important; }
+html.ds-skin .mnemonic { background: #fff !important; border: 2px solid var(--ds-mnemonic) !important;
+  box-shadow: 4px 4px 0 #BBE7DB !important; border-radius: var(--ds-radius-lg) !important; }
+html.ds-skin .mnemonic strong { color: var(--ds-mnemonic-ink) !important; }
+html.ds-skin .further-reading { background: #F4FBF8 !important; border: 2px solid var(--ds-mnemonic) !important;
+  box-shadow: 4px 4px 0 #BBE7DB !important; border-radius: var(--ds-radius-lg) !important; }
+html.ds-skin .further-reading h3 { color: var(--ds-mnemonic-ink) !important; }
+
+/* exam trap: dashed gold, NO shadow */
+html.ds-skin .exam-trap, html.ds-skin .trap {
+  background: #FBF7E9 !important;
+  border: 2px dashed var(--ds-golden) !important;
+  box-shadow: none !important;
+  border-radius: var(--ds-radius-lg) !important;
+}
+html.ds-skin .exam-trap::before { background: var(--ds-golden) !important; color: var(--ds-deep) !important; border: none !important; }
+html.ds-skin .exam-trap h3 { color: var(--ds-trap-ink) !important; }
+
+/* ---- Buttons & pills ---- */
+html.ds-skin .btn-rev, html.ds-skin .nav-link, html.ds-skin .show-answer-btn,
+html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn, html.ds-skin .doc-link {
+  border-radius: var(--ds-radius-pill) !important;
+  border: 1.5px solid #C9D7FF !important;
+  box-shadow: none !important;
+  font-family: var(--ds-font-ui) !important;
+}
+html.ds-skin .btn-rev, html.ds-skin .btn-primary { background: var(--ds-alchemy) !important; color: #fff !important; border-color: var(--ds-alchemy) !important; }
+html.ds-skin .btn-rev:hover, html.ds-skin .btn-primary:hover { background: var(--ds-alchemy-700) !important; }
+html.ds-skin .btn-secondary { background: var(--ds-soft) !important; color: var(--ds-alchemy) !important; }
+html.ds-skin .btn-exam { background: #E4F6F1 !important; color: var(--ds-mnemonic-ink) !important; border-color: #BBE7DB !important; }
+html.ds-skin .btn-official { background: #FBF1C9 !important; color: var(--ds-golden-700) !important; border-color: #EAD9A6 !important; }
+html.ds-skin .nav-link { background: #fff !important; color: var(--ds-alchemy) !important; }
+html.ds-skin .nav-link:hover { background: var(--ds-soft) !important; }
+html.ds-skin .doc-link { border-radius: var(--ds-radius) !important; box-shadow: var(--ds-shadow-hairline) !important; }
+html.ds-skin .doc-link strong { color: var(--ds-alchemy) !important; }
+html.ds-skin .scroll-top-btn { background: var(--ds-alchemy) !important; color: #fff !important; border-color: var(--ds-alchemy) !important; }
+html.ds-skin .sec-badge, html.ds-skin .slide-badge, html.ds-skin .badge-check { border-radius: var(--ds-radius-pill) !important; }
+
+/* ---- Tables ---- */
+html.ds-skin .table-container { box-shadow: 4px 4px 0 #C7D4F7 !important; }
+html.ds-skin th { background: var(--ds-soft) !important; color: var(--ds-ink) !important; text-transform: none !important; }
+html.ds-skin th, html.ds-skin td { border-color: #DCE3F4 !important; }
+
+/* ---- Quiz / option states keep meaning colours ---- */
+html.ds-skin .answer-panel { border-left-color: var(--ds-alchemy) !important; }
+html.ds-skin .option-list li.correct-answer, html.ds-skin .badge-check.correct { background: #E4F6F1 !important; border-color: var(--ds-mnemonic) !important; }
+html.ds-skin .option-list li.wrong-answer, html.ds-skin .badge-check.incorrect { background: #FDECEC !important; border-color: var(--ds-warn) !important; }
+
+/* ---- Cheatsheet hero/slides ---- */
+html.ds-skin .hero { background:
+    radial-gradient(circle at top right, rgba(168,230,219,.25), transparent 22rem),
+    linear-gradient(135deg, var(--ds-deep) 0%, var(--ds-alchemy) 60%, var(--ds-alchemy-700) 100%) !important;
+  box-shadow: var(--ds-shadow-hairline) !important; }
+html.ds-skin .slide { border: 1.5px solid #DCE3F4 !important; box-shadow: var(--ds-shadow-hairline) !important; }
+html.ds-skin .hero h1, html.ds-skin .hero .subtitle { color: #fff !important; }
+html.ds-skin .joke-box { border-color: var(--ds-cloud) !important; color: var(--ds-muted) !important; }

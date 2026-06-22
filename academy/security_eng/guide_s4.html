@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 4 Revision Guide - Managing Operations (SecOps, Logging &amp; Detection)</title>
+  <style>
+    :root {
+      --bg-light: #fff7ed; /* Light orange background */
+      --ink: #1e293b;
+      --primary: #ea580c; /* Section 4 orange */
+      --primary-light: #ffedd5;
+      --primary-border: #c2410c;
+      --rev-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fed7aa' fill-opacity='0.3' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+
+    .container { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    header {
+      background: linear-gradient(135deg, #fb923c 0%, var(--primary) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      color: white; padding: 30px 20px; position: relative; margin-bottom: 35px;
+    }
+    header h1 {
+      margin: 0 0 10px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); text-transform: uppercase;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0px #000;
+    }
+    header p { margin: 0; font-size: 1.1rem; font-style: italic; }
+    .section-badge {
+      position: absolute; bottom: -15px; right: 20px; background: #ef4444; color: white; font-weight: bold;
+      padding: 6px 15px; border-radius: 999px; border: 3px solid #000; transform: rotate(2deg); font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem; border-bottom: 3px solid #000; padding-bottom: 8px; margin-top: 45px; margin-bottom: 20px;
+      text-transform: uppercase; color: var(--primary-border);
+    }
+    h3 { font-size: 1.3rem; margin-top: 30px; margin-bottom: 12px; color: #0f172a; }
+    p, li { font-size: 1.05rem; }
+
+    .rev-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0px #000;
+      padding: 22px; margin-bottom: 30px; position: relative;
+    }
+    .rev-card.tip { background: #fffaf5; border-color: var(--primary); box-shadow: 4px 4px 0px var(--primary); }
+    .rev-card.tip h3 { color: var(--primary-border); margin-top: 0; }
+    .rev-card.warn { background: #fef2f2; border-color: var(--rev-red); box-shadow: 4px 4px 0px var(--rev-red); }
+    .rev-card.warn h3 { color: var(--rev-red); margin-top: 0; }
+
+    .exam-trap {
+      background: #fffbeb; border: 3px dashed var(--rev-orange); border-radius: var(--radius);
+      padding: 18px; margin: 25px 0; position: relative;
+    }
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!"; display: inline-block; background: var(--rev-orange); color: white; font-weight: bold;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; font-size: 0.85rem; margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8; border: 3px solid #db2777; border-radius: var(--radius); box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px; margin: 25px 0;
+    }
+    .mnemonic strong { color: #db2777; }
+    .mnemonic h3 { margin-top: 0; }
+
+    .joke-box {
+      font-style: italic; color: #4b5563; text-align: center; margin: 25px 0; padding: 10px;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .table-container {
+      overflow-x: auto; border: 3px solid #000; border-radius: var(--radius); box-shadow: 5px 5px 0px #000; margin: 30px 0;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 2px solid #000; padding: 12px 15px; text-align: left; font-size: 0.98rem; }
+    th { background: var(--rev-yellow); text-transform: uppercase; font-weight: bold; }
+    tr:nth-child(even) { background: #fbfbfe; }
+
+    .warm-up {
+      background: #fffaf5; border: 3px solid var(--primary); border-radius: var(--radius); box-shadow: 4px 4px 0px var(--primary);
+      padding: 22px; margin: 35px 0;
+    }
+    .warm-up h3 { color: var(--primary-border); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+    .quiz-item { margin-bottom: 18px; border-bottom: 1px dashed #fed7aa; padding-bottom: 12px; }
+    .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .show-answer-btn {
+      background: #fff; border: 2px solid #000; border-radius: 6px; padding: 5px 12px; font-weight: bold;
+      cursor: pointer; margin-top: 8px; font-family: inherit;
+    }
+    .show-answer-btn:hover { background: #ffe8d4; }
+    .answer-panel {
+      display: none; margin-top: 10px; background: #fff7ed; border-left: 4px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.95rem;
+    }
+
+    .practice-exam {
+      background: #fffaf0; border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 25px; margin-top: 50px;
+    }
+    .practice-exam h2 { color: var(--primary-border); border-bottom: 3px solid #000; margin-top: 0; }
+    .q-box { background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .option-list { list-style-type: none; padding-left: 0; }
+    .option-list li {
+      margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .option-list li:hover { background: #fef8f2; border-color: #000; }
+    .option-list li.selected { background: #dbeafe; border-color: var(--rev-blue); box-shadow: 2px 2px 0px var(--rev-blue); }
+    .option-list li.eliminated { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+    .option-list li.correct-answer { background: #dcfce7; border-color: var(--rev-green); }
+    .option-list li.wrong-answer { background: #fee2e2; border-color: var(--rev-red); }
+    .explanation-panel {
+      display: none; margin-top: 15px; background: #fff8f2; border: 2px dashed var(--rev-orange); padding: 15px; border-radius: 8px;
+    }
+    .badge-check { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #000; margin-right: 6px; }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+    .submit-answer-btn {
+      background: var(--rev-orange); color: white; border: 2px solid #000; border-radius: 6px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-family: inherit;
+    }
+    .submit-answer-btn:hover { background: #dd5209; }
+
+    .further-reading {
+      background: #ecfeff; border: 3px solid #0891b2; border-radius: var(--radius); box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px; margin: 28px 0;
+    }
+    .further-reading h3 { color: #0e7490; margin-top: 0; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .doc-link {
+      display: block; background: #fff; border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0px #000;
+      color: #0f172a; padding: 10px 12px; text-decoration: none;
+    }
+    .doc-link strong { display: block; color: #0e7490; }
+    .doc-link span { display: block; font-size: 0.9rem; margin-top: 3px; }
+
+    .bullet-chk { list-style-type: none; padding-left: 0; }
+    .bullet-chk li::before { content: "✔️ "; margin-right: 8px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; overflow-wrap: anywhere; word-break: break-word; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0; background: var(--rev-yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="guide_s3.html" class="nav-link">&larr; Section 3: Data Protection</a>
+      <a href="index.html" class="nav-link">Portal</a>
+      <a href="guide_s5.html" class="nav-link">Section 5: Supporting Compliance &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 4: Managing Operations</h1>
+      <p>Automate security, detect threats, and respond &mdash; the SecOps backbone of the exam (~19%). When the alarm goes off, this is the domain that tells you how to see it, prove it, and contain it.</p>
+      <div class="section-badge">Section 4 🟠 ~19%</div>
+    </header>
+
+    <p>Sections 1&ndash;3 build the walls. Section 4 is the <strong>security operations centre</strong>: hardening the software supply chain, capturing the right logs, spotting threats, and responding without trampling the evidence. Two things get tested to death here &mdash; <strong>which audit logs are on by default</strong> and <strong>what Security Command Center actually does</strong>. Let's wire up the alarm system. 🚨</p>
+
+    <!-- 4.1 -->
+    <h2>4.1 Supply-Chain &amp; Deploy-Time Security</h2>
+    <p>Stop bad software before it ever runs. <strong>Binary Authorization</strong> is a deploy-time gate for GKE and Cloud Run that admits <em>only</em> container images signed by an approved <strong>attestor</strong>; everything else is rejected. Feed it by scanning images for <strong>CVEs</strong> in CI/CD (Artifact Registry / Artifact Analysis), automating image hardening and patching, and catching configuration drift with <strong>custom organization policies</strong> and <strong>Security Health Analytics custom modules</strong>.</p>
+
+    <div class="rev-card tip">
+      <h3>✍️ Binary Authorization in One Line</h3>
+      <p>"Only signed, attested images may deploy" &rArr; <strong>Binary Authorization</strong>. It's the bouncer at the cluster door checking each image's signature against your policy before admission.</p>
+    </div>
+
+    <!-- 4.2 -->
+    <h2>4.2 The Four Cloud Audit Log Types</h2>
+    <p>This is the most reliably tested fact in the whole domain. Cloud Audit Logs has <strong>four</strong> streams, and the killer detail is <em>which are on by default</em>.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Log Type</th>
+            <th>Records</th>
+            <th>Default State</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Admin Activity</strong></td>
+            <td>Configuration changes (who changed what).</td>
+            <td><strong>Always on</strong>, free, cannot disable.</td>
+          </tr>
+          <tr>
+            <td><strong>System Event</strong></td>
+            <td>Google-initiated system actions.</td>
+            <td><strong>Always on</strong>, free.</td>
+          </tr>
+          <tr>
+            <td><strong>Data Access</strong></td>
+            <td>Reads/writes of <em>data</em> (who read which object/row).</td>
+            <td><strong>Off by default</strong> (except BigQuery) &mdash; enable per service in the IAM audit config.</td>
+          </tr>
+          <tr>
+            <td><strong>Policy Denied</strong></td>
+            <td>Requests denied by a security policy (e.g. VPC-SC).</td>
+            <td>On when the relevant service is used.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>"We had no record of who read the data."</strong> This almost always means <strong>Data Access audit logs were never enabled</strong> &mdash; they're off by default. Don't blame the sink or buy a SIEM first; fix the IAM audit config so the events <em>exist</em>, <em>then</em> route them. A sink can only ship logs that are already being generated.
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 "Admins are Always Audited; Data is a Decision"</h3>
+      <p><strong>A</strong>dmin Activity = <strong>A</strong>lways on. <strong>D</strong>ata Access = a <strong>D</strong>ecision you must switch on. If the missing evidence is a <em>read</em> of data, the cause is unenabled Data Access logs.</p>
+    </div>
+
+    <!-- 4.3 -->
+    <h2>4.3 Routing Logs: Sinks &amp; Aggregated Sinks</h2>
+    <p>Logs land in the <code>_Default</code> and <code>_Required</code> buckets, but for long retention, analysis, or a SIEM you create <strong>log sinks</strong> that export to BigQuery, Pub/Sub, Cloud Storage, or an external destination.</p>
+
+    <div class="rev-card tip">
+      <h3>🧲 Aggregated Sinks = One Sink to Rule Them All</h3>
+      <p>An <strong>aggregated sink</strong> at the <strong>organization or folder</strong> level captures logs from <em>every</em> current <strong>and future</strong> child project in one place, with no per-project setup. When a question says "central SIEM, least ongoing maintenance, all projects," that's an aggregated sink.</p>
+    </div>
+
+    <!-- 4.4 -->
+    <h2>4.4 Threat Detection: Security Command Center</h2>
+    <p><strong>Security Command Center (SCC)</strong> is the single pane of glass for posture and threats. Know which built-in service does which job.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>SCC Service</th>
+            <th>Detects</th>
+            <th>Example Finding</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Security Health Analytics (SHA)</strong></td>
+            <td><em>Misconfigurations</em> &amp; posture drift.</td>
+            <td>Public bucket, open firewall, no MFA.</td>
+          </tr>
+          <tr>
+            <td><strong>Event Threat Detection (ETD)</strong></td>
+            <td><em>Threats in logs</em>.</td>
+            <td>Malware C2 callout, brute force, anomalous IAM grant.</td>
+          </tr>
+          <tr>
+            <td><strong>Container / VM Threat Detection</strong></td>
+            <td><em>Runtime threats</em> in workloads.</td>
+            <td>Crypto-mining binary, reverse shell, added bad library.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 SCC = "SEE": SHA sees config, ETD sees threats</h3>
+      <p>Security Command Center is where you <strong>SEE</strong> it all. <strong>SHA</strong> = misconfig. <strong>ETD</strong> = log threats. <strong>CTD/VMTD</strong> = workload threats. Posture, vulnerabilities, and active attacks in one console.</p>
+    </div>
+
+    <!-- 4.5 -->
+    <h2>4.5 Network Forensics</h2>
+    <p>Three network tools, three depths of visibility &mdash; a favourite discriminator.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>What You See</th>
+            <th>Use When...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>VPC Flow Logs</strong></td>
+            <td>Connection <em>metadata</em> (5-tuple, bytes) &mdash; not payloads.</td>
+            <td>You need who-talked-to-whom and volume, cheaply.</td>
+          </tr>
+          <tr>
+            <td><strong>Packet Mirroring</strong></td>
+            <td>Full <em>packet payloads</em> copied to a collector.</td>
+            <td>You need deep inspection of actual traffic content.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud IDS</strong></td>
+            <td>Signature-based intrusion detection on mirrored packets.</td>
+            <td>You want managed (Palo Alto) threat signatures, no rule-writing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Flow Logs ≠ payload inspection.</strong> If the stem wants <em>signature-based, full-payload</em> intrusion detection on east-west traffic with <em>no rule authoring</em>, that's <strong>Packet Mirroring feeding Cloud IDS</strong>. VPC Flow Logs only carry metadata, and Cloud Armor only guards inbound HTTP(S) at the edge &mdash; neither inspects east-west payloads.
+    </div>
+
+    <!-- 4.6 -->
+    <h2>4.6 Incident Response Without Destroying Evidence</h2>
+    <p>When a host is compromised, the order of operations matters. <strong>Contain</strong>, then <strong>preserve</strong>, then investigate:</p>
+    <ul class="bullet-chk">
+      <li><strong>Isolate</strong> the VM with a deny-all firewall rule via a network tag &mdash; cuts the command-and-control channel immediately.</li>
+      <li><strong>Snapshot</strong> the disks for forensic evidence <em>before</em> any further change.</li>
+      <li><strong>Rotate / disable</strong> compromised credentials and keys.</li>
+      <li><strong>Then</strong> analyse &mdash; never delete the instance first, or you destroy the evidence.</li>
+    </ul>
+
+    <div class="joke-box">
+      "First rule of incident response: don't <code>rm</code> the crime scene. The forensics team gets <em>very</em> grumpy." 🕵️‍♀️💾
+    </div>
+
+    <!-- Warm-Up Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Retrieve before you review. Cover the answers!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Ensure only container images signed by an approved attestor can run on GKE. What do you enable?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Binary Authorization</strong> &mdash; a deploy-time policy admitting only attested images.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> Centralise org-wide security findings and posture in one place. Which service?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Security Command Center.</strong> It aggregates findings, vulnerabilities, and posture.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> You need every project's logs exported to one central SIEM with the least ongoing maintenance. What do you configure?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>An aggregated log sink</strong> at the organization (or folder) level. It captures logs from all current and future child projects without per-project setup.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> An investigation finds no record of which user read a sensitive Cloud Storage object last month. What was most likely missing?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>Data Access audit logs were not enabled for Cloud Storage.</strong> Data Access logs are off by default and must be turned on per service in the IAM audit config.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Exam -->
+    <div class="practice-exam">
+      <h2>📝 Section 4 Practice Exam Questions</h2>
+      <p>Left-click to select, right-click to strike out a distractor, then Submit for the full diagnostic.</p>
+
+      <!-- Q1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A compliance team needs a tamper-resistant record of every read against objects in a set of regulated Cloud Storage buckets, retained for seven years in an external SIEM. Currently nothing is recorded. What is the correct first step before any export will help?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Create an aggregated log sink to the SIEM and assume the read events will start flowing.</li>
+          <li data-option="B">B) Enable Data Access audit logs for Cloud Storage in the IAM audit configuration.</li>
+          <li data-option="C">C) Turn on VPC Flow Logs on the subnets that host the storage clients.</li>
+          <li data-option="D">D) Add a Security Health Analytics custom module that watches the buckets for reads.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why B is correct:</strong> Object reads are Data Access events, which are off by default; until you enable Data Access audit logs for Cloud Storage there is nothing for any sink to export.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> A sink only routes logs that already exist &mdash; with Data Access logging off there's nothing to route.<br>
+          <strong>C:</strong> Flow Logs record network connection metadata, not who read which storage object.<br>
+          <strong>D:</strong> Security Health Analytics reports misconfigurations, not per-object read events.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> Event Threat Detection raises a finding that a Compute Engine instance is communicating with a known crypto-mining command-and-control IP. You must contain the host immediately while preserving evidence for later analysis. What is the best response?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Delete the instance right away so the mining process can no longer run anywhere.</li>
+          <li data-option="B">B) Remove the service account from the instance and wait to see if the traffic stops on its own.</li>
+          <li data-option="C">C) Apply a deny-all firewall rule via a network tag to isolate the VM, then snapshot its disks.</li>
+          <li data-option="D">D) Lower the instance's machine type to starve the miner of CPU while you investigate.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> Isolating the VM with a deny-all firewall tag cuts the C2 channel immediately, and snapshotting the disks preserves forensic evidence before any further change.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Deleting the instance destroys exactly the evidence you're told to preserve.<br>
+          <strong>B:</strong> Removing the service account doesn't stop outbound network traffic, and "wait and see" isn't containment.<br>
+          <strong>D:</strong> Resizing slows the miner but leaves the C2 connection open, so the host isn't contained.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Security wants signature-based intrusion detection on east-west traffic between application tiers in a VPC, with full-payload inspection and managed threat signatures, without writing detection rules themselves. Which combination fits?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Packet Mirroring feeding Cloud IDS, which applies Google-managed threat signatures.</li>
+          <li data-option="B">B) VPC Flow Logs exported to BigQuery with scheduled queries flagging suspicious patterns.</li>
+          <li data-option="C">C) Cloud Armor rules inspecting the traffic between the application tiers.</li>
+          <li data-option="D">D) A custom Security Health Analytics module scanning the tier configurations for drift.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why A is correct:</strong> Cloud IDS consumes mirrored packets and applies Google-managed (Palo Alto) threat signatures for full-payload, signature-based detection with no rule authoring required.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>B:</strong> Flow Logs carry only connection metadata, not payloads, and require you to write the detection queries yourself.<br>
+          <strong>C:</strong> Cloud Armor protects inbound HTTP(S) at the load balancer edge, not east-west VPC traffic.<br>
+          <strong>D:</strong> Security Health Analytics checks configuration posture, not live payload-level intrusions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Dig into detection, logging, and response:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/security-command-center/docs/concepts-security-command-center-overview" class="doc-link" target="_blank">
+          <strong>Security Command Center</strong>
+          <span>SHA, ETD, and workload threat detection in one console.</span>
+        </a>
+        <a href="https://cloud.google.com/logging/docs/audit" class="doc-link" target="_blank">
+          <strong>Cloud Audit Logs</strong>
+          <span>The four log types and enabling Data Access logs.</span>
+        </a>
+        <a href="https://cloud.google.com/logging/docs/export/aggregated_sinks" class="doc-link" target="_blank">
+          <strong>Aggregated Sinks</strong>
+          <span>Org/folder-level export of all child-project logs.</span>
+        </a>
+        <a href="https://cloud.google.com/binary-authorization/docs/overview" class="doc-link" target="_blank">
+          <strong>Binary Authorization</strong>
+          <span>Deploy only signed, attested container images.</span>
+        </a>
+        <a href="https://cloud.google.com/intrusion-detection-system/docs/overview" class="doc-link" target="_blank">
+          <strong>Cloud IDS</strong>
+          <span>Managed signature-based intrusion detection.</span>
+        </a>
+        <a href="https://cloud.google.com/vpc/docs/flow-logs" class="doc-link" target="_blank">
+          <strong>VPC Flow Logs</strong>
+          <span>Connection metadata for network forensics.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-nav">
+      <a href="guide_s3.html" class="nav-link">&larr; Section 3: Data Protection</a>
+      <a href="guide_s5.html" class="nav-link">Next: Supporting Compliance &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      element.style.display = (element.style.display === "block") ? "none" : "block";
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) { item.classList.remove('selected'); });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) { panel.dataset.originalHtml = panel.innerHTML; }
+      options.forEach(function(option) { option.classList.remove('correct-answer', 'wrong-answer'); });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) { option.classList.add('correct-answer'); }
+      });
+      if (selected.dataset.option !== correctOption) { selected.classList.add('wrong-answer'); }
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/security_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/security_eng/guide_s4.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

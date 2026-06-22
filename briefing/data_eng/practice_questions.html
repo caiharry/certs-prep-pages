@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="briefing" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Data Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #ea580c;
+            --dark-accent-hover: #c2410c;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #9a3412;
+            --classic-accent-hover: #7c2d12;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional Data Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "Data Engineer",
+    "scenario": "A logistics company ingests GPS pings from 200,000 trucks into Pub/Sub. A `Dataflow` streaming pipeline computes each truck's average speed over the **last 10 minutes, recomputed every 1 minute**, and writes to BigQuery for a live dashboard. Trucks in mountainous areas frequently send pings up to 4 minutes late (event-time delay). The team needs the rolling average to eventually correct itself once stragglers arrive, without dropping them. Which windowing and trigger configuration is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Fixed windows of 1 minute with `AfterWatermark`, then a downstream 10-minute sliding aggregation, dropping data past the watermark.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Sliding windows of 10 minutes with a 1-minute period, `AfterProcessingTime` trigger every minute, discarding panes.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Sliding windows of 10 minutes with a 1-minute period, `AfterWatermark` trigger, and `withAllowedLateness(Duration.standardMinutes(5))` accumulating panes.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Session windows with a 4-minute gap duration and `AfterWatermark`, accumulating panes to absorb the late pings.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Dropping data past the watermark violates the \"do not drop stragglers, must self-correct\" requirement, and chaining 1-minute fixed windows into a 10-minute aggregate is needless complexity versus a native sliding window.",
+      "B": "A processing-time trigger fires on wall-clock regardless of event time, and discarding panes emits only each pane's new data — the dashboard never sees a corrected cumulative 10-minute average.",
+      "C": "A 10-minute window advancing every 1 minute is a sliding window; `AfterWatermark` emits the on-time result and `withAllowedLateness(5 min)` with accumulating panes re-fires corrected totals when the 4-minute-late pings arrive.",
+      "D": "Session windows group by inactivity gaps per key, producing variable-length windows tied to silence between pings, not the fixed 10-minute rolling metric the dashboard requires."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines",
+        "text": "cloud.google.com/dataflow/docs/concepts/streaming-pipelines"
+      },
+      {
+        "url": "https://beam.apache.org/documentation/programming-guide/#windowing",
+        "text": "beam.apache.org/documentation/programming-guide/#windowing"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "Data Engineer",
+    "scenario": "Your company runs nightly ETL on 30 TB using on-premises **Apache Spark and Hive** jobs with custom initialization scripts that install proprietary JARs. You are migrating to Google Cloud and want the lowest possible compute cost. The jobs run for about 90 minutes once per day and have no interactive users. The team wants minimal rewrites. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Rewrite the jobs as Apache Beam pipelines and run them on `Dataflow` with autoscaling so you pay only for the processing time.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Run the Spark jobs on `Dataproc Serverless` and schedule the Hive jobs separately, sizing batches so idle cost is eliminated.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Provision a persistent `Dataproc` cluster sized for the 90-minute peak and use autoscaling policies to scale workers down overnight.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create an ephemeral `Dataproc` cluster per run with an initialization action for the JARs, run the Spark and Hive jobs, then delete the cluster.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Dataflow runs Beam, not Spark or Hive, so this forces a full rewrite of every job — the opposite of \"minimal rewrites\" — and Hive's HQL has no Beam equivalent.",
+      "B": "Dataproc Serverless runs Spark only, so the Hive jobs cannot run on it; splitting the workload adds orchestration complexity and still leaves Hive homeless.",
+      "C": "A persistent cluster keeps paying for the master node and minimum workers around the clock for a job that runs 90 minutes a day, so even with autoscaling it is more expensive than a job-scoped cluster.",
+      "D": "An ephemeral cluster supports the full Hadoop ecosystem (Spark and Hive) plus initialization actions for the custom JARs, and tearing it down after the 90-minute run means zero idle cost."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/init-actions",
+        "text": "cloud.google.com/dataproc/docs/concepts/configuring-clust..."
+      },
+      {
+        "url": "https://cloud.google.com/dataproc/docs/concepts/workflows/overview",
+        "text": "cloud.google.com/dataproc/docs/concepts/workflows/overview"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "Data Engineer",
+    "scenario": "A retail analytics team replicates an operational MySQL 8.0 database (continuous writes, schema occasionally evolves) into BigQuery so analysts query near-real-time sales. The freshness requirement is **under 15 minutes** and the team has no Spark or Beam skills and wants the least operational overhead. Columns are sometimes added to source tables. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Schedule hourly `Database Migration Service` jobs to load MySQL into BigQuery, recreating the target tables each run to absorb schema changes.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Build a `Dataflow` pipeline that reads the MySQL binlog with a JDBC source and writes change events to BigQuery with allowed lateness for schema drift.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use `BigQuery Data Transfer Service` to pull from MySQL on a 10-minute schedule, mapping new columns through a transformation config.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Configure `Datastream` to stream CDC from MySQL into BigQuery, which propagates inserts, updates, deletes, and supported schema changes continuously.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "DMS migrates databases *into Cloud SQL or AlloyDB*, not BigQuery, and hourly full reloads would miss the sub-15-minute freshness target and waste compute.",
+      "B": "A hand-built Dataflow binlog pipeline demands exactly the Beam expertise the team lacks and reinvents what Datastream provides as a managed service.",
+      "C": "BigQuery Data Transfer Service ingests from Google SaaS and a fixed set of external warehouses on schedules, not low-latency CDC from a self-managed MySQL OLTP database.",
+      "D": "Datastream is serverless CDC whose supported destinations include BigQuery, it streams change events with low latency, and it handles supported source schema changes — meeting freshness with no Spark or Beam skills required."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/datastream/docs/overview",
+        "text": "cloud.google.com/datastream/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/datastream/docs/destination-bigquery",
+        "text": "cloud.google.com/datastream/docs/destination-bigquery"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "Data Engineer",
+    "scenario": "A media platform ingests clickstream events through Pub/Sub into a `Dataflow` pipeline that deduplicates and aggregates per user before loading BigQuery. Marketing reports that some sessions are double-counted. Investigation shows publishers occasionally retry and the subscriber sees duplicate messages. The pipeline must produce correct per-user counts. What is the most reliable fix?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Rely on Dataflow's exactly-once streaming processing, which deduplicates by message and produces correct aggregates into BigQuery.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Enable Pub/Sub message ordering with an ordering key of `user_id` so duplicate retries are collapsed before they reach Dataflow.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Increase the Pub/Sub acknowledgement deadline so the subscriber finishes processing before redelivery, eliminating the duplicates at the source.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Switch the subscription to pull mode and add a dead-letter topic so duplicate messages are routed away from the aggregation.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Dataflow's exactly-once streaming model deduplicates records within the pipeline and commits results once, producing correct per-user aggregates despite at-least-once Pub/Sub delivery.",
+      "B": "Ordering keys preserve per-key delivery order; they do not deduplicate, and Pub/Sub still guarantees only at-least-once delivery, so retries can still surface duplicates.",
+      "C": "A longer ack deadline reduces redelivery from slow processing but does nothing about a publisher that genuinely re-publishes the same event, so duplicates persist.",
+      "D": "Dead-letter topics capture messages that repeatedly fail processing, not successful duplicates, and pull versus push delivery mode has no effect on duplication."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/concepts/exactly-once",
+        "text": "cloud.google.com/dataflow/docs/concepts/exactly-once"
+      },
+      {
+        "url": "https://cloud.google.com/pubsub/docs/subscriber",
+        "text": "cloud.google.com/pubsub/docs/subscriber"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "Data Engineer",
+    "scenario": "A bank stores 8 TB of transaction events in BigQuery. Analysts almost always filter `WHERE transaction_date BETWEEN ... AND ...` (a 3-day range) and then `AND account_id = '...'` (millions of distinct accounts). On-demand query bills have spiked. You must cut **bytes scanned** with the least schema disruption. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Partition the table by `account_id` and cluster by `transaction_date` so account lookups prune partitions first.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cluster the table by `transaction_date` and `account_id` together, since clustering alone reduces scanned bytes on both predicates.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a materialized view per account range and point analysts at the views instead of the base table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Partition the table by `transaction_date` and cluster by `account_id` so date filters prune partitions and account filters narrow blocks.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Partitioning by the high-cardinality `account_id` (millions of values) blows past BigQuery's 10,000-partition limit and gives no benefit to the date-range filter that runs on every query.",
+      "B": "Clustering alone cannot prune the way partitioning does; a date-range filter still touches every block's storage metadata across the whole table, scanning far more than a partitioned design.",
+      "C": "One materialized view per account range is unmanageable across millions of accounts, and materialized views must match query shapes — they do not generically reduce ad hoc range scans.",
+      "D": "Date is the low-cardinality, range-filtered column ideal for partitioning (pruning to ~3 days), and `account_id` is the high-cardinality equality filter ideal for clustering within those partitions — minimizing scanned bytes."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/clustered-tables",
+        "text": "cloud.google.com/bigquery/docs/clustered-tables"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+        "text": "cloud.google.com/bigquery/docs/partitioned-tables"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "Data Engineer",
+    "scenario": "A SaaS company runs BigQuery on-demand. One internal team runs unpredictable, occasionally massive ad hoc queries that exhaust the shared cache and spike monthly bills, while the finance team runs steady business-critical dashboards that must never slow down. You need predictable cost for finance and isolation from the noisy team, at the lowest sensible spend. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Buy a single BigQuery Editions reservation and assign every project to it so all workloads share one predictable slot pool.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create an Enterprise reservation for finance with baseline plus autoscaling slots, assign finance projects to it, and leave the ad hoc team on on-demand.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Enable BI Engine for the finance dashboards and keep both teams on on-demand pricing to cap per-query latency.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Set custom query quotas (maximum bytes billed) on the ad hoc team and move finance to flat-rate without reservations.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "One shared reservation re-creates the noisy-neighbour problem inside the slot pool, letting the ad hoc team's massive queries starve finance of slots — the opposite of isolation.",
+      "B": "A dedicated reservation gives finance predictable, isolated capacity (baseline + autoscaling for spikes), while the bursty ad hoc team stays on on-demand where you pay only for their irregular usage — predictable where it matters, cheapest elsewhere.",
+      "C": "BI Engine accelerates dashboard latency but is not a capacity or cost-control mechanism, and leaving both teams on-demand leaves finance exposed to the bill volatility you must fix.",
+      "D": "\"Flat-rate without reservations\" is not how BigQuery capacity works — flat-rate is delivered *through* Editions reservations — and a bytes-billed quota caps spend but does not give finance isolated guaranteed capacity."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/reservations-intro",
+        "text": "cloud.google.com/bigquery/docs/reservations-intro"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/editions-intro",
+        "text": "cloud.google.com/bigquery/docs/editions-intro"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "Data Engineer",
+    "scenario": "An IoT firm stores 40 TB of sensor readings in Bigtable, keyed by `device_id#reverse_timestamp` for fast per-device reads. A new compliance dashboard must list **all readings across all devices within an arbitrary timestamp range**, refreshed hourly. Per-device reads must remain fast and writes are heavy. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Continuously export the Bigtable data to BigQuery and run the hourly time-range queries there, leaving Bigtable serving the per-device reads.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add a secondary index on the timestamp column so the dashboard can range-scan by time without touching the primary row key.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run the dashboard query through Bigtable's SQL interface with a filter on the timestamp column, relying on distributed scan performance.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Change the row key to `reverse_timestamp#device_id` so timestamp ranges become efficient prefix scans for the dashboard.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Bigtable is built for key/range serving, not cross-row analytical scans, so offloading the time-range analytics to BigQuery (which excels at full-table aggregation) leaves Bigtable to keep per-device reads fast.",
+      "B": "Bigtable has no secondary indexes — the documented pattern is application-maintained index tables — so this option describes a feature that does not exist for the service.",
+      "C": "Even via Bigtable SQL, filtering on a non-key column forces a full scan of 40 TB underneath; SQL syntax does not change the storage layout or make the time-range query efficient.",
+      "D": "A timestamp-led key makes the dashboard scan efficient but destroys the fast per-device lookups and concentrates heavy writes onto one tablet, creating a severe hotspot."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigtable/docs/schema-design",
+        "text": "cloud.google.com/bigtable/docs/schema-design"
+      },
+      {
+        "url": "https://cloud.google.com/bigtable/docs/export-bigquery",
+        "text": "cloud.google.com/bigtable/docs/export-bigquery"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "Data Engineer",
+    "scenario": "A gaming backend needs a store for **player profiles and inventory** with single-digit-millisecond reads at 500,000 QPS, accessed by `player_id`. The data is simple key-value, there are no cross-entity joins, and the team wants to avoid managing servers. Cost matters and the access pattern is purely point lookups by key. Which store fits best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud Spanner with a single-region configuration, since it offers strong consistency and low-latency primary-key reads at scale.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Bigtable, using `player_id` as the row key to serve high-throughput single-key reads at low and predictable latency.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "BigQuery, partitioned by a hash of `player_id`, since it scales to any volume and serves the lookups with clustering.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Cloud SQL for PostgreSQL with read replicas and a connection pooler to absorb the 500,000 QPS of point reads.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Spanner suits globally distributed relational workloads with transactions and joins; for pure key-value point lookups it is more expensive and operationally heavier than needed here.",
+      "B": "Bigtable is purpose-built for massive-throughput, single-digit-millisecond key/range reads, and a `player_id` row key serves the exact point-lookup pattern at the required QPS and cost profile.",
+      "C": "BigQuery is an analytical warehouse with seconds-scale query latency; it cannot serve 500,000 single-key point reads per second at single-digit milliseconds regardless of clustering.",
+      "D": "Cloud SQL does not scale to 500,000 QPS of point reads; vertical limits and replica lag make it the wrong tier for this throughput, and it carries more ops than a managed NoSQL store."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigtable/docs/overview",
+        "text": "cloud.google.com/bigtable/docs/overview"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/dataprep-storage-options",
+        "text": "cloud.google.com/architecture/dataprep-storage-options"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "Data Engineer",
+    "scenario": "A research institute keeps 600 TB of genomic files in Cloud Storage. Access is **unpredictable**: most files are untouched for months, but any file can suddenly be read repeatedly during a study, and re-reads must not incur surprise retrieval-fee bills. The team does not want to author or tune lifecycle rules. What should you configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Autoclass on the bucket so objects move between classes by actual access, waiving retrieval and early-deletion fees on access.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Apply a lifecycle rule moving objects to Coldline after 30 days and to Archive after 90 days to minimize at-rest cost.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Store everything in the Archive class to get the lowest storage price and accept retrieval fees only when studies need the files.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a Nearline bucket with a lifecycle rule that promotes frequently accessed objects back to Standard each week.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Autoclass automatically demotes cold objects and promotes them on access *without* charging retrieval or early-deletion fees, which is exactly the \"unpredictable access, no surprise retrieval bills, no tuning\" requirement.",
+      "B": "Time-based lifecycle rules ignore actual access and charge full retrieval fees when a months-old file is suddenly re-read repeatedly — the surprise bill the requirement forbids.",
+      "C": "Archive minimizes storage price but levies the highest retrieval fee per GB, so a study that re-reads many files generates exactly the unpredictable retrieval cost to be avoided.",
+      "D": "Lifecycle rules cannot \"promote on access\"; they are time-based only, so this option describes behaviour Cloud Storage lifecycle management does not provide."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/autoclass",
+        "text": "cloud.google.com/storage/docs/autoclass"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/lifecycle",
+        "text": "cloud.google.com/storage/docs/lifecycle"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "Data Engineer",
+    "scenario": "A healthcare BI team queries a 2 TB BigQuery `appointments` table to power a Looker dashboard. Most dashboard tiles run the **same GROUP BY aggregation** over the full table dozens of times per hour, and each tile takes 12 seconds. Source rows are appended throughout the day; results should reflect new data automatically without a scheduled refresh job. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable BI Engine on the dataset to cache the dashboard's query results in memory and serve repeated tiles from cache.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create a materialized view over the aggregation, which BigQuery keeps incrementally up to date and automatically substitutes into matching queries.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a standard (logical) view of the aggregation so every tile reuses one definition and benefits from BigQuery's query cache.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Schedule a query every 5 minutes that writes aggregated results to a summary table the dashboard reads from.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "BI Engine accelerates latency by caching, but it does not precompute or persist the aggregation, and continuous appends keep invalidating cached results — it complements, rather than replaces, a materialized view here.",
+      "B": "A materialized view precomputes the aggregation, refreshes incrementally as new rows append, and is automatically rewritten into matching dashboard queries — cutting both latency and scanned bytes with no scheduled job.",
+      "C": "A logical view stores no results and re-scans the full 2 TB on each run; the query cache only helps identical queries with unchanged source data, which the constant appends defeat.",
+      "D": "A scheduled summary table is exactly the refresh job the requirement says to avoid, adds orchestration, and leaves the dashboard up to 5 minutes stale between runs."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/materialized-views-intro",
+        "text": "cloud.google.com/bigquery/docs/materialized-views-intro"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/bi-engine-intro",
+        "text": "cloud.google.com/bigquery/docs/bi-engine-intro"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "Data Engineer",
+    "scenario": "A daily pipeline must: run a BigQuery transformation, wait for an upstream partner file to land in Cloud Storage, then trigger a Dataproc job — with dependencies, retries on transient failures, and email alerts on failure. The team already authors workflows in Python and uses several Google Cloud data services. They want managed orchestration. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud Composer, authoring an Airflow DAG with a GCS sensor, BigQuery and Dataproc operators, retries, and a failure callback.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Cloud Workflows, defining the steps in YAML and calling each service's REST API with built-in retry policies.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Eventarc triggers that fire each downstream service when the previous one emits a completion event, chaining the pipeline reactively.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Cloud Scheduler cron jobs that invoke each step in sequence at fixed offsets calculated to allow each stage to finish.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Cloud Composer (managed Airflow) provides a GCS sensor, native BigQuery and Dataproc operators, per-task retries, and `on_failure_callback` alerting — matching every requirement for a Python-authoring team on Google Cloud.",
+      "B": "Workflows is lightweight serverless API chaining without native data operators or a file sensor; expressing GCS-file waits, Dataproc job lifecycle, and rich retry/alerting is awkward compared with Airflow.",
+      "C": "Eventarc routes events but is not a pipeline orchestrator; it has no dependency graph, no retry/branching semantics, and no built-in wait-for-file or job-completion handling for a multi-stage DAG.",
+      "D": "Fixed-offset cron jobs guess at completion times, race against variable stage durations, and provide none of the dependency tracking, sensing, or alerting the pipeline needs."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/composer/docs/concepts/overview",
+        "text": "cloud.google.com/composer/docs/concepts/overview"
+      },
+      {
+        "url": "https://cloud.google.com/composer/docs/composer-3/write-dags",
+        "text": "cloud.google.com/composer/docs/composer-3/write-dags"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "Data Engineer",
+    "scenario": "A bank must let analysts query a BigQuery `customers` dataset for analytics while ensuring they **cannot see raw national ID numbers**, but a small fraud team needs the real values. The regulator requires the protection applied at the column level inside BigQuery, with central policy enforcement, and analysts' existing queries must keep working. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply BigQuery column-level dynamic data masking via policy tags, granting the fraud team a fine-grained reader role to see unmasked values.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Run a `Cloud DLP` de-identification job that overwrites the national ID column with tokenized values in the analyst-facing table.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create two copies of the table — one with the column dropped for analysts and one full copy for the fraud team — kept in sync by a scheduled query.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Grant analysts a custom IAM role that excludes the `bigquery.tables.getData` permission on the national ID column.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Dynamic data masking through policy tags masks the column at query time based on the caller's data-policy role, enforced centrally, so analysts' existing `SELECT` queries run unchanged while the fraud team's fine-grained role reveals raw values.",
+      "B": "A DLP job that overwrites the column destroys the raw value the fraud team legitimately needs and is a one-time transformation, not the central, query-time column policy the regulator requires.",
+      "C": "Maintaining two synchronized copies doubles storage and governance surface, risks drift, and is exactly the duplication that column-level masking exists to avoid.",
+      "D": "IAM permissions in BigQuery operate at table/dataset granularity, not per column, so `bigquery.tables.getData` cannot be excluded for a single column — this control does not exist at that level."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/column-data-masking-intro",
+        "text": "cloud.google.com/bigquery/docs/column-data-masking-intro"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/column-level-security-intro",
+        "text": "cloud.google.com/bigquery/docs/column-level-security-intro"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "Data Engineer",
+    "scenario": "A government agency must encrypt BigQuery datasets such that the **key material never resides in Google Cloud** and remains in the agency's on-premises HSM, per regulation. Auditors must be able to revoke Google's access to the key independently. Which approach satisfies this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure CMEK with key material imported into Cloud KMS from the on-premises HSM, then disable Google-managed rotation.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure Cloud External Key Manager (Cloud EKM), linking BigQuery to a key held in the on-premises HSM through a supported external key manager.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Use customer-supplied encryption keys (CSEK), passing the raw key with each BigQuery job so Google never stores it.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Enable Google-managed encryption keys and rely on VPC Service Controls to prevent the keys from leaving the agency's perimeter.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Importing key material into Cloud KMS places a copy of the key inside Google Cloud, directly violating the \"key material never resides in Google Cloud\" requirement.",
+      "B": "Cloud EKM lets BigQuery call out to a key that stays in the external HSM; Google never holds the material and the agency can revoke external access independently — exactly the regulatory model required.",
+      "C": "CSEK is not supported by BigQuery (only Cloud Storage and Compute Engine), so it cannot encrypt BigQuery datasets at all.",
+      "D": "Google-managed keys are generated and held by Google, and VPC Service Controls govern API access boundaries, not where encryption key material is custodied."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/kms/docs/ekm",
+        "text": "cloud.google.com/kms/docs/ekm"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/customer-managed-encryption",
+        "text": "cloud.google.com/bigquery/docs/customer-managed-encryption"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "Data Engineer",
+    "scenario": "A multinational must keep EU customers' raw data **physically within the EU** while still letting a global team run analytics. A junior engineer proposes a single BigQuery dataset in the `US` multi-region with row-level filters for EU rows. You must guarantee EU data residency at the storage layer. What is the correct design?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Keep one `US` multi-region dataset but enable CMEK with an EU-hosted key, since the key location governs where the data is considered to reside.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Store EU customer data in a BigQuery dataset created in an EU region (or the `EU` multi-region) and US data in a US dataset, querying each in place.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Keep the single `US` dataset and apply an organization policy that tags EU rows, relying on the tag to enforce residency during queries.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Store all data in the `US` multi-region and use Analytics Hub to publish an EU-only listing that EU consumers subscribe to.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "CMEK controls encryption keys, not data location — encrypting with an EU-hosted key does not move the underlying BigQuery storage out of the US multi-region.",
+      "B": "BigQuery data physically resides in the dataset's configured location, so creating the EU dataset in an EU region or the `EU` multi-region is the only way to guarantee the raw bytes stay in the EU; queries run against each dataset in its region.",
+      "C": "Row tags and policies filter *visibility*, not physical storage; the EU rows still sit in US storage, failing residency at the layer the regulator cares about.",
+      "D": "Analytics Hub shares access to data that still physically lives in the US multi-region, so publishing an EU listing does nothing for where the raw bytes are stored."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/locations",
+        "text": "cloud.google.com/bigquery/docs/locations"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/data-residency",
+        "text": "cloud.google.com/bigquery/docs/data-residency"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "Data Engineer",
+    "scenario": "An enterprise has data scattered across dozens of BigQuery datasets and Cloud Storage buckets owned by different domain teams. Leadership wants **central discovery, automated data-quality checks, and column-level lineage** across all of it, while letting each domain team retain ownership of its assets. What should you adopt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "BigLake tables over every bucket and dataset, since BigLake centralizes governance and automatically tracks lineage across sources.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Dataplex, to organize assets into lakes and zones with centralized discovery, data-quality tasks, and lineage under federated domain ownership.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Analytics Hub, publishing each domain's datasets as listings so consumers discover them in one exchange with built-in quality scoring.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A central BigQuery project into which every domain copies its data nightly, enabling one place to catalog, profile, and check quality.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "BigLake lets BigQuery query lake files with consistent access controls, but it is not a catalog, data-quality, or lineage platform across many domains — that is Dataplex's remit.",
+      "B": "Dataplex is the data-platform/governance service: it provides discovery and cataloging, configurable data-quality tasks, and lineage across BigQuery and Cloud Storage while supporting a federated model where domains keep ownership.",
+      "C": "Analytics Hub is a sharing exchange for publishing and subscribing to datasets; it does not provide cross-estate discovery, automated data-quality checks, or lineage.",
+      "D": "Centralizing by nightly copies breaks domain ownership, duplicates storage, introduces staleness, and still leaves lineage and quality unsolved — the anti-pattern Dataplex's federated governance avoids."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataplex/docs/introduction",
+        "text": "cloud.google.com/dataplex/docs/introduction"
+      },
+      {
+        "url": "https://cloud.google.com/dataplex/docs/use-auto-data-quality",
+        "text": "cloud.google.com/dataplex/docs/use-auto-data-quality"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "Data Engineer",
+    "scenario": "A marketing team wants to predict customer churn from a 200-million-row BigQuery table. The data scientists are SQL-fluent but have **no Python or Vertex AI pipeline experience**, the data must not leave BigQuery for compliance, and they want a first model in days, not weeks. What should you recommend?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Export the table to Cloud Storage and train a custom XGBoost model on Vertex AI training, then batch-predict back into BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Vertex AI AutoML Tabular by pointing it at a BigQuery source, letting it search architectures while the data stays governed.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train a logistic regression model with BigQuery ML using `CREATE MODEL` and SQL, evaluating and predicting in place without moving data.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Stand up a Dataproc cluster and train a Spark MLlib classification model reading directly from BigQuery via the connector.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Exporting to Cloud Storage violates the \"data must not leave BigQuery\" constraint and demands the Python/Vertex pipeline skills the team explicitly lacks.",
+      "B": "AutoML can read from BigQuery without moving data, but it introduces a Vertex AI workflow the SQL-only team is unfamiliar with and is heavier than needed for a quick first logistic model.",
+      "C": "BigQuery ML lets SQL-fluent users train, evaluate, and serve models with `CREATE MODEL` entirely inside BigQuery — no data export (satisfying compliance), no Python, and a working model in days.",
+      "D": "Dataproc plus Spark MLlib requires cluster management and Spark/Python skills the team does not have, and reading via the connector still pulls data into the Spark cluster for processing."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/create-machine-learning-model",
+        "text": "cloud.google.com/bigquery/docs/create-machine-learning-model"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/logistic-regression-prediction",
+        "text": "cloud.google.com/bigquery/docs/logistic-regression-predic..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "Data Engineer",
+    "scenario": "A BigQuery ML churn model scores 0.99 accuracy on training data but only 0.61 on a held-out evaluation set, and predictions on live data are poor. The team retrained several times with more `CREATE MODEL` epochs and the gap widened. What is the most likely problem and appropriate response?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The model is underfitting; add more epochs and higher-degree polynomial features so it can capture the churn signal.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "The evaluation set is too small; merge it back into training so the model learns from all available rows before scoring.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The label is leaking; switch from logistic regression to a deep neural network in BigQuery ML to absorb the leakage automatically.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "The model is overfitting; reduce complexity and apply regularization (for example L2) and feature selection rather than training longer.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Underfitting shows poor performance on *both* training and evaluation; here training accuracy is near-perfect, so adding capacity would worsen the overfit further.",
+      "B": "Folding the held-out set into training removes the only unbiased estimate of generalization and masks the overfitting rather than addressing it.",
+      "C": "Label leakage typically inflates *both* scores and would be fixed by removing the leaking feature; swapping in a more complex DNN to \"absorb\" it is the wrong remedy and would overfit more.",
+      "D": "A large train-versus-evaluation gap that worsens with more training is the textbook signature of overfitting; the fix is to reduce variance via regularization and fewer/cleaner features, not more training."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/preventing-overfitting",
+        "text": "cloud.google.com/bigquery/docs/preventing-overfitting"
+      },
+      {
+        "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+        "text": "developers.google.com/machine-learning/crash-course/overf..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "Data Engineer",
+    "scenario": "A streaming `Dataflow` job consuming from Pub/Sub has a growing **system lag** and the output watermark is falling further behind real time during evening peaks. Worker CPU is near 100% and autoscaling has hit the configured maximum. The team must restore freshness with minimal code change. What is the right first action?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Raise the pipeline's maximum number of workers so autoscaling can add capacity to clear the backlog during peaks.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Increase `withAllowedLateness` so late data is tolerated, which reduces the watermark gap reported by the job.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Switch the Pub/Sub subscription to ordered delivery so messages process in sequence and lag stabilizes.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Add verbose logging inside each `ParDo` to find which transform is slow, then optimize that transform.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "System lag plus pinned-at-max autoscaling means the job is genuinely under-provisioned for peak throughput; raising the max worker count lets autoscaling add capacity to process the backlog and recover the watermark — a config change, not a rewrite.",
+      "B": "Allowed lateness governs how long windows accept stragglers; it does not add processing capacity and so cannot reduce a lag caused by CPU saturation.",
+      "C": "Ordered delivery constrains parallelism and would typically *worsen* throughput and lag, not improve it, and it changes correctness semantics unnecessarily.",
+      "D": "Heavy `ParDo` logging adds overhead and noise; with workers already CPU-pinned at max, the diagnosis is capacity, and Reshuffle/metrics, not log spam, is the tool for fused-stage bottlenecks."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/horizontal-autoscaling",
+        "text": "cloud.google.com/dataflow/docs/horizontal-autoscaling"
+      },
+      {
+        "url": "https://cloud.google.com/dataflow/docs/guides/troubleshooting-streaming-pipelines",
+        "text": "cloud.google.com/dataflow/docs/guides/troubleshooting-str..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "Data Engineer",
+    "scenario": "A `Dataflow` streaming pipeline reads Pub/Sub, enriches each event with a side input from a slowly changing BigQuery dimension, and writes to BigQuery. The team needs to isolate which transform is the bottleneck, but Dataflow has **fused** several `ParDo` steps into one stage, so per-step metrics are hidden. What is the recommended technique?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Insert a `Reshuffle` (or a grouping operation) between the transforms to break fusion so each stage reports its own metrics.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Disable autoscaling and pin the worker count so the per-transform timings stop shifting and become readable.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add a `print`/log statement at the start and end of each `ParDo` and diff the timestamps in Cloud Logging.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Increase the worker machine type so each transform completes faster and the bottleneck becomes obvious by elimination.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Dataflow fuses adjacent transforms into a single stage, hiding per-transform metrics; inserting a Reshuffle (a grouping/shuffle boundary) breaks the fusion so each stage surfaces its own wall-time and element counts for diagnosis.",
+      "B": "Pinning workers stabilizes capacity but does nothing to un-fuse the stage; the individual transforms remain a single opaque step in the execution graph.",
+      "C": "Logging inside `ParDo` adds overhead and noise and is explicitly discouraged for performance diagnosis; it does not expose stage-level Dataflow metrics.",
+      "D": "A bigger machine may speed everything up but still reports one fused stage, so it cannot tell you *which* transform inside the fusion is the bottleneck."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataflow/docs/pipeline-lifecycle#fusion_optimization",
+        "text": "cloud.google.com/dataflow/docs/pipeline-lifecycle#fusion_..."
+      },
+      {
+        "url": "https://cloud.google.com/dataflow/docs/guides/troubleshooting-your-pipeline",
+        "text": "cloud.google.com/dataflow/docs/guides/troubleshooting-you..."
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "Data Engineer",
+    "scenario": "A retailer must transfer a **one-time 90 TB** historical archive from an on-premises NAS to Cloud Storage. The site's internet uplink is a shared 200 Mbps link also used by the business, and the transfer must finish within two weeks without saturating that link. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Storage Transfer Service with an on-premises agent, scheduling the job to run over the existing 200 Mbps link with bandwidth throttling.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`gcloud storage cp` in parallel from the NAS over the internet link, tuning thread and process counts to maximize throughput.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Transfer Appliance: request the device, copy the 90 TB locally, and ship it to Google for ingestion into Cloud Storage.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "BigQuery Data Transfer Service to pull the archive directly into a BigQuery dataset, then export it to Cloud Storage.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Storage Transfer Service with throttling is network-bound on the same constrained shared link, so it cannot meet the two-week window — throttling to protect the business only makes it slower.",
+      "B": "`gcloud storage cp`, however parallelized, is still capped by the 200 Mbps shared link and would both miss the deadline and risk saturating the business's connectivity.",
+      "C": "90 TB over a shared 200 Mbps link is roughly six weeks even at full saturation; Transfer Appliance moves the data physically and offline, meeting the two-week deadline without touching the shared uplink.",
+      "D": "BigQuery Data Transfer Service does not ingest arbitrary on-premises NAS files, and routing a raw archive through BigQuery to land in Cloud Storage is the wrong tool entirely."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/transfer-appliance/docs/4.0/overview",
+        "text": "cloud.google.com/transfer-appliance/docs/4.0/overview"
+      },
+      {
+        "url": "https://cloud.google.com/architecture/migration-to-google-cloud-transferring-your-large-datasets",
+        "text": "cloud.google.com/architecture/migration-to-google-cloud-t..."
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "Data Engineer",
+    "scenario": "A Cloud Storage data lake backs critical analytics and must survive a full regional outage with a **replication RPO of 15 minutes** and low-latency reads from `us-central1`. The team wants Google-managed replication, not a custom copy job. Which bucket configuration meets the RPO?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A multi-region `US` bucket, since Google replicates objects across US regions automatically for regional resilience.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Two regional buckets in `us-central1` and `us-east1` with a scheduled Storage Transfer Service job copying objects hourly.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A dual-region bucket spanning `us-central1` and `us-east1` with turbo replication enabled to meet the 15-minute RPO.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A regional bucket in `us-central1` with object versioning enabled so prior versions survive a regional failure.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Multi-region buckets replicate for availability but do not guarantee the strict 15-minute RPO and give you less control over which regions hold the data.",
+      "B": "An hourly Storage Transfer Service copy gives at best a one-hour RPO and is a custom job, failing both the 15-minute target and the \"Google-managed replication\" preference.",
+      "C": "A dual-region bucket with turbo replication is the configuration that delivers a 15-minute replication RPO across the two chosen regions, with reads served locally from `us-central1`.",
+      "D": "Object versioning protects against overwrites and deletes within a region; it provides no cross-region replication and so offers no protection against a regional outage."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/storage/docs/availability-durability",
+        "text": "cloud.google.com/storage/docs/availability-durability"
+      },
+      {
+        "url": "https://cloud.google.com/storage/docs/turbo-replication",
+        "text": "cloud.google.com/storage/docs/turbo-replication"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "Data Engineer",
+    "scenario": "A finance team's Cloud Composer DAG runs a daily BigQuery transformation: it must execute a parameterized aggregation SQL statement and **append** the results to a partitioned reporting table, with retries and failure alerts. A new engineer wired the step using `BigQueryUpsertTableOperator`, but the SQL never runs. Which operator should the task use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`BigQueryUpsertTableOperator`, since it inserts the aggregated rows after upserting the target table definition.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "`BigQueryCreateEmptyTableOperator`, which both provisions the partitioned table and runs the supplied aggregation query.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "`GCSToBigQueryOperator`, exporting the aggregation to GCS first and loading it into the reporting table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "`BigQueryInsertJobOperator`, configured with the query, append write disposition, retries, and a failure callback.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "`BigQueryUpsertTableOperator` only creates or updates table metadata/properties; it does not execute transformation SQL, which is exactly why the new engineer's SQL never ran.",
+      "B": "`BigQueryCreateEmptyTableOperator` provisions an empty table and runs no query, so it cannot perform the daily aggregation or append results.",
+      "C": "Routing the aggregation through GCS adds an unnecessary export/load round-trip and storage when the transformation can run directly as a BigQuery query job.",
+      "D": "`BigQueryInsertJobOperator` runs arbitrary BigQuery jobs including query jobs with a write disposition (append) to the partitioned table, and supports Airflow retries and failure callbacks — the right tool for running transformation SQL."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/composer/docs/how-to/using/writing-dags",
+        "text": "cloud.google.com/composer/docs/how-to/using/writing-dags"
+      },
+      {
+        "url": "https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/bigquery.html",
+        "text": "airflow.apache.org/docs/apache-airflow-providers-google/s..."
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "Data Engineer",
+    "scenario": "An advertising platform's BigQuery costs are driven by one daily query that joins a 5 TB events table to a small `campaigns` table and filters on `event_date = CURRENT_DATE()`. The query reads `SELECT *` and scans the entire events table every run despite the date filter. The table is **not partitioned**. What single change most directly reduces bytes scanned?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add a `LIMIT 1000000` to the query so BigQuery stops scanning once the row count is reached, lowering bytes read.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Increase the project's slot reservation so the join completes faster and consumes fewer billed bytes per run.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Materialize the `campaigns` dimension as a clustered table so the join probes fewer blocks of the events table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Partition the events table by `event_date` and have the query select only the needed columns, so it prunes to one day's partition.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "`LIMIT` caps returned rows but BigQuery still scans the full columns referenced before applying the limit, so bytes scanned and cost are unchanged.",
+      "B": "More slots speed execution but do not reduce bytes scanned; on-demand billing is by bytes processed, so the cost driver is untouched.",
+      "C": "Clustering the small `campaigns` dimension barely affects the scan; the cost comes from reading the entire 5 TB events table, which clustering the *other* table does not prune.",
+      "D": "Without partitioning, `event_date = CURRENT_DATE()` cannot prune storage, so it scans the whole 5 TB; partitioning by `event_date` plus selecting only needed columns prunes to one day and reads far fewer bytes."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/best-practices-costs",
+        "text": "cloud.google.com/bigquery/docs/best-practices-costs"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+        "text": "cloud.google.com/bigquery/docs/partitioned-tables"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "Data Engineer",
+    "scenario": "A telecom must grant a partner read access to a curated BigQuery dataset of anonymized network metrics. The partner is in a different organization, the data must **not be copied** out of the telecom's project, and access should be revocable centrally with usage visibility. The dataset is updated daily. What should the telecom use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Export the dataset to a shared Cloud Storage bucket daily and grant the partner's group the Storage Object Viewer role.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Add the partner's accounts as `roles/bigquery.dataViewer` on the source project and let them query the dataset directly.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Publish the dataset as an Analytics Hub listing the partner subscribes to, granting query access in place without copying data.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Copy the dataset into a partner-owned project nightly with a scheduled query so they query their own copy.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Exporting to Cloud Storage daily copies the data out (violating the no-copy constraint), adds staleness between exports, and gives coarse object access rather than governed in-place querying.",
+      "B": "Granting `dataViewer` on the source project exposes more of the project than intended and is harder to govern at arm's length than a curated Analytics Hub listing for an external organization.",
+      "C": "Analytics Hub publishes the dataset as a listing the partner subscribes to and queries in place, with no data copied out, centrally revocable by unpublishing/removing the subscription, and with subscription/usage visibility.",
+      "D": "Nightly copies into a partner project duplicate the data (forbidden), surrender control once it leaves, and introduce daily staleness."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/analytics-hub-introduction",
+        "text": "cloud.google.com/bigquery/docs/analytics-hub-introduction"
+      },
+      {
+        "url": "https://cloud.google.com/bigquery/docs/analytics-hub-manage-listings",
+        "text": "cloud.google.com/bigquery/docs/analytics-hub-manage-listings"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "Data Engineer",
+    "scenario": "A `Dataform` pipeline performs SQL ELT in BigQuery to build a daily `orders_curated` table. Stakeholders need a guarantee that, before downstream dashboards consume it, the table has **no null `order_id` values and `order_id` is unique** — and the pipeline should fail loudly if either check breaks. The checks must live inside the ELT workflow. What should you implement?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Schedule a separate Cloud Composer DAG after Dataform that queries the table for nulls and duplicates and emails the team.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Configure a Dataplex data-quality scan on the curated table to validate the null and uniqueness rules on a schedule.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add Dataform assertions for `nonNull` on `order_id` and uniqueness on `order_id` so the workflow fails when a check is violated.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Add a `WHERE order_id IS NOT NULL` clause and `SELECT DISTINCT` to the final Dataform SQL so bad rows are silently filtered.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A separate Composer DAG runs *after* and *outside* the ELT workflow, so it does not gate consumption inside the pipeline and adds orchestration the requirement says belongs in the workflow.",
+      "B": "Dataplex data-quality scans validate governed assets on a schedule, but they sit outside the Dataform workflow and would not block the pipeline at build time as required.",
+      "C": "Dataform assertions express data-quality rules (non-null, uniqueness, custom conditions) as part of the versioned ELT workflow and fail the run when violated — exactly \"checks inside the pipeline that fail loudly.\"",
+      "D": "Filtering with `IS NOT NULL` and `SELECT DISTINCT` silently hides bad data rather than failing loudly, masking upstream defects the stakeholders explicitly want surfaced."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataform/docs/assertions",
+        "text": "cloud.google.com/dataform/docs/assertions"
+      },
+      {
+        "url": "https://cloud.google.com/dataform/docs/data-quality-tests",
+        "text": "cloud.google.com/dataform/docs/data-quality-tests"
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/data_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/data_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

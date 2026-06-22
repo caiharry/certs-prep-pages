@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme 3 Revision Guide - Hybrid &amp; Multicloud Connectivity</title>
+  <style>
+    :root {
+      --bg-light: #f0fdf4; /* Light green background */
+      --ink: #1e293b;
+      --rev-green: #16a34a; /* Primary Green */
+      --rev-green-light: #dcfce7;
+      --rev-green-border: #15803d;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --rev-violet: #8b5cf6;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23bbf7d0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4ade80 0%, var(--rev-green) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-green-border);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #f0fdf4;
+      border-color: var(--rev-green);
+      box-shadow: 4px 4px 0px var(--rev-green);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-green-border);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 5px 5px 0px #000;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 2px solid #000;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--rev-yellow);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #fefce8;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #dbeafe;
+      border-color: var(--rev-blue);
+      box-shadow: 2px 2px 0px var(--rev-blue);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="theme2_private_access.html" class="nav-link">&larr; Back to Theme 2</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
+      <a href="theme4_gke.html" class="nav-link">Go to Theme 4: GKE Networking &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Theme 3: Hybrid &amp; Multicloud Connectivity</h1>
+      <p>Interconnect, VPN, Cloud Router, BGP, and hybrid DNS</p>
+      <div class="section-badge">Theme 3 🟢</div>
+    </header>
+
+    <!-- 3.1 Cloud Interconnect -->
+    <h2>3.1 Cloud Interconnect: The Heavy Artillery</h2>
+    <p>When you need massive, reliable, enterprise-grade bandwidth between your data center and Google Cloud, standard VPNs won't cut it. You need <strong>Cloud Interconnect</strong>. Let's break down the flavors and SLAs: 🔌</p>
+
+    <div class="rev-card tip">
+      <h3>🚀 Dedicated vs. Partner vs. Cross-Cloud Interconnect</h3>
+      <ul>
+        <li><strong>Dedicated Interconnect:</strong> You rent a physical 10G or 100G fiber connection directly from your hardware to a Google co-location facility. Supports <strong>MACsec</strong> (Layer 2 encryption) for ultra-secure hardware-level encryption!</li>
+        <li><strong>Partner Interconnect:</strong> Best when your data center is not in a Google co-location facility. You connect to a service provider (like Equinix or Megaport) who already has a pipe to Google. Supports connections from 50 Mbps up to 50 Gbps.
+          <ul>
+            <li><strong>Layer 2 Partner:</strong> You configure the BGP session on your own on-prem routers.</li>
+            <li><strong>Layer 3 Partner:</strong> The service provider manages the BGP session and routes traffic for you.</li>
+          </ul>
+        </li>
+        <li><strong>Cross-Cloud Interconnect:</strong> Connects Google Cloud directly to other cloud providers (AWS, Azure, OCI) over high-speed physical links without traffic routing over the public internet! ☁️</li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>The 99.99% SLA Interconnect Topology Trap!</strong> To get Google's 99.99% SLA, you <strong>MUST</strong> have a highly available topology consisting of:
+      <ol>
+        <li>Two physical Dedicated Interconnect connections in <strong>Metro A</strong> (Zone 1 and Zone 2).</li>
+        <li>Two physical Dedicated Interconnect connections in <strong>Metro B</strong> (Zone 1 and Zone 2).</li>
+        <li>Four VLAN attachments (two in each metro) routed to two separate Cloud Routers in your VPC.</li>
+      </ol>
+      If you only use a single metro (even with redundant connections in Zone 1 and Zone 2), you only get a <strong>99.9% SLA</strong>! Examiners love to test if you can spot this difference.
+    </div>
+
+    <!-- 3.2 Site-to-Site IPSec VPN -->
+    <h2>3.2 Site-to-Site IPSec VPN</h2>
+    <p>If you don't have the budget or time for Interconnect, <strong>Cloud VPN</strong> is your go-to. It tunnels encrypted traffic over the public internet using IPSec.</p>
+
+    <div class="rev-card warn">
+      <h3>🔒 HA VPN vs. Classic VPN</h3>
+      <p>Google Cloud strongly recommends <strong>HA VPN</strong> (High Availability VPN) and has deprecated many Classic VPN features. Always choose HA VPN on the exam!</p>
+      <ul>
+        <li><strong>HA VPN:</strong> Provides a <strong>99.99% SLA</strong> by default. It uses a single gateway with <strong>two external interfaces</strong> (Interface 0 and Interface 1), each with its own public IP. To achieve the SLA, you must configure two tunnels (one from each interface) to your on-premises gateway. It strictly uses <strong>dynamic routing (BGP)</strong>.</li>
+        <li><strong>Classic VPN:</strong> Only supports a 99.9% SLA, uses a single interface, and supports static routing (policy-based or route-based). It is legacy and should be avoided!</li>
+        <li><strong>HA VPN over Interconnect:</strong> What if you want the massive bandwidth of Interconnect <em>and</em> the end-to-end encryption of IPSec? You deploy HA VPN gateways inside your VPC and route their tunnels over your physical Interconnect VLAN attachments. Best of both worlds! 🛡️</li>
+      </ul>
+    </div>
+
+    <!-- 3.3 Cloud Router & BGP -->
+    <h2>3.3 Cloud Router &amp; BGP: The Traffic Directors</h2>
+    <p>Cloud Router manages dynamic routing for your VPC using BGP (Border Gateway Protocol). To control whether traffic enters or leaves GCP via a specific path, you must manipulate BGP attributes:</p>
+
+    <div class="rev-card tip">
+      <h3>🚦 Controlling Inbound &amp; Outbound Traffic Flow</h3>
+      <ul>
+        <li><strong>Controlling Outbound Traffic (GCP to On-Prem):</strong>
+          <ul>
+            <li><strong>MED (Multi-Exit Discriminator):</strong> When your on-premises routers advertise routes to Cloud Router, they attach a MED value (metric). <strong>Cloud Router prefers the path with the lowest MED.</strong></li>
+            <li><strong>Route Priority / Cost:</strong> You can configure Cloud Router to assign a lower priority (which translates to a higher BGP metric) to certain learned routes.</li>
+          </ul>
+        </li>
+        <li><strong>Controlling Inbound Traffic (On-Prem to GCP):</strong>
+          <ul>
+            <li><strong>AS-Path Prepending:</strong> You can configure Cloud Router to prepend its own Autonomous System Number (ASN) multiple times when advertising routes to on-premises. On-premises routers will see a longer AS-Path and <strong>prefer the other, shorter path!</strong></li>
+            <li><strong>Custom Advertised Routes:</strong> Instead of advertising all subnets, you can configure Cloud Router to advertise only specific CIDR blocks to on-premises to restrict traffic flow.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Best Path Selection: Legacy vs. Standard Mode!</strong>
+      <p>This is a high-yield dynamic routing configuration on your VPC network:</p>
+      <ul>
+        <li><strong>Legacy Mode (Default):</strong> Processes AS-path length comparisons only within a single BGP task. This means if you have multiple Cloud Routers or BGP sessions on different tasks, Cloud Router <strong>might not</strong> consistently select the shortest AS-path across them!</li>
+        <li><strong>Standard Mode:</strong> Adheres strictly to RFC 4271. It evaluates and compares AS-path lengths consistently across <strong>all learned routes</strong> network-wide. It also supports advanced features like <code>bgpAlwaysCompareMed</code> (always compare Multi-Exit Discriminators across different neighbor ASNs) and custom handling of inter-region costs.</li>
+      </ul>
+      <em>Exam Tip: For large enterprise deployments with complex multi-region hybrid routing, recommend switching the VPC routing configuration to Standard Mode to ensure predictable, RFC-compliant BGP path selection!</em>
+    </div>
+
+    <div class="joke-box">
+      "Why did the Cloud Router get promoted? Because it always made standard, RFC-compliant path selections and never showed any legacy bias!" 📈
+    </div>
+
+    <!-- 3.4 NCC Hybrid Spokes -->
+    <h2>3.4 NCC Hybrid Spokes &amp; Router Appliances</h2>
+    <p>With Network Connectivity Center (NCC), you can attach HA VPN tunnels and Interconnect VLAN attachments as <strong>Hybrid Spokes</strong>. This unlocks <strong>site-to-site data transfer</strong>!</p>
+    <p>If you have a branch office in London and a data center in New York, both connected to GCP via HA VPN, they can route traffic to each other <strong>through Google's global fiber network</strong> by enabling site-to-site data transfer on their NCC spokes! This turns Google's network into your private WAN. 🌐</p>
+    <p>Additionally, you can deploy third-party SD-WAN or firewall VMs as <strong>Router Appliances (RAs)</strong>. These VMs peer with Cloud Router over BGP to dynamically exchange routes, allowing seamless integration of third-party routing intelligence into your GCP VPC.</p>
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before diving into the proper practice exam. No peeking!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> What is the minimum number of physical Dedicated Interconnect connections required to achieve a 99.99% SLA?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>Four connections!</strong> You need two connections in Metro A (Zone 1 and Zone 2) and two connections in Metro B (Zone 1 and Zone 2) to survive a full metro outage.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> Which BGP attribute should you use to make your on-premises routers prefer HA VPN Tunnel A over HA VPN Tunnel B for traffic entering Google Cloud?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>AS-Path Prepending!</strong> By configuring Cloud Router to prepend its ASN on Tunnel B's advertisements, on-premises routers will see Tunnel B as having a longer path and will prefer Tunnel A.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What is the difference between Legacy and Standard Best Path Selection in Cloud Router?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>Legacy mode</strong> only compares AS-path lengths within a single BGP task, leading to potential routing inconsistencies across different routers. <strong>Standard mode</strong> complies with RFC 4271, consistently comparing AS-path lengths network-wide.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> Which encryption technology can you use to secure a Dedicated Interconnect link at Layer 2 (hardware level)?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>MACsec</strong> (Media Access Control Security). It encrypts traffic directly over the physical Dedicated Interconnect link between your router and Google's edge router.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Theme 3 Practice Exam Questions</h2>
+      <p>Let's see if you can handle these actual exam-style hybrid connectivity brain busters!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A retailer needs a <strong>99.99%</strong> availability SLA for connectivity to Google Cloud. They have co-location space and can use more than one metro. Which Dedicated Interconnect topology is the most cost-effective design that actually qualifies for that SLA?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Two Dedicated Interconnect connections in Chicago across separate edge availability domains, with four VLAN attachments spread across those domains in the one facility.</li>
+          <li data-option="B">B) Two Dedicated Interconnect connections in Chicago and two in Ashburn, with each metro's VLAN attachments terminating on separate Cloud Routers, using global routing.</li>
+          <li data-option="C">C) Two Dedicated Interconnect connections in Chicago for production traffic, backed by an active-active HA VPN over the internet as a fallback path.</li>
+          <li data-option="D">D) One 100 Gbps Dedicated Interconnect connection in Chicago, backed by a Classic VPN tunnel mesh for egress during physical maintenance windows.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> A <strong>99.99%</strong> Interconnect SLA requires connections in <strong>two metros</strong> (at least two per metro, in separate edge availability domains) with global routing, so the link survives a full-metro outage. 🔌</p>
+          <ul>
+            <li><strong>A:</strong> All four connections in one metro tops out at 99.9% &mdash; it can't survive a metro-level failure no matter how you spread the availability domains.</li>
+            <li><strong>C:</strong> An HA VPN backup is good practice but doesn't raise the Interconnect topology's SLA to 99.99%.</li>
+            <li><strong>D:</strong> A single connection carries no SLA, and Classic VPN is deprecated &mdash; a fragile design with no guarantee.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> Two HA VPN tunnels are active between on-premises and your VPC. Egress traffic from GCP picks either tunnel at random, causing out-of-order delivery and firewall drops on-premises. You want GCP to send all traffic over Tunnel A and keep Tunnel B purely as standby. How should you configure this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) On the on-premises gateway, advertise your subnets to Cloud Router with a lower MED on Tunnel A's BGP session and a higher MED on Tunnel B's.</li>
+          <li data-option="B">B) In the VPC route table, add static routes with priority 100 toward Tunnel A and priority 1000 toward Tunnel B to drive the failover.</li>
+          <li data-option="C">C) On the on-premises gateway, AS-path prepend your ASN several times on Tunnel A's BGP session so Google prefers it for outbound traffic.</li>
+          <li data-option="D">D) Set the VPC's dynamic routing mode to Regional so learned routes bind to a single tunnel until BGP graceful restart fires on Tunnel B.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> Outbound (GCP&rarr;on-prem) path selection follows the <strong>MED</strong> of the routes Cloud Router learns. A lower MED on Tunnel A makes Cloud Router prefer it, falling back to Tunnel B only if Tunnel A's BGP session drops. 🚦</p>
+          <ul>
+            <li><strong>B:</strong> HA VPN requires dynamic (BGP) routing; you don't manage tunnel failover with static routes, and route "priority" orders static routes, not BGP tunnel preference.</li>
+            <li><strong>C:</strong> AS-path prepending makes a path look <em>longer</em>, so prepending Tunnel A would push outbound traffic onto Tunnel B &mdash; the opposite of the goal.</li>
+            <li><strong>D:</strong> Regional vs Global routing doesn't disambiguate two tunnels in the same region; both stay in scope.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Your VPC has subnets in <code>us-east1</code> and <code>europe-west1</code>, and a Dedicated Interconnect terminates in Virginia (<code>us-east1</code>). You need VMs in <code>europe-west1</code> to reach on-premises dynamically over that Interconnect. What VPC configuration is required?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Peer the <code>us-east1</code> and <code>europe-west1</code> subnets together and enable custom transit-route sharing on the peering.</li>
+          <li data-option="B">B) Add a Partner Interconnect in <code>europe-west1</code> and have its Cloud Router form a BGP loopback interface to the Virginia router.</li>
+          <li data-option="C">C) Add custom static routes in the European subnet pointing at the Virginia Cloud Router, with a Private Service Connect gateway as the next hop.</li>
+          <li data-option="D">D) Set the VPC's dynamic routing mode to Global so the Virginia Cloud Router's learned routes reach subnets in every region.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'D')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: D</span></p>
+          <p><strong>Why Option D is correct:</strong> <strong>Global</strong> dynamic routing makes a Cloud Router in any region propagate its learned on-prem routes to subnets in <em>every</em> region, so <code>europe-west1</code> reaches on-premises over the Virginia Interconnect natively. 🌐</p>
+          <ul>
+            <li><strong>A:</strong> Subnets in the same VPC aren't peered (and can't be) &mdash; they're already one global network.</li>
+            <li><strong>B:</strong> A second Interconnect helps redundancy but isn't required for cross-region routing, and cross-region BGP loopbacks over Interconnect aren't a feature.</li>
+            <li><strong>C:</strong> Static routes are brittle and lack BGP failover, and PSC is not a valid next hop for VM-to-on-prem subnet routing.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> With redundant Cloud Routers in <code>us-east1</code> and <code>us-west1</code>, a failover test shows Cloud Router occasionally choosing a longer AS-path route because separate BGP sessions are evaluated independently. How do you get consistent, RFC-compliant BGP best-path selection across the whole VPC?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Replace BGP with static routes carrying configured metrics on both Cloud Routers to skip dynamic convergence entirely.</li>
+          <li data-option="B">B) Enable Bidirectional Forwarding Detection at a 100 ms interval on every BGP session to synchronize the router tasks at failover.</li>
+          <li data-option="C">C) Set the VPC's BGP best path selection mode to Standard so AS-path comparison is applied consistently across all sessions.</li>
+          <li data-option="D">D) Set the VPC's dynamic routing mode to Regional so routes don't cross region boundaries during a router-task restart.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why Option C is correct:</strong> The default <strong>Legacy</strong> mode evaluates routes per BGP task and can pick a longer AS-path. <strong>Standard</strong> mode applies RFC 4271 best-path selection consistently across all of the VPC's BGP sessions and regions. 📈</p>
+          <ul>
+            <li><strong>A:</strong> Static routes don't scale and lose dynamic failover &mdash; the wrong tool for enterprise hybrid.</li>
+            <li><strong>B:</strong> BFD speeds failure <em>detection</em> but doesn't change the best-path algorithm.</li>
+            <li><strong>D:</strong> Regional routing restricts propagation to one region, breaking global connectivity rather than fixing path-selection consistency.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/network-connectivity/docs/interconnect" class="doc-link" target="_blank">
+          <strong>Cloud Interconnect Overview</strong>
+          <span>Dedicated, Partner, and Cross-Cloud Interconnect specifications.</span>
+        </a>
+        <a href="https://cloud.google.com/network-connectivity/docs/vpn" class="doc-link" target="_blank">
+          <strong>Cloud VPN Overview</strong>
+          <span>HA VPN design, Classic VPN deprecation, and SLAs.</span>
+        </a>
+        <a href="https://cloud.google.com/network-connectivity/docs/router" class="doc-link" target="_blank">
+          <strong>Cloud Router Concepts</strong>
+          <span>Dynamic routing, BGP attributes, and best path selection modes.</span>
+        </a>
+      </div>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/network_eng/theme3_hybrid.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/network_eng/theme3_hybrid.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>

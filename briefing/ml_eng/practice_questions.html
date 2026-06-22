@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="briefing" data-archetype="sim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional ML Engineer - Exam Simulator</title>
+    <!-- Outfit & Inter Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Theme variables */
+            --dark-bg: #0b0f19;
+            --dark-card: #151d30;
+            --dark-border: rgba(255, 255, 255, 0.08);
+            --dark-accent: #db2777;
+            --dark-accent-hover: #be185d;
+            --dark-text-primary: #f3f4f6;
+            --dark-text-secondary: #9ca3af;
+            --dark-correct: #10b981;
+            --dark-incorrect: #ef4444;
+            --dark-flagged: #f59e0b;
+            --dark-header: #0e1626;
+
+            /* Classic Exam Theme variables (replicates realistic grey/white exam UI) */
+            --classic-bg: #f3f4f6;
+            --classic-card: #ffffff;
+            --classic-border: #d1d5db;
+            --classic-accent: #9d174d;
+            --classic-accent-hover: #831843;
+            --classic-text-primary: #1f2937;
+            --classic-text-secondary: #4b5563;
+            --classic-correct: #15803d;
+            --classic-incorrect: #b91c1c;
+            --classic-flagged: #b45309;
+            --classic-header: #e5e7eb;
+
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Default active variables (mapped to Premium Dark Mode by default) */
+            --bg: var(--dark-bg);
+            --card: var(--dark-card);
+            --border: var(--dark-border);
+            --accent: var(--dark-accent);
+            --accent-hover: var(--dark-accent-hover);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --correct: var(--dark-correct);
+            --incorrect: var(--dark-incorrect);
+            --flagged: var(--dark-flagged);
+            --header: var(--dark-header);
+        }
+
+        body.classic-mode {
+            --bg: var(--classic-bg);
+            --card: var(--classic-card);
+            --border: var(--classic-border);
+            --accent: var(--classic-accent);
+            --accent-hover: var(--classic-accent-hover);
+            --text-primary: var(--classic-text-primary);
+            --text-secondary: var(--classic-text-secondary);
+            --correct: var(--classic-correct);
+            --incorrect: var(--classic-incorrect);
+            --flagged: var(--classic-flagged);
+            --header: var(--classic-header);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text selection during right-click strike */
+        }
+
+        /* Enable text selection only on code blocks and questions scenario texts */
+        .selectable, code, pre {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.classic-mode code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-display);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .timer-box.warning {
+            color: var(--incorrect);
+            animation: pulse 1s infinite alternate;
+            border-color: var(--incorrect);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toggle Switches */
+        .btn {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .domain-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-box {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+        }
+
+        .question-text p {
+            margin-bottom: 1rem;
+        }
+
+        .question-text pre {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.03);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.08);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .option-item.struck-out {
+            text-decoration: line-through;
+            opacity: 0.35;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: var(--border) !important;
+            box-shadow: none !important;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+
+        .option-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            display: none;
+        }
+
+        .option-item.selected .option-radio-dot {
+            display: block;
+        }
+
+        .option-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Left side / Right side panels */
+        .sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border);
+            background-color: var(--header);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-navigation {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .grid-cell.answered {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .grid-cell.flagged {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-color: var(--flagged);
+            color: var(--flagged);
+        }
+
+        .grid-cell.post-correct {
+            background-color: rgba(16, 185, 129, 0.3) !important;
+            border-color: #059669 !important;
+            color: #34d399 !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.post-incorrect {
+            background-color: rgba(239, 68, 68, 0.3) !important;
+            border-color: #dc2626 !important;
+            color: #fca5a5 !important;
+            font-weight: 700;
+        }
+
+        body.classic-mode .grid-cell.post-correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+
+        body.classic-mode .grid-cell.post-incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        /* Small flag dot on cell if flagged and also answered */
+        .grid-cell.flagged::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--flagged);
+            border-radius: 50%;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Controls Bar */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .flag-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .flag-icon {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .flag-checkbox-container input:checked ~ .flag-icon {
+            color: var(--flagged);
+        }
+
+        /* Explanations & Results Section */
+        .explanation-box {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border);
+            padding-top: 2rem;
+            display: none; /* Only visible after submission or correct answer mode */
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .explanation-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .exp-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .exp-item.correct-exp {
+            border-left-color: var(--correct);
+            background-color: rgba(16, 185, 129, 0.03);
+        }
+
+        .exp-item.incorrect-exp {
+            border-left-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+
+        .exp-badge {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .references-box {
+            margin-top: 1rem;
+        }
+
+        .references-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ref-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Results Screen Overlay */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .results-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+        }
+
+        .score-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Correct / Incorrect Option Indicators Post-Submission */
+        .option-item.post-correct {
+            border-color: var(--correct) !important;
+            background-color: rgba(16, 185, 129, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--correct) !important;
+        }
+
+        .option-item.post-incorrect {
+            border-color: var(--incorrect) !important;
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            box-shadow: 0 0 0 1px var(--incorrect) !important;
+        }
+
+        .badge-correct {
+            color: var(--correct);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .badge-incorrect {
+            color: var(--incorrect);
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        .scroll-top-btn {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 16px auto 24px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+            .content-area {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Personal Notes ── */
+        .notes-area {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        body.classic-mode .notes-area {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            user-select: text;
+        }
+        .notes-textarea:focus { border-color: var(--accent); }
+        .notes-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        /* ── Instructions Overlay ── */
+        #instructions-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .instructions-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .instructions-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+        .instructions-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .instructions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .inst-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 2rem;
+            text-align: center;
+        }
+        .inst-content strong {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+        .inst-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .start-exam-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .start-exam-btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .start-exam-btn:active { transform: translateY(0); }
+    </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body class="classic-mode">
+    <div id="instructions-overlay">
+        <div class="instructions-card">
+            <div class="instructions-title">Before You Begin</div>
+            <div class="instructions-subtitle">Read the following before starting your timed exam.</div>
+            <ul class="instructions-list">
+                <li>
+                    <span class="inst-icon">&#9201;</span>
+                    <div class="inst-content">
+                        <strong>Timer</strong>
+                        <p>The exam timer starts when you click <em>Start Exam</em>. The exam auto-submits when time expires.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#127937;</span>
+                    <div class="inst-content">
+                        <strong>Flag for Review</strong>
+                        <p>Click the flag icon to mark a question for later. Flagged questions are highlighted in the review panel. Flags do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128432;</span>
+                    <div class="inst-content">
+                        <strong>Eliminate an Answer</strong>
+                        <p>Right-click any answer option to cross it out. Right-click again to remove the strikethrough. Eliminations do not affect your score.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128221;</span>
+                    <div class="inst-content">
+                        <strong>Personal Notes</strong>
+                        <p>A notes box appears below each question. Type anything you like &#8212; notes are for your reference only and are not submitted or scored.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#9989;</span>
+                    <div class="inst-content">
+                        <strong>Scoring</strong>
+                        <p>Only your selected answer counts toward your score. Flags, notes, and crossed-out options have no effect on the result.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="inst-icon">&#128290;</span>
+                    <div class="inst-content">
+                        <strong>Review Panel</strong>
+                        <p>The grid on the right shows all questions. Click any number to jump to that question. Answered and flagged questions are colour-coded.</p>
+                    </div>
+                </li>
+            </ul>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam &#8594;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-badge">G</div>
+            <div>
+                <div class="title">Professional ML Engineer</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">GENERATED PRACTICE QUESTIONS</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="index.html" class="portal-link">&larr; Portal Hub</a>
+            <div class="timer-box" id="exam-timer">60:00</div>
+            <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                </svg>
+                <span>Premium Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="question-meta">
+                <div class="question-number" id="question-header">Question 1</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text selectable" id="question-text">
+                    <!-- Scenario markdown loaded here -->
+                </div>
+
+                <div class="options-list" id="options-list">
+                    <!-- Options loaded here -->
+                </div>
+
+                
+                <div class="notes-area">
+                    <div class="notes-label">&#128221; Personal Notes (not scored)</div>
+                    <textarea id="question-notes" class="notes-textarea" oninput="saveNote()" placeholder="Type your notes for this question here..."></textarea>
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <div class="explanation-title">Explanations & Study Resources</div>
+                    <div id="explanations-content" class="selectable" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                    <div class="references-box">
+                        <div class="references-title">References & Documentation:</div>
+                        <div id="references-links"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <label class="flag-checkbox-container">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()" style="display: none;">
+                    <svg class="flag-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8.67l-.5.5-.5-.5-.186-.205A.5.5 0 0 1 13 8V1.5a.5.5 0 0 1 .314-.464L14.5 1.17l-.222-.222-.5.5-.5-.5.186-.205a.5.5 0 0 1 .18-.182l1-1zM2 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .464.314l.222.444H13.5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.464-.314l-.222-.444H2.5a.5.5 0 0 1-.5-.5v-7zm1 1v5h7l.222.444H13V3h-2.222l-.222-.444H3z"/>
+                    </svg>
+                    <span>Flag for Review</span>
+                </label>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>Review Panel</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);" id="review-counter">0/20 Answered</span>
+            </div>
+
+            <div class="grid-navigation" id="grid-navigation">
+                <!-- Navigation cells 1-20 -->
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-row">
+                    <span>Answered:</span>
+                    <span class="stat-value" id="stat-answered">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Flagged:</span>
+                    <span class="stat-value" id="stat-flagged">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Remaining:</span>
+                    <span class="stat-value" id="stat-remaining">20</span>
+                </div>
+            </div>
+
+            <button id="submit-exam-btn" class="btn btn-primary" style="width: 100%; margin-top: auto; padding: 12px;" onclick="confirmSubmitExam()">Submit Exam</button>
+        </div>
+    </main>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="results-modal">
+        <div class="results-card">
+            <h1 style="font-family: var(--font-display); font-weight: 800; font-size: 1.8rem;">Exam Completed</h1>
+            
+            <div class="score-circle">
+                <span class="score-percentage" id="results-score">0%</span>
+                <span class="score-label" id="results-passing-status">Failed</span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: 1.5;" id="results-detailed-stats">
+                You answered 0 out of 20 questions correctly.
+            </p>
+
+            <div style="display: flex; gap: 15px; width: 100%;">
+                <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="closeResultsModalAndReview()">Review Explanations</button>
+                <button class="btn" style="flex: 1; padding: 12px;" onclick="resetExam()">Retry Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Right-click toggles strike-through. Left-click selects.</div>
+
+    <script>
+        const quizData = [
+  {
+    "number": 1,
+    "domain": "ML Engineer",
+    "scenario": "A retail analytics team keeps three years of transaction history in BigQuery and writes all reporting in SQL. They have no ML engineers. Leadership wants a daily churn-propensity score per customer, refreshed in place, shipped within the next sprint. The team is comfortable owning a model only if it lives where the data and their SQL skills already are. What should you do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Train a logistic regression model with `BigQuery ML` and generate daily scores with `ML.PREDICT` over the existing tables.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Export the customer tables to Cloud Storage and train an AutoML Tabular classification model on Vertex AI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Build a custom XGBoost trainer on Vertex AI custom training reading from BigQuery via the Storage Read API.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Call the Vertex AI Gemini API with a prompt per customer row to classify each as likely-to-churn or not.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "`BigQuery ML` trains and serves with SQL where the data already lives, fits a SQL-only team and a one-sprint deadline, and `ML.PREDICT` produces daily scores with no data movement or new infrastructure.",
+      "B": "AutoML would work but forces a data export and a new serving surface, adding movement and ops a SQL team does not need for a tabular classifier they can build in BigQuery.",
+      "C": "Custom XGBoost training gives maximum control but demands Python/ML engineering skill the team lacks and is overkill for a standard tabular churn task on a tight timeline.",
+      "D": "An LLM is the wrong, costly tool for structured tabular classification — per-row Gemini calls are expensive, non-deterministic, and not how churn propensity is modelled."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/bigquery/docs/logistic-regression-prediction",
+        "text": "cloud.google.com/bigquery/docs/logistic-regression-predic..."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "domain": "ML Engineer",
+    "scenario": "An insurer must extract policy numbers, premium amounts, and effective dates from millions of scanned, multi-page PDF policy documents and load the structured fields into BigQuery. There is no labelled training data and a tight delivery deadline. The team wants the lowest-effort path that returns structured key-value pairs rather than raw text they must parse themselves. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The `Cloud Vision API` text detection (OCR) feature, then a regex layer to pull out the fields.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "An AutoML Vision object-detection model trained to locate each field region on the page.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "The Gemini API in Model Garden, prompted to read each scanned page and return the fields as JSON.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Document AI processor (the Form Parser or a specialized processor) to extract entities and key-value pairs.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Vision OCR returns only raw text with no document structure, so you would hand-build and maintain a brittle regex parser for every layout variation — the effort the requirement explicitly rules out.",
+      "B": "AutoML Vision needs a labelled dataset of bounding boxes per field and only locates regions — you would still have to OCR and parse the contents, far more work than a pretrained parser.",
+      "C": "Gemini can read pages but is non-deterministic for high-volume field extraction, costs more per page at this scale, and lacks the layout-aware confidence and structure guarantees of a purpose-built Document AI processor.",
+      "D": "Document AI understands document structure and returns entities and key-value pairs out of the box with no labelled data, the lowest-effort path to structured fields for forms and policies."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/document-ai/docs/processors-list",
+        "text": "cloud.google.com/document-ai/docs/processors-list"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "domain": "ML Engineer",
+    "scenario": "A support team wants an assistant that answers staff questions from 12,000 internal policy PDFs. Answers must cite the source document, and the corpus is updated weekly — stale answers are unacceptable. The team has minimal ML infrastructure and wants to avoid managing a training pipeline. What should you build?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Supervised fine-tuning of a Gemini model on the PDF corpus so the model internalizes the policies.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "An AutoML text-classification model that routes each question to the most relevant policy document.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A prompt that concatenates the full policy corpus into the context window of a Gemini model on every request.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A retrieval-augmented generation app on Vertex AI Agent Builder that indexes the PDFs and grounds answers with citations.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Fine-tuning bakes knowledge in at training time, so it cannot cite sources and goes stale the moment the weekly update lands — you would have to retrain continuously, the opposite of low-maintenance.",
+      "B": "Classification only labels which document is relevant; it does not generate an answer or cite the supporting passage, missing the core requirement.",
+      "C": "12,000 PDFs vastly exceed any context window, and stuffing the corpus into every prompt is prohibitively expensive and slow even where it fits.",
+      "D": "Agent Builder RAG retrieves the relevant passages at query time, so answers stay grounded with citations and reflect the latest documents automatically, with managed infrastructure rather than a training pipeline."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/generative-ai-app-builder/docs/agent-intro",
+        "text": "cloud.google.com/generative-ai-app-builder/docs/agent-intro"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "domain": "ML Engineer",
+    "scenario": "A computer-vision team needs a custom classifier for 40 proprietary manufacturing-defect types. They have roughly 8,000 labelled images, no deep-learning specialists, and want a production-grade model with minimal code while keeping the option to deploy to a Vertex AI endpoint. The pretrained Vision API does not recognize their defect taxonomy. What should they use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The pretrained `Cloud Vision API` label-detection feature, mapping its generic labels to the 40 defect classes.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Gemini multimodal model in Model Garden, prompted to name the defect in each image.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "AutoML image classification on Vertex AI, trained on the labelled defect images.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A from-scratch convolutional network built and trained with Vertex AI custom training.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "The Vision API only emits its own generic label vocabulary and cannot learn the 40 proprietary defect classes, so mapping is impossible — the scenario states it does not recognize the taxonomy.",
+      "B": "A general multimodal LLM is not trained on the defect taxonomy, gives non-deterministic answers, and is a costlier, less accurate path than a purpose-trained classifier for a fixed 40-class problem.",
+      "C": "AutoML image classification trains a custom model on the labelled images with minimal code, handles architecture and tuning automatically, and deploys to a Vertex endpoint — the right low-code custom rung for a team without DL specialists.",
+      "D": "A from-scratch CNN gives full control but needs deep-learning expertise the team lacks and far more than 8,000 images to match AutoML's transfer-learning quality — unnecessary effort and risk."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/training-overview",
+        "text": "cloud.google.com/vertex-ai/docs/training-overview"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "domain": "ML Engineer",
+    "scenario": "A model that scored 0.91 AUC on the holdout set returns visibly worse predictions the moment it goes live — before any input distribution could have shifted. The team finds that the training pipeline computes a `days_since_last_order` feature in a Dataflow job, while the serving service recomputes it inline with slightly different rounding and time-zone handling. What is the most robust fix?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Schedule weekly retraining so the model continually re-fits to the production feature values.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Increase model capacity and add regularization so the model tolerates the feature discrepancy.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Serve both training and online features from a shared Vertex AI Feature Store so each path reads identical values.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Enable Vertex AI Model Monitoring with a drift threshold on `days_since_last_order` to catch the divergence.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Retraining on inconsistently computed features just re-fits the model to a moving target; the serving path still produces different values, so the day-one skew persists.",
+      "B": "A bigger, regularized model cannot compensate for systematically wrong inputs; capacity addresses generalization, not a deterministic feature-computation mismatch.",
+      "C": "A day-one gap from differing computation is training-serving skew; a shared Feature Store guarantees both paths read the same materialized values, eliminating the mismatch at its source.",
+      "D": "Model Monitoring detects and alerts on divergence but does not fix it — it is diagnosis, not mitigation, and the inconsistent computation would still feed the model."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview",
+        "text": "cloud.google.com/vertex-ai/docs/featurestore/latest/overview"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "domain": "ML Engineer",
+    "scenario": "A data scientist must prototype interactively over 6 TB of clickstream logs that already sit in an existing Dataproc Spark cluster, using familiar Spark DataFrame APIs. They want the least data movement and to keep working in a notebook. Which environment fits best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A Vertex AI Workbench instance that loads the logs into a pandas DataFrame for exploration.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Colab Enterprise, downloading the logs into the managed session for analysis.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A BigQuery notebook after exporting all 6 TB of logs into a BigQuery table first.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A notebook running on Dataproc with a Spark kernel against the existing cluster.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "pandas holds data in a single machine's memory and cannot fit 6 TB; Workbench with pandas chokes on terabyte-scale data, which is exactly the trap this scenario sets.",
+      "B": "A Colab Enterprise session cannot download or hold terabytes of data locally and is not wired to the Spark cluster's compute.",
+      "C": "Exporting 6 TB into BigQuery is large, unnecessary data movement and abandons the Spark APIs the team wants to use.",
+      "D": "A Dataproc-backed notebook runs Spark on the existing cluster, so the 6 TB stays put and the scientist keeps the Spark APIs they already use — minimal movement, right scale."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/dataproc/docs/tutorials/jupyter-notebook",
+        "text": "cloud.google.com/dataproc/docs/tutorials/jupyter-notebook"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "domain": "ML Engineer",
+    "scenario": "Before training a marketing model, the security team requires that names, email addresses, and credit-card numbers — which appear both in dedicated columns and buried inside free-text support notes — are detected and masked across a large, messy customer dataset, as a repeatable step in the ingestion pipeline. What should you use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud DLP / Sensitive Data Protection to inspect and de-identify the data as a pipeline transform.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "A scheduled SQL job that drops every column whose name contains `email`, `name`, or `card`.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Vertex AI Feature Store access controls so only authorized trainers can read the sensitive features.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "IAM Conditions on the training bucket restricting which principals can read the raw data.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Sensitive Data Protection detects many PII types including those embedded in free text and de-identifies them repeatably as a pipeline step — exactly matching detection in both columns and unstructured notes.",
+      "B": "Name-based column dropping misses PII buried in the free-text support notes entirely and is brittle to schema changes, so sensitive data still reaches the model.",
+      "C": "Feature Store access controls govern who can read features but do not mask the PII, which still flows into training data and the model itself.",
+      "D": "Bucket IAM limits who can read the raw files but performs no masking, so any authorized trainer — and the resulting model — still sees the raw PII."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+        "text": "cloud.google.com/sensitive-data-protection/docs/deidentif..."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "domain": "ML Engineer",
+    "scenario": "An ML platform team runs dozens of training jobs per week across several model variants. An auditor now asks, for a specific deployed model, exactly which dataset version, container image, and hyperparameters produced it, and to compare metrics across the competing runs that led to it. The team already logs to Vertex AI. Which combination answers both needs?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Vertex AI TensorBoard for the lineage trail and Cloud Logging filters to compare run metrics.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cloud Billing reports for run attribution and BigQuery exports of logs to compare metrics.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Vertex AI Experiments to compare runs and Vertex ML Metadata for the dataset-to-model lineage.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "The Vertex AI Model Registry alone, using version aliases to reconstruct inputs and compare metrics.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "TensorBoard visualizes training curves but does not record dataset-to-model lineage, and grepping Cloud Logging is not a structured run-comparison tool — neither answers the audit cleanly.",
+      "B": "Billing reports track cost, not provenance, and ad-hoc log exports give no structured lineage graph or experiment comparison.",
+      "C": "Vertex AI Experiments compares parameters and metrics across competing runs, while Vertex ML Metadata records the lineage linking dataset version, execution, and model — together covering both questions.",
+      "D": "The Model Registry versions and aliases the winning models but does not store the full lineage of inputs or a side-by-side metric comparison of the runs that produced them."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/ml-metadata/introduction",
+        "text": "cloud.google.com/vertex-ai/docs/ml-metadata/introduction"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "domain": "ML Engineer",
+    "scenario": "A team is migrating a working preprocessing notebook into production. A handful of feature transforms — log-scaling, bucketizing, and vocabulary lookups — must run byte-for-byte identically during training and during low-latency online serving, and the team wants the transform logic to travel with the model so there is no separate serving code to drift. Which approach best meets this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Re-implement the transforms as a Python function and call it from both the training script and the serving container.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Compute the transformed features in a nightly BigQuery job and join them in at serving time.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Apply the transforms in a Dataflow job for training and replicate the same logic in the serving service.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Define the transforms with TFX / `tf.transform` so the transform graph is exported and applied identically at serving.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A shared Python function still relies on two code paths and runtimes staying in sync over time; any divergence in library versions or call sites reintroduces skew — the very thing to avoid.",
+      "B": "A nightly precompute cannot serve low-latency online requests for new entities and introduces staleness, so it fails the real-time serving requirement.",
+      "C": "Maintaining the same logic in a Dataflow job and a separate serving service is exactly the duplicated-code path that skews over time — it does not make the transform travel with the model.",
+      "D": "`tf.transform` builds a transform graph that is exported with the model and replayed at serving, guaranteeing identical transforms train-time and serve-time with no separate serving code to drift."
+    },
+    "references": [
+      {
+        "url": "https://www.tensorflow.org/tfx/guide/transform",
+        "text": "tensorflow.org/tfx/guide/transform"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "domain": "ML Engineer",
+    "scenario": "A team trains a large TensorFlow recommendation model whose computation is dominated by very large, dense matrix multiplications. They run for many hours and want the best price-performance at scale. The model fits the data-parallel pattern and is written in standard TensorFlow with no custom C++ ops. Which accelerator choice is best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "High-vCPU CPU instances with many cores to parallelize the matrix operations.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Cloud TPUs, which are purpose-built for large dense matrix-multiply graphs in TensorFlow.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A single high-memory GPU with the model simplified to fit on one device.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A fleet of small GPUs without a Reduction Server to keep the configuration simple.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "CPUs are far too slow and inefficient for large dense deep-learning matmuls; they would be the worst price-performance for a multi-hour training job at this scale.",
+      "B": "TPUs are designed for exactly this workload — large, dense TensorFlow matmul graphs with no custom ops — and deliver the best price-performance at scale.",
+      "C": "Forcing a large model onto a single GPU sacrifices scale or accuracy and bottlenecks on device memory; it does not give best price-performance for a large dense graph.",
+      "D": "Many small GPUs running data-parallel all-reduce without a Reduction Server waste time on communication overhead, making them slower and pricier than TPUs for this dense TF workload."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/tpu/docs/intro-to-tpu",
+        "text": "cloud.google.com/tpu/docs/intro-to-tpu"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "domain": "ML Engineer",
+    "scenario": "A team runs a data-parallel PyTorch training job across 32 NVIDIA GPUs on Vertex AI. Profiling shows the GPUs sit idle waiting on the gradient all-reduce step every iteration — network communication, not compute, is now the bottleneck. The model fits comfortably on a single GPU. What should they add to cut training time?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Switch the strategy to model parallelism so the model is split across the 32 GPUs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Enable Vizier hyperparameter tuning to find settings that reduce the number of iterations.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add a Vertex AI Reduction Server to optimize the all-reduce communication across the workers.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Move to a single, larger GPU to remove cross-device communication entirely.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Model parallelism solves a model-too-big-for-one-device problem, but here the model fits on a single GPU; splitting it adds more cross-device traffic and would worsen the communication bottleneck.",
+      "B": "Hyperparameter tuning changes model quality and trial counts, not the per-iteration all-reduce cost; it does nothing for the network bottleneck.",
+      "C": "The Reduction Server is purpose-built to accelerate the all-reduce gradient step in multi-GPU data-parallel jobs, directly targeting the communication bottleneck the profile identified.",
+      "D": "One larger GPU removes communication but also removes the parallelism, drastically cutting throughput for a job that currently uses 32 GPUs — the wrong trade."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/training/distributed-training#reduce_training_time_with_reduction_server",
+        "text": "cloud.google.com/vertex-ai/docs/training/distributed-trai..."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "domain": "ML Engineer",
+    "scenario": "A hyperparameter-tuning job for a deep model must find a strong configuration within a fixed, modest compute budget. The priority is spending the budget efficiently to get the best metric, not finishing in the shortest wall-clock time. Each trial is expensive. How should you configure the Vertex AI tuning job?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Maximize parallel trials so every configuration in the search space runs simultaneously.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Bayesian optimization with modest parallelism and early stopping enabled.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Run an exhaustive grid search across every combination of the hyperparameters.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Run a single trial with hand-picked values informed by the team's intuition to conserve budget.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Full parallelism gives the fastest wall-clock but each trial cannot learn from completed ones, so Bayesian search degenerates toward random — wasting an expensive, fixed budget the priority says to spend wisely.",
+      "B": "Bayesian optimization learns from finished trials, so modest parallelism plus early stopping concentrates the budget on promising regions and kills weak trials — best metric for the spend.",
+      "C": "Grid search explodes combinatorially and spends the budget uniformly, including on clearly bad regions, which is inefficient when each trial is costly.",
+      "D": "A single hand-tuned trial is not a search at all and is unlikely to find the best configuration; it conserves budget by not exploring, defeating the purpose."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/training/hyperparameter-tuning-overview",
+        "text": "cloud.google.com/vertex-ai/docs/training/hyperparameter-t..."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "domain": "ML Engineer",
+    "scenario": "A labelled fraud dataset has 0.8% positives, and the first model predicts the majority \"not fraud\" class for almost everything yet reports 99% accuracy. The team needs a model that actually catches fraud. What is the soundest first remedy?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply class weighting or resampling and evaluate with precision-recall / AUC-PR instead of accuracy.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add more hidden layers so the network has the capacity to learn the rare class.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train for many more epochs on the same data so the model eventually learns the minority pattern.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Raise the learning rate sharply to push the model off the majority-class solution.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Class weighting or resampling rebalances the signal toward the rare class, and AUC-PR / precision-recall reflect minority-class performance where accuracy is misleading at 0.8% prevalence.",
+      "B": "Extra layers add capacity but do not change the imbalanced loss landscape; the model still minimizes loss by predicting the majority class and risks overfitting.",
+      "C": "More epochs on unchanged imbalanced data keep optimizing toward the majority class; longer training does not surface the rare pattern.",
+      "D": "A sharply higher learning rate risks divergence and instability and does nothing to address the underlying class imbalance."
+    },
+    "references": [
+      {
+        "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+        "text": "developers.google.com/machine-learning/crash-course/class..."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "domain": "ML Engineer",
+    "scenario": "A team must specialize a strong Gemini foundation model for a niche legal-contract domain. They have a few thousand high-quality prompt-response examples, a tight budget, and two weeks. The behavior they need (specific clause-tagging style and format) must be consistently produced. What is the best approach?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Pre-train a new transformer from scratch on a large legal-text corpus.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Stand up a RAG pipeline over the contracts and rely on retrieval to drive the formatting.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run a large hyperparameter sweep over a small model trained from scratch on the examples.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Run supervised fine-tuning of the foundation model on the labelled examples.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Pre-training from scratch needs orders of magnitude more data, compute, and time than two weeks and a few thousand examples allow — the textbook over-engineered answer.",
+      "B": "RAG injects fresh knowledge but does not reliably enforce a consistent output style or format; the requirement here is learned behavior, which tuning addresses and retrieval does not.",
+      "C": "A small from-scratch model cannot match a tuned foundation model's quality, and a big sweep over it burns the budget without the base model's language competence.",
+      "D": "Supervised fine-tuning of a capable base model on a few thousand examples bakes in the required clause-tagging style and format cheaply and quickly — the right fit for limited data, budget, and time."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models",
+        "text": "cloud.google.com/vertex-ai/generative-ai/docs/models/tune..."
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "domain": "ML Engineer",
+    "scenario": "A risk model must score the entire 600-million-row customer table once every night to populate a dashboard read the next morning. There is no interactive latency requirement, and the team wants the lowest cost. How should the model be served?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A dedicated Vertex AI online endpoint with autoscaling and a warm minimum of replicas.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A Vertex AI batch prediction job that reads the table, scores it, and writes results back out.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Function invoked per row in a nightly loop that calls a deployed online model.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "A Vertex AI private endpoint behind Private Service Connect, called from the nightly batch process.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "An always-on online endpoint with warm replicas incurs continuous cost to serve a once-nightly job, and per-request serving is the wrong, more expensive pattern for scoring a whole table.",
+      "B": "Batch prediction is purpose-built for large, latency-insensitive offline scoring — it reads the table, scores it in bulk, and writes results, the cheapest fit for a nightly whole-table job.",
+      "C": "Per-row function calls to an online model are slow and expensive at 600M rows and still require an always-on endpoint behind them.",
+      "D": "A private endpoint solves a network-isolation requirement that isn't stated here; it is still an always-on online endpoint paying to idle outside the nightly window."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/get-batch-predictions",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/get-batch-pre..."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "domain": "ML Engineer",
+    "scenario": "A fraud-scoring model is exposed to a mobile app and must answer in single-digit milliseconds. Compliance requires that prediction traffic never traverse the public internet and stays inside the VPC, satisfying data-exfiltration controls. The model is small and CPU-served. How should you deploy it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A public Vertex AI online endpoint protected by an API key and HTTPS.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A public endpoint fronted by Cloud CDN to cache predictions and reduce internet exposure.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A Vertex AI online endpoint exposed through a private endpoint / Private Service Connect inside the VPC.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "A Vertex AI batch prediction job triggered on each incoming request.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "A public endpoint, even with an API key, is reachable over the internet and so violates the requirement that traffic never leave the VPC.",
+      "B": "Cloud CDN caches static content and still sits on the public edge; predictions are per-user and dynamic, so caching is both unsafe and ineffective, and the endpoint remains internet-exposed.",
+      "C": "A private endpoint via Private Service Connect keeps online prediction traffic on the VPC's private network with low latency, satisfying both the millisecond SLA and the no-internet / exfiltration-control constraint.",
+      "D": "Batch prediction is an offline, high-latency pattern and cannot meet a single-digit-millisecond per-request SLA for an interactive app."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/using-private-endpoints",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/using-private..."
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "domain": "ML Engineer",
+    "scenario": "An online endpoint comfortably meets its latency target but the bill is too high, and retraining the model is off the table this quarter. Traffic is spiky — busy during the day, near-idle overnight. Which combination best cuts cost while protecting the latency target?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply post-training quantization / distillation to the served model and tune the endpoint's min/max replica counts.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Move the model to a much larger machine type so each replica handles far more requests.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Disable autoscaling and run a single fixed large replica sized for peak traffic around the clock.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Switch the interactive workload to Vertex AI batch prediction to avoid online-serving cost.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Quantization/distillation cut compute per request without retraining the original from scratch, and right-sizing min/max replicas lets the endpoint scale down overnight — both reduce cost while preserving the latency target.",
+      "B": "A larger machine type usually raises cost per replica and does nothing to remove idle overnight capacity; it scales the bill the wrong way.",
+      "C": "A fixed large replica sized for peak wastes money during the long idle overnight stretch and removes the autoscaling that handles the daytime spikes safely.",
+      "D": "Batch prediction cannot serve an interactive, per-request workload; switching to it breaks the application's latency requirement entirely."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/configure-compute",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/configure-com..."
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "domain": "ML Engineer",
+    "scenario": "A team has a v2 of a production model that looks better offline. Before full rollout they must route a small slice of live traffic to v2, watch real error and latency metrics, and either ramp up or roll back within seconds — with no DNS changes and minimal blast radius. Both versions are registered in the Model Registry. What should they configure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Deploy v2 to a separate endpoint and cut over by switching application DNS once metrics look good.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Replace v1 with v2 in place on the existing endpoint and monitor the metrics afterward.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Run a batch prediction with v2 over recent data and compare its metrics to v1 offline before deciding.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy both versions to one Vertex AI endpoint and use the endpoint traffic split, starting at ~5% on v2.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "A separate endpoint plus DNS switching is coarse, slow to propagate, and slow to roll back — it cannot give a fine-grained live canary or second-level rollback.",
+      "B": "In-place replacement exposes 100% of traffic to v2 immediately, the maximum blast radius, which is exactly what the canary requirement forbids.",
+      "C": "An offline batch comparison never exercises live serving behavior (latency, real traffic mix) and cannot be ramped or rolled back as a production rollout.",
+      "D": "Deploying both versions to one endpoint and splitting traffic gives a true live canary at ~5%, real serving metrics, and instant rollback by shifting the split back — no DNS involved."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/general/deployment#split-traffic",
+        "text": "cloud.google.com/vertex-ai/docs/general/deployment#split-..."
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "domain": "ML Engineer",
+    "scenario": "A team needs a reproducible, serverless training-and-deployment workflow that records full artifact lineage, skips unchanged steps on re-runs, and adds as little operational overhead as possible. They do not already run Airflow and want an ML-native tool. Which orchestrator should they use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cloud Composer (Apache Airflow) DAGs, with each ML step implemented as an Airflow task.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Vertex AI Pipelines using containerized KFP components with step caching enabled.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "A Cloud Run service that chains the training and deployment steps with custom orchestration code.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Cron-triggered shell scripts on a Compute Engine VM that run each step in sequence.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "B",
+    "explanations": {
+      "A": "Composer is for broad cross-system orchestration and means standing up and operating a managed Airflow environment — more overhead than an ML-native tool, and the team doesn't already run Airflow.",
+      "B": "Vertex AI Pipelines is serverless and ML-native, records lineage through Vertex ML Metadata, and caches unchanged steps on re-runs — exactly the reproducibility-with-minimal-ops requirement.",
+      "C": "A hand-rolled Cloud Run orchestration provides no built-in lineage, caching, or reproducibility and shifts all that engineering burden onto the team.",
+      "D": "Cron scripts on a VM give no lineage, no caching, no reproducibility, and require managing the VM — the highest-overhead, least ML-native option."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/pipelines/introduction",
+        "text": "cloud.google.com/vertex-ai/docs/pipelines/introduction"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "domain": "ML Engineer",
+    "scenario": "Retraining today is a fixed nightly cron that re-runs the full pipeline whether or not anything has changed, wasting compute on stable days and still lagging when the data shifts mid-day. The team wants retraining to fire when it actually adds value, at reasonable cost. What is the best trigger design?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Wire Vertex AI Model Monitoring drift/skew alerts to trigger the retraining pipeline when divergence crosses a threshold.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Keep the nightly cron but run it on a larger machine type so each run finishes faster.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Trigger a retraining run on every new row that lands, via a streaming Pub/Sub event per record.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Replace automation with a manual quarterly review where an engineer kicks off retraining if accuracy looks low.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Wiring Model Monitoring drift/skew alerts to the pipeline retrains exactly when the input distribution actually shifts, skipping stable days and reacting promptly when it matters — value-driven and cost-aware.",
+      "B": "A faster cron still retrains on stable days (wasted compute) and still misses intra-day shifts; it speeds up the wrong behavior rather than changing the trigger.",
+      "C": "Retraining per row is wildly expensive and unstable, swinging the model on noise and far exceeding \"reasonable cost.\"",
+      "D": "Quarterly manual review is slow, unreliable, and not automated, letting the model degrade undetected between reviews."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/model-monitoring/overview",
+        "text": "cloud.google.com/vertex-ai/docs/model-monitoring/overview"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "domain": "ML Engineer",
+    "scenario": "Leadership requires that a retrained model is promoted to production only if it beats the current production model on a held-out evaluation set, and the policy must be enforced automatically inside the CI/CD pipeline with no human in the loop. How do you implement this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Always deploy the newest model and roll it back later if production metrics look worse than before.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Deploy both the candidate and incumbent permanently and let downstream consumers choose which to call.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add a pipeline evaluation gate that compares candidate vs production metrics and registers/deploys only on pass.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Email the candidate's evaluation metrics to a reviewer who manually approves each deployment.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Deploy-then-rollback ships a possibly worse model to real users before the check, violating the \"only if it beats the incumbent\" policy at the moment it matters.",
+      "B": "Keeping both models forever is not a promotion policy at all; it sidesteps the comparison requirement and pushes the decision to consumers.",
+      "C": "A conditional evaluation step that compares candidate metrics against the production baseline gates the registration/deploy step, so a failing candidate is automatically blocked — the policy enforced in-pipeline with no human.",
+      "D": "Manual email approval is neither automatic nor in-pipeline, and it does not scale to frequent retraining."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/pipelines/build-pipeline",
+        "text": "cloud.google.com/vertex-ai/docs/pipelines/build-pipeline"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "domain": "ML Engineer",
+    "scenario": "A regulated lender deploys a tabular credit model. For every declined application, a regulator can demand a per-decision explanation of which input features drove that specific outcome. Aggregate model accuracy and a quarterly confusion matrix are not sufficient. What should you enable?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Vertex AI Model Monitoring with feature-drift alerts on the production inputs.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "A scheduled fairness report comparing approval rates across demographic slices each quarter.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "A traffic split that A/B tests the current model against a simpler, more interpretable baseline.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Vertex Explainable AI per-prediction feature attributions (e.g., sampled Shapley) on the model endpoint.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer": "D",
+    "explanations": {
+      "A": "Model Monitoring watches input distributions for drift across the population; it says nothing about why a single application was declined, which is what the regulator demands.",
+      "B": "A fairness report addresses group-level bias, a different (also important) concern, but cannot justify why one specific application was declined.",
+      "C": "A/B testing compares two model versions' aggregate performance; it does not explain any individual prediction.",
+      "D": "Explainable AI produces per-prediction feature attributions, explaining which features drove each individual decision — exactly the per-case justification a regulator requires for a declined applicant."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/explainable-ai/overview",
+        "text": "cloud.google.com/vertex-ai/docs/explainable-ai/overview"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "domain": "ML Engineer",
+    "scenario": "A demand-forecasting model held steady for months, then its accuracy decayed gradually over several weeks. Offline replays on the original test set still score well, and the team confirms the serving and training preprocessing are identical. The most likely cause is that real-world buying behavior has shifted, and they need to detect such shifts going forward. What is happening, and how should they detect it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Training-serving skew between the offline and online feature pipelines; fix it with a shared Feature Store.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Data leakage that inflated the original metrics; remove the leaked feature and retrain the model.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Prediction/feature drift; detect it with Vertex AI Model Monitoring tracking serving inputs vs the baseline.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Overfitting that surfaces only in production; address it with stronger regularization and early stopping.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "C",
+    "explanations": {
+      "A": "Skew produces a gap from day one, not a gradual months-later decay, and the team has already confirmed training and serving preprocessing are identical, ruling it out.",
+      "B": "Data leakage inflates offline metrics that then collapse immediately in production; it does not produce stable performance for months followed by gradual decay.",
+      "C": "A slow decay as real-world behavior shifts is prediction/feature drift; Model Monitoring compares live serving inputs against the training baseline over time and alerts when the distribution diverges.",
+      "D": "Overfitting shows as poor generalization in offline evaluation, but here the offline replays still score well, so overfitting does not explain a gradual production-only decline."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/model-monitoring/overview",
+        "text": "cloud.google.com/vertex-ai/docs/model-monitoring/overview"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "domain": "ML Engineer",
+    "scenario": "A GenAI customer-support assistant built on Gemini is going to production. The security team needs to screen user prompts for prompt-injection and jailbreak attempts and screen model responses for unsafe content, as an enforced control in front of and behind the model. The team wants a managed Google Cloud capability rather than hand-rolled regex filters. What should they use?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Model Armor to screen prompts and responses for injection patterns and unsafe content.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Lower the model's temperature so its outputs become more deterministic and less risky.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Increase the context window so the model has more room to reason safely about each request.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Disable request/response logging to reduce the surface area attackers can exploit.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Model Armor is the managed Google Cloud capability that screens prompts and responses for prompt injection, jailbreaks, and unsafe content as an enforced control around the model — exactly the requirement.",
+      "B": "Lowering temperature only reduces output randomness; it does not detect or block injection attempts or unsafe content.",
+      "C": "A larger context window changes how much text the model can attend to, not whether inputs or outputs are screened for abuse.",
+      "D": "Disabling logging removes the audit trail the security team needs and adds no screening; it weakens, not strengthens, the safety posture."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/security-command-center/docs/model-armor-overview",
+        "text": "cloud.google.com/security-command-center/docs/model-armor..."
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "domain": "ML Engineer",
+    "scenario": "A served TensorFlow model meets accuracy targets but breaches the 50 ms p99 latency budget on its GPU endpoint, and the per-request cost is too high. The team cannot afford a full re-architecture and wants to shrink inference latency and footprint while keeping accuracy largely intact. Which technique most directly addresses this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply quantization and/or knowledge distillation to produce a smaller, faster model for serving.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Add more input features to the model so it can reach the answer in fewer internal steps.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train the existing model for additional epochs to tighten its weights and speed inference.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Increase the training batch size so the deployed model executes faster at serving time.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer": "A",
+    "explanations": {
+      "A": "Quantization shrinks weight/activation precision and distillation transfers behavior to a smaller student model — both cut latency and memory footprint at serving with limited accuracy loss, directly hitting the p99 and cost goals.",
+      "B": "Adding features increases input dimensionality and compute, raising latency rather than lowering it.",
+      "C": "More training epochs change the learned weights but not the model's architecture or size, so inference latency is unchanged.",
+      "D": "Training batch size affects training throughput, not the served model's per-request inference speed."
+    },
+    "references": [
+      {
+        "url": "https://cloud.google.com/vertex-ai/docs/predictions/optimized-tensorflow-runtime",
+        "text": "cloud.google.com/vertex-ai/docs/predictions/optimized-ten..."
+      }
+    ]
+  }
+];
+
+        // State variables
+        let currentIdx = 0;
+        let selectedAnswers = {}; // questionIdx -> selectedOptionLetter
+        let flaggedQuestions = {}; // questionIdx -> boolean
+        let struckOptions = {}; // questionIdx -> Array of letters
+        let examSubmitted = false;
+        let timeLeft = Math.round(quizData.length * 2.4 * 60); // 2.4 min/question (real-exam pace)
+        let timerInterval;
+        const questionNotes = {};
+
+        function saveNote() {
+            questionNotes[currentIdx] = document.getElementById('question-notes').value;
+        }
+
+        function startExam() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            startTimer();
+            showToast("Tip: Left-click selects. Right-click on any option to cross it out!", 4000);
+        }
+
+        window.onload = function() {
+            initGrid();
+            loadQuestion(0);
+        };
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                timeLeft--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerBox = document.getElementById('exam-timer');
+            timerBox.textContent = displayStr;
+            
+            if (timeLeft <= 300) { // Under 5 minutes
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        function initGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.textContent = q.number;
+                cell.id = `grid-cell-${idx}`;
+                cell.onclick = () => loadQuestion(idx);
+                grid.appendChild(cell);
+            });
+            updateStats();
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = quizData[idx];
+
+            // Update headers
+            document.getElementById('question-header').textContent = `Question ${q.number} of ${quizData.length}`;
+
+            // Render Markdown scenario
+            document.getElementById('question-text').innerHTML = marked.parse(q.scenario);
+
+            // Set up Flag checkbox
+            document.getElementById('flag-checkbox').checked = flaggedQuestions[idx] || false;
+
+            // Render Options
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            if (!struckOptions[idx]) struckOptions[idx] = [];
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                if (selectedAnswers[idx] === opt.id) item.classList.add('selected');
+                if (struckOptions[idx].includes(opt.id)) item.classList.add('struck-out');
+
+                // If submitted, show correct / incorrect states
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        item.classList.add('post-correct');
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        item.classList.add('post-incorrect');
+                    }
+                }
+
+                item.onclick = (e) => selectOption(opt.id, item);
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    toggleStrike(opt.id, item);
+                };
+
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                const radioDot = document.createElement('div');
+                radioDot.className = 'option-radio-dot';
+                radio.appendChild(radioDot);
+
+                const text = document.createElement('div');
+                text.className = 'option-text selectable';
+                text.innerHTML = `<strong>${opt.id}.</strong> ${marked.parseInline(opt.text)}`;
+
+                item.appendChild(radio);
+                item.appendChild(text);
+
+                if (examSubmitted) {
+                    if (opt.is_correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-correct';
+                        badge.textContent = 'Correct';
+                        item.appendChild(badge);
+                    } else if (selectedAnswers[idx] === opt.id) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-incorrect';
+                        badge.textContent = 'Incorrect';
+                        item.appendChild(badge);
+                    }
+                }
+
+                list.appendChild(item);
+            });
+
+            // Highlight Active grid element
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('active'));
+            document.getElementById(`grid-cell-${idx}`).classList.add('active');
+
+            // Render explanations and references if exam is submitted
+            document.getElementById('question-notes').value = questionNotes[idx] || '';
+            const expBox = document.getElementById('explanation-box');
+            if (examSubmitted) {
+                expBox.style.display = 'flex';
+                renderExplanations(q);
+            } else {
+                expBox.style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(letter, element) {
+            if (examSubmitted) return;
+            if (struckOptions[currentIdx].includes(letter)) return; // Can't select struck out option
+
+            selectedAnswers[currentIdx] = letter;
+            
+            // UI updates
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            updateStats();
+        }
+
+        function toggleStrike(letter, element) {
+            if (examSubmitted) return;
+            if (selectedAnswers[currentIdx] === letter) return; // Can't strike selected option
+
+            const arr = struckOptions[currentIdx];
+            const foundIdx = arr.indexOf(letter);
+            if (foundIdx > -1) {
+                arr.splice(foundIdx, 1);
+                element.classList.remove('struck-out');
+            } else {
+                arr.push(letter);
+                element.classList.add('struck-out');
+            }
+        }
+
+        function toggleFlag() {
+            const flagVal = document.getElementById('flag-checkbox').checked;
+            flaggedQuestions[currentIdx] = flagVal;
+            updateStats();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) loadQuestion(currentIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) loadQuestion(currentIdx + 1);
+        }
+
+        function updateStats() {
+            let answered = 0;
+            let flagged = 0;
+
+            quizData.forEach((q, idx) => {
+                const cell = document.getElementById(`grid-cell-${idx}`);
+                if (!cell) return;
+
+                cell.className = 'grid-cell';
+                if (currentIdx === idx) cell.classList.add('active');
+
+                if (examSubmitted) {
+                    const selected = selectedAnswers[idx];
+                    const correctOpt = q.options.find(o => o.is_correct);
+                    if (correctOpt && selected === correctOpt.id) {
+                        cell.classList.add('post-correct');
+                    } else {
+                        cell.classList.add('post-incorrect');
+                    }
+                } else {
+                    if (selectedAnswers[idx]) {
+                        answered++;
+                        cell.classList.add('answered');
+                    }
+                }
+
+                if (flaggedQuestions[idx]) {
+                    flagged++;
+                    cell.classList.add('flagged');
+                }
+            });
+
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-flagged').textContent = flagged;
+            document.getElementById('stat-remaining').textContent = quizData.length - answered;
+            document.getElementById('review-counter').textContent = `${answered}/${quizData.length} Answered`;
+        }
+
+        function renderExplanations(q) {
+            const container = document.getElementById('explanations-content');
+            container.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'exp-item';
+                item.classList.add(opt.is_correct ? 'correct-exp' : 'incorrect-exp');
+
+                const rawExplanation = q.explanations[opt.id] || "No explanation details found.";
+                
+                // Construct clean bold correct/incorrect marker
+                const badgeText = opt.is_correct ? `Option ${opt.id} (Correct):` : `Option ${opt.id} (Incorrect):`;
+                const badgeColor = opt.is_correct ? 'var(--correct)' : 'var(--incorrect)';
+
+                item.innerHTML = `<span class="exp-badge" style="color: ${badgeColor}">${badgeText}</span><br>${marked.parse(rawExplanation)}`;
+                container.appendChild(item);
+            });
+
+            // Render References
+            const refContainer = document.getElementById('references-links');
+            refContainer.innerHTML = '';
+            if (q.references && q.references.length > 0) {
+                q.references.forEach(ref => {
+                    const link = document.createElement('a');
+                    link.className = 'ref-link';
+                    link.href = ref.url;
+                    link.target = '_blank';
+                    link.textContent = ref.text;
+                    refContainer.appendChild(link);
+                });
+            } else {
+                refContainer.textContent = "No references available.";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('classic-mode');
+            const isClassic = body.classList.contains('classic-mode');
+            
+            const btn = document.getElementById('theme-toggle-btn');
+            if (isClassic) {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06a.752.752 0 0 1 .876.218z"/>
+                    </svg>
+                    <span>Premium Theme</span>
+                `;
+            } else {
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                    </svg>
+                    <span>Classic Theme</span>
+                `;
+            }
+        }
+
+        function confirmSubmitExam() {
+            if (examSubmitted) {
+                showToast("Exam has already been submitted!");
+                return;
+            }
+            const answeredCount = Object.keys(selectedAnswers).length;
+            const remainingCount = quizData.length - answeredCount;
+            
+            let msg = `Are you sure you want to submit your exam?\n\nYou answered ${answeredCount} of ${quizData.length} questions.`;
+            if (remainingCount > 0) {
+                msg += `\n\nWARNING: You have ${remainingCount} unanswered questions.`;
+            }
+
+            if (confirm(msg)) {
+                submitExam();
+            }
+        }
+
+        function autoSubmitExam() {
+            if (examSubmitted) return;
+            alert("Time's up! Your exam will be submitted automatically.");
+            submitExam();
+        }
+
+        function submitExam() {
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let correctCount = 0;
+            quizData.forEach((q, idx) => {
+                const selected = selectedAnswers[idx];
+                const correctOpt = q.options.find(o => o.is_correct);
+                if (correctOpt && selected === correctOpt.id) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / quizData.length) * 100);
+            
+            // Render results modal
+            document.getElementById('results-score').textContent = `${scorePercent}%`;
+            
+            const statusLabel = document.getElementById('results-passing-status');
+            if (scorePercent >= 70) {
+                statusLabel.textContent = 'PASS';
+                statusLabel.style.color = 'var(--correct)';
+            } else {
+                statusLabel.textContent = 'FAIL';
+                statusLabel.style.color = 'var(--incorrect)';
+            }
+
+            document.getElementById('results-detailed-stats').textContent = `You scored ${correctCount} out of ${quizData.length} correct (${scorePercent}%). Google Cloud Professional exams typically require roughly 70-75% to pass.`;
+
+            document.getElementById('results-modal').style.display = 'flex';
+            
+            // Reload current question to show correct/incorrect markers
+            loadQuestion(currentIdx);
+            updateStats();
+
+            // Disable and grey out Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Exam Submitted';
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function closeResultsModalAndReview() {
+            document.getElementById('results-modal').style.display = 'none';
+        }
+
+        function resetExam() {
+            selectedAnswers = {};
+            flaggedQuestions = {};
+            struckOptions = {};
+            examSubmitted = false;
+            timeLeft = Math.round(quizData.length * 2.4 * 60);
+            document.getElementById('results-modal').style.display = 'none';
+            
+            initGrid();
+            loadQuestion(0);
+            startTimer();
+
+            // Re-enable Submit button
+            const submitBtn = document.getElementById('submit-exam-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Exam';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+    </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/ml_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/ml_eng/practice_questions.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

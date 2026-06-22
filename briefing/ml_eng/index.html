@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="portal" class="ds-skin">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCP ML Engineer Revision Guide Portal</title>
+  <style>
+    :root {
+      --bg-light: #fdf2f8;
+      --ink: #1e293b;
+      --accent: #db2777;
+      --accent-dark: #be185d;
+      --rev-violet: #8b5cf6;
+      --rev-blue: #2563eb;
+      --rev-teal: #0d9488;
+      --rev-orange: #ea580c;
+      --rev-green: #16a34a;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-red: #ef4444;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23fbcfe8' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 30px 15px; }
+
+    header {
+      background: linear-gradient(135deg, #f472b6 0%, var(--accent) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 40px;
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    header::after {
+      content: "STUDY PORTAL!";
+      position: absolute; top: 15px; right: -35px;
+      background: var(--rev-red); color: white;
+      font-size: 0.75rem; font-weight: bold;
+      padding: 6px 40px; transform: rotate(45deg); border: 2px solid #000;
+    }
+
+    .badge-rev {
+      background: var(--rev-red); color: white; display: inline-block;
+      font-size: 0.9rem; font-weight: bold; padding: 6px 16px;
+      border-radius: 999px; border: 2px solid #000; transform: rotate(-2deg); margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem); margin: 10px 0;
+      text-transform: uppercase; letter-spacing: -0.02em;
+      -webkit-text-stroke: 1px #000; text-shadow: 3px 3px 0px #fff;
+    }
+
+    .tagline { font-size: 1.2rem; margin: 10px auto; max-width: 700px; font-style: italic; }
+
+    .intro-section {
+      background: white; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 25px; margin-bottom: 30px;
+    }
+
+    .intro-title { font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-dark); display: flex; align-items: center; gap: 10px; }
+    .intro-section ul { padding-left: 20px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    .action-row { margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .grid-sections { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+    .grid-sections > * { min-width: 0; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0;
+      background: var(--rev-yellow); color: #000; font-weight: bold; padding: 10px 20px;
+      border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    @media (max-width: 768px) {
+      .grid-sections { grid-template-columns: 1fr; }
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+
+    .section-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000; padding: 25px; display: flex; flex-direction: column;
+      justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; min-width: 0;
+    }
+    .section-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+
+    .section-card.s1 { border-color: var(--rev-violet); box-shadow: 4px 4px 0px var(--rev-violet); }
+    .section-card.s1:hover { box-shadow: 6px 6px 0px var(--rev-violet); }
+    .section-card.s2 { border-color: var(--rev-blue); box-shadow: 4px 4px 0px var(--rev-blue); }
+    .section-card.s2:hover { box-shadow: 6px 6px 0px var(--rev-blue); }
+    .section-card.s3 { border-color: var(--rev-teal); box-shadow: 4px 4px 0px var(--rev-teal); }
+    .section-card.s3:hover { box-shadow: 6px 6px 0px var(--rev-teal); }
+    .section-card.s4 { border-color: var(--rev-orange); box-shadow: 4px 4px 0px var(--rev-orange); }
+    .section-card.s4:hover { box-shadow: 6px 6px 0px var(--rev-orange); }
+    .section-card.s5 { border-color: var(--rev-green); box-shadow: 4px 4px 0px var(--rev-green); }
+    .section-card.s5:hover { box-shadow: 6px 6px 0px var(--rev-green); }
+
+    .sec-badge {
+      display: inline-block; font-size: 0.8rem; font-weight: bold; color: white;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; margin-bottom: 12px; align-self: start;
+    }
+    .s1 .sec-badge { background: var(--rev-violet); }
+    .s2 .sec-badge { background: var(--rev-blue); }
+    .s3 .sec-badge { background: var(--rev-teal); }
+    .s4 .sec-badge { background: var(--rev-orange); }
+    .s5 .sec-badge { background: var(--rev-green); }
+
+    .sec-title { font-size: 1.3rem; margin: 0 0 10px; line-height: 1.2; }
+    .sec-desc { font-size: 0.95rem; color: #475569; margin: 0 0 16px; flex-grow: 1; }
+    .sec-topics { font-size: 0.85rem; color: #334155; margin: 0 0 8px; padding-left: 18px; }
+    .sec-topics li { margin-bottom: 4px; }
+
+    .btn-rev {
+      display: block; text-align: center; background: var(--rev-yellow); color: #000; font-weight: bold;
+      padding: 12px; border: 3px solid #000; border-radius: 10px; box-shadow: 3px 3px 0px #000;
+      text-decoration: none; transition: background-color 0.2s, transform 0.1s;
+      overflow-wrap: anywhere; word-break: break-word; max-width: 100%;
+    }
+    .btn-rev:hover { background: var(--rev-yellow-dark); }
+    .btn-rev:active { transform: translate(1px, 1px); box-shadow: 2px 2px 0px #000; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-exam { background: var(--rev-blue); color: #fff; }
+    .btn-exam:hover { background: #1d4ed8; }
+    .btn-portal-wip { display: flex !important; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .wip-badge { background: repeating-linear-gradient(-45deg, #facc15, #facc15 5px, #1e293b 5px, #1e293b 10px); color: #fff; font-size: 0.72rem; font-weight: 900; padding: 4px 10px; border: 2px solid #000; border-radius: 4px; letter-spacing: 0.1em; text-shadow: 0 1px 0 #000; flex-shrink: 0; line-height: 1; }
+    .btn-official { background: var(--rev-green); color: #fff; }
+    .btn-official:hover { background: #15803d; }
+    .btn-disabled { background: #e5e7eb; color: #9ca3af; border-color: #9ca3af; box-shadow: 2px 2px 0px #9ca3af; cursor: not-allowed; }
+    .btn-disabled:hover { transform: none; box-shadow: 2px 2px 0px #9ca3af; }
+
+    .study-tip {
+      background: #fff; border: 3px dashed var(--accent); border-radius: var(--radius);
+      padding: 20px; margin-top: 40px;
+    }
+    .study-tip h3 { margin-top: 0; color: var(--accent-dark); display: flex; align-items: center; gap: 8px; }
+
+    .wip-banner {
+      background: repeating-linear-gradient(-45deg, #facc15, #facc15 14px, #1e293b 14px, #1e293b 28px);
+      border: 4px solid #000; border-radius: var(--radius); padding: 14px; margin-bottom: 28px;
+      box-shadow: 5px 5px 0px #000;
+    }
+    .wip-banner-inner {
+      background: rgba(255, 255, 255, 0.95); border: 3px solid #000; border-radius: 10px;
+      padding: 18px 20px; text-align: center;
+    }
+    .wip-banner h2 {
+      margin: 0 0 8px; font-size: clamp(1.2rem, 3vw, 1.6rem); text-transform: uppercase;
+      color: #b45309; letter-spacing: 0.04em;
+    }
+    .wip-banner p { margin: 0; font-size: 0.95rem; color: #334155; max-width: 680px; margin-inline: auto; }
+    header.wip-header::after {
+      content: "WIP!"; background: #facc15; color: #000;
+    }
+
+    footer {
+      text-align: center; margin-top: 50px; padding-top: 20px;
+      border-top: 1px dashed #cbd5e1; color: #64748b; font-size: 0.9rem;
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">&larr; Back to Main Certs Hub</a>
+    </div>
+
+    <div class="wip-banner" role="status">
+      <div class="wip-banner-inner">
+        <h2>Work in Progress</h2>
+        <p>This study portal is still under construction. Sections, guides, and practice material may be incomplete or change without notice &mdash; but feel free to browse what&rsquo;s here so far!</p>
+      </div>
+    </div>
+
+    <header class="wip-header">
+      <div class="badge-rev">Exam Revision Style</div>
+      <h1>Google Cloud Professional Machine Learning Engineer</h1>
+      <p class="tagline">Your study portal for Vertex AI, BigQuery ML, pipelines, foundation models, and Responsible AI — train, serve, and monitor ML the Google way!</p>
+    </header>
+
+    <section class="intro-section">
+      <h2 class="intro-title"><span>🤖 Study Coach Welcome!</span></h2>
+      <p>Welcome to your personal study portal for the Google Cloud Professional Machine Learning Engineer certification. The current exam blends classic MLOps with generative AI — Model Garden, Vertex AI Agent Builder, and RAG all appear. The page is organised around the six official exam sections, with the heaviest weight on pipelines and serving.</p>
+      <ul>
+        <li><strong>Section weightings included —</strong> pipelines (~22%) and serving (~20%) carry the most marks.</li>
+        <li><strong>GenAI is in scope —</strong> Model Garden, Agent Builder, RAG, and evaluating generative AI solutions.</li>
+        <li><strong>Cheatsheet &amp; Practice:</strong> Vertex AI service map, decision matrices, and a timed simulator with full diagnostics.</li>
+      </ul>
+    </section>
+
+    <div class="action-row">
+      <a href="cheatsheet.html" class="btn-rev btn-primary btn-portal-wip" style="flex:1 1 220px;">📋 Open Exam Cheatsheet <span class="wip-badge">WIP</span> &rarr;</a>
+      <a href="practice_questions.html" class="btn-rev btn-exam btn-portal-wip" style="flex:1 1 220px;">📝 Generated Practice (25 Q) <span class="wip-badge">WIP</span> &rarr;</a>
+      <a href="sample_questions.html" style="flex:1 1 220px;" class="btn-rev btn-official">🎯 Official Sample (8 Q) &rarr;</a>
+    </div>
+
+    <h2 style="font-size: 1.6rem; margin: 30px 0 15px; text-transform: uppercase;">📚 Exam Sections at a Glance</h2>
+
+    <div class="grid-sections">
+      <div class="section-card s1">
+        <div>
+          <span class="sec-badge">Section 1 &mdash; ~13%</span>
+          <h3 class="sec-title">Architecting Low-Code AI Solutions</h3>
+          <p class="sec-desc">Ship AI fast with BigQuery ML, ML APIs, foundation models, and AutoML.</p>
+          <ul class="sec-topics">
+            <li>BigQuery ML model types &amp; in-warehouse predictions</li>
+            <li>ML APIs from Model Garden; industry APIs (Document AI, Retail)</li>
+            <li>RAG apps with Vertex AI Agent Builder</li>
+            <li>AutoML for tabular, forecasting, and custom models</li>
+          </ul>
+        </div>
+        <a href="guide_s1.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s2">
+        <div>
+          <span class="sec-badge">Section 2 &mdash; ~14%</span>
+          <h3 class="sec-title">Managing Data &amp; Models Across Teams</h3>
+          <p class="sec-desc">Explore, preprocess, prototype in notebooks, and track experiments.</p>
+          <ul class="sec-topics">
+            <li>Vertex AI Datasets &amp; Feature Store; PII/PHI handling</li>
+            <li>Preprocessing with Dataflow / TFX / BigQuery</li>
+            <li>Notebook backends: Vertex AI Workbench, Colab Enterprise, Dataproc</li>
+            <li>Vertex AI Experiments &amp; TensorBoard; evaluating GenAI</li>
+          </ul>
+        </div>
+        <a href="guide_s2.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s3">
+        <div>
+          <span class="sec-badge">Section 3 &mdash; ~18%</span>
+          <h3 class="sec-title">Scaling Prototypes into ML Models</h3>
+          <p class="sec-desc">Build, train at scale, tune, and pick the right accelerators.</p>
+          <ul class="sec-topics">
+            <li>Framework &amp; architecture choice; interpretability</li>
+            <li>Vertex AI custom training, Kubeflow on GKE, distributed training</li>
+            <li>Hyperparameter tuning; fine-tuning foundation models</li>
+            <li>CPU vs GPU vs TPU; Reduction Server, Horovod</li>
+          </ul>
+        </div>
+        <a href="guide_s3.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s4">
+        <div>
+          <span class="sec-badge">Section 4 &mdash; ~20%</span>
+          <h3 class="sec-title">Serving &amp; Scaling Models</h3>
+          <p class="sec-desc">Batch and online inference, endpoints, and production tuning.</p>
+          <ul class="sec-topics">
+            <li>Batch vs online inference (Vertex AI, Dataflow, BigQuery ML)</li>
+            <li>Model registry; A/B testing versions</li>
+            <li>Public vs private Vertex AI endpoints; Feature Store at serving</li>
+            <li>Right-sizing hardware; latency/throughput/memory tuning</li>
+          </ul>
+        </div>
+        <a href="guide_s4.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s5">
+        <div>
+          <span class="sec-badge">Section 5 &mdash; ~22%</span>
+          <h3 class="sec-title">Automating &amp; Orchestrating Pipelines</h3>
+          <p class="sec-desc">The heavyweight: end-to-end pipelines, retraining, and metadata.</p>
+          <ul class="sec-topics">
+            <li>Vertex AI Pipelines (KFP), Cloud Composer; TFX components</li>
+            <li>Training/serving preprocessing parity; data &amp; model validation</li>
+            <li>Retraining policy &amp; CI/CD model deployment</li>
+            <li>Vertex ML Metadata: artifact versioning &amp; lineage</li>
+          </ul>
+        </div>
+        <a href="guide_s5.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s1">
+        <div>
+          <span class="sec-badge">Section 6 &mdash; ~13%</span>
+          <h3 class="sec-title">Monitoring AI Solutions</h3>
+          <p class="sec-desc">Spot risk, monitor drift and skew, and apply Responsible AI.</p>
+          <ul class="sec-topics">
+            <li>Responsible AI: fairness, bias, secure AI systems</li>
+            <li>Model explainability (Explainable AI on Vertex AI)</li>
+            <li>Training-serving skew &amp; feature attribution drift</li>
+            <li>Continuous evaluation vs baselines &amp; over time</li>
+          </ul>
+        </div>
+        <a href="guide_s6.html" class="btn-rev">Open Study Guide &rarr;</a>
+      </div>
+      <div class="section-card s1" style="background: #fffbeb; border-color: var(--rev-yellow-dark); box-shadow: 4px 4px 0px var(--rev-yellow-dark);">
+        <div>
+          <span class="sec-badge" style="background: var(--rev-yellow-dark); color: #000;">Exam Deck</span>
+          <h3 class="sec-title">Cheatsheet &amp; Practice</h3>
+          <p class="sec-desc">The slide-based cheatsheet plus a timed, closed-book simulator with per-option explanations. Use these in your final week.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="cheatsheet.html" class="btn-rev btn-primary btn-portal-wip">Open Cheatsheet <span class="wip-badge">WIP</span> &rarr;</a>
+          <a href="practice_questions.html" class="btn-rev btn-exam btn-portal-wip">📝 Generated Practice (25 Q) <span class="wip-badge">WIP</span> &rarr;</a>
+          <a class="btn-rev btn-disabled" aria-disabled="true" title="Official sample questions to be added (extracted from the Google Form)">📋 Official Sample Questions &mdash; coming soon</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="study-tip">
+      <h3>💡 Coach's Study Tip!</h3>
+      <p>Two anchors carry this exam: the <strong>Vertex AI service map</strong> (Datasets, Feature Store, Workbench, Training, Pipelines, Prediction, Model Monitoring) and the <strong>build-vs-buy ladder</strong> (BigQuery ML &rarr; AutoML &rarr; custom training; ML API/Model Garden for pretrained). For monitoring questions, distinguish <strong>training-serving skew</strong> (preprocessing mismatch) from <strong>prediction/feature drift</strong> (input distribution changes over time). GenAI topics (Model Garden, Agent Builder, RAG, evaluation) are now fair game — don't skip them.</p>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/ml_eng/index.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/ml_eng/index.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+
+</html>

@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en" data-skin="briefing" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 4 Revision Guide - Deploying Scalable & HA Databases</title>
+  <style>
+    :root {
+      --bg-light: #fff7ed;
+      --ink: #1e293b;
+      --rev-orange: #ea580c;
+      --rev-orange-light: #ffedd5;
+      --rev-orange-border: #f97316;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-red: #ef4444;
+      --rev-green: #16a34a;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ffedd5' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 25px 15px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .nav-link {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background: var(--rev-yellow);
+    }
+
+    header {
+      background: linear-gradient(135deg, #fb923c 0%, var(--rev-orange) 100%);
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      color: white;
+      padding: 30px 20px;
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      text-transform: uppercase;
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .section-badge {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 3px solid #000;
+      transform: rotate(2deg);
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: var(--rev-orange);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+    }
+
+    .rev-card {
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #000;
+      padding: 22px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .rev-card.tip {
+      background: #fff7ed;
+      border-color: var(--rev-orange-border);
+      box-shadow: 4px 4px 0px var(--rev-orange-border);
+    }
+
+    .rev-card.tip h3 {
+      color: var(--rev-orange);
+      margin-top: 0;
+    }
+
+    .rev-card.warn {
+      background: #fef2f2;
+      border-color: var(--rev-red);
+      box-shadow: 4px 4px 0px var(--rev-red);
+    }
+
+    .rev-card.warn h3 {
+      color: var(--rev-red);
+      margin-top: 0;
+    }
+
+    .exam-trap {
+      background: #fff7ed;
+      border: 3px dashed var(--rev-orange);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!";
+      display: inline-block;
+      background: var(--rev-orange);
+      color: white;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 2px solid #000;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8;
+      border: 3px solid #db2777;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px;
+      margin: 25px 0;
+    }
+
+    .mnemonic strong {
+      color: #db2777;
+    }
+
+    .joke-box {
+      font-style: italic;
+      color: #4b5563;
+      text-align: center;
+      margin: 25px 0;
+      padding: 10px;
+      border-top: 1px dashed #cbd5e1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    code {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      color: #1e40af;
+      padding: 2px 6px;
+      font-size: 0.92rem;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      margin: 15px 0;
+    }
+
+    pre code {
+      background: transparent;
+      border: none;
+      color: inherit;
+      padding: 0;
+      font-family: Consolas, Monaco, "Lucida Console", monospace;
+      font-size: 0.9rem;
+    }
+
+    /* Interactive Quiz styles */
+    .warm-up {
+      background: #faf5ff;
+      border: 3px solid var(--rev-violet);
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px var(--rev-violet);
+      padding: 22px;
+      margin: 35px 0;
+    }
+
+    .warm-up h3 {
+      color: var(--rev-violet);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-item {
+      margin-bottom: 18px;
+      border-bottom: 1px dashed #ddd6fe;
+      padding-bottom: 12px;
+    }
+
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .show-answer-btn {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+
+    .show-answer-btn:hover {
+      background: #f3e8ff;
+    }
+
+    .answer-panel {
+      display: none;
+      margin-top: 10px;
+      background: #f5f3ff;
+      border-left: 4px solid var(--rev-violet);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Practice Questions */
+    .practice-exam {
+      background: #fffaf0;
+      border: 4px solid #000;
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0px #000;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    .practice-exam h2 {
+      color: var(--rev-orange);
+      border-bottom: 3px solid #000;
+      margin-top: 0;
+    }
+
+    .q-box {
+      background: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .option-list li {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .option-list li:hover {
+      background: #fef8f2;
+      border-color: #000;
+    }
+
+    .explanation-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .explanation-btn:hover {
+      background: #dd5209;
+    }
+
+    .explanation-panel {
+      display: none;
+      margin-top: 15px;
+      background: #fff8f2;
+      border: 2px dashed var(--rev-orange);
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 1px solid #000;
+      margin-right: 6px;
+    }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+
+    .further-reading {
+      background: #ecfeff;
+      border: 3px solid #0891b2;
+      border-radius: var(--radius);
+      box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px;
+      margin: 28px 0;
+    }
+
+    .further-reading h3 {
+      color: #0e7490;
+      margin-top: 0;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: block;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 0px #000;
+      color: #0f172a;
+      padding: 10px 12px;
+      text-decoration: none;
+    }
+
+    .doc-link strong {
+      display: block;
+      color: #0e7490;
+    }
+
+    .doc-link span {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 3px;
+    }
+
+    .option-list li.selected {
+      background: #ffedd5;
+      border-color: var(--rev-orange);
+      box-shadow: 2px 2px 0px var(--rev-orange);
+    }
+
+    .option-list li.eliminated {
+      background: #f1f5f9;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .option-list li.correct-answer {
+      background: #dcfce7;
+      border-color: var(--rev-green);
+    }
+
+    .option-list li.wrong-answer {
+      background: #fee2e2;
+      border-color: var(--rev-red);
+    }
+
+    .submit-answer-btn {
+      background: var(--rev-orange);
+      color: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-answer-btn:hover {
+      background: #dd5209;
+    }
+
+    .bullet-chk {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bullet-chk li::before {
+      content: "✔️ ";
+      margin-right: 8px;
+    }
+
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .option-list li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+
+    .scroll-top-btn {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      margin: 30px auto 0;
+      background: var(--rev-yellow);
+      color: #000;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-top-btn:hover {
+      background: #eab308;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+      }
+
+      .nav-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-briefing.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="section3_migrate.html" class="nav-link">&larr; Back to Section 3</a>
+      <a href="index.html" class="nav-link">Revision Hub</a>
+    </div>
+
+    <header>
+      <h1>Section 4: Deploying Scalable &amp; HA Databases</h1>
+      <p>Infrastructure as Code with Terraform, scaling read fleets, setting up multi-regional nodes, and running game-day failover drills!</p>
+      <div class="section-badge">~20% of the Exam! 🎯</div>
+    </header>
+
+    <!-- 4.1 Provisioning & Deploying -->
+    <h2>4.1 Pressing the Button &mdash; Scalable &amp; HA Deployment</h2>
+    <p>We've made it to the final section of our study guide! Now it's time to actually construct our databases. But wait... you aren't going to build these production instances by clicking random buttons in the GCP Console, are you? No! That is strictly for amateurs! 🖱️</p>
+
+    <div class="rev-card tip">
+      <h3>🏗️ Infrastructure as Code (IaC) &mdash; The Terraform Way</h3>
+      <p>Real-world Cloud Architects write, review, and version-control their database infrastructure using <strong>Terraform</strong>. This ensures total environment consistency (your staging database will match production perfectly) and prevents fat-finger manual mistakes. Here is how you declare a Cloud SQL instance with High Availability enabled:</p>
+
+<pre><code>resource "google_sql_database_instance" "primary" {
+  name             = "example-prod-db"
+  database_version = "POSTGRES_15"
+  region           = "europe-west1"
+
+  settings {
+    tier = "db-custom-2-7680" # 2 vCPU, 7.5 GB RAM
+
+    # The magic high availability standby flag!
+    availability_type = "REGIONAL" 
+
+    backup_configuration {
+      enabled    = true
+      start_time = "03:00"
+      point_in_time_recovery_enabled = true # Near-zero RPO!
+    }
+  }
+}</code></pre>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Watch out for manually created databases!</strong> If some rogue developer deployed a database manually and you need to bring it under Terraform control, don't just write the resource block and run <code>terraform apply</code> (that will try to recreate or overwrite the database, causing a total production outage!). 
+      <p>Always use <strong><code>terraform import</code></strong> to safely link the existing live resource to your Terraform state file first! After importing, run <code>terraform plan</code> like a hawk to catch any configuration drift. Reviewing drift is the difference between a clean deployment and an emergency coffee run at 2 AM! ☕</p>
+    </div>
+
+    <div class="rev-card">
+      <h3>📚 Scaling Reads Without Melting the Primary</h3>
+      <p>Read scaling is the classic "same data, too many eyeballs" problem. Make sure you pick the replica type that matches the engine:</p>
+      <ul class="bullet-chk">
+        <li><strong>Cloud SQL:</strong> Add <strong>Read Replicas</strong> to offload read-heavy traffic, run reports, provide regional locality, or act as DR building blocks. Note: Enterprise Plus read pools can raise availability when configured with enough nodes.</li>
+        <li><strong>AlloyDB:</strong> Use <strong>Read Pools</strong> to scale read and analytical traffic away from the primary, and combine with the columnar engine for HTAP reporting.</li>
+        <li><strong>Spanner:</strong> Choose your instance configuration carefully. Use <strong>read-only replicas</strong> or multi-region configurations to scale reads globally, but ensure your schema is designed well to avoid hot spots!</li>
+      </ul>
+    </div>
+
+    <h3>🐳 Game-Day Failover &amp; DR Testing</h3>
+    <p>A Disaster Recovery (DR) plan that has never been tested is like an uninflated lifejacket &mdash; you can only pray it actually works when the ship starts sinking! 🚢</p>
+    <p>Examiners love to test your operational confidence here. To prove your setup works, schedule regular <strong>"Game-Day"</strong> failover drills:</p>
+    <ol>
+      <li><strong>Trigger a Manual Failover:</strong> In the Cloud SQL or AlloyDB console (or via the <code>gcloud</code> CLI), trigger a manual failover event to verify that the standby instance takes over successfully, and that your application connection pools survive the blip!</li>
+      <li><strong>Drill Replica Promotion:</strong> Disconnect a Cross-Region Read Replica and <strong>promote</strong> it to be a standalone primary database. Verify your application config updates correctly to handle regional outages.</li>
+      <li><strong>Test Spanner Differently:</strong> Multi-region Spanner is platform-managed, so focus your drills on application retry logic, leader-region latency, monitoring, backup/restore runbooks, and simulated client failures. <em>Don't go looking for a generic regional failover button in Spanner &mdash; it doesn't exist!</em></li>
+    </ol>
+
+    <div class="mnemonic">
+      <strong>🧠 Memory Tip &mdash; Multi-Region Spanner:</strong>
+      <p>For the highest-tier databases that require multi-regional replication with <strong>99.999% availability and strong consistency</strong>, head straight for <strong>Cloud Spanner</strong>. Spanner uses TrueTime for globally consistent transactions, but remember: you still need excellent schema design because bad keys can still cause hotspots and make your database slow and grumpy!</p>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>📈 HA Monitoring: Trust, But Verify</h3>
+      <p>After deploying your HA database, monitor these four metrics to prove HA is actually doing its job:</p>
+      <ul class="bullet-chk">
+        <li><strong>Failover Events:</strong> Did a failover occur, and how long did the application take to reconnect?</li>
+        <li><strong>Replica Health:</strong> Monitor replication lag, replica availability, promotion readiness, and read pool node health.</li>
+        <li><strong>Backup Health:</strong> Track backup success, PITR coverage, restore-test results, and retention compliance.</li>
+        <li><strong>SLOs &amp; Saturation:</strong> Track availability, latency, error budgets, connection errors, and saturation signals.</li>
+      </ul>
+    </div>
+
+    <div class="further-reading">
+      <h3>📚 Further Reading from Google Docs</h3>
+      <div class="doc-grid">
+        <a class="doc-link" href="https://cloud.google.com/docs/terraform/resource-management/import" target="_blank" rel="noopener"><strong>Terraform Import</strong><span>Bring existing resources under IaC.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/sql/docs/mysql/replication/create-replica" target="_blank" rel="noopener"><strong>Cloud SQL Read Replicas</strong><span>Deploy and promote replicas.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/alloydb/docs/read-pool-instance/about-read-pool-instances" target="_blank" rel="noopener"><strong>AlloyDB Read Pools</strong><span>Scale reads away from primary.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/spanner/docs/backup/disaster-recovery-overview" target="_blank" rel="noopener"><strong>Spanner DR</strong><span>DR techniques and testing guidance.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/solutions/cloud-sql-mysql-disaster-recovery-complete-failover-fallback" target="_blank" rel="noopener"><strong>Cloud SQL DR Drill</strong><span>Regional failover and fallback walkthrough.</span></a>
+        <a class="doc-link" href="https://cloud.google.com/monitoring/docs/monitor-cloudsql" target="_blank" rel="noopener"><strong>Cloud SQL Monitoring</strong><span>Metrics and alerting for HA operations.</span></a>
+      </div>
+    </div>
+
+    <div class="joke-box">
+      "Why did the Terraform database script break up with the console clicker? Because there was no declarative commit-ment!" 💔 (Ba-dum-tsh!)
+    </div>
+
+
+    <!-- Interactive Retrieval Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Test your recall before checking out the final practice exam. You've got this!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> Which Terraform block setting establishes a high-availability standby for Cloud SQL?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          Setting <code>availability_type = "REGIONAL"</code>. (Setting it to <code>ZONAL</code> deploys a cheaper single-instance with zero standby failover).
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> How should you bring an existing, manually-created GCP database under Terraform management safely?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          Use the <strong><code>terraform import</code></strong> command! This links the existing live resource to your state file, avoiding accidental destruction or duplicate provisioning.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> What is the best way to verify that your disaster recovery replica promotion procedure behaves as expected?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          Schedule regular <strong>Game-Day drills</strong>! For Cloud SQL/AlloyDB, manually trigger failovers and replica promotions. For Spanner, test app resilience, monitoring, restore workflows, and dependency failures.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Practice Questions -->
+    <div class="practice-exam">
+      <h2>📝 Section 4 Practice Exam Questions</h2>
+      <p>Finish your database study preparation strong with these scenario questions!</p>
+
+      <!-- Question 1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> An infrastructure engineer wants to automate the provisioning of all company databases on GCP. They write a Terraform module to spin up five new Cloud SQL PostgreSQL instances. However, they discover that one database instance was already created manually in the console last month by a separate team. They need to manage this existing instance alongside the five new instances under Terraform, without causing database downtime or recreating the manual database. What should they do?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Write the Terraform configuration for the existing instance, run terraform apply with the force-replace flag, and let Terraform overwrite the live database state.</li>
+          <li data-option="B">B) Define the existing instance in code, run terraform import to bind the live resource, and execute terraform plan to confirm alignments.</li>
+          <li data-option="C">C) Delete the manually created database instance in the console during off-hours, and let the scheduled Terraform pipeline recreate the database from scratch.</li>
+          <li data-option="D">D) Create a read replica of the manually created database in Terraform, promote the replica to primary, and delete the original database in the console.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> When bringing legacy or manually created infrastructure under Terraform control, running <code>terraform apply</code> without importing first causes errors (since the resource name already exists). The <code>terraform import</code> command binds the live GCP resource state directly to your Terraform state file. Once imported, you can safely deploy any setting adjustments declaratively with zero downtime.</p>
+          <ul>
+            <li><strong>A:</strong> Applying before import can fail or attempt unwanted changes because Terraform does not know the live resource yet.</li>
+            <li><strong>C:</strong> Deleting a production database to satisfy Terraform is the sort of plan that makes auditors reach for biscuits.</li>
+            <li><strong>D:</strong> Read replicas solve read scaling/DR patterns, not IaC state adoption.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> You have deployed a multi-region Cloud Spanner instance to support a global mobile game backend. You want a quarterly disaster recovery drill that validates the application and operational runbook. What should you do?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Deploy a script to only restore yesterday's backup to a temporary zonal instance, verify basic query connectivity, and call the DR drill complete.</li>
+          <li data-option="B">B) Run a scheduled Game-Day that tests client retry/reconnection logic, leader-region latency assumptions, monitoring/alerts, and backup/restore runbooks without assuming a generic manual regional-failover command.</li>
+          <li data-option="C">C) Contact Google Cloud Support to physically disconnect the network fiber to one of your active regions for 30 minutes to trigger automatic database failover.</li>
+          <li data-option="D">D) Migrate the gaming backend database to Cloud SQL, enable Regional High Availability (HA), and let the application automatically switch to the passive replica.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> Multi-region Spanner is platform-managed, so the useful customer drill is validating the application and operations around it: retries, latency expectations, monitoring, backups/restores, and dependency failure handling. For dual-region Spanner there are quorum-management commands, but that is not the same as a generic multi-region failover button.</p>
+          <ul>
+            <li><strong>A:</strong> Restore testing is valuable, but alone it does not test live app resilience or monitoring.</li>
+            <li><strong>C:</strong> Please do not ask anyone to unplug the internet. Also, this is not a normal customer DR test.</li>
+            <li><strong>D:</strong> Cloud SQL Regional HA is not a replacement for a multi-region Spanner architecture.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Your Cloud SQL primary is healthy, but global reporting traffic is causing high read latency and CPU pressure. Writes are not the bottleneck. What should you deploy first?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Add read replicas or read pools and route reporting/read traffic to them.</li>
+          <li data-option="B">B) Disable all automated daily database backups and PITR binary logging to free up underlying VM CPU and I/O resources on the primary instance.</li>
+          <li data-option="C">C) Migrate the database to a single-zone instance to reduce cross-zone networking overhead and improve local reporting cache hits.</li>
+          <li data-option="D">D) Configure the application database client connection pooler to increase retry loops indefinitely and keep all analytical reads on the primary.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'A')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: A</span></p>
+          <p><strong>Why Option A is correct:</strong> Read replicas/read pools are designed to scale read-heavy traffic away from the primary. This preserves write capacity and can improve locality for readers.</p>
+          <ul>
+            <li><strong>B:</strong> Backups are a recovery control, not a performance tuning knob to casually throw out the window.</li>
+            <li><strong>C:</strong> Single-zone reduces availability and does not solve read scaling well.</li>
+            <li><strong>D:</strong> Retries help transient failures, but they do not add database read capacity.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="q-box">
+        <p><strong>Question 4:</strong> A junior database administrator manually enables an external public IP on a production Cloud SQL instance in the GCP Console to perform some quick troubleshooting. This action violates company security policy, as the database is declared in Terraform to only have a Private IP address. What will happen during the next scheduled Terraform deployment pipeline, and how is this drift resolved safely?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Terraform will ignore the manual change entirely because manual GCP console updates have a higher priority than state files.</li>
+          <li data-option="B">B) Terraform's drift detection will identify the unexpected public IP configuration during the <code>terraform plan</code> phase, and the subsequent <code>terraform apply</code> will automatically disable the public IP to reconcile the database instance back to its declared private-only state.</li>
+          <li data-option="C">C) Terraform will flag the configuration drift as a critical error, automatically destroy the active database instance, and recreate a new one from scratch.</li>
+          <li data-option="D">D) The Terraform pipeline will freeze, lock the state file, and prevent any future deployments until the public IP is manually disabled in the GCP Console first.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why Option B is correct:</strong> This highlights the magic of declarative Infrastructure as Code (IaC)!
+          <ul>
+            <li><strong>Drift Detection &amp; Reconciliation:</strong> When you run a Terraform pipeline, Terraform compares your local code files with the actual live GCP resources. It detects that a public IP was manually enabled.</li>
+            <li><strong>Safe Correction:</strong> During <code>terraform apply</code>, Terraform will safely modify the instance settings to disable the public IP &mdash; reconciling the live environment back to your secure, declared code configurations without destroying or recreating the database! 🛠️🌟</li>
+          </ul>
+          </p>
+          <p><strong>Why the others are wrong:</strong>
+          <ul>
+            <li><strong>A:</strong> Terraform's core purpose is to enforce the declared state. It will not ignore changes made manually outside of Terraform.</li>
+            <li><strong>C:</strong> Modifying a network parameter like disabling a public IP is an in-place modification on Cloud SQL and does <em>not</em> trigger a destructive recreation of the entire instance.</li>
+            <li><strong>D:</strong> Terraform does not freeze or lock you out of deployments because of configuration drift; it simply plans to undo the drift.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background: #ecfdf5; border: 3px solid var(--rev-green); border-radius: var(--radius); padding: 25px; margin-top: 50px; box-shadow: 4px 4px 0px var(--rev-green);">
+      <h3 style="color: var(--rev-green); margin-top: 0;">🎉 Congratulations &mdash; You Are Ready to Score Points!</h3>
+      <p>You have read through all four comprehensive study guides! You know how to size instances, construct private connections, manage backups, scale read fleets, and execute near-zero downtime cutovers with Database Migration Service.</p>
+      <p>Go back to the <a href="index.html" style="color: var(--rev-orange); font-weight: bold; text-decoration: underline;">Main Revision Hub</a>, review any topics you felt shaky on, and get ready to crush that Professional Cloud Database Engineer exam! 🎓🚀</p>
+    </div>
+
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      if (element.style.display === "block") {
+        element.style.display = "none";
+      } else {
+        element.style.display = "block";
+      }
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) {
+        panel.dataset.originalHtml = panel.innerHTML;
+      }
+
+      options.forEach(function(option) {
+        option.classList.remove('correct-answer', 'wrong-answer');
+      });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) {
+          option.classList.add('correct-answer');
+        }
+      });
+
+      if (selected.dataset.option !== correctOption) {
+        selected.classList.add('wrong-answer');
+      }
+
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><a href="../../academy/database_eng/section4_deploy.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Academy</a><a href="../../sticker/database_eng/section4_deploy.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Briefing</span></div>
+</body>
+</html>

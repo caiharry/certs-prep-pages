@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en" data-skin="academy" data-archetype="guide" class="ds-skin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Section 1 Revision Guide - Configuring Access (IAM, Identity &amp; Federation)</title>
+  <style>
+    :root {
+      --bg-light: #faf5ff; /* Light violet background */
+      --ink: #1e293b;
+      --primary: #8b5cf6; /* Section 1 violet */
+      --primary-light: #ede9fe;
+      --primary-border: #7c3aed;
+      --rev-green: #16a34a;
+      --rev-green-light: #dcfce7;
+      --rev-yellow: #fef08a;
+      --rev-yellow-dark: #eab308;
+      --rev-orange: #ea580c;
+      --rev-red: #ef4444;
+      --rev-blue: #2563eb;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light) url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ddd6fe' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif, system-ui;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+
+    .nav-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+    .nav-link {
+      background: #fff; color: #000; text-decoration: none; font-weight: bold;
+      padding: 8px 16px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; text-align: center;
+    }
+    .nav-link:hover { background: var(--rev-yellow); }
+
+    header {
+      background: linear-gradient(135deg, #a78bfa 0%, var(--primary) 100%);
+      border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      color: white; padding: 30px 20px; position: relative; margin-bottom: 35px;
+    }
+    header h1 {
+      margin: 0 0 10px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); text-transform: uppercase;
+      -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0px #000;
+    }
+    header p { margin: 0; font-size: 1.1rem; font-style: italic; }
+    .section-badge {
+      position: absolute; bottom: -15px; right: 20px; background: #ef4444; color: white; font-weight: bold;
+      padding: 6px 15px; border-radius: 999px; border: 3px solid #000; transform: rotate(2deg); font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.8rem; border-bottom: 3px solid #000; padding-bottom: 8px; margin-top: 45px; margin-bottom: 20px;
+      text-transform: uppercase; color: var(--primary-border);
+    }
+    h3 { font-size: 1.3rem; margin-top: 30px; margin-bottom: 12px; color: #0f172a; }
+    p, li { font-size: 1.05rem; }
+
+    .rev-card {
+      background: #fff; border: 3px solid #000; border-radius: var(--radius); box-shadow: 4px 4px 0px #000;
+      padding: 22px; margin-bottom: 30px; position: relative;
+    }
+    .rev-card.tip { background: #fdf4ff; border-color: var(--primary); box-shadow: 4px 4px 0px var(--primary); }
+    .rev-card.tip h3 { color: var(--primary-border); margin-top: 0; }
+    .rev-card.warn { background: #fef2f2; border-color: var(--rev-red); box-shadow: 4px 4px 0px var(--rev-red); }
+    .rev-card.warn h3 { color: var(--rev-red); margin-top: 0; }
+
+    .exam-trap {
+      background: #fff7ed; border: 3px dashed var(--rev-orange); border-radius: var(--radius);
+      padding: 18px; margin: 25px 0; position: relative;
+    }
+    .exam-trap::before {
+      content: "⚠️ EXAM TRAP!"; display: inline-block; background: var(--rev-orange); color: white; font-weight: bold;
+      padding: 4px 10px; border-radius: 6px; border: 2px solid #000; font-size: 0.85rem; margin-bottom: 10px;
+    }
+
+    .mnemonic {
+      background: #fdf2f8; border: 3px solid #db2777; border-radius: var(--radius); box-shadow: 4px 4px 0px #db2777;
+      padding: 15px 20px; margin: 25px 0;
+    }
+    .mnemonic strong { color: #db2777; }
+    .mnemonic h3 { margin-top: 0; }
+
+    .joke-box {
+      font-style: italic; color: #4b5563; text-align: center; margin: 25px 0; padding: 10px;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .table-container {
+      overflow-x: auto; border: 3px solid #000; border-radius: var(--radius); box-shadow: 5px 5px 0px #000; margin: 30px 0;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 2px solid #000; padding: 12px 15px; text-align: left; font-size: 0.98rem; }
+    th { background: var(--rev-yellow); text-transform: uppercase; font-weight: bold; }
+    tr:nth-child(even) { background: #fbfbfe; }
+
+    .warm-up {
+      background: #faf5ff; border: 3px solid var(--primary); border-radius: var(--radius); box-shadow: 4px 4px 0px var(--primary);
+      padding: 22px; margin: 35px 0;
+    }
+    .warm-up h3 { color: var(--primary-border); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+    .quiz-item { margin-bottom: 18px; border-bottom: 1px dashed #ddd6fe; padding-bottom: 12px; }
+    .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .show-answer-btn {
+      background: #fff; border: 2px solid #000; border-radius: 6px; padding: 5px 12px; font-weight: bold;
+      cursor: pointer; margin-top: 8px; font-family: inherit;
+    }
+    .show-answer-btn:hover { background: #f3e8ff; }
+    .answer-panel {
+      display: none; margin-top: 10px; background: #f5f3ff; border-left: 4px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.95rem;
+    }
+
+    .practice-exam {
+      background: #fffaf0; border: 4px solid #000; border-radius: var(--radius); box-shadow: 6px 6px 0px #000;
+      padding: 25px; margin-top: 50px;
+    }
+    .practice-exam h2 { color: var(--rev-orange); border-bottom: 3px solid #000; margin-top: 0; }
+    .q-box { background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .option-list { list-style-type: none; padding-left: 0; }
+    .option-list li {
+      margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+      overflow-wrap: anywhere; word-break: break-word;
+    }
+    .option-list li:hover { background: #fef8f2; border-color: #000; }
+    .option-list li.selected { background: #dbeafe; border-color: var(--rev-blue); box-shadow: 2px 2px 0px var(--rev-blue); }
+    .option-list li.eliminated { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+    .option-list li.correct-answer { background: #dcfce7; border-color: var(--rev-green); }
+    .option-list li.wrong-answer { background: #fee2e2; border-color: var(--rev-red); }
+    .explanation-panel {
+      display: none; margin-top: 15px; background: #fff8f2; border: 2px dashed var(--rev-orange); padding: 15px; border-radius: 8px;
+    }
+    .badge-check { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #000; margin-right: 6px; }
+    .badge-check.correct { background: #dcfce7; color: #166534; }
+    .badge-check.incorrect { background: #fee2e2; color: #991b1b; }
+    .submit-answer-btn {
+      background: var(--rev-orange); color: white; border: 2px solid #000; border-radius: 6px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-family: inherit;
+    }
+    .submit-answer-btn:hover { background: #dd5209; }
+
+    .further-reading {
+      background: #ecfeff; border: 3px solid #0891b2; border-radius: var(--radius); box-shadow: 4px 4px 0px #0891b2;
+      padding: 18px; margin: 28px 0;
+    }
+    .further-reading h3 { color: #0e7490; margin-top: 0; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .doc-link {
+      display: block; background: #fff; border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0px #000;
+      color: #0f172a; padding: 10px 12px; text-decoration: none;
+    }
+    .doc-link strong { display: block; color: #0e7490; }
+    .doc-link span { display: block; font-size: 0.9rem; margin-top: 3px; }
+
+    .bullet-chk { list-style-type: none; padding-left: 0; }
+    .bullet-chk li::before { content: "✔️ "; margin-right: 8px; }
+    code { background: #eef2ff; padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.88em; overflow-wrap: anywhere; word-break: break-word; }
+
+    .scroll-top-btn {
+      display: block; width: fit-content; max-width: 100%; margin: 30px auto 0; background: var(--rev-yellow); color: #000;
+      font-weight: bold; padding: 10px 20px; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0px #000;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .scroll-top-btn:hover { background: #eab308; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .nav-links { flex-direction: column; }
+      .nav-link { width: 100%; }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../assets/ds/skin-academy.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">&larr; Back to Security Portal</a>
+      <a href="cheatsheet.html" class="nav-link">Cheatsheet</a>
+      <a href="guide_s2.html" class="nav-link">Section 2: Boundary Protection &rarr;</a>
+    </div>
+
+    <header>
+      <h1>Section 1: Configuring Access</h1>
+      <p>Identity, authentication, and least-privilege authorization &mdash; the single biggest slice of the exam (~25%). Master who gets in, what they can touch, and how to slam the door on everyone else.</p>
+      <div class="section-badge">Section 1 🟣 ~25%</div>
+    </header>
+
+    <p>Welcome to the heaviest-weighted domain on the whole paper. If you nail nothing else, nail this. Roughly one in four questions lives here, and almost every <em>other</em> domain assumes you already understand the IAM hierarchy. Think of access control as the bouncer, the guest list, and the velvet rope all rolled into one &mdash; get any of them wrong and the data walks straight out the front door. 🕴️</p>
+
+    <!-- 1.1 -->
+    <h2>1.1 Identity: The Front Door</h2>
+    <p>Before anyone can be <em>authorized</em> to do anything, they must first be <em>authenticated</em> &mdash; proven to be who they claim. In Google Cloud, identities come in two flavours: <strong>human</strong> (people logging in) and <strong>workload</strong> (code, VMs, and pipelines acting on their own).</p>
+
+    <div class="rev-card tip">
+      <h3>👤 Cloud Identity &mdash; Your Identity Provider (IdP)</h3>
+      <p><strong>Cloud Identity</strong> is Google's free IdP that holds your users and groups and underpins your Google Cloud Organization. If you already run an external IdP (Active Directory, Okta, Azure AD/Entra), you have two jobs:</p>
+      <ul class="bullet-chk">
+        <li><strong>Provision the accounts</strong> &mdash; sync users and groups in from on-prem AD with <strong>Google Cloud Directory Sync (GCDS)</strong>. GCDS is one-way: AD is the source of truth, Cloud Identity is the mirror.</li>
+        <li><strong>Authenticate them</strong> &mdash; wire up <strong>SSO (SAML/OIDC)</strong> so the password check happens at your IdP, not Google.</li>
+      </ul>
+      <p>Manage people through <strong>Google Groups</strong>, never one-by-one. Grant roles to the group; joiners and leavers are then handled in exactly one place.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Don't confuse GCDS with SSO!</strong> GCDS <em>provisions</em> accounts (it copies the user/group objects across). SSO <em>authenticates</em> them (it federates the login). The exam loves a stem like "users exist in AD and we want them to sign in with their AD password" &mdash; that's <strong>SSO</strong>, while "we need the AD groups to appear in Google Cloud" is <strong>GCDS</strong>. You usually need both.
+    </div>
+
+    <div class="rev-card warn">
+      <h3>🔑 Protect the Super Admin Like It's the Nuclear Football</h3>
+      <p>The Organization's <strong>super-admin</strong> account can do <em>anything</em>, including bypassing many controls. Lock it down hard:</p>
+      <ul class="bullet-chk">
+        <li>Enforce <strong>hardware security keys (2SV)</strong> &mdash; phishing-resistant FIDO keys, not SMS codes.</li>
+        <li>Use a dedicated, named-but-not-daily account; do not browse the web or read email signed in as super admin.</li>
+        <li>Keep a small number of them (2&ndash;3) for break-glass, and store recovery codes offline.</li>
+      </ul>
+    </div>
+
+    <div class="joke-box">
+      "I told my super-admin account to take a break. Now it's on permanent 2-Step Vacation." 🏖️🔐
+    </div>
+
+    <!-- 1.2 -->
+    <h2>1.2 Federation Without Keys</h2>
+    <p>The golden rule of modern GCP security: <strong>stop minting long-lived credentials</strong>. Identity Federation lets an <em>external</em> identity exchange a token it already has for a <strong>short-lived</strong> Google credential &mdash; no service-account key ever stored. There are two federations, and the exam tests which is which constantly.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Federation Type</th>
+            <th>Who/What It's For</th>
+            <th>Classic Scenario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Workforce Identity Federation</strong></td>
+            <td><strong>Human</strong> external identities from an external IdP (Okta, Entra, etc.) accessing Google Cloud (console, gcloud, APIs).</td>
+            <td>"Let our Okta users use the Google Cloud console without creating Cloud Identity accounts for them."</td>
+          </tr>
+          <tr>
+            <td><strong>Workload Identity Federation</strong></td>
+            <td><strong>Machine</strong> external workloads (CI/CD, AWS, Azure, on-prem apps) acting as themselves.</td>
+            <td>"GitHub Actions / an AWS Lambda must deploy to GCP with no stored service-account key."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 Workforce = Workers, Workload = Work-machines</h3>
+      <p>Both start with <strong>Work</strong>, so anchor on the second word. <strong>Workforce</strong> = a <em>force of people</em> (humans). <strong>Workload</strong> = a running <em>load</em> of compute (machines). If a person is logging in, it's <strong>Workforce</strong>; if code is calling an API, it's <strong>Workload</strong>.</p>
+    </div>
+
+    <!-- 1.3 -->
+    <h2>1.3 Service Accounts &amp; Key Hygiene</h2>
+    <p>A <strong>service account (SA)</strong> is a non-human identity that a workload uses to call Google Cloud APIs. The number-one cause of real-world GCP breaches is a leaked <strong>service-account key</strong> (the downloadable JSON file). So Google's whole strategy is: <em>avoid creating keys at all.</em></p>
+
+    <h3>The credential ladder (best to worst)</h3>
+    <ul class="bullet-chk">
+      <li><strong>Attached service account</strong> &mdash; a VM/GKE/Cloud Run resource runs <em>as</em> an SA; the platform supplies short-lived tokens automatically. No key exists. ✅</li>
+      <li><strong>Service-account impersonation</strong> &mdash; a trusted principal generates a short-lived token for an SA on demand (<code>roles/iam.serviceAccountTokenCreator</code>). ✅</li>
+      <li><strong>Workload Identity Federation</strong> &mdash; external workloads swap their native token for a short-lived Google one. ✅</li>
+      <li><strong>Service-account key (JSON)</strong> &mdash; a long-lived secret you must store, rotate, and pray never leaks. ❌ Last resort only.</li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>🛡️ Guardrails Every Org Should Set</h3>
+      <ul class="bullet-chk">
+        <li><code>iam.disableServiceAccountKeyCreation</code> &mdash; org policy that bans new keys everywhere, regardless of project IAM.</li>
+        <li><code>iam.automaticIamGrantsForDefaultServiceAccounts</code> &mdash; stop the default SAs from getting broad Editor on creation.</li>
+        <li>Lock down or remove the <strong>default Compute/App Engine SAs</strong> &mdash; they're over-privileged out of the box.</li>
+      </ul>
+    </div>
+
+    <div class="exam-trap">
+      <strong>"Most secure" almost never means a key.</strong> If you see a JSON service-account key in the options for a CI/CD or cross-cloud scenario, it is nearly always a distractor. The keyed answer is impersonation, an attached SA, or Workload Identity Federation &mdash; with key creation disabled by org policy.
+    </div>
+
+    <!-- 1.4 -->
+    <h2>1.4 The Resource Hierarchy &amp; IAM Roles</h2>
+    <p>Google Cloud arranges everything in a tree: <strong>Organization &rarr; Folders &rarr; Projects &rarr; Resources</strong>. Both <strong>IAM allow policies</strong> and <strong>Org Policy</strong> constraints flow <em>downward</em> and are <strong>additive</strong> &mdash; a role granted at the folder applies to every project beneath it. You cannot subtract an inherited allow with another allow lower down (that's what deny policies are for).</p>
+
+    <div class="mnemonic">
+      <h3>💡 "Only Foolish People Resign" &mdash; Org, Folder, Project, Resource</h3>
+      <p>Top to bottom: <strong>O</strong>rg &rarr; <strong>F</strong>older &rarr; <strong>P</strong>roject &rarr; <strong>R</strong>esource. Permissions granted higher up <em>rain down</em> on everything below. Grant broadly at the top only when you really mean it.</p>
+    </div>
+
+    <h3>The three kinds of roles</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Role Type</th>
+            <th>What It Is</th>
+            <th>When To Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Basic</strong> (Owner/Editor/Viewer)</td>
+            <td>Legacy, project-wide, enormously broad.</td>
+            <td>Almost never in production &mdash; a classic wrong answer for "least privilege".</td>
+          </tr>
+          <tr>
+            <td><strong>Predefined</strong></td>
+            <td>Google-curated bundles scoped to a service (e.g. <code>roles/storage.objectViewer</code>).</td>
+            <td>The default right answer &mdash; least privilege without the maintenance burden.</td>
+          </tr>
+          <tr>
+            <td><strong>Custom</strong></td>
+            <td>Your own hand-picked set of permissions.</td>
+            <td>When no predefined role fits tightly enough and you need to trim further.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>⏱️ Privileged Access Manager (PAM) &mdash; Just-In-Time Elevation</h3>
+      <p>Standing admin access is a liability. <strong>Privileged Access Manager</strong> grants elevated roles <em>temporarily</em> through an approval workflow: a user requests, an approver signs off, the role is granted for a bounded window, and it auto-revokes. Perfect for "give the contractor admin for a 2-hour change window, fully audited."</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Owner can edit IAM.</strong> If a stem says a control must hold "even if a project owner tries to override it" or "regardless of project-level permissions," then removing a role binding is <em>not</em> durable &mdash; the owner just re-adds it. The answer is an <strong>org policy</strong> (config guardrail) or an <strong>IAM deny policy</strong> (explicit prohibition), which an owner cannot simply allow their way around.
+    </div>
+
+    <!-- 1.5 -->
+    <h2>1.5 Conditions &amp; Context-Aware Access (Zero Trust)</h2>
+    <p>Plain role bindings answer <em>who</em> can do <em>what</em>. But modern security also asks <em>when</em> and <em>from where</em>. That's the zero-trust idea: trust identity <strong>plus context</strong>, drop the VPN.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Mechanism</th>
+            <th>Question It Answers</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IAM Role</strong></td>
+            <td><strong>WHO</strong> can do what</td>
+            <td>Grant <code>roles/bigquery.dataViewer</code> to a group.</td>
+          </tr>
+          <tr>
+            <td><strong>IAM Condition</strong></td>
+            <td><strong>WHEN</strong> a single binding applies</td>
+            <td><code>request.time &lt; expiry</code>, or only on resources with a given tag.</td>
+          </tr>
+          <tr>
+            <td><strong>Access Level</strong> (Access Context Manager)</td>
+            <td><strong>WHERE / WHAT DEVICE</strong></td>
+            <td>Reusable rule: managed device + corporate IP + allowed country.</td>
+          </tr>
+          <tr>
+            <td><strong>Identity-Aware Proxy (IAP)</strong></td>
+            <td><strong>ENFORCES</strong> the above on an app/SSH/RDP</td>
+            <td>Gate an internal web app; honour the access level; no VPN.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 WHO &middot; WHEN &middot; WHERE</h3>
+      <p><strong>Roles</strong> say WHO. <strong>Conditions</strong> say WHEN. <strong>Access levels</strong> say WHERE/what device. <strong>IAP</strong> is the bouncer that actually checks all three at the door. Together that's <strong>BeyondCorp / Chrome Enterprise Premium</strong> zero-trust access.</p>
+    </div>
+
+    <!-- 1.6 -->
+    <h2>1.6 Org Policy Guardrails &amp; Deny Policies</h2>
+    <p>IAM and Organization Policy are <em>different tools that solve different problems</em>, and the exam deliberately blurs them.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Controls</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IAM allow policy</strong></td>
+            <td><em>Who</em> has <em>which permissions</em> on a resource.</td>
+            <td>Grant a group Storage Object Viewer on a bucket.</td>
+          </tr>
+          <tr>
+            <td><strong>Organization Policy</strong></td>
+            <td><em>What configurations are even permitted</em> (a guardrail).</td>
+            <td><code>compute.vmExternalIpAccess</code>, <code>gcp.resourceLocations</code>, disable SA keys.</td>
+          </tr>
+          <tr>
+            <td><strong>IAM deny policy</strong></td>
+            <td>An <em>explicit prohibition</em>, evaluated <strong>before</strong> allows.</td>
+            <td>Deny <code>storage.objects.get</code> to a group even if they're Owner.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 DENY beats ALLOW, every time</h3>
+      <p>IAM evaluates <strong>deny policies first</strong>. If a deny matches, the request stops dead &mdash; no allow, not even Owner, can rescue it. When a question needs a hard, un-overridable block on a <em>permission</em>, reach for a deny policy. When it needs to block a <em>configuration</em> (regions, external IPs, key creation), reach for an org policy.</p>
+    </div>
+
+    <!-- Warm-Up Quiz -->
+    <div class="warm-up">
+      <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
+      <p>Retrieve before you review. No peeking at the answers first!</p>
+
+      <div class="quiz-item">
+        <p><strong>Q1:</strong> You need to stop <em>anyone</em> from creating service-account keys across the whole organization, even project owners. What do you use?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+        <div id="ans1" class="answer-panel">
+          <strong>The <code>iam.disableServiceAccountKeyCreation</code> organization policy.</strong> It's a config guardrail that inherits to every current and future project, regardless of project-level IAM.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q2:</strong> A contractor needs elevated admin access for a single 2-hour change window, fully audited, auto-revoked afterwards. Which feature?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+        <div id="ans2" class="answer-panel">
+          <strong>Privileged Access Manager (PAM)</strong> &mdash; just-in-time, time-bound, approval-gated privilege elevation.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q3:</strong> A GitHub Actions pipeline must deploy to Google Cloud with <em>no stored secret</em>. What do you configure?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+        <div id="ans3" class="answer-panel">
+          <strong>Workload Identity Federation.</strong> GitHub's OIDC token is exchanged for short-lived Google credentials, so no service-account key is ever stored.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q4:</strong> You must allow console access to a sensitive project <em>only</em> from corporate-managed devices on the company IP range. Which mechanism defines that condition?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+        <div id="ans4" class="answer-panel">
+          <strong>An access level in Access Context Manager</strong> (enforced via context-aware access / IAP). Access levels encode device posture, IP, and geo for zero-trust enforcement.
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Exam -->
+    <div class="practice-exam">
+      <h2>📝 Section 1 Practice Exam Questions</h2>
+      <p>Left-click to select an answer, right-click to strike out a distractor, then Submit for the full diagnostic.</p>
+
+      <!-- Q1 -->
+      <div class="q-box">
+        <p><strong>Question 1:</strong> A data-science team and a separate platform team both work in one project. You must ensure the platform admins, who hold <code>roles/owner</code>, can never read objects in a specific Cloud Storage bucket holding regulated PII &mdash; even though they can edit IAM. What is the most reliable control?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Remove the Storage Object Viewer role from the platform admins on that bucket.</li>
+          <li data-option="B">B) Create an IAM deny policy denying storage object read permissions to the platform group on that bucket.</li>
+          <li data-option="C">C) Apply a bucket IAM condition that only grants access during business hours to the platform group.</li>
+          <li data-option="D">D) Move the bucket into a folder where the platform admins have no role bindings at all.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why B is correct:</strong> An IAM deny policy is evaluated before allow policies and cannot be overridden by a role binding, so even an owner who can edit IAM cannot grant themselves read access in the face of an explicit deny.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> Owners can edit IAM, so they'd simply re-add the role &mdash; removal isn't durable against the very people you're restricting.<br>
+          <strong>C:</strong> A condition that allows access during business hours still <em>permits</em> reads (just in a window); it doesn't prohibit them.<br>
+          <strong>D:</strong> A bucket lives in a project, not a folder, so it can't be moved into a separate folder away from the project's owners.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-box">
+        <p><strong>Question 2:</strong> An external SaaS analytics vendor needs read access to one BigQuery dataset for the next 30 days only, after which access must lapse automatically with no manual cleanup. You want to avoid issuing any long-lived credential. Which approach best fits?</p>
+        <ul class="option-list">
+          <li data-option="A">A) Create a service account, generate a JSON key, and email it to the vendor with a calendar reminder to revoke it.</li>
+          <li data-option="B">B) Add the vendor's Google identity to a group and grant the group BigQuery Data Viewer with no expiry.</li>
+          <li data-option="C">C) Grant the vendor's Google identity BigQuery Data Viewer with an IAM condition that expires after 30 days.</li>
+          <li data-option="D">D) Share a service-account impersonation grant and rely on the vendor to stop using it after a month.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'C')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: C</span></p>
+          <p><strong>Why C is correct:</strong> An IAM Condition with a <code>request.time</code> expiry makes the grant lapse automatically at the deadline, needs no stored key, and requires no manual revocation.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> A JSON key is a long-lived credential and manual revocation is exactly the failure mode you're told to avoid.<br>
+          <strong>B:</strong> A group grant with no expiry persists indefinitely and still relies on someone remembering to remove it.<br>
+          <strong>D:</strong> Impersonation here has no time bound and trusts the vendor to self-restrict, which isn't enforceable.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-box">
+        <p><strong>Question 3:</strong> Security wants to guarantee that no project anywhere in the organization can attach external IP addresses to VMs, and the guarantee must hold even if a project owner tries to enable them. Where do you enforce this?</p>
+        <ul class="option-list">
+          <li data-option="A">A) A firewall rule at each VPC denying ingress from the public internet to the VMs.</li>
+          <li data-option="B">B) The <code>compute.vmExternalIpAccess</code> organization policy constraint set at the org node.</li>
+          <li data-option="C">C) A custom IAM role for project owners that omits the compute network update permission.</li>
+          <li data-option="D">D) A VPC Service Controls perimeter wrapping all the projects in the organization.</li>
+        </ul>
+        <button class="submit-answer-btn" onclick="submitQuestion(this, 'B')">Submit Answer</button>
+        <div class="explanation-panel">
+          <p><span class="badge-check correct">Correct Answer: B</span></p>
+          <p><strong>Why B is correct:</strong> The <code>compute.vmExternalIpAccess</code> org policy constraint set at the organization is a guardrail that inherits to every project and cannot be overridden by a project owner.</p>
+          <p><strong>Why the others are wrong:</strong><br>
+          <strong>A:</strong> A firewall controls traffic flow but doesn't stop an external IP being assigned, and it must be set per-VPC.<br>
+          <strong>C:</strong> A project owner can grant themselves a different role, so a custom role isn't a durable guardrail.<br>
+          <strong>D:</strong> VPC-SC stops API data exfiltration across a service perimeter; it doesn't govern whether a VM may carry an external IP.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Further Reading -->
+    <div class="further-reading">
+      <h3>📚 Further Reading &amp; Official Resources</h3>
+      <p>Go deeper on the access-control building blocks:</p>
+      <div class="doc-grid">
+        <a href="https://cloud.google.com/iam/docs/overview" class="doc-link" target="_blank">
+          <strong>IAM Overview</strong>
+          <span>Roles, members, allow policies, and the resource hierarchy.</span>
+        </a>
+        <a href="https://cloud.google.com/iam/docs/deny-overview" class="doc-link" target="_blank">
+          <strong>IAM Deny Policies</strong>
+          <span>How deny rules are evaluated before allows.</span>
+        </a>
+        <a href="https://cloud.google.com/iam/docs/workload-identity-federation" class="doc-link" target="_blank">
+          <strong>Workload Identity Federation</strong>
+          <span>Keyless access for external and cross-cloud workloads.</span>
+        </a>
+        <a href="https://cloud.google.com/iam/docs/pam-overview" class="doc-link" target="_blank">
+          <strong>Privileged Access Manager</strong>
+          <span>Just-in-time, time-bound, approval-gated elevation.</span>
+        </a>
+        <a href="https://cloud.google.com/resource-manager/docs/organization-policy/overview" class="doc-link" target="_blank">
+          <strong>Organization Policy</strong>
+          <span>Configuration guardrails that inherit down the hierarchy.</span>
+        </a>
+        <a href="https://cloud.google.com/beyondcorp-enterprise/docs/overview" class="doc-link" target="_blank">
+          <strong>Context-Aware Access / BeyondCorp</strong>
+          <span>Access levels, IAP, and zero-trust enforcement.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-nav">
+      <span></span>
+      <a href="guide_s2.html" class="nav-link">Next: Communications &amp; Boundary Protection &rarr;</a>
+    </div>
+    <button type="button" class="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr; Back to Top</button>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      var element = document.getElementById(id);
+      element.style.display = (element.style.display === "block") ? "none" : "block";
+    }
+
+    document.querySelectorAll('.option-list li').forEach(function(option) {
+      option.addEventListener('click', function() {
+        var list = option.closest('.option-list');
+        list.querySelectorAll('li').forEach(function(item) { item.classList.remove('selected'); });
+        option.classList.remove('eliminated');
+        option.classList.add('selected');
+      });
+      option.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        option.classList.toggle('eliminated');
+        option.classList.remove('selected');
+      });
+    });
+
+    function submitQuestion(button, correctOption) {
+      var box = button.closest('.q-box');
+      var selected = box.querySelector('.option-list li.selected');
+      var panel = box.querySelector('.explanation-panel');
+      var options = box.querySelectorAll('.option-list li');
+
+      if (!panel.dataset.originalHtml) { panel.dataset.originalHtml = panel.innerHTML; }
+      options.forEach(function(option) { option.classList.remove('correct-answer', 'wrong-answer'); });
+
+      if (!selected) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<p><span class="badge-check incorrect">Pick one first!</span> Left-click an answer before submitting. Right-click any distractor you want to strike out.</p>';
+        return;
+      }
+
+      panel.innerHTML = panel.dataset.originalHtml;
+      options.forEach(function(option) {
+        if (option.dataset.option === correctOption) { option.classList.add('correct-answer'); }
+      });
+      if (selected.dataset.option !== correctOption) { selected.classList.add('wrong-answer'); }
+      panel.style.display = 'block';
+    }
+  </script>
+
+<div data-no-print class="ds-skin-switcher" style="position:fixed;left:14px;bottom:14px;z-index:99999;display:flex;gap:4px;align-items:center;background:#1C1831;border-radius:999px;padding:5px 8px;font:600 12px/1 'Work Sans',system-ui,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);"><span style="color:#8a8699;margin:0 4px 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;">Style</span><a href="../../index.html" title="Back to the style chooser" style="text-decoration:none;color:#A8E6DB;padding:4px 7px;border-radius:999px;">&#8962;</a><span style="background:#A8E6DB;color:#0E3F37;padding:4px 11px;border-radius:999px;">Academy</span><a href="../../sticker/security_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Sticker Book</a><a href="../../briefing/security_eng/guide_s1.html" style="text-decoration:none;color:#fff;opacity:.85;padding:4px 11px;border-radius:999px;">Briefing</a></div>
+</body>
+</html>
