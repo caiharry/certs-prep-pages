@@ -316,6 +316,311 @@
       <p>Think of <strong>Model Armor</strong> as a WAF for LLM prompts and responses: it inspects generative AI traffic for prompt-injection, harmful content, and sensitive-data leakage, independent of which model you run.</p>
     </div>
 
+    <!-- 3.6 -->
+    <h2>3.6 Cloud HSM &amp; Certificate Authority Service</h2>
+    <p><strong>Cloud HSM</strong> is not a separate product — it is a key protection level within <strong>Cloud KMS</strong>. When you create a Cloud HSM key, your key material is generated in and never leaves a FIPS 140-2 Level 3 certified hardware security module that <em>Google operates</em>. You still manage the key through the same KMS API; the only difference is the physical guarantee.</p>
+
+    <div class="exam-trap">
+      <strong>Cloud HSM keys live in Google's infrastructure &mdash; they are NOT the same as Cloud EKM.</strong> With Cloud HSM, the key material is physically protected inside Google-operated HSMs and never leaves them. With Cloud EKM, the key material never enters Google infrastructure at all &mdash; it stays in <em>your</em> external HSM. The exam loves this distinction: "FIPS Level 3 hardware protection" = Cloud HSM (Google infra); "key never enters Google Cloud" = Cloud EKM (your infra).
+    </div>
+
+    <h3>Software KMS vs Cloud HSM vs Cloud EKM vs Confidential Computing</h3>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Key Location</th>
+            <th>FIPS Level</th>
+            <th>Protects Data…</th>
+            <th>Reach For When…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Software KMS (CMEK)</strong></td>
+            <td>Google infrastructure, software-protected</td>
+            <td>140-2 Level 1</td>
+            <td>At rest</td>
+            <td>You need key lifecycle control without hardware requirements.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud HSM</strong></td>
+            <td>Google-operated HSM (hardware-backed, still Google infra)</td>
+            <td>140-2 Level 3</td>
+            <td>At rest</td>
+            <td>Compliance mandates hardware-backed keys; key can stay in Google Cloud.</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud EKM</strong></td>
+            <td>Your external HSM / KMS (never enters Google infra)</td>
+            <td>Depends on your HSM</td>
+            <td>At rest</td>
+            <td>Regulatory requirement that keys never reside in the cloud provider's environment.</td>
+          </tr>
+          <tr>
+            <td><strong>Confidential Computing</strong></td>
+            <td>N/A — CPU-level memory encryption (AMD SEV / Intel TDX)</td>
+            <td>N/A</td>
+            <td>In use (memory)</td>
+            <td>Data must remain encrypted while being actively processed — e.g., secure multi-party computation.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Certificate Authority Service (CAS)</h3>
+    <p><strong>Certificate Authority Service</strong> lets you run a fully managed <strong>private CA hierarchy</strong> inside Google Cloud without operating any CA server yourself. It supports a standard two-tier model: a <strong>Root CA</strong> (rarely online; signs subordinate CA certificates) and one or more <strong>Subordinate CAs</strong> (do the day-to-day signing). Every issued <strong>X.509 certificate</strong> carries audit trails back to your root, making it ideal for internal services, mutual TLS (mTLS), and workload identity.</p>
+
+    <div class="rev-card tip">
+      <h3>🏢 CAS Tier: DevOps vs Enterprise CA</h3>
+      <ul>
+        <li><strong>DevOps CA</strong> — fast issuance (sub-second), lower cost, no per-certificate audit log. Use it for ephemeral workload identities, short-lived service mesh certs, or Kubernetes pod identities where you issue thousands of certs per minute.</li>
+        <li><strong>Enterprise CA</strong> — full per-certificate audit logging, certificate revocation (CRL + OCSP), longer-lived certs. Use it for anything subject to compliance audit — TLS certs for internal APIs, user client certs, code-signing certs.</li>
+      </ul>
+    </div>
+
+    <p><strong>Certificate-based Access Control</strong> extends CAS beyond encryption into <strong>authorisation</strong>: services present a CAS-issued X.509 certificate at the application layer (mTLS), and the service validates the certificate's <em>Subject</em> or <em>SAN</em> fields as proof of identity. Combined with BeyondCorp Enterprise or Anthos Service Mesh, this removes reliance on network location for trust — only a cryptographically signed identity wins access.</p>
+
+    <div class="rev-card warn">
+      <h3>⚠️ CAS vs Public Certificate Managers</h3>
+      <p>CAS issues <strong>private</strong> certificates — they are trusted only within hierarchies you control. For <strong>public</strong> TLS (web-facing HTTPS trusted by browsers), use <strong>Google-managed certificates</strong> or a public CA. CAS is not a Let's Encrypt replacement; it's a private PKI factory for internal use.</p>
+    </div>
+
+    <div class="joke-box">
+      "The Root CA signed the Subordinate CA. The Subordinate CA signed the leaf cert. The leaf cert signed into the Kubernetes pod. It's certificates all the way down — turtles would be jealous." 🐢🔏
+    </div>
+
+    <!-- 3.7 -->
+    <h2>3.7 De-identification Techniques &amp; Tokenization Deep-Dive</h2>
+    <p>Sensitive Data Protection offers <strong>five de-identification transforms</strong>. Choosing the wrong one in the exam costs marks — they all "hide" data, but differ critically in <em>reversibility</em> and <em>analytical utility</em>.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Transform</th>
+            <th>What It Does</th>
+            <th>Reversible?</th>
+            <th>Use When…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Redaction</strong></td>
+            <td>Removes the value entirely (replaces with nothing or a placeholder like <code>[REDACTED]</code>).</td>
+            <td>No</td>
+            <td>Value must never appear again — e.g., free-text medical notes published externally.</td>
+          </tr>
+          <tr>
+            <td><strong>Masking</strong></td>
+            <td>Replaces characters with a fixed mask character (e.g., <code>****-****-****-1234</code>).</td>
+            <td>No</td>
+            <td>Audit logs, support interfaces — show partial info to humans but never reconstruct the original.</td>
+          </tr>
+          <tr>
+            <td><strong>Date Shifting</strong></td>
+            <td>Shifts date values by a randomised (but consistent-per-entity) offset, preserving relative time spans.</td>
+            <td>Yes (with the shift key)</td>
+            <td>Clinical trial data, age-sensitive analytics — time relationships matter but absolute dates must be obscured.</td>
+          </tr>
+          <tr>
+            <td><strong>Bucketing (Generalisation)</strong></td>
+            <td>Replaces precise values with a range or category (e.g., age <code>34</code> → <code>30–40</code>).</td>
+            <td>No</td>
+            <td>Statistical reporting where groupings are sufficient — k-anonymity requirements.</td>
+          </tr>
+          <tr>
+            <td><strong>Pseudonymisation / Tokenisation</strong></td>
+            <td>Replaces a value with a surrogate token generated by encryption; the same input always yields the same token (deterministic).</td>
+            <td>Yes (with the crypto key)</td>
+            <td>Analytics pipelines, cross-table joins — must preserve referential integrity while hiding the raw value.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 RMDBT — "Rather Many Data Bits Transformed"</h3>
+      <p>The five transforms in order: <strong>R</strong>edact, <strong>M</strong>ask, <strong>D</strong>ate-shift, <strong>B</strong>ucket, <strong>T</strong>okenise. The first two wipe information; the last one is the only reversible option that preserves join keys. Think <em>FIND then FUZZ with RMDBT</em>: first Sensitive Data Protection <em>finds</em> PII (inspect/profile), then it <em>fuzzes</em> it with one of these five transforms.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Masking is NOT reversible &mdash; tokenisation IS (with the key).</strong> Masking replaces characters with <code>*</code> or a mask character; there is no key and the original cannot be recovered. Tokenisation (deterministic / format-preserving encryption) uses a <strong>cryptographic key</strong>, meaning the operation can be reversed to recover the original value, and the same input always produces the same token (enabling joins). The exam regularly describes a scenario where "you need to re-identify data later" and the only correct transform is tokenisation &mdash; never masking.
+    </div>
+
+    <h3>Deterministic vs Random Tokenisation</h3>
+    <p><strong>Deterministic (format-preserving) encryption</strong> always maps the same plaintext to the same ciphertext under the same key. This is the right choice when you need stable surrogates for analytics or joins across tables. <strong>Random tokenisation</strong> generates a different token each time, breaking the ability to correlate records &mdash; use it when maximum unlinkability matters more than analytical utility (e.g., one-time payment nonces).</p>
+
+    <h3>Inspect Jobs vs De-ID Jobs</h3>
+    <p>The Sensitive Data Protection API has two distinct entry points:</p>
+    <ul>
+      <li><code>DlpService.InspectContent</code> / <code>CreateInspectJob</code> — <strong>read-only</strong>: identifies where PII exists and returns findings. Used for discovery and profiling.</li>
+      <li><code>DlpService.DeidentifyContent</code> / <code>CreateDlpJob</code> with a deidentify template — <strong>transforms</strong> the data: runs redact/mask/tokenise on the content and returns transformed output.</li>
+    </ul>
+    <p>The exam may ask which API call to use; remember these are different jobs and different request bodies, not the same call with an optional transform flag.</p>
+
+    <h3>TINK &amp; Format-Preserving Encryption</h3>
+    <p>Under the hood, Sensitive Data Protection uses Google's open-source <strong>TINK</strong> cryptography library for format-preserving encryption (FPE) when performing deterministic tokenisation. TINK provides AES-SIV and AES-FFX primitives that keep the ciphertext in the same character space as the plaintext (so a 16-digit card number tokenises to a 16-digit surrogate). You can use TINK directly in application code to apply the same cryptographic transforms outside the DLP API — useful for client-side de-identification before data even reaches Google Cloud.</p>
+
+    <h3>Hybrid Inspection: DLP in Streaming Pipelines</h3>
+    <p>When data flows through a streaming pipeline (<strong>Pub/Sub → Dataflow</strong>), you can run <strong>hybrid inspection</strong>: the Dataflow job calls the DLP API inline, inspecting and de-identifying messages <em>in flight</em> before they land in BigQuery or Cloud Storage. This means PII is scrubbed at the pipeline layer without ever touching a persistent store. The exam presents this as the pattern for "inspect streaming data before it lands."</p>
+
+    <div class="rev-card tip">
+      <h3>🔄 Re-identification Risk &amp; Data Profiling Workflow</h3>
+      <p>Even after de-identification, combining several quasi-identifiers (age range, gender, postcode) can re-identify individuals. Sensitive Data Protection's <strong>data profiling</strong> (discovery) workflow automates the scan: it profiles BigQuery datasets across an organisation, assigns a <em>data risk score</em> and <em>sensitivity level</em>, and can export findings to Security Command Center. The exam asks: "How do you continuously monitor for new PII in BigQuery?" — answer: configure an <strong>automatic discovery scan</strong> at the organisation level, not a one-time inspect job.</p>
+    </div>
+
+    <!-- 3.8 -->
+    <h2>3.8 Data Lifecycle &amp; Retention Controls</h2>
+    <p>Knowing <em>how long data lives</em> and <em>who can delete it</em> is as important as knowing how to protect it. The exam tests whether you can wire up compliant retention without confusing "retention policy" with "access control."</p>
+
+    <h3>Cloud Storage Object Lifecycle Management</h3>
+    <p>Object Lifecycle Management lets you define rules that automatically act on objects as they age. Rules are evaluated daily and trigger one of three actions:</p>
+    <ul>
+      <li><strong>Delete:</strong> permanently deletes objects after a specified age (days since creation, or days since becoming non-current for versioned buckets).</li>
+      <li><strong>Change storage class:</strong> automatically transitions objects from Standard → Nearline → Coldline → Archive as they age — the typical cost-optimisation pattern for compliance data that must be retained but rarely accessed.</li>
+      <li><strong>Abort incomplete multipart uploads:</strong> cleans up incomplete uploads after a threshold, preventing orphaned storage charges.</li>
+    </ul>
+    <p>Lifecycle rules are attached at the bucket level and evaluated independently for each object. They cannot be used to <em>prevent</em> deletion — that requires a retention policy or Bucket Lock (below).</p>
+
+    <h3>Bucket Lock &amp; Retention Policies: WORM Compliance</h3>
+    <p><strong>Retention policies</strong> set a minimum duration before objects in a bucket can be deleted or replaced. <strong>Bucket Lock</strong> makes that policy permanent. This is the Cloud Storage answer for WORM (Write Once, Read Many) compliance requirements mandated by regulations such as SEC Rule 17a-4 and FINRA.</p>
+    <ul class="bullet-chk">
+      <li>Set a <strong>retention policy</strong> on a bucket (e.g. 7 years). Objects cannot be deleted or overwritten until the retention period has elapsed.</li>
+      <li><strong>Lock</strong> the retention policy by calling <code>lockRetentionPolicy()</code>. Once locked, the policy <em>cannot be reduced, removed, or modified</em> — not even by a project owner or the Google Cloud support team.</li>
+      <li>Objects can still be <em>read</em> at any time during retention; they simply cannot be deleted before the period expires.</li>
+      <li><strong>Versioning + retention</strong>: if you overwrite an object in a versioned bucket, the non-current version still carries its own retention clock and cannot be deleted early.</li>
+    </ul>
+
+    <div class="exam-trap">
+      <strong>Bucket Lock is PERMANENT.</strong> Once a retention policy is locked, it cannot be shortened or removed, and objects cannot be deleted before expiry — by anyone, under any circumstances. This is the WORM answer. A common distractor offers "disable the retention policy to delete the object early" — this is impossible once locked. If you need flexibility to change the retention period later, do NOT lock; if regulatory compliance requires WORM immutability, locking is mandatory.
+    </div>
+
+    <h3>BigQuery Table &amp; Partition Expiration</h3>
+    <p>BigQuery supports expiration at two granularities:</p>
+    <ul>
+      <li><strong>Table expiration:</strong> set <code>--time_to_live</code> on a dataset (default expiry for new tables) or on individual tables. BigQuery automatically deletes expired tables. Useful for staging datasets, temporary experiment results, or ephemeral analytics outputs that must not accumulate indefinitely.</li>
+      <li><strong>Partition expiration:</strong> for partitioned tables, set <code>partitionExpirationMs</code>. Partitions older than the threshold are deleted automatically, while newer partitions remain — ideal for time-series data with rolling retention windows (e.g. keep 90 days of raw events, always).</li>
+    </ul>
+    <p>Unlike Cloud Storage retention policies, BigQuery expiration is a soft delete (deletion is automatic but not WORM). There is no equivalent of Bucket Lock in BigQuery — for immutable audit records, export to Cloud Storage with a locked retention policy.</p>
+
+    <h3>Cloud Logging Retention</h3>
+    <p>Cloud Logging has two special built-in log buckets with fixed retention:</p>
+    <ul>
+      <li><strong><code>_Required</code> bucket:</strong> holds <em>Admin Activity</em> and <em>System Event</em> audit logs. Retention is <strong>400 days</strong>, non-configurable. You cannot reduce or delete this — Google mandates it for accountability.</li>
+      <li><strong><code>_Default</code> bucket:</strong> holds all other logs (Data Access, Access Transparency, user-defined). Default retention is <strong>30 days</strong>. You can increase this up to 3,650 days (10 years) for a storage cost, or decrease it as low as 1 day.</li>
+    </ul>
+    <p>For retention beyond what Cloud Logging supports (or for cheaper long-term archival), create a <strong>log sink</strong> that exports to Cloud Storage. Cloud Storage + Bucket Lock is the standard pattern for 7-year audit log retention required by SOX, PCI DSS, and similar frameworks.</p>
+
+    <h3>Preventing Public Exposure: <code>iam.allowPublicObjectBehavior</code></h3>
+    <p>Accidental public access to Cloud Storage objects is a leading cause of data breaches. The organisation policy constraint <code>storage.publicAccessPrevention</code> enforces that <em>no bucket</em> in the org (or a specified folder/project) can grant <code>allUsers</code> or <code>allAuthenticatedUsers</code> access — regardless of bucket-level ACLs or IAM bindings. Setting this constraint at the org level prevents any team from accidentally making a bucket public, even if they have storage admin rights. This is the preferred data loss prevention mechanism over relying on individual bucket configuration audits.</p>
+
+    <div class="mnemonic">
+      <h3>💡 Lock, Expire, Sink — The Lifecycle Trio</h3>
+      <p><strong>Lock</strong> it (Bucket Lock) when regulators demand WORM immutability. <strong>Expire</strong> it (lifecycle rules / BQ expiration) when data should auto-clean after its useful life. <strong>Sink</strong> it (log sink → Cloud Storage) when you need cheaper long-term retention than Cloud Logging provides. Three tools, three distinct problems — pick the wrong one on the exam and you're choosing between "cannot delete" and "deleted too soon."</p>
+    </div>
+
+    <div class="joke-box">
+      "The compliance officer asked: 'Can you delete this locked object?' The bucket replied: 'Have you tried turning off WORM compliance?' Nobody laughed. The retention policy remained. For seven years." 🔒😅
+    </div>
+
+    <h3>Legal Holds</h3>
+    <p>Bucket Lock enforces <em>time-based</em> retention. A <strong>legal hold</strong> enforces <em>event-based</em> retention: an object under legal hold cannot be deleted <em>regardless of the retention policy expiry</em> — the hold takes precedence until explicitly released. Use legal holds when litigation or regulatory investigation requires preserving specific objects beyond their standard retention period. Holds are applied per-object (not per-bucket) and can be set via the Cloud Storage API or <code>gcloud</code>.</p>
+
+    <h3>Retention Policy vs Legal Hold: A Comparison</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Retention Policy</th>
+            <th>Legal Hold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Scope</strong></td>
+            <td>Bucket-level (applies to all objects)</td>
+            <td>Object-level (applied selectively)</td>
+          </tr>
+          <tr>
+            <td><strong>Release mechanism</strong></td>
+            <td>Time-based (expiry after duration)</td>
+            <td>Event-based (released explicitly by an authorised user)</td>
+          </tr>
+          <tr>
+            <td><strong>Interaction if both set</strong></td>
+            <td colspan="2">Object cannot be deleted until <em>both</em> the retention period has elapsed <em>and</em> all legal holds have been released.</td>
+          </tr>
+          <tr>
+            <td><strong>Lockable?</strong></td>
+            <td>Yes — Bucket Lock makes it permanent</td>
+            <td>No — holds are always releasable by authorised users</td>
+          </tr>
+          <tr>
+            <td><strong>Exam use case</strong></td>
+            <td>WORM compliance, regulatory retention windows</td>
+            <td>Litigation hold ("preserve all emails from 1 Jan – 31 Mar")</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Org Policy for Data Loss Prevention</h3>
+    <p>Beyond per-bucket controls, organisation policies provide fleet-wide enforcement. Key constraints for data lifecycle and exposure prevention:</p>
+    <ul class="bullet-chk">
+      <li><code>storage.publicAccessPrevention</code> — blocks <code>allUsers</code> / <code>allAuthenticatedUsers</code> on any bucket in scope. The single most impactful prevention control for Cloud Storage data exposure.</li>
+      <li><code>storage.uniformBucketLevelAccess</code> — enforces Uniform Bucket-Level Access on all buckets, disabling legacy ACLs and ensuring IAM is the sole access-control mechanism. Without this, ACL loopholes can bypass IAM bindings.</li>
+      <li><code>storage.retentionPolicySeconds</code> — enforce a minimum retention period on all buckets (useful when you need to prevent teams from setting zero-day expiry on regulated data).</li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>🏛️ The Hierarchy: Policy &gt; Lock &gt; Hold</h3>
+      <p>Think of data lifecycle protection as three layers: the <strong>org policy</strong> prevents accidental public access fleet-wide (the outer wall). The <strong>retention policy + Bucket Lock</strong> prevents premature deletion of regulated data (the vault door). The <strong>legal hold</strong> freezes specific objects when litigation demands it (the evidence bag). Each layer operates independently — a locked retention policy does not release a legal hold, and an expired legal hold does not override a valid retention period.</p>
+    </div>
+
+    <h3>Cloud Logging Retention Comparison: In-Product vs Sink</h3>
+    <p>The decision between extending Cloud Logging retention and sinking logs to Cloud Storage comes down to cost, searchability, and compliance requirements:</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Retention Limit</th>
+            <th>Search/Query</th>
+            <th>Cost Model</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Extended <code>_Default</code> bucket</strong></td>
+            <td>Up to 3,650 days</td>
+            <td>Log Explorer (full query)</td>
+            <td>Per-GiB-per-month storage charge</td>
+            <td>Frequently queried logs (security investigations, compliance spot-checks)</td>
+          </tr>
+          <tr>
+            <td><strong>Log sink → Cloud Storage</strong></td>
+            <td>Unlimited (bucket lifecycle controls)</td>
+            <td>None natively; query via BigQuery or Dataflow</td>
+            <td>Nearline/Coldline/Archive storage rates</td>
+            <td>Long-term archival (&gt; 3 years), WORM compliance via Bucket Lock</td>
+          </tr>
+          <tr>
+            <td><strong>Log sink → BigQuery</strong></td>
+            <td>Table expiration-controlled</td>
+            <td>SQL queries over log data</td>
+            <td>BigQuery storage + query costs</td>
+            <td>Analytics on logs, trend queries, custom dashboards</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>For compliance frameworks that mandate 7-year log retention (SOX Section 802, HIPAA, PCI DSS), the standard pattern is: sink to Cloud Storage → Nearline storage class (30–90 day access) → lifecycle rule transitions to Coldline at 1 year, Archive at 3 years → Bucket Lock with 7-year retention policy. This minimises cost while meeting WORM requirements.</p>
+
     <!-- Warm-Up Quiz -->
     <div class="warm-up">
       <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>

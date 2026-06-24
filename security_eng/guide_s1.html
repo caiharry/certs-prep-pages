@@ -414,6 +414,209 @@
       <p>IAM evaluates <strong>deny policies first</strong>. If a deny matches, the request stops dead &mdash; no allow, not even Owner, can rescue it. When a question needs a hard, un-overridable block on a <em>permission</em>, reach for a deny policy. When it needs to block a <em>configuration</em> (regions, external IPs, key creation), reach for an org policy.</p>
     </div>
 
+    <!-- 1.7 -->
+    <h2>1.7 IAM Recommender &amp; Enforcing Least Privilege Automatically</h2>
+    <p>Granting the right roles is hard enough. Keeping them right over time, as people change jobs, projects end, and service accounts accumulate, is <em>genuinely painful</em>. <strong>IAM Recommender</strong> is Google's machine-learning-backed tool that watches actual API usage and flags where permissions exceed what a principal actually uses. Think of it as a very patient security auditor who never sleeps and never misses a log entry.</p>
+
+    <h3>What IAM Recommender actually does</h3>
+    <ul class="bullet-chk">
+      <li>Analyses <strong>Cloud Audit Log</strong> data from the past 90 days of activity for each principal.</li>
+      <li>Produces <strong>role recommendations</strong>: either replace an over-broad role with a tighter one, or remove an unused binding entirely.</li>
+      <li>Also produces <strong>policy insights</strong>: data points about how roles are being used (or not) — the raw evidence behind the recommendation.</li>
+      <li>Covers users, groups, and <strong>service accounts</strong> — particularly useful for detecting idle or abandoned SAs that still hold powerful roles.</li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>🔍 Seeing Recommendations Requires a Role</h3>
+      <p>Recommendations are not visible to everyone by default. A principal needs at least the <strong>Recommender Viewer</strong> role (<code>roles/recommender.iamViewer</code>) to read them, or the <strong>Recommender Admin</strong> role (<code>roles/recommender.iamAdmin</code>) to apply them. The individual permission behind it is <code>recommender.iamRecommendations.get</code>. Security teams that want a central review dashboard must be explicitly granted access — don't assume org-wide visibility just because you're an admin.</p>
+      <p>Recommendations are also available programmatically via the Recommender API and surfaced inside the <strong>IAM console</strong> under each principal's role bindings.</p>
+    </div>
+
+    <h3>Role recommendations vs Policy insights — know the difference</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Artefact</th>
+            <th>What It Is</th>
+            <th>What You Do With It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Policy Insight</strong></td>
+            <td>An observation: "this principal has not used permission X in 90 days."</td>
+            <td>Evidence to inform a decision. Doesn't suggest a specific change.</td>
+          </tr>
+          <tr>
+            <td><strong>Role Recommendation</strong></td>
+            <td>A concrete suggestion: "replace <code>roles/editor</code> with <code>roles/storage.objectCreator</code>".</td>
+            <td>Apply directly via the console, <code>gcloud</code>, or the Recommender API. Can be accepted, dismissed, or snoozed.</td>
+          </tr>
+          <tr>
+            <td><strong>SA Idle Recommendation</strong></td>
+            <td>Flags a service account that has <em>not used any API</em> in 90 days (all bindings unused).</td>
+            <td>Investigate and delete or disable the SA if it's truly orphaned.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Principal Access Boundary (PAB) policies</h3>
+    <p><strong>Principal Access Boundary policies</strong> are a newer IAM feature that lets you define a boundary around which resources a principal <em>can even be granted access to</em>. Rather than reviewing every individual role binding, a PAB policy says "this service account's permissions can only ever apply within projects tagged <em>env:dev</em>." Any role binding that would give the SA access to a resource outside that boundary is simply ignored — even if the binding was legitimately granted. It's a defence-in-depth control that sits on top of the normal IAM allow/deny model.</p>
+
+    <div class="exam-trap">
+      <strong>IAM Recommender is not the same as Audit Logs — and the exam will try to swap them.</strong> <strong>Cloud Audit Log</strong> records <em>every API call as it happens</em> — it's your compliance trail, your forensic record, your immutable event stream. <strong>IAM Recommender</strong> <em>consumes</em> that audit data, summarises it over 90 days, and produces actionable suggestions to tighten permissions. A stem asking "how do you detect that a service account hasn't called any APIs for three months" is fishing for <strong>Recommender</strong> (idle SA detection), not Audit Logs (Audit Logs won't automatically surface that summary for you). Conversely, "provide an immutable audit trail of who called <code>storage.objects.delete</code>" is Audit Logs, not Recommender. Don't mix them up.
+    </div>
+
+    <h3>Manual review vs Recommender vs other cleanup tools</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>How It Works</th>
+            <th>Strengths</th>
+            <th>Limitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Manual IAM review</strong></td>
+            <td>A human reads through role bindings per-project and decides what to remove.</td>
+            <td>Full context, can account for business reasons (e.g. emergency break-glass).</td>
+            <td>Doesn't scale; misses subtle excess permissions; depends on reviewer knowledge.</td>
+          </tr>
+          <tr>
+            <td><strong>IAM Recommender</strong></td>
+            <td>ML model analyses 90 days of audit data; generates per-principal recommendations.</td>
+            <td>Scales org-wide; data-driven; surfaces idle SAs and over-broad roles automatically.</td>
+            <td>Only as good as the audit log coverage; doesn't know future access needs; 90-day window can miss seasonal use.</td>
+          </tr>
+          <tr>
+            <td><strong>GCDS cleanup</strong></td>
+            <td>Syncs AD group membership changes back to Google Groups, automatically removing leavers.</td>
+            <td>Lifecycle management for human identities; no orphaned accounts after offboarding.</td>
+            <td>Only applies to human identities synced from AD; does nothing about over-broad roles or service accounts.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="joke-box">
+      The IAM Recommender looked at my service account's permissions and said "you granted Editor to something that's been running a cron job for 90 days and only ever called <code>storage.objects.create</code>." Fair point, honestly. 😬
+    </div>
+
+    <!-- 1.8 -->
+    <h2>1.8 Groups, Domain Restriction &amp; Workforce Federation Controls</h2>
+    <p>IAM bindings tell you <em>what</em> a principal can do. But there's a prior question the exam loves: <em>which principals are even allowed to appear in your IAM policies at all?</em> Domain restriction org policies and group-based access management are the controls that answer it.</p>
+
+    <h3>Domain restriction — keep strangers off the guest list</h3>
+    <p>The org policy constraint <code>iam.allowedPolicyMemberDomains</code> is one of the most important guardrails in a production GCP organisation. It restricts which identities can be added to any IAM allow policy anywhere in the org (or folder or project where the constraint is applied). If a domain isn't on the allowlist, <em>you cannot bind that identity to any role</em> — not even Viewer — regardless of who is trying to do it.</p>
+    <ul class="bullet-chk">
+      <li>The allowlist accepts Cloud Identity or Workspace <strong>customer IDs</strong> (the <code>C</code>-prefixed string), not domain names directly.</li>
+      <li>Apply it at the <strong>organisation node</strong> so it inherits everywhere; override for specific folders (e.g. sandbox environments) only when absolutely necessary.</li>
+      <li>Also prevents granting access to <code>allUsers</code> or <code>allAuthenticatedUsers</code> — the org policy blocks those members too unless they're in an allowed domain (which they can't be, being pseudo-members).</li>
+    </ul>
+
+    <div class="mnemonic">
+      <h3>💡 "Allowed Domains = Approved Arrivals" — think customs control</h3>
+      <p>Constraint: <strong><code>iam.allowedPolicyMemberDomains</code></strong>. Trick to remember: the word "allowed" is in the constraint name itself — it's your allowlist of who's even <em>allowed through customs</em>. If your org's Customer ID isn't on the list, no IAM binding will let the identity in, full stop. Not even an Owner can add a gmail.com personal account if gmail.com's customer ID is absent from the allowlist.</p>
+    </div>
+
+    <h3>Group-based access management — why it matters</h3>
+    <p>The standing best practice is: <strong>bind roles to groups, not to individuals</strong>. This is not just tidy — it's operationally critical:</p>
+    <ul class="bullet-chk">
+      <li><strong>Joiners:</strong> add a person to the group; they inherit all the bound roles instantly.</li>
+      <li><strong>Leavers:</strong> remove them from the group; all access evaporates in one operation.</li>
+      <li><strong>Movers:</strong> change group membership; no need to audit every project's policy.</li>
+      <li>Paired with <strong>GCDS</strong>, group membership is driven automatically from Active Directory — zero-touch IAM for routine HR events.</li>
+      <li>Group nesting is supported, but keep hierarchies shallow: deep nesting makes effective permissions hard to reason about.</li>
+    </ul>
+
+    <h3>IAM conditions for resource-level patterns</h3>
+    <p>When you need to grant a role only on resources that match a naming pattern or carry a specific tag, use <strong>IAM Conditions</strong> with a <code>resource.name</code> attribute or tag-based expressions. Common patterns:</p>
+    <ul>
+      <li><code>resource.name.startsWith("projects/_/buckets/prod-")</code> — bind a Storage role only on buckets whose name starts with <em>prod-</em>.</li>
+      <li><code>resource.matchTag("env", "production")</code> — grant an SA elevated rights only on resources tagged as production (combined with resource manager tags).</li>
+    </ul>
+    <p>Tag-based conditions are powerful but require resources to be consistently tagged. Missing a tag is a silent failure — the condition doesn't match and access is silently denied, which can look like a bug.</p>
+
+    <h3>allUsers vs allAuthenticatedUsers — the classic trap</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Who It Covers</th>
+            <th>Common Legitimate Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>allUsers</code></td>
+            <td><strong>Literally everyone</strong> on the public internet — authenticated or not, bot or human, any origin.</td>
+            <td>Truly public static assets (e.g. a marketing website's images in Cloud Storage). Virtually never appropriate for APIs or data.</td>
+          </tr>
+          <tr>
+            <td><code>allAuthenticatedUsers</code></td>
+            <td><strong>Anyone with any Google Account</strong> — that's 3 billion+ personal gmail.com accounts, every Google Workspace tenant, every Cloud Identity tenant. It does <em>not</em> mean "authenticated by your company."</td>
+            <td>Almost never. Sounds reassuring ("they're authenticated!") but is nearly as open as <code>allUsers</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-trap">
+      <strong><code>allAuthenticatedUsers</code> does NOT mean "authenticated to your org."</strong> This is one of the most reliable exam traps in the IAM domain. A stem will present a scenario like "allow only authenticated users to access the API" and offer <code>allAuthenticatedUsers</code> as an option. In the real world this means anyone with a Gmail account can call your API. The correct control is a proper IAM binding to your <strong>specific domain's group</strong> (or enforced via <code>iam.allowedPolicyMemberDomains</code>). If the scenario mentions Security Command Center flagging a bucket as publicly readable, suspect <code>allUsers</code> or <code>allAuthenticatedUsers</code> as the culprit.
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🏋️ Workforce Identity Federation — Access Controls on External Humans</h3>
+      <p>When using <strong>Workforce Identity Federation</strong> to give external IdP users (Okta, Entra) access to Google Cloud, remember you're not creating Cloud Identity accounts — so <code>iam.allowedPolicyMemberDomains</code> doesn't apply directly. Instead, workforce pool principals look like <code>principal://iam.googleapis.com/locations/global/workforcePools/POOL_ID/subject/USER_ID</code> in IAM bindings. Control which external users get in by:</p>
+      <ul class="bullet-chk">
+        <li>Setting <strong>attribute conditions</strong> on the workforce pool provider (e.g. only users with a specific Okta group claim).</li>
+        <li>Using <strong>attribute mapping</strong> to translate IdP attributes (like group membership) into Google attributes that conditions can evaluate.</li>
+        <li>Scoping IAM bindings to <strong>principalSet</strong> (a group of workforce principals matching an attribute) rather than individual subjects where possible.</li>
+      </ul>
+    </div>
+
+    <h2>1.9 Workload Identity in GKE &amp; Cloud Run</h2>
+    <p>Storing a JSON service account key in a Kubernetes Secret is the classic "works but dangerous" pattern — the key ends up in <strong>etcd</strong> (often unencrypted), in CI logs, and in every backup. <strong>Workload Identity</strong> eliminates the key entirely by letting a Kubernetes ServiceAccount (KSA) impersonate a Google Service Account (GSA) via the GKE metadata server. No credentials ever leave Google Cloud.</p>
+
+    <div class="rev-card tip">
+      <h3>🏋️ Minimal Workload Identity Setup — Four Steps</h3>
+      <ol>
+        <li><strong>Create the KSA</strong> in the relevant namespace (<code>kubectl create serviceaccount my-ksa -n my-ns</code>).</li>
+        <li><strong>Annotate the KSA</strong> so GKE knows which GSA it should impersonate:<br>
+          <code>kubectl annotate serviceaccount my-ksa -n my-ns iam.gke.io/gcp-service-account=my-gsa@PROJECT.iam.gserviceaccount.com</code></li>
+        <li><strong>Bind <code>roles/iam.workloadIdentityUser</code></strong> on the GSA, granting the KSA permission to impersonate it:<br>
+          <code>gcloud iam service-accounts add-iam-policy-binding my-gsa@PROJECT.iam.gserviceaccount.com --role roles/iam.workloadIdentityUser --member "serviceAccount:PROJECT.svc.id.goog[my-ns/my-ksa]"</code></li>
+        <li><strong>Annotate the Pod spec</strong> to use the KSA (<code>serviceAccountName: my-ksa</code>). The GKE metadata server handles token exchange transparently at runtime.</li>
+      </ol>
+      <p>After step 3, calls from the pod hit the GKE metadata server, which exchanges the Kubernetes-signed token for a short-lived Google OAuth token. The app code calls GCP APIs exactly as it would with ADC — no code change needed.</p>
+    </div>
+
+    <h3>How the Token Exchange Works</h3>
+    <p>When a workload pod calls the GCP metadata endpoint (<code>http://metadata.google.internal/</code>), the GKE metadata server intercepts the request, validates the pod's projected service account token against the Kubernetes API, and calls the <strong>GCP Security Token Service (STS)</strong> to exchange it for a short-lived Google OAuth 2.0 access token scoped to the GSA. This is transparent to the app — standard Application Default Credentials (ADC) picks it up automatically.</p>
+
+    <h3>Workload Identity on Cloud Run</h3>
+    <p>Cloud Run simplifies this further: each revision runs as a <strong>specific service account</strong> that you attach at deploy time with <code>--service-account</code>. There is no KSA/GSA annotation dance — the revision <em>is</em> the identity. Because Cloud Run is serverless, there is no persistent VM, no long-lived metadata server to intercept, and no default over-permissive SA to forget about.</p>
+
+    <div class="rev-card warn">
+      <h3>🚨 Why Cloud Run Is a More Secure Default Than GCE</h3>
+      <p>A Compute Engine instance launched without specifying a service account gets the <strong>Compute Engine default SA</strong> — which has the <code>Editor</code> role on the project by default. This is an enormous blast radius. Cloud Run does not have this problem: a Cloud Run service with no SA attached gets <em>no</em> identity (it can only access public resources). You must explicitly grant it an SA, forcing least-privilege by design.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>"A pod needs to call the BigQuery API securely — no keys should be stored anywhere."</strong> The answer is <strong>Workload Identity</strong>, full stop. The most common wrong answer is "mount a JSON key file as a Kubernetes Secret." A Secret does encrypt at rest <em>if</em> etcd encryption is configured, but it still stores a long-lived credential inside the cluster. Workload Identity is the only option where <em>no key material is ever created or stored</em>. A second trap: annotating only the KSA but forgetting the <code>workloadIdentityUser</code> IAM binding on the GSA — the metadata server call will fail silently with a permission denied from STS.
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 "KSA Impersonates GSA — K before G, just like the alphabet"</h3>
+      <p>The <strong>K</strong>ubernetes ServiceAccount is always the <em>caller</em>; the <strong>G</strong>oogle ServiceAccount is always the <em>impersonated</em> identity. K impersonates G, and the annotation <code>iam.gke.io/gcp-service-account</code> lives on the <em>K</em>SA (Kubernetes side). The IAM binding <code>workloadIdentityUser</code> lives on the <em>G</em>SA (Google side). Two places, two sides — one lets the other in.</p>
+    </div>
+
     <!-- Warm-Up Quiz -->
     <div class="warm-up">
       <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>

@@ -294,6 +294,307 @@
       "The auditor asked for evidence of continuous compliance. I showed them the SCC dashboard. They asked for a second espresso instead &mdash; we were done early." ☕📊
     </div>
 
+    <!-- 5.5 -->
+    <h2>5.5 Named Frameworks: What GCP Controls Map To</h2>
+    <p>The exam expects you to name <em>which</em> GCP control satisfies which regulatory regime. You don't need to memorise the full standard — just the GCP handle for each requirement and the gaps that trip people up.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Framework</th>
+            <th>What it demands</th>
+            <th>Key GCP controls</th>
+            <th>Watch out for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>FedRAMP</strong></td>
+            <td>US federal cloud security baseline (High / Moderate)</td>
+            <td>Assured Workloads <em>FedRAMP High/Moderate</em> folder, <code>gcp.resourceLocations</code> (US regions only), ITAR if applicable</td>
+            <td>FedRAMP + ITAR together require personnel controls — only Assured Workloads bundles all three</td>
+          </tr>
+          <tr>
+            <td><strong>HIPAA</strong></td>
+            <td>Protect PHI (Protected Health Information)</td>
+            <td>Google BAA, CMEK for data-at-rest, VPC-SC perimeter, Data Access audit logs</td>
+            <td>Not all GCP services are HIPAA-eligible — you must check Google's HIPAA implementation guide and use only covered services</td>
+          </tr>
+          <tr>
+            <td><strong>PCI DSS</strong></td>
+            <td>Isolate and audit cardholder data</td>
+            <td>Assured Workloads <em>or</em> VPC-SC perimeter, Data Access logs, CMEK, Cloud DLP tokenisation for card numbers</td>
+            <td>Tokenise card numbers with Cloud DLP <em>before</em> storage; raw PANs must never appear in logs</td>
+          </tr>
+          <tr>
+            <td><strong>ISO 27001 / SOC 2</strong></td>
+            <td>Demonstrate information security management</td>
+            <td>Inherit Google's infrastructure certifications; supplement with your own IAM controls, VPC-SC, audit logs</td>
+            <td>Google's cert covers the infra — you must certify <em>your configuration</em> separately</td>
+          </tr>
+          <tr>
+            <td><strong>GDPR</strong></td>
+            <td>EU data residency; right to erasure; PII protection</td>
+            <td>Assured Workloads EU <em>or</em> <code>gcp.resourceLocations</code> (EU regions), CMEK kill-switch for right-to-erasure, Cloud DLP for PII discovery</td>
+            <td>CMEK key destruction satisfies cryptographic erasure — you can't physically delete distributed data, so key-destruction is the accepted substitute</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🏛️ Inherited vs Additive Compliance</h3>
+      <p>Google holds certifications for ISO 27001, SOC 1/2/3, FedRAMP, and more. You <strong>inherit</strong> those for the Google-managed infrastructure layer (data centres, global network, hypervisor). But auditors also assess <em>your</em> layer — IAM configuration, key management, network controls, audit logging. Google's cert is a necessary baseline, not a get-out-of-audit-free card. Both halves must be in place.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>HIPAA does NOT mean all GCP services are automatically HIPAA-eligible.</strong> Google signs a Business Associate Agreement (BAA) covering a defined list of services. Services outside that list must not be used to process PHI — even if they're otherwise secure. Always consult the <em>Google Cloud HIPAA implementation guide</em> and restrict your architecture to covered services.
+    </div>
+
+    <div class="joke-box">
+      "Our HIPAA audit went perfectly — we'd stored all the PHI in a covered service. Unfortunately, the cover was a sticky note labelled 'do not peek.' Reader, they peeked." 🩺📋
+    </div>
+
+    <!-- 5.6 -->
+    <h2>5.6 Risk Manager &amp; Policy Intelligence</h2>
+    <p>This set of tools helps you <em>understand</em> your IAM posture, <em>debug</em> access decisions, and <em>test</em> policy changes safely. They're often tested in scenarios where you need to audit who has access to what, or troubleshoot why a service account was denied.</p>
+
+    <h3>Risk Manager</h3>
+    <p><strong>Risk Manager</strong> exports a snapshot of your organisation's security posture as a structured risk report. Its primary audience is <em>cyber-insurance underwriters</em> — it tells them how well-controlled your GCP estate is and can influence premiums. It doesn't enforce anything; it describes.</p>
+
+    <h3>Policy Intelligence Suite</h3>
+    <ul class="bullet-chk">
+      <li><strong>Policy Analyzer</strong> — asks "who can do what on resource X?" across the entire org. Runs a broad IAM query and returns all principals that have a given permission on a specified resource, including inherited grants from parent nodes.</li>
+      <li><strong>Policy Troubleshooter</strong> — asks "why was <em>this specific request</em> denied right now?" Given a principal, a resource, and a permission, it walks the IAM bindings and org policy constraints to explain the denial. Point-in-time debug mode.</li>
+      <li><strong>Policy Simulator</strong> — runs a hypothetical: "what would happen if I applied <em>this new policy</em>?" It evaluates the proposed change against recent access logs to show which accesses would be allowed or denied. <strong>Read-only and hypothetical — it never applies the policy.</strong></li>
+      <li><strong>Active Assist recommendations</strong> — continuous suggestions across cost, security, and manageability. For IAM this surfaces over-privileged roles, unused service accounts, and publicly exposed resources.</li>
+    </ul>
+
+    <div class="mnemonic">
+      <h3>💡 Analyzer vs Troubleshooter — WHO vs WHY</h3>
+      <p><strong>Policy Analyzer = WHO</strong> has access to resource X (broad org-wide query). Use it when you want a full map of principals.<br>
+      <strong>Policy Troubleshooter = WHY</strong> was I denied right now (point-in-time debug). Use it when a specific user or service account hit a 403.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Policy Simulator is hypothetical and read-only.</strong> It evaluates what a proposed IAM policy <em>would</em> do by replaying recent access logs against the new policy. It does <strong>not</strong> apply the policy change, and it does <strong>not</strong> reflect real-time current state — it uses a window of recent access history. If the stem says "test a role binding change before applying it," Simulator is the answer. If the stem says "apply and roll back," that's a different workflow entirely.
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🛡️ When to Pull Which Tool</h3>
+      <ul>
+        <li><strong>Pre-change safety check</strong> → Policy Simulator (hypothetical replay against recent logs)</li>
+        <li><strong>"Who has access to this bucket across the org?"</strong> → Policy Analyzer</li>
+        <li><strong>"Why did service account X get a 403 on dataset Y just now?"</strong> → Policy Troubleshooter</li>
+        <li><strong>"Show our cyber-insurer how secure we are"</strong> → Risk Manager</li>
+        <li><strong>"Fix my over-permissioned roles automatically"</strong> → Active Assist IAM recommendations</li>
+      </ul>
+    </div>
+
+    <div class="joke-box">
+      "Used Policy Troubleshooter to find out why the service account was denied. Turns out the IAM binding was on the wrong project. The service account, meanwhile, had been filing a formal grievance for three sprints." 📨😤
+    </div>
+
+    <!-- 5.7 -->
+    <h2>5.7 Automating Compliance Posture</h2>
+    <p>A static compliance check is only a compliance <em>snapshot</em>. Production environments drift. The exam tests whether you can wire up an automated posture that detects <em>and</em> fixes drift without a human in the loop for every finding.</p>
+
+    <h3>The Posture Stack</h3>
+    <ul class="bullet-chk">
+      <li><strong>Org Policy constraints</strong> — preventive guardrails set at the org or folder level (e.g. require CMEK on all BigQuery datasets via <code>constraints/gcp.resourceLocations</code> and custom constraints, block unencrypted Cloud Storage buckets). Violations are blocked at resource creation — <em>before</em> SHA ever fires.</li>
+      <li><strong>Security Health Analytics (SHA)</strong> in SCC — detective layer. Continuously scans your estate and produces findings when a resource violates a security best practice (public bucket, over-privileged IAM, no CMEK, etc.).</li>
+      <li><strong>Assured Workloads</strong> — operates at the folder level to enforce a compliance regime end-to-end (residency + services + personnel). Works alongside Org Policy constraints, not instead of them.</li>
+      <li><strong>SCC Posture templates</strong> — pre-built control sets for common compliance frameworks (PCI DSS, NIST 800-53, ISO 27001). Deploy as a baseline so you're not hand-crafting every org policy from scratch.</li>
+      <li><strong>Custom org policy constraints</strong> — enforce business-specific rules beyond the built-in set: require a specific label on every resource, mandate CMEK on Cloud SQL, block public IP on GKE nodes. Written in Common Expression Language (CEL).</li>
+    </ul>
+
+    <h3>Automated Remediation Pattern</h3>
+    <p>Detective findings are only useful if someone acts on them. The standard GCP automation pattern is:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Service</th>
+            <th>What happens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Detect</td>
+            <td><strong>Security Command Center</strong> (SHA)</td>
+            <td>SHA finds a public GCS bucket and creates a finding.</td>
+          </tr>
+          <tr>
+            <td>2. Notify</td>
+            <td><strong>Pub/Sub</strong></td>
+            <td>SCC exports the finding to a Pub/Sub topic in near-real time.</td>
+          </tr>
+          <tr>
+            <td>3. Trigger</td>
+            <td><strong>Cloud Functions</strong> (or Cloud Run)</td>
+            <td>A function subscribed to the topic wakes up and reads the finding payload.</td>
+          </tr>
+          <tr>
+            <td>4. Remediate</td>
+            <td><strong>Cloud Storage / IAM API</strong></td>
+            <td>The function calls the API to remove the <code>allUsers</code> binding, making the bucket private again.</td>
+          </tr>
+          <tr>
+            <td>5. Confirm</td>
+            <td><strong>SCC / Audit Logs</strong></td>
+            <td>The finding is resolved; audit log records the programmatic change.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🔁 Automated Remediation in One Line</h3>
+      <p><strong>SCC finding → Pub/Sub notification → Cloud Function trigger → remediation API call.</strong> Memorise the chain. Questions usually describe it in a scenario and ask you to identify the missing component, or ask which service handles step N.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>SHA findings show current state — they do NOT auto-remediate.</strong> If a bucket is accidentally made public and SHA fires, a finding appears in SCC. That's it. The bucket remains public until something <em>acts</em> on the finding. Auto-remediation only happens if <em>you've wired the Pub/Sub pipeline yourself</em>. "Enable Security Command Center" ≠ "enable auto-fix." Don't mix up the detective and the corrective layers.
+    </div>
+
+    <div class="joke-box">
+      "SHA found 47 public buckets. The team said 'great, SCC will fix them.' Reader: SCC had been watching in polite, documented horror for six months." 🪣😱
+    </div>
+
+    <!-- 5.8 -->
+    <h2>5.8 Audit Readiness &amp; Evidence Collection Automation</h2>
+    <p>Passing a security audit is not just about having the right controls — it is about <em>proving</em> they worked, consistently, over a period of time. The exam tests whether you can assemble an automated evidence collection pipeline rather than scrambling at audit time.</p>
+
+    <h3>What Auditors Actually Ask For</h3>
+    <p>Different log types answer different audit questions. Map the question to the log, not just to "Cloud Logging":</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Audit Question</th>
+            <th>Log / Service</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Who accessed what data?</strong></td>
+            <td>Data Access audit logs</td>
+            <td>Must be explicitly enabled per service — disabled by default (except BigQuery which enables them automatically).</td>
+          </tr>
+          <tr>
+            <td><strong>Who changed the configuration?</strong></td>
+            <td>Admin Activity audit logs</td>
+            <td>Always enabled; records API calls that create, modify, or delete resources.</td>
+          </tr>
+          <tr>
+            <td><strong>Who held which access at time T?</strong></td>
+            <td>IAM Recommender reports + Cloud Asset Inventory IAM policy history</td>
+            <td>Recommender exports show granted vs. used permissions; Asset Inventory captures historical state.</td>
+          </tr>
+          <tr>
+            <td><strong>How were encryption keys managed?</strong></td>
+            <td>Cloud KMS audit logs (Admin Activity + Data Access)</td>
+            <td>Records every key version creation, rotation, destruction, and decrypt call.</td>
+          </tr>
+          <tr>
+            <td><strong>What was the resource inventory at a point in time?</strong></td>
+            <td>Cloud Asset Inventory snapshots</td>
+            <td>Export or query the asset feed to reconstruct the estate at any historical timestamp.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Audit Log Retention Strategy</h3>
+    <p>Cloud Logging's default retention is <em>insufficient</em> for most compliance frameworks. Know the numbers and the fix:</p>
+    <ul class="bullet-chk">
+      <li><strong><code>_Required</code> log bucket</strong> (Admin Activity + System Event logs): <strong>400 days</strong>, fixed — Google mandates this and it cannot be changed.</li>
+      <li><strong><code>_Default</code> log bucket</strong> (Data Access, Access Transparency, user logs): <strong>30 days</strong> default, configurable up to 3,650 days within Cloud Logging at extra cost.</li>
+      <li><strong>Long-term retention (7 years for SOX/PCI DSS/HIPAA):</strong> create a <strong>log sink</strong> exporting all audit log buckets to a Cloud Storage bucket. Apply a Bucket Lock retention policy of 7 years. Cloud Storage is significantly cheaper for cold archival than extended Cloud Logging retention.</li>
+    </ul>
+
+    <div class="exam-trap">
+      <strong>Default audit log retention is 30 days for the <code>_Default</code> bucket — for 7-year retention you need a log sink to Cloud Storage, not just enabling Data Access logs.</strong> Enabling Data Access logs makes the logs <em>appear</em> in Cloud Logging, but they still expire after 30 days if you don't sink them. A question describing "we enabled data access logging for PCI DSS but our auditor says we're missing logs from 14 months ago" has one root cause: no log sink to durable, locked Cloud Storage. Enabling the logs and retaining the logs are two separate actions.
+    </div>
+
+    <h3>Cloud Asset Inventory as the Evidence Snapshot Tool</h3>
+    <p><strong>Cloud Asset Inventory (CAI)</strong> records the complete configuration and IAM policy state of every resource in your organisation — and stores a history of how that state changed over time. This makes it the go-to tool for producing audit evidence of <em>who had what access when</em>.</p>
+    <ul>
+      <li><strong>Point-in-time snapshots:</strong> <code>gcloud asset export</code> dumps every resource and its attached IAM policy to a Cloud Storage file. Schedulable via Cloud Scheduler for daily snapshots submitted as audit evidence.</li>
+      <li><strong>Temporal queries:</strong> <code>gcloud asset get-history</code> returns the full change history for a resource's IAM policy between two timestamps — directly answers "who had owner on project X during the SOX audit window?"</li>
+      <li><strong>Policy analysis:</strong> <code>analyzeIamPolicy</code> finds all principals with a given permission on a resource (or transitively through group membership) — ideal for access-review reports.</li>
+      <li><strong>Integration with SCC:</strong> CAI feeds resource metadata into Security Command Center, so SCC findings reference the actual resource configuration at detection time.</li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>📋 CAI as the "Evidence Snapshot" Tool</h3>
+      <p>When an auditor asks for an <em>access review</em> — a list of every principal with elevated permissions, what they had access to, and whether it was still needed — reach for <strong>Cloud Asset Inventory</strong>. Export IAM policy history for the audit window, cross-reference with IAM Recommender reports (which flag permissions granted but never used), and present the combination as evidence. CAI + Recommender = defensible access-review artefact.</p>
+    </div>
+
+    <h3>Continuous Compliance Alerting: SCC → Pub/Sub → Notification Channels</h3>
+    <p>Auditors increasingly want <em>continuous</em> compliance evidence, not just a year-end snapshot. The standard GCP alerting pipeline wires Security Command Center to human-readable channels:</p>
+    <ul>
+      <li><strong>SCC → Pub/Sub:</strong> configure SCC to export all findings (or filtered findings by severity/category) to a Pub/Sub topic in near-real time.</li>
+      <li><strong>Pub/Sub → Cloud Functions / Workflows:</strong> subscribers can fan out findings to multiple destinations simultaneously — email, Slack, PagerDuty, or a ticketing system (Jira, ServiceNow).</li>
+      <li><strong>SCC Notification Configs:</strong> a single SCC notification config publishes to one Pub/Sub topic; create multiple configs with different filters (e.g. one for CRITICAL findings, one for MEDIUM) routed to different topics and downstream consumers.</li>
+      <li><strong>Evidence retention:</strong> persist raw finding payloads (JSON) from Pub/Sub to Cloud Storage or BigQuery for audit trail purposes — SCC itself retains findings for only a limited period at Standard tier.</li>
+    </ul>
+
+    <div class="mnemonic">
+      <h3>💡 LAKE — The Audit Evidence Stack</h3>
+      <p><strong>L</strong>ogs (Cloud Logging, sunk to Cloud Storage for 7 years). <strong>A</strong>sset snapshots (Cloud Asset Inventory for IAM history). <strong>K</strong>ey management records (Cloud KMS audit logs). <strong>E</strong>vents (SCC findings → Pub/Sub → notification channels). LAKE: if you can answer every audit question from these four sources, you're audit-ready. If one is missing, you'll be scrambling with partial evidence when the auditor arrives.</p>
+    </div>
+
+    <h3>Enabling Data Access Audit Logs: The Easy Step You Cannot Skip</h3>
+    <p>Admin Activity audit logs are always on. Data Access audit logs — which capture individual read/write operations on data — are <strong>off by default</strong> for most services (BigQuery is the exception: DATA_READ and DATA_WRITE are enabled automatically). You must explicitly enable them in the project or organisation IAM &amp; Admin → Audit Logs UI, or via the <code>google_project_iam_audit_config</code> Terraform resource.</p>
+    <ul>
+      <li><strong>DATA_READS:</strong> records who read a resource (e.g., <code>storage.objects.get</code>, <code>bigquery.tables.getData</code>).</li>
+      <li><strong>DATA_WRITES:</strong> records who wrote or modified a resource.</li>
+      <li><strong>ADMIN_READS:</strong> records metadata operations (e.g., listing objects). Often voluminous — enable selectively to avoid log storage costs.</li>
+    </ul>
+    <p>A common audit failure mode: a team enables Data Access logging at the project level, but the audit window began before they enabled it. There is no retroactive log generation. The fix is enabling at the organisation level from day one, not after an auditor requests evidence.</p>
+
+    <h3>Access Transparency Logs</h3>
+    <p><strong>Access Transparency logs</strong> are distinct from audit logs — they record when <em>Google staff</em> access your content for operational reasons (support, incident investigation). These logs appear in Cloud Logging as <code>cloudaudit.googleapis.com/access_transparency</code> entries and include a justification code explaining why access occurred. They are available on projects with Gold or Platinum support and in select GCP services. For regulated industries, Access Transparency provides assurance that even Google's operational access is documented and reviewable.</p>
+
+    <div class="exam-trap">
+      <strong>Access Transparency ≠ Cloud Audit Logs.</strong> Cloud Audit Logs record <em>your</em> users' and services' actions on GCP resources. Access Transparency logs record <em>Google employees'</em> actions on your data. A question asking "how do you know if Google staff accessed your data?" points to Access Transparency. A question asking "how do you know if your service account accessed a Cloud Storage bucket?" points to Data Access audit logs.
+    </div>
+
+    <div class="joke-box">
+      "The auditor asked for seven years of logs. The engineer checked Cloud Logging. It had 30 days. The log sink to Cloud Storage had been on the backlog since Q1 2019. The auditor had a very good poker face." 📋😬
+    </div>
+
+    <h3>Automating Evidence Collection with Cloud Scheduler</h3>
+    <p>Manual evidence gathering at audit time is a compliance antipattern — it's slow, inconsistent, and provides only a point-in-time snapshot rather than a continuous record. Automate the collection pipeline:</p>
+    <ul class="bullet-chk">
+      <li><strong>Cloud Scheduler → Cloud Functions → Cloud Asset Inventory export:</strong> schedule a daily CAI export to a Cloud Storage bucket. Each export file is a timestamped snapshot of every resource and IAM policy in the org — an instant audit artefact.</li>
+      <li><strong>Cloud Scheduler → IAM Recommender API:</strong> export IAM Recommender findings daily to BigQuery. Track over time whether granted permissions are being actioned — evidence of ongoing access review.</li>
+      <li><strong>Log sink aggregation:</strong> configure an aggregated log sink at the org level (not per-project) to capture audit logs from all current <em>and future</em> projects automatically. Projects created after the sink was set up are included without any additional configuration.</li>
+      <li><strong>SCC findings to BigQuery:</strong> SCC can stream all findings to BigQuery continuously. Query the findings table to produce compliance reports, track mean-time-to-remediate, and demonstrate trend improvement to auditors.</li>
+    </ul>
+
+    <div class="rev-card warn">
+      <h3>⚠️ Per-Project Log Sinks Miss New Projects</h3>
+      <p>A common mistake is configuring log sinks at the project level — this means every new project is a gap in your audit trail until someone remembers to add the sink. Always configure an <strong>aggregated log sink at the organisation or folder level</strong> with the <code>includeChildren: true</code> flag. This captures logs from all current and future child resources automatically — no per-project ops toil, no audit gaps.</p>
+    </div>
+
+    <h3>Section 5.8 Quick Reference</h3>
+    <ul class="bullet-chk">
+      <li><strong>Data Access audit logs:</strong> explicitly enable per-service — off by default (BigQuery is the exception). Without these, you cannot answer "who read this data?"</li>
+      <li><strong>Admin Activity logs:</strong> always enabled, records all resource create/modify/delete API calls.</li>
+      <li><strong><code>_Required</code> log bucket:</strong> 400-day retention, non-configurable. Covers Admin Activity and System Event logs.</li>
+      <li><strong><code>_Default</code> log bucket:</strong> 30-day default retention. Extend in Cloud Logging, or sink to Cloud Storage for long-term archival.</li>
+      <li><strong>7-year retention:</strong> log sink → Cloud Storage → Bucket Lock with 7-year retention policy. Cheapest and most durable long-term archival path.</li>
+      <li><strong>Cloud Asset Inventory:</strong> point-in-time and historical IAM policy snapshots. The go-to tool for "who had access when" evidence.</li>
+      <li><strong>Org-level aggregated log sink:</strong> captures logs from all current and future projects automatically — always prefer this over per-project sinks for compliance.</li>
+      <li><strong>Access Transparency:</strong> records Google staff access to your data — distinct from user audit logs.</li>
+    </ul>
+
     <!-- Warm-Up Quiz -->
     <div class="warm-up">
       <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
@@ -328,6 +629,30 @@
         <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
         <div id="ans4" class="answer-panel">
           <strong>The resource-location organization policy</strong> (<code>constraints/gcp.resourceLocations</code>). It restricts where resources can be created and inherits across the hierarchy.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q5:</strong> A service account gets a 403 on a BigQuery dataset. You need to know exactly why <em>right now</em>. Which Policy Intelligence tool do you reach for?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans5')">Show Answer</button>
+        <div id="ans5" class="answer-panel">
+          <strong>Policy Troubleshooter.</strong> It explains a specific access denial at a point in time — walking through IAM bindings and org policies to show exactly what blocked the request. Policy Analyzer would tell you <em>who</em> has access broadly, not why <em>this</em> request was denied.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q6:</strong> Your team wants to verify that removing the <code>roles/bigquery.dataViewer</code> binding from an external group won't break any active pipelines before committing the change. Which tool?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans6')">Show Answer</button>
+        <div id="ans6" class="answer-panel">
+          <strong>Policy Simulator.</strong> It replays recent access logs against the proposed policy change to show which accesses would succeed or fail — in a read-only, hypothetical mode. The change is not applied.
+        </div>
+      </div>
+
+      <div class="quiz-item">
+        <p><strong>Q7:</strong> Security Command Center finds a public GCS bucket. Nothing else happens. What's missing if you want the bucket fixed automatically within minutes?</p>
+        <button class="show-answer-btn" onclick="toggleAnswer('ans7')">Show Answer</button>
+        <div id="ans7" class="answer-panel">
+          <strong>The Pub/Sub → Cloud Function remediation pipeline.</strong> SHA creates the finding, but SCC does not auto-remediate. You must configure SCC to export findings to a Pub/Sub topic, with a Cloud Function subscribed to that topic that calls the Storage API to remove the <code>allUsers</code> binding.
         </div>
       </div>
     </div>

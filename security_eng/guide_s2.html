@@ -342,6 +342,274 @@
       <p>VPC Service Controls is a <strong>perimeter</strong> around <em>API data</em>. PSC, Private Google Access, VPN, and NAT are private <strong>pipes</strong> for <em>connectivity</em>. When the question is about <em>exfiltration</em>, reach for the perimeter; when it's about <em>reaching something privately</em>, reach for a pipe. Don't plumb a pipe at an exfiltration problem.</p>
     </div>
 
+    <!-- 2.5 -->
+    <h2>2.5 VPC Service Controls: Ingress Rules, Egress Rules &amp; Dry-Run Mode</h2>
+    <p>VPC-SC's core concept is the perimeter, but the real exam depth lives in <strong>ingress rules</strong>, <strong>egress rules</strong>, and the <strong>dry-run mode</strong> you'll use before you lock things down. Get these three wrong and you'll block your own pipelines on day one.</p>
+
+    <h3>Beyond the Perimeter: Ingress &amp; Egress Rules</h3>
+    <p>A plain perimeter is binary — requests either originate inside or they don't. Ingress and egress rules punch precise, auditable holes.</p>
+    <ul>
+      <li><strong>Ingress rules</strong> let specific <em>external</em> identities (service accounts, users) and/or specific <em>source networks</em> call in-perimeter APIs. Think: an on-prem pipeline service account that must write to a perimeter-protected BigQuery dataset.</li>
+      <li><strong>Egress rules</strong> let in-perimeter resources call <em>specific external</em> APIs or projects. Think: a perimeter-protected Cloud Run job that must read from a shared GCS bucket in another project.</li>
+      <li>Both rules are <em>additive</em> exceptions on top of the deny-by-default perimeter. They do not replace the perimeter; they extend it surgically.</li>
+    </ul>
+
+    <h3>Service Perimeter Bridges</h3>
+    <p>When two separate perimeters need to exchange data, you add a <strong>perimeter bridge</strong>. A bridge grants bidirectional access between exactly two perimeters without merging them. Each perimeter retains its own policies; only the shared resources listed in the bridge are reachable across the boundary. If you need one-way flow only, use an ingress/egress rule pair instead — a bridge is always bidirectional.</p>
+
+    <h3>Access Levels Inside VPC-SC</h3>
+    <p>Access levels (defined in Access Context Manager) add a <em>context</em> check on top of identity. You can combine an access level with an IAM condition so that an external service account is only granted ingress when it is also coming from a specific IP range or a corporate device. The combination looks like: <code>ingress from serviceAccount X when accessLevel Y is satisfied</code>. This is the same access-level object used by IAP and BeyondCorp — one definition, reusable across products.</p>
+
+    <div class="rev-card tip">
+      <h3>📐 Ingress / Egress Rule Structure</h3>
+      <p>Every ingress or egress rule has two halves that must both be satisfied:</p>
+      <ul>
+        <li><strong>"From" / "To" (source or destination)</strong> — identifies the external side: a specific identity (<code>serviceAccount:…</code>, <code>user:…</code>), an access level, a VPC network by resource name, or a project number.</li>
+        <li><strong>"Operations" (what is allowed)</strong> — the API service and optionally specific methods. For example: <code>storage.googleapis.com</code> with method <code>google.storage.objects.get</code>. Omitting methods means all methods on that service are allowed.</li>
+      </ul>
+      <p>Both halves must match for the exception to apply. A rule that specifies a service account but wildcard operations still only affects that one identity.</p>
+    </div>
+
+    <h3>Dry-Run (Audit) Mode vs Enforced Mode</h3>
+    <p>Before enforcing a perimeter in production, enable <strong>dry-run mode</strong> (also called <em>audit mode</em>). In dry-run mode, VPC-SC evaluates every request against the perimeter policy and writes a <code>VIOLATION</code> log entry to Cloud Audit Logs whenever a request <em>would</em> have been denied — but it does <strong>not</strong> actually block the request. This lets you measure blast radius and tune your ingress/egress rules against real traffic before flipping to enforced.</p>
+    <p>Promotion path: <code>dry-run</code> &rarr; observe violations in Logs Explorer &rarr; add ingress/egress rules for legitimate traffic &rarr; iterate until violations drop to noise &rarr; promote perimeter to <code>enforced</code>.</p>
+
+    <div class="exam-trap">
+      <strong>Dry-run mode logs violations but does NOT block traffic.</strong> A common question frames a scenario where a security team "enabled a VPC-SC perimeter in audit mode" and asks whether unauthorised API calls are being denied. They are <em>not</em> denied — only logged. Enforced mode is required to actually block. Don't conflate "violation detected" with "request rejected."
+    </div>
+
+    <div class="joke-box">
+      "Dry-run mode is like a velvet rope with a clipboard. It writes your name down every time you skip the queue — but it still lets you in. Enforced mode is the actual bouncer." 📋🚫
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Control</th>
+            <th>What It Protects</th>
+            <th>Applies To</th>
+            <th>Blocks IAM-Authorized Requests?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>VPC Firewall Rules</strong></td>
+            <td>Network-level traffic between resources (IP, port, protocol)</td>
+            <td>VM-to-VM, VM-to-internet, internet-to-VM</td>
+            <td>N/A — operates below the API layer</td>
+          </tr>
+          <tr>
+            <td><strong>VPC Service Controls</strong></td>
+            <td>Google API data plane (Cloud Storage, BigQuery, Pub/Sub, etc.)</td>
+            <td>API calls crossing a perimeter boundary</td>
+            <td><strong>Yes</strong> — the defining characteristic of VPC-SC</td>
+          </tr>
+          <tr>
+            <td><strong>Org Policy Constraints</strong></td>
+            <td>Resource configuration and what can be created</td>
+            <td>Resource creation, sharing settings, allowed regions</td>
+            <td>Yes, for resource management actions (not data-plane reads/writes)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2.6 -->
+    <h2>2.6 Shared VPC Security &amp; Network Isolation Patterns</h2>
+    <p>Multi-team GCP environments need a network ownership model. <strong>Shared VPC</strong> is the GCP-native answer: one central team owns the network, everyone else borrows subnets from it. The exam tests who controls what and why that matters for security.</p>
+
+    <h3>How Shared VPC Works</h3>
+    <p>In a Shared VPC setup, one project is designated the <strong>host project</strong>. It owns the VPC networks, subnets, firewall rules, and routing. Other projects — <strong>service projects</strong> — attach to the host and deploy workloads (VMs, GKE nodes, Cloud Run services) into the host's subnets. Service projects <em>do not</em> have their own VPCs; they borrow network capacity from the host.</p>
+    <ul>
+      <li>Resource ownership: <strong>network resources live in the host</strong>; compute and application resources live in service projects.</li>
+      <li>Billing for network egress: charged to the project that owns the resource generating traffic, not the host.</li>
+      <li>Enabling Shared VPC requires the <code>Shared VPC Admin</code> role at the organisation or folder level; the host-project owner alone cannot enable it.</li>
+    </ul>
+
+    <h3>Who Controls Firewall Rules in Shared VPC?</h3>
+    <p>This is the most-tested detail about Shared VPC security. Firewall rules are attached to the VPC in the <strong>host project</strong>. To create or modify firewall rules in a Shared VPC, you need the <code>compute.networkAdmin</code> or <code>compute.securityAdmin</code> role on the <strong>host project</strong>, not on your service project. Service project owners see the subnets they are allocated but cannot write firewall rules that govern them. This is the entire point: centralised, tamper-resistant network security.</p>
+
+    <div class="exam-trap">
+      <strong>VPC peering does NOT share firewall rules.</strong> When two VPCs are connected via VPC Network Peering, each VPC keeps its own independent firewall rules. Firewall rules in VPC A do not propagate to or affect traffic in VPC B — you must manage them separately in each project. A common distractor asks whether peering "extends" one VPC's security controls to the peer; it does not. If you need shared, centrally managed firewall rules, that is Shared VPC, not peering.
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 Shared VPC = The Landlord Model</h3>
+      <p>Think of Shared VPC as a <strong>landlord (host project)</strong> and <strong>tenants (service projects)</strong>. The landlord owns the building's plumbing, wiring, and front door locks (VPC, subnets, firewall rules). Tenants furnish their own rooms (VMs, apps) but cannot rewire the building. If a tenant wants a new door lock, they ask the landlord. <strong>Centralised control = security landlord.</strong></p>
+    </div>
+
+    <h3>Why Shared VPC Is a Security Pattern</h3>
+    <ul>
+      <li><strong>Prevents VPC sprawl:</strong> without Shared VPC, each team creates its own VPC, its own firewall rules, and its own peering mesh. Security posture diverges quickly.</li>
+      <li><strong>Centralises egress control:</strong> Cloud NAT, Secure Web Proxy, and VPC Service Controls can be deployed once in the host and apply to all service projects automatically.</li>
+      <li><strong>Supports least-privilege networking:</strong> service projects can be allocated specific subnets and no others; they cannot create routes or firewall rules that escape their allocation.</li>
+      <li><strong>Audit trail consolidation:</strong> network-level audit logs (flow logs, firewall logs) live in the host project, giving the security team a single pane of glass.</li>
+    </ul>
+
+    <h3>VPC Peering vs Shared VPC</h3>
+    <p>Both keep traffic private (no internet transit), but they solve different problems:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            <th>VPC Network Peering</th>
+            <th>Shared VPC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Network ownership</strong></td>
+            <td>Each VPC owned and managed separately</td>
+            <td>One host VPC; service projects are tenants</td>
+          </tr>
+          <tr>
+            <td><strong>Firewall rules</strong></td>
+            <td>Independent in each VPC; do not propagate</td>
+            <td>Centralised in host project; apply to all service projects</td>
+          </tr>
+          <tr>
+            <td><strong>Subnet sharing</strong></td>
+            <td>No — peers can reach each other's IPs, but subnets remain in their own VPC</td>
+            <td>Yes — host subnets are directly allocated to service projects</td>
+          </tr>
+          <tr>
+            <td><strong>Transitive routing</strong></td>
+            <td>Not supported (A-B and B-C peered does not give A-C connectivity)</td>
+            <td>All service projects share one host network; all can route to each other via the host</td>
+          </tr>
+          <tr>
+            <td><strong>Typical use case</strong></td>
+            <td>Connecting two independently managed VPCs (different orgs, or vendor services)</td>
+            <td>Multi-team org with centralised network security</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Network Segmentation Patterns</h3>
+    <p>Even within Shared VPC, good practice isolates workloads by tier. Common patterns you should recognise on the exam:</p>
+    <ul>
+      <li><strong>Three-tier subnet segmentation:</strong> separate subnets (or even separate VPCs) for <em>data</em> (databases, warehouses), <em>application</em> (APIs, microservices), and <em>management</em> (bastion hosts, monitoring). Firewall rules allow only the minimum flows between tiers.</li>
+      <li><strong>Separate VPC per sensitivity tier:</strong> when regulatory requirements mandate hard network isolation, workloads that process PCI or PHI data run in a dedicated VPC (or dedicated host project) with its own VPC-SC perimeter.</li>
+      <li><strong>Bastion host / IAP tunnelling:</strong> the management subnet hosts a bastion (or you replace it entirely with IAP for TCP forwarding) so that SSH/RDP never traverses the public internet and is never exposed in the data or app subnets.</li>
+      <li><strong>Private Google Access per subnet:</strong> enable it on subnets where VMs need to reach Google APIs, and disable internet routes — this locks down egress to Google's backbone only.</li>
+    </ul>
+
+    <!-- 2.7 -->
+    <h2>2.7 Transport Security: TLS, mTLS &amp; Certificate Management</h2>
+    <p>Encryption in transit is non-negotiable on the exam. GCP handles the easy cases automatically, but east-west workload-to-workload traffic inside a cluster requires deliberate configuration. Knowing <em>which</em> scenario maps to <em>which</em> control is the discriminator.</p>
+
+    <h3>TLS — The Free Lunch</h3>
+    <p>Google enforces TLS 1.2+ on <strong>all</strong> public API endpoints automatically. Every call to a Google Cloud API (Cloud Storage, BigQuery, Pub/Sub, etc.) travels over TLS — you do not configure this, you cannot disable it, and there is no certificate to manage on your side. The same applies to HTTPS load balancers: traffic from the internet to a Google-managed HTTPS load balancer is always TLS-terminated at the edge. This is a deliberate GCP design choice: <em>security by default, not by opt-in</em>.</p>
+
+    <h3>Managed SSL Certificates vs Self-Managed</h3>
+    <p>When you configure an HTTPS load balancer, you choose between two certificate modes:</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Who Provisions?</th>
+            <th>Who Rotates?</th>
+            <th>Use When…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google-managed SSL certificates</strong></td>
+            <td>Google (via Let's Encrypt or Google Trust Services)</td>
+            <td>Google (auto-rotates before expiry)</td>
+            <td>Public HTTPS endpoints where you own the domain; easiest path, no rotation toil.</td>
+          </tr>
+          <tr>
+            <td><strong>Self-managed certificates</strong></td>
+            <td>You (your own CA, or a commercial CA)</td>
+            <td>You (manual or scripted)</td>
+            <td>Internal CAs, custom CAs, wildcard certs, or compliance that mandates your own CA chain.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Google-managed certs are attached to the load balancer's target HTTPS proxy. They require a domain verified via Cloud DNS or Cloud Domains — Google provisions the cert only after DNS resolves to the load balancer IP. For <code>*.internal</code> or private hostnames, self-managed is the only option.</p>
+
+    <h3>mTLS — East-West Workload-to-Workload</h3>
+    <p>Standard TLS is <em>one-way</em>: the server proves its identity to the client. <strong>Mutual TLS (mTLS)</strong> is <em>two-way</em>: both the client and server present certificates, proving identity in both directions. This is the pattern for zero-trust service-to-service communication inside a GKE cluster or Anthos environment.</p>
+    <ul>
+      <li><strong>Istio / Anthos Service Mesh (ASM):</strong> the preferred GCP-native approach. ASM deploys Envoy sidecar proxies alongside every pod. The proxies transparently negotiate mTLS for all pod-to-pod traffic — application code does not need to implement TLS. The control plane automatically rotates certificates via <strong>SPIFFE/SPIRE</strong> workload identity.</li>
+      <li><strong>Certificate Authority Service (CAS):</strong> a managed, private CA hierarchy on GCP. Use CAS when you need to issue certificates from <em>your own CA chain</em> for mTLS, internal services, or device identity. CAS integrates with Workload Identity Federation and ASM so that ASM can draw certificates from your CA rather than Google's default issuer.</li>
+      <li><strong>GKE Workload Identity + mTLS:</strong> even without ASM, GKE workloads can use <code>SPIFFE</code> certificates via the GKE Certificate Controller; however ASM/Istio is the exam-recommended approach for full mesh mTLS.</li>
+    </ul>
+
+    <div class="exam-trap">
+      <strong>"Encrypt data in transit between GKE pods" = mTLS / Anthos Service Mesh, NOT "enable HTTPS on the load balancer."</strong> HTTPS on the load balancer encrypts <em>north-south</em> traffic (internet → load balancer → service). It does nothing for <em>east-west</em> pod-to-pod traffic inside the cluster. If a question asks how to ensure encrypted communication <em>between microservices inside GKE</em>, the correct answer is <strong>Anthos Service Mesh / Istio with mTLS</strong> (or Certificate Authority Service for certificate issuance). Any option involving "enable HTTPS on the frontend" or "add an SSL certificate to the load balancer" is a distractor — it solves the wrong layer.
+    </div>
+
+    <h3>Cloud Domains &amp; Cloud DNS Integration</h3>
+    <p>For public HTTPS endpoints backed by Google-managed SSL certificates, the provisioning flow ties Cloud DNS and load balancers together:</p>
+    <ul class="bullet-chk">
+      <li>Register or transfer your domain via <strong>Cloud Domains</strong> (or point your registrar's nameservers to Cloud DNS).</li>
+      <li>Create a Cloud DNS <strong>A record</strong> pointing your domain at the load balancer's reserved external IP.</li>
+      <li>Attach a <strong>Google-managed SSL certificate</strong> to the target HTTPS proxy referencing that domain.</li>
+      <li>Google validates DNS propagation, provisions the certificate, and begins auto-rotating it — typically within 60 minutes of DNS propagation completing.</li>
+    </ul>
+    <p>Private domains (e.g. <code>service.corp.internal</code>) cannot use Google-managed certs because Google cannot complete a public DNS challenge. Use <strong>Certificate Authority Service</strong> to issue internal certificates and load them as self-managed certs on an internal load balancer.</p>
+
+    <div class="mnemonic">
+      <h3>💡 North vs East: Two Different Problems</h3>
+      <p>Draw a compass rose. <strong>North-south</strong> = internet traffic coming in through the load balancer — HTTPS + Google-managed cert handles it. <strong>East-west</strong> = pod chatting to pod inside the cluster — Anthos Service Mesh + mTLS handles it. Any question about <em>pod-to-pod, service mesh, microservice communication,</em> or <em>sidecars</em> is an east-west question. Don't reach for the load balancer cert — reach for ASM.</p>
+    </div>
+
+    <div class="joke-box">
+      "The engineer enabled HTTPS on the load balancer and declared 'all traffic is now encrypted!' Meanwhile, across the cluster, pods were chatting in the clear like old friends at a coffee shop. ☕ ASM watched in silence." 🕸️🔒
+    </div>
+
+    <h3>Certificate Authority Service Deep-Dive</h3>
+    <p><strong>Certificate Authority Service (CAS)</strong> is a managed, private CA infrastructure on GCP. It is not just a certificate issuer — it is a full hierarchical CA you control, with no need to run your own CA software on VMs.</p>
+    <ul>
+      <li><strong>Two CA tiers:</strong> <em>DevOps CA</em> (high-velocity, short-lived certs for workloads, billed per certificate) and <em>Enterprise CA</em> (lower volume, longer-lived certs for devices and services, more control over policy). Choose DevOps CA for Kubernetes workload certificates; Enterprise CA for internal TLS between long-running services.</li>
+      <li><strong>Integration with GKE:</strong> the GKE Certificate Controller can be configured to use a CAS CA to issue node and workload certificates, replacing the self-signed default CA. This puts certificate issuance under your KMS-backed CA rather than a cluster-generated key.</li>
+      <li><strong>Certificate templates:</strong> define allowed key usages, subject attributes, and validity windows centrally. Callers can only request certificates that conform to the template — preventing engineers from issuing over-privileged or excessively long-lived certs.</li>
+      <li><strong>Revocation:</strong> CAS supports CRL and OCSP for certificate revocation. If a workload identity is compromised, revoke its certificate immediately — downstream mTLS peers will reject it on the next handshake (OCSP) or CRL fetch.</li>
+    </ul>
+
+    <div class="rev-card tip">
+      <h3>🔑 When the Exam Says "Internal CA" — Think CAS</h3>
+      <p>Any question involving: issuing certificates from <em>your own</em> CA chain, private hostnames that Google cannot validate, workload identity certificates at scale, or OCSP/CRL revocation — the answer involves <strong>Certificate Authority Service</strong>. Google-managed SSL certificates are for public domains validated by Google Trust Services. CAS is for everything internal, custom, or regulated.</p>
+    </div>
+
+    <h3>TLS Version &amp; Cipher Policy</h3>
+    <p>For HTTPS load balancers, GCP lets you configure an <strong>SSL policy</strong> that controls the minimum TLS version and the permitted cipher suites. Three managed profiles exist:</p>
+    <ul>
+      <li><strong>COMPATIBLE:</strong> broadest browser compatibility, supports older cipher suites and TLS 1.0/1.1. Use only when you must support legacy clients that cannot be updated.</li>
+      <li><strong>MODERN:</strong> TLS 1.2+ with a reduced set of cipher suites. The recommended default for most web applications.</li>
+      <li><strong>RESTRICTED:</strong> TLS 1.2 only, with the most secure cipher suites (ECDHE + AESGCM). Required by PCI DSS and similar frameworks that mandate disabling TLS 1.0/1.1.</li>
+    </ul>
+    <p>You can also create a <strong>CUSTOM</strong> SSL policy if you need to specify exact cipher suites. Attach the SSL policy to the target HTTPS or target SSL proxy — not to individual backend services. The exam occasionally presents a scenario where "the compliance team requires TLS 1.2 minimum" and the answer is to configure an SSL policy with the RESTRICTED profile, not to patch the backend servers.</p>
+
+    <div class="exam-trap">
+      <strong>SSL policies apply to the load balancer, not the backends.</strong> A question asking "how do you enforce TLS 1.2+ for all traffic to your web application behind a Global HTTPS LB?" has a one-component answer: configure a RESTRICTED SSL policy on the <em>target HTTPS proxy</em>. Configuring TLS on the backend VMs independently is redundant for this exam question and not the GCP-native answer. The load balancer terminates TLS from the client; traffic between the LB and backends is on Google's private network (or can be re-encrypted separately with backend HTTPS).
+    </div>
+
+    <h3>Section 2.7 Quick Reference</h3>
+    <ul class="bullet-chk">
+      <li><strong>TLS on Google APIs:</strong> automatic, always-on — nothing to configure.</li>
+      <li><strong>Google-managed SSL cert:</strong> attach to HTTPS load balancer for public domains; Google provisions and rotates automatically via Cloud DNS validation.</li>
+      <li><strong>Self-managed cert:</strong> use for private CAs, wildcard certs, or when your org mandates its own CA chain.</li>
+      <li><strong>mTLS (east-west):</strong> Anthos Service Mesh / Istio with Envoy sidecars — the pod-to-pod encryption answer. Application code is unaware.</li>
+      <li><strong>Certificate Authority Service:</strong> managed private CA for issuing certs from your own CA hierarchy (internal services, GKE workload identity, OCSP revocation).</li>
+      <li><strong>SSL policy (RESTRICTED profile):</strong> enforce TLS 1.2 minimum and strong ciphers on HTTPS load balancers for PCI DSS compliance.</li>
+      <li><strong>Cloud DNS + Cloud Domains:</strong> prerequisite for Google-managed SSL cert provisioning on public endpoints.</li>
+      <li><strong>North-south vs east-west:</strong> load balancer cert = north-south (internet → LB). ASM mTLS = east-west (pod → pod). Never confuse them on the exam.</li>
+      <li><strong>CAS DevOps vs Enterprise tier:</strong> DevOps CA for high-volume short-lived workload certs; Enterprise CA for lower-volume, longer-lived service or device certificates.</li>
+      <li><strong>SPIFFE/SPIRE:</strong> the open standard for workload identity certificates that ASM uses internally. You don't need to configure it directly — ASM handles it — but knowing the acronym helps decode scenario question wording.</li>
+      <li><strong>mTLS ≠ encryption at rest:</strong> mTLS encrypts data <em>in transit</em> between workloads. It has no effect on how data is stored — CMEK and CSEK handle encryption at rest.</li>
+      <li><strong>Google-managed cert provisioning delay:</strong> certs can take up to 60 minutes to provision after DNS propagation. Plan for this in deployment runbooks — the LB will serve a certificate error until provisioning completes.</li>
+      <li><strong>Wildcard certificates:</strong> not supported by Google-managed SSL certs — use self-managed certs issued by CAS or a commercial CA for <code>*.example.com</code> coverage.</li>
+    </ul>
+
     <!-- Warm-Up Quiz -->
     <div class="warm-up">
       <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>

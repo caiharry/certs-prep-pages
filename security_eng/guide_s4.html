@@ -346,6 +346,270 @@
       "First rule of incident response: don't <code>rm</code> the crime scene. The forensics team gets <em>very</em> grumpy." 🕵️‍♀️💾
     </div>
 
+    <!-- 4.7 -->
+    <h2>4.7 Software Supply Chain Security: SLSA &amp; Artifact Analysis</h2>
+    <p>Modern attacks don't punch through your firewall &mdash; they hitch a ride inside a package you trusted. <strong>SLSA</strong> (Supply-chain Levels for Software Artifacts, pronounced "salsa") is an open framework that grades the integrity of your build process across four levels. <strong>Artifact Analysis</strong> (formerly Container Analysis) is the GCP service that scans your images and packages for <strong>CVEs</strong> and stores the results as <strong>notes and occurrences</strong> in the Grafeas store backing Artifact Registry.</p>
+
+    <h3>SLSA Levels &mdash; What Each Requires</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>SLSA Level</th>
+            <th>Key Requirements</th>
+            <th>Practical Bar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Level 1</strong></td>
+            <td>Build process exists and provenance is generated.</td>
+            <td>Easy &mdash; many CI systems do this automatically.</td>
+          </tr>
+          <tr>
+            <td><strong>Level 2</strong></td>
+            <td>Hosted, tamper-resistant build service generates signed provenance.</td>
+            <td>Cloud Build natively produces SLSA 2 provenance.</td>
+          </tr>
+          <tr>
+            <td><strong>Level 3</strong></td>
+            <td>Hardened build platform, no persistent worker credentials, hermetic builds.</td>
+            <td><strong>Practically achievable on GCP</strong> with Cloud Build + Artifact Registry + Binary Authorization policy.</td>
+          </tr>
+          <tr>
+            <td><strong>Level 4</strong></td>
+            <td>Two-party review, reproducible builds, hardware-attested environment.</td>
+            <td>Rarely required; aspirational for most orgs.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Artifact Analysis: Scanning Modes</h3>
+    <p>Artifact Analysis hooks into <strong>Artifact Registry</strong> and can scan <em>container images</em> as well as <em>Maven and NPM package metadata</em>.</p>
+    <ul class="bullet-chk">
+      <li><strong>On-demand scanning</strong> &mdash; triggered explicitly via the <code>gcloud artifacts docker images scan</code> command or the API; useful inside CI pipelines before pushing.</li>
+      <li><strong>Continuous scanning</strong> &mdash; enabled at the Artifact Registry repository level; re-scans images when <em>new CVE metadata</em> is published, so vulnerabilities discovered after the push still surface.</li>
+    </ul>
+
+    <div class="exam-trap">
+      <strong>Binary Authorization does NOT scan images.</strong> It only checks whether a <strong>valid attestation signature</strong> exists on the image before admitting it. <em>You</em> are responsible for running the scan (via Artifact Analysis), creating the attestation (via KRITIS or Sigstore / <code>cosign</code>), and wiring Binary Authorization to require that attestation. If the scan step is missing, Binary Authorization will happily admit an unscanned image that has been signed &mdash; it checks signatures, not vulnerability reports.
+    </div>
+
+    <h3>Attestors &amp; Attestations</h3>
+    <p>The pipeline from scan to gate works in three steps:</p>
+    <ol>
+      <li>Artifact Analysis scans the image and finds no blocking CVEs (or all CVEs are below the threshold).</li>
+      <li>A signer service (e.g. <strong>KRITIS signer</strong>, or <code>cosign</code> backed by Cloud KMS) creates a <strong>signed attestation</strong> on the image digest and stores it in Artifact Registry.</li>
+      <li><strong>Binary Authorization</strong> evaluates the pod admission request: if the policy requires the attestation from a named <strong>attestor</strong> and the signature is valid, the workload deploys; otherwise it's rejected.</li>
+    </ol>
+
+    <h3>Software Bill of Materials (SBOM)</h3>
+    <p>An <strong>SBOM</strong> is a machine-readable list of every dependency in a software artefact &mdash; libraries, versions, licences, known CVEs. Regulators (US Executive Order 14028, EU Cyber Resilience Act) increasingly mandate SBOMs for software sold to government. Artifact Analysis can generate SBOMs in <strong>SPDX</strong> or <strong>CycloneDX</strong> format and store them as attestations, giving you a signed, tamper-resistant bill of materials for every image.</p>
+
+    <h3>Cloud Deploy Integration</h3>
+    <p><strong>Cloud Deploy</strong> adds deploy-time controls on top of the binary: <strong>approval gates</strong> require a human sign-off before a release advances to production, and <strong>rollout release controls</strong> (canary, blue/green) limit blast radius. Pair Cloud Deploy with Binary Authorization to ensure that a human approved <em>and</em> the image is attested before anything touches production.</p>
+
+    <div class="rev-card tip">
+      <h3>🔗 The End-to-End Supply Chain on GCP</h3>
+      <p><strong>Artifact Analysis</strong> scans &rarr; <strong>KRITIS / cosign</strong> attests &rarr; <strong>Binary Authorization</strong> gates admission. Every step is audited: scan results in Artifact Registry, attestation signed with a Cloud KMS key, Binary Authorization policy violations surfaced in Cloud Audit Logs and SCC. Add Cloud Deploy approval gates for the human checkpoint before production.</p>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>What It Does</th>
+            <th>What It Does NOT Do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Artifact Analysis</strong></td>
+            <td>Scans container images and packages for CVEs; stores results as Grafeas notes and occurrences; generates SBOMs.</td>
+            <td>Does not block deployments; does not sign attestations automatically.</td>
+          </tr>
+          <tr>
+            <td><strong>Binary Authorization</strong></td>
+            <td>Admission controller for GKE, Cloud Run, GKE Autopilot; blocks workloads unless named attestations are present.</td>
+            <td>Does not scan images; does not create attestations; does not run CVE checks.</td>
+          </tr>
+          <tr>
+            <td><strong>Web Security Scanner</strong></td>
+            <td>Crawls deployed web apps for OWASP Top-10 issues (XSS, mixed content, outdated libraries in the browser).</td>
+            <td>Does not inspect container images or supply-chain dependencies; does not block deployments.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="joke-box">
+      The SBOM told us we were shipping 47 transitive dependencies we'd never heard of. The good news: we finally have a list. The bad news: we now have to care about 47 more things. &#128230;
+    </div>
+
+    <!-- 4.8 -->
+    <h2>4.8 Chronicle SIEM &amp; Threat Intelligence</h2>
+    <p><strong>Chronicle</strong> is Google's cloud-native Security Information and Event Management (SIEM) and Security Orchestration, Automation, and Response (SOAR) platform. It is <em>not</em> a feature of Cloud Logging or SCC &mdash; it is a <strong>separate product</strong> built on Google's own petabyte-scale infrastructure, originally developed to protect Google internally and now available as a managed service. The elevator pitch: <strong>ingest everything, store it for 12 months by default, and let analysts hunt across the full corpus in seconds.</strong></p>
+
+    <h3>Unified Data Model (UDM)</h3>
+    <p>Chronicle normalises ingested logs from any source (GCP, AWS, on-prem, SaaS, network devices) into the <strong>Unified Data Model</strong>. UDM events share a common schema regardless of origin, which means a single detection rule can match a Windows login event, a GCP IAM grant, and a Fortinet firewall alert without bespoke parsing per source.</p>
+
+    <h3>YARA-L: Chronicle's Detection Language</h3>
+    <p><strong>YARA-L</strong> is Chronicle's rule language for writing detections over the UDM event stream. It extends the well-known YARA pattern language with a <em>temporal window</em> construct so rules can express multi-event sequences &mdash; for example: <em>"if the same user creates an IAM binding and then exfiltrates data from Cloud Storage within 10 minutes, raise an alert."</em> YARA-L rules are evaluated continuously against the live stream of incoming events.</p>
+
+    <h3>Threat Intelligence Integration</h3>
+    <ul class="bullet-chk">
+      <li><strong>VirusTotal enrichment</strong> &mdash; Chronicle natively enriches IOCs (IPs, domains, file hashes) against VirusTotal reputation data, surfacing threat context without leaving the investigation UI.</li>
+      <li><strong>Curated Threat Intelligence (CTITM)</strong> &mdash; Google-managed threat intelligence feeds built into both Chronicle and SCC, covering malware families, attacker infrastructure, and CVE-to-exploit mappings updated continuously by Google's Threat Intelligence team (formerly Mandiant).</li>
+      <li><strong>Third-party feeds</strong> &mdash; Chronicle can ingest STIX/TAXII feeds from external providers via the Threat Intelligence management interface.</li>
+    </ul>
+
+    <h3>Chronicle vs Cloud Logging vs SCC: Pick the Right Tool</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Cloud Logging</th>
+            <th>Security Command Center</th>
+            <th>Chronicle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Primary role</strong></td>
+            <td>Collect and route logs; short-term storage and alerting.</td>
+            <td>Posture management; aggregated security findings.</td>
+            <td>SIEM/SOAR; large-scale investigation and hunting.</td>
+          </tr>
+          <tr>
+            <td><strong>Default retention</strong></td>
+            <td>30 days (<code>_Default</code> bucket); configurable up to 3650 days.</td>
+            <td>Findings retained; not a log store.</td>
+            <td><strong>12 months</strong> (petabyte-scale, included in price).</td>
+          </tr>
+          <tr>
+            <td><strong>Query language</strong></td>
+            <td>Log Explorer filter syntax / SQL in BigQuery.</td>
+            <td>SCC filter syntax; no raw log queries.</td>
+            <td><strong>UDM Search + YARA-L rules.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Multi-tenant / cross-org</strong></td>
+            <td>Aggregated sinks help; log buckets are per-project.</td>
+            <td>Yes, org-level dashboard.</td>
+            <td><strong>Yes</strong> &mdash; designed for MSSPs and large enterprises.</td>
+          </tr>
+          <tr>
+            <td><strong>Threat Intel enrichment</strong></td>
+            <td>None built-in.</td>
+            <td>CTITM via SCC Premium.</td>
+            <td><strong>VirusTotal + CTITM native.</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rev-card tip">
+      <h3>🔍 Chronicle vs Cloud Logging: Know the Boundary</h3>
+      <p>Cloud Logging is where logs <strong>start</strong> &mdash; they land in the <code>_Default</code> bucket and you route them via sinks. Chronicle is where analysts <strong>investigate at scale</strong> &mdash; it ingests logs from Cloud Logging (and everywhere else), normalises them into UDM, and lets you hunt across 12 months of data in seconds. The two are complementary, not competing: logs flow <em>from</em> Cloud Logging <em>into</em> Chronicle.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>Chronicle is not Cloud Logging and not SCC.</strong> All three appear in Security Engineer questions and distractors love to conflate them. Chronicle has its own ingestion pipeline, its own data model (UDM), its own query language (YARA-L / UDM Search), and <strong>12-month retention included</strong>. Cloud Logging has 30-day default retention and Log Explorer filter syntax. SCC surfaces security <em>findings</em> (misconfigs, threats) but is not a log store. If a question mentions "SIEM," "detection rules across 12 months of logs," or "SOC investigation at scale" &mdash; that's Chronicle.
+    </div>
+
+    <div class="mnemonic">
+      <h3>💡 "LFC: Logs Flow to Chronicle"</h3>
+      <p>Think of it as a pipeline:<br>
+      <strong>L</strong>ogging &rarr; collects and routes raw logs (the <em>pipe</em>).<br>
+      <strong>F</strong>indings &rarr; SCC surfaces security findings from those logs and GCP APIs (the <em>dashboard</em>).<br>
+      <strong>C</strong>hronicle &rarr; ingests, normalises, and lets analysts hunt at scale (the <em>SIEM</em>).<br>
+      Each layer consumes the one before it. "Logs Flow to Chronicle" &mdash; LFC.</p>
+    </div>
+
+    <h3>SOC Workflow in Chronicle</h3>
+    <p>Chronicle maps to the classic SOC workflow: <strong>Ingest</strong> (pull logs from GCP, AWS, on-prem, SaaS via forwarders and ingestion APIs) &rarr; <strong>Detect</strong> (YARA-L rules match events in real time; curated detections from Google Threat Intelligence fire automatically) &rarr; <strong>Investigate</strong> (analysts pivot from an alert through 12 months of UDM-normalised telemetry using graph search and IOC enrichment) &rarr; <strong>Respond</strong> (SOAR playbooks in Chronicle trigger actions: isolate a VM via the Compute API, revoke an IAM token, open a ticket in Jira). This end-to-end loop is what "cloud-native SIEM/SOAR" means in practice.</p>
+
+    <h2>4.9 Vulnerability Management &amp; Security Health Analytics</h2>
+    <p>Security Command Center is not just an alert dashboard — it is an <em>active posture scanner</em>. The two most exam-relevant built-in detectors are <strong>Security Health Analytics (SHA)</strong> for configuration misconfigurations and <strong>Web Security Scanner (WSS)</strong> for application-layer vulnerabilities. Both surface findings in SCC; the key skill is knowing which detector fires when.</p>
+
+    <h3>Security Health Analytics (SHA)</h3>
+    <p>SHA continuously scans the <em>configuration</em> of GCP resources against a library of security best-practice checks. It does not read traffic or logs — it inspects resource metadata via GCP APIs. Common findings it produces:</p>
+    <ul class="bullet-chk">
+      <li><strong>PUBLIC_BUCKET_ACL</strong> — Cloud Storage bucket has <code>allUsers</code> or <code>allAuthenticatedUsers</code> on an ACL.</li>
+      <li><strong>OPEN_FIREWALL</strong> — a VPC firewall rule allows ingress from <code>0.0.0.0/0</code> on port 22 (SSH) or 3389 (RDP).</li>
+      <li><strong>OS_LOGIN_DISABLED</strong> — OS Login not enforced on a Compute Engine instance.</li>
+      <li><strong>AUDIT_LOGGING_DISABLED</strong> — data access audit logs not enabled for a service.</li>
+      <li><strong>MFA_NOT_ENFORCED</strong> — Cloud Identity tenant has accounts without 2-step verification.</li>
+    </ul>
+    <p>SHA findings are classified by <strong>category</strong> (<code>VULNERABILITY</code>, <code>MISCONFIGURATION</code>, <code>OBSERVATION</code>, <code>THREAT</code>) and by <strong>severity</strong> (<code>CRITICAL</code>, <code>HIGH</code>, <code>MEDIUM</code>, <code>LOW</code>). In the SCC console you can filter findings by any combination of these fields, mute individual findings, or create <strong>mute rules</strong> that suppress whole classes of findings (e.g., suppress all <code>OPEN_FIREWALL</code> findings on a project used for load-testing).</p>
+
+    <div class="rev-card tip">
+      <h3>🏋️ Custom SHA Modules</h3>
+      <p>SHA ships with ~130 built-in detectors, but you can extend it with <strong>custom modules</strong> — CEL (Common Expression Language) expressions that SHA evaluates against resource configurations. A custom module can, for example, flag any Cloud Run service without a VPC connector, or any BigQuery dataset shared with a principal outside your org domain. Custom modules surface findings in SCC under the same finding-type framework as built-in detectors, so your existing SIEM exports and notification channels pick them up automatically.</p>
+    </div>
+
+    <h3>Web Security Scanner (WSS)</h3>
+    <p>WSS scans <em>external-facing</em> web applications (App Engine, GKE Ingress, Cloud Run) for common application-layer vulnerabilities from the OWASP Top 10: XSS, SQL injection, mixed content, outdated libraries with known CVEs, and more. Two modes:</p>
+    <ul class="bullet-chk">
+      <li><strong>Managed scan</strong> — SCC runs WSS automatically on supported resources, no configuration required. Available in Security Command Center Standard and Premium tiers.</li>
+      <li><strong>Custom scan</strong> — you define the target URL, authentication credentials (if the app requires login), and scan schedule. Gives coverage for apps behind auth that managed scans can't reach.</li>
+    </ul>
+    <p>WSS findings appear as <code>WEB_SECURITY_SCANNER</code>-type findings in SCC. Because WSS actually sends HTTP requests, it is only appropriate for <em>external</em> endpoints — running it against an internal service requires network reachability from GCP's scanner infrastructure.</p>
+
+    <div class="rev-card warn">
+      <h3>🚨 WSS Is Not a Substitute for a Proper DAST Tool</h3>
+      <p>Web Security Scanner covers the most common OWASP Top 10 patterns, but it is <strong>not</strong> a full dynamic application security testing (DAST) suite. It will miss business-logic flaws, complex authentication bypass chains, and vulnerabilities that only appear after multiple sequential interactions. For the exam, WSS is the right answer when the scenario is specifically about <em>basic</em> OWASP vulnerability detection on a GCP-hosted web app with low setup cost. If the scenario mentions "comprehensive penetration testing" or "DAST" as a requirement, the answer is likely a third-party tool integrated via SCC's <strong>partner findings API</strong>, not WSS alone.</p>
+    </div>
+
+    <h3>OS Config &amp; Patch Management</h3>
+    <p>For fleet-wide OS-level vulnerability management, <strong>OS Config</strong> (VM Manager) provides: <strong>patch compliance</strong> baselines showing which VMs are missing OS patches, <strong>on-demand patching</strong> (patch jobs that target VMs by label or zone), and <strong>OS inventory</strong> data (installed packages and versions ingested into SCC as <code>OS_VULNERABILITY</code> findings when known CVEs are matched). This is the GCP answer to "how do I know which VMs are missing the latest kernel patch?"</p>
+    <p>OS Config requires the <strong>OS Config agent</strong> to be installed on each VM (pre-installed on public GCP images from mid-2020 onward; must be manually installed on custom images). Key exam scenario: a question asks how to apply a critical kernel patch to 200 Compute Engine VMs with minimal manual effort — the answer is a <strong>VM Manager patch job</strong> scoped by label, not SSHing into each instance. Patch jobs support <strong>rollout controls</strong> (zone-by-zone, percentage-based) to avoid taking down your whole fleet at once. The compliance report in VM Manager shows a per-VM breakdown of <code>COMPLIANT</code> / <code>NON_COMPLIANT</code> / <code>PENDING</code> against the patch baseline, and these findings also flow into SCC so you have a single pane of glass for both posture and patch state.</p>
+
+    <h3>SCC Finding Lifecycle: States, Muting, and Tiers</h3>
+    <p>Every SCC finding has a <strong>state</strong> — <code>ACTIVE</code>, <code>INACTIVE</code>, or <code>MUTED</code>. Understanding these is important for the exam because they affect what a security operations team actually sees:</p>
+    <ul class="bullet-chk">
+      <li><strong>ACTIVE</strong> — the finding is open and unresolved. Appears in the default SCC dashboard view.</li>
+      <li><strong>INACTIVE</strong> — the underlying condition has been remediated (e.g., the public bucket ACL was removed). SHA automatically sets findings to INACTIVE on the next scan cycle when the misconfiguration is gone.</li>
+      <li><strong>MUTED</strong> — the finding still exists but is suppressed from view. Muting is appropriate for accepted risk or known false positives. You can create <strong>mute rules</strong> (CEL-based) to auto-mute whole categories of findings on specific resources.</li>
+    </ul>
+    <p>On <strong>SCC tier</strong>: SHA is available at both Standard and Premium. The distinction matters for the exam — <strong>ETD, Web Security Scanner (managed), and Security Posture</strong> are <strong>Premium-only</strong>. If a question asks about the lowest-cost way to detect active threats from log signals, the answer requires SCC Premium.</p>
+    <p>One timing detail that catches people out: SHA findings do not move to <code>INACTIVE</code> <em>immediately</em> after remediation. SHA runs scans on a schedule (roughly every 12–24 hours depending on the check type). If you fix a public bucket ACL and check SCC five minutes later, the finding will still show <code>ACTIVE</code> until the next SHA scan cycle completes and confirms the condition is gone. This matters in incident-response scenarios where teams assume the finding disappearing means the fix worked — always verify directly on the resource, not via finding state alone.</p>
+
+    <div class="rev-card tip">
+      <h3>🏋️ SCC Standard vs Premium — What's Available Where</h3>
+      <p>A reliable exam shorthand:</p>
+      <ul class="bullet-chk">
+        <li><strong>Standard (free)</strong>: Security Health Analytics built-in detectors, Web Security Scanner basic managed scan, IAM Recommender findings.</li>
+        <li><strong>Premium (paid)</strong>: Event Threat Detection (ETD), Container Threat Detection (CTD), Virtual Machine Threat Detection (VMTD), Web Security Scanner with custom scans, Security Posture management, Rapid Vulnerability Detection, compliance reports (CIS, PCI-DSS, NIST).</li>
+        <li><strong>Enterprise (paid + SIEM/SOAR)</strong>: Everything in Premium, plus Chronicle integration, SOAR playbooks, attack path simulation, and multi-cloud (AWS/Azure) posture.</li>
+      </ul>
+      <p>If the stem involves <em>compliance reporting</em> or <em>runtime threat detection</em>, Premium (or Enterprise) is the minimum tier. Standard alone cannot do it.</p>
+    </div>
+
+    <div class="exam-trap">
+      <strong>SHA detects misconfigurations — not active threats.</strong> SHA sees that port 22 is open; it does not see a brute-force SSH attempt in progress. If the exam stem says "detect a crypto-miner running on a VM" or "identify a lateral-movement pattern in API logs," the answer is <strong>Event Threat Detection (ETD)</strong> or <strong>Container Threat Detection (CTD)</strong> — not SHA. SHA would only fire if the underlying misconfiguration (e.g., public bucket that the miner is reading from) were itself a policy violation. Read the stem carefully: <em>misconfiguration</em> = SHA; <em>active/runtime threat</em> = ETD/CTD.
+    </div>
+
+    <h3>Rapid Vulnerability Detection (RVD)</h3>
+    <p><strong>Rapid Vulnerability Detection</strong> is a SCC Premium feature that performs <em>active network scanning</em> — it sends test probes to GCP-hosted endpoints to find exploitable vulnerabilities without requiring agent installation. RVD currently targets Compute Engine and GKE workloads and detects things like exposed admin UIs (unauthenticated Jupyter Notebooks, Hadoop dashboards), weak credentials on databases, and unpatched software reachable from the internet. Key distinctions for the exam:</p>
+    <ul class="bullet-chk">
+      <li><strong>RVD vs WSS</strong>: RVD scans network services at the OS/application layer for exploitable conditions; WSS scans web application logic for OWASP-class bugs (XSS, SQLi). They complement each other.</li>
+      <li><strong>RVD vs SHA</strong>: SHA is configuration-based (no network traffic sent); RVD actively probes. SHA runs on any SCC tier; RVD is Premium-only.</li>
+      <li><strong>RVD vs Vulnerability Scanning in Artifact Registry</strong>: Artifact Registry scanning finds CVEs in container image layers; RVD finds CVEs in <em>running</em> workloads reachable on the network. Different surface, same goal.</li>
+    </ul>
+    <p>RVD findings surface in SCC under the <code>VULNERABILITY</code> category with finding class <code>VULNERABILITY</code> and source <code>RAPID_VULNERABILITY_DETECTION</code>. Remediation guidance is included in each finding.</p>
+
+    <div class="mnemonic">
+      <h3>💡 SHA = Static Health; ETD = Event-based Threat Detection</h3>
+      <p><strong>SHA</strong> is a <em>static health check</em> — it looks at how your resources are <em>configured</em> right now. Think of it as an MOT inspection: it tells you the brakes are worn, not that you just had an accident.<br>
+      <strong>ETD</strong> is <em>event-based</em> — it watches log streams and API calls in real time for signs of compromise. Think of it as a dashcam that flags dangerous driving as it happens.<br>
+      <strong>RVD</strong> is <em>active probing</em> — it actually knocks on the door to see if it opens. Think of it as a penetration tester on a schedule: it doesn't wait for misconfiguration metadata or log signals, it tries the attack itself (safely).<br>
+      Same car, three very different instruments. On the exam, the word "detect" in the stem is not enough — look for whether the scenario is about <em>configuration posture</em> (SHA), <em>runtime log signals</em> (ETD/CTD), or <em>actively exploitable network exposure</em> (RVD/WSS).</p>
+    </div>
+
     <!-- Warm-Up Quiz -->
     <div class="warm-up">
       <h3>🧠 Quick-Fire Warm-Up Quiz!</h3>
