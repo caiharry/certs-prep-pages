@@ -59,6 +59,8 @@ html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn {
   box-shadow: 3px 3px 0 #000 !important;
 }
 html.ds-skin .btn-primary { background: var(--ds-golden) !important; color: #000 !important; }
+html.ds-skin .btn-disabled { background: #e5e7eb !important; color: #9ca3af !important; border-color: #9ca3af !important; box-shadow: 2px 2px 0px #9ca3af !important; cursor: not-allowed !important; pointer-events: none !important; }
+html.ds-skin .btn-disabled:hover { background: #e5e7eb !important; }
 html.ds-skin .btn-exam { background: #BFD3FF !important; color: #000 !important; }
 html.ds-skin .btn-official { background: var(--ds-cloud) !important; color: #0E3F37 !important; }
 

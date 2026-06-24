@@ -106,6 +106,8 @@ html.ds-skin .submit-answer-btn, html.ds-skin .scroll-top-btn, html.ds-skin .doc
 }
 html.ds-skin .btn-rev, html.ds-skin .btn-primary { background: var(--ds-alchemy) !important; color: #fff !important; border-color: var(--ds-alchemy) !important; }
 html.ds-skin .btn-rev:hover, html.ds-skin .btn-primary:hover { background: var(--ds-alchemy-700) !important; }
+html.ds-skin .btn-disabled { background: #e5e7eb !important; color: #9ca3af !important; border-color: #9ca3af !important; box-shadow: 2px 2px 0px #9ca3af !important; cursor: not-allowed !important; pointer-events: none !important; }
+html.ds-skin .btn-disabled:hover { background: #e5e7eb !important; }
 html.ds-skin .btn-secondary, html.ds-skin .btn-exam, html.ds-skin .btn-official { background: #F7F8FB !important; color: var(--ds-ink) !important; }
 html.ds-skin .nav-link { background: #fff !important; color: var(--ds-body) !important; }
 html.ds-skin .nav-link:hover { background: #F7F8FB !important; }
